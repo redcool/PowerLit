@@ -4,7 +4,7 @@ Shader "URP/PowerLit"
     {
         [Header(MainTexture)]
         [MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
-        [MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
+        [gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
         [Normal]_NormalMap("_NormalMap",2d) ="bump"{}
         _NormalScale("_NormalScale",float) = 1
 

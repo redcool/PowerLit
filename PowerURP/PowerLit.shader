@@ -20,10 +20,15 @@ Shader "URP/PowerLit"
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
 
         [Header(Shadow)]
-        [Toggle]isReceiveShadow("isReceiveShadow",int) = 1
+        [Toggle]_IsReceiveShadow("_IsReceiveShadow",int) = 1
 
         [Header(GI)]
         _LightmapSH("_LightmapSH",range(0,1)) = 0.5
+        
+        [Header(Custom IBL)]
+        [Toggle]_IBLOn("_IBLOn",float) = 0
+        _IBLCube("_IBLCube",cube) = ""{}
+        _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
 
         [Header(Clip)]
         [Toggle]_ClipOn("_ClipOn",float) = 0

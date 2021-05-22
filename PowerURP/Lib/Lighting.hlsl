@@ -110,7 +110,7 @@ float4 CalcPBR(SurfaceInputData data){
     
     MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
     
-    half3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS);
+    half3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,_IBLOn);
     color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     color += surfaceData.emission;
 

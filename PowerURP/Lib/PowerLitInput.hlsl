@@ -20,8 +20,11 @@ float _Cutoff;
 float _EmissionOn;
 float4 _EmissionColor;
 float _AlphaPremultiply;
-float isReceiveShadow;
+float _IsReceiveShadow;
 float _LightmapSH;
+
+int _IBLOn;
+float4 _ReflectDirOffset;
 CBUFFER_END
 
 // dots instancing
@@ -37,8 +40,11 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float,_EmissionOn)
     UNITY_DOTS_INSTANCED_PROP(float4,_EmissionColor)
     UNITY_DOTS_INSTANCED_PROP(float,_AlphaPremultiply)
-    UNITY_DOTS_INSTANCED_PROP(float,isReceiveShadow)
+    UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadow)
     UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
+
+    UNITY_DOTS_INSTANCED_PROP(int,_IBLOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
 UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 
 #define _Color UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__Color)
@@ -52,8 +58,10 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #define _EmissionOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EmissionOn)
 #define _EmissionColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__EmissionColor)
 #define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__AlphaPremultiply)
-#define isReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ShadowOn)
+#define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
 #define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
+#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
+#define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ReflectDirOffset)
 #endif
 
 TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
@@ -61,7 +69,7 @@ TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
 TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
 TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
 TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
-
+TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 
 // float CalcAlpha(float albedoAlpha,float colorAlpha,float cutoff,int isClipOn){
 //     float alpha = albedoAlpha * colorAlpha;
@@ -112,7 +120,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
 void InitSurfaceInputData(float2 uv,inout SurfaceInputData data){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
     data.isAlphaPremultiply = _AlphaPremultiply;
-    data.isReceiveShadow = isReceiveShadow && _MainLightShadowOn;
+    data.isReceiveShadow = _IsReceiveShadow && _MainLightShadowOn;
     data.lightmapSH = _LightmapSH;
 }
 

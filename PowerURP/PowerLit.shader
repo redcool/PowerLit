@@ -29,6 +29,12 @@ Shader "URP/PowerLit"
         [Toggle]_ClipOn("_ClipOn",float) = 0
         _Cutoff("_Cutoff",range(0,1)) = 0.5
 
+/**
+    alpha : [srcAlpha][oneMinusSrcAlpha]
+    premultiply : [one][oneMinusSrcAlpha]
+    additive: [srcAlpha][one]
+    multiply : [dstColor][zero]
+*/
         [Header(Blend)]
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcMode("_SrcMode",int) = 1
         [Enum(UnityEngine.Rendering.BlendMode)]_DstMode("_DstMode",int) = 0
@@ -133,5 +139,5 @@ box projection
         }
 
     }
-    CustomEditor "PowerLitShaderGUI"
+    // CustomEditor "PowerLitShaderGUI"
 }

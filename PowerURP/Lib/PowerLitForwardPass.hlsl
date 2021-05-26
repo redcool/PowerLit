@@ -81,8 +81,11 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
 }
 
 float4 fragTest(Varyings input,SurfaceInputData data){
+    InputData inputData = data.inputData;
+
     // return SampleLightmap(input.uv.zw).xyzx;
-    // return MainLightRealtimeShadow(data.inputData.shadowCoord,false);
+    // return MainLightRealtimeShadow(data.inputData.shadowCoord,true);
+    return MainLightShadow(inputData.shadowCoord,inputData.positionWS,inputData.shadowMask,_MainLightOcclusionProbes,data.isReceiveShadow);
     // return SampleShadowMask(input.uv.zw).xyzx;
     // return SampleSH(float4(data.inputData.normalWS,1)).xyzx;
     // return data.inputData.bakedGI.xyzx;

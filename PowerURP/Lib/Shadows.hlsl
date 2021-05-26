@@ -71,8 +71,8 @@ half GetShadowFade1(float3 positionWS)
     float3 camToPixel = positionWS - _WorldSpaceCameraPos;
     float distanceCamToPixel2 = dot(camToPixel, camToPixel);
 
-    //half fade = saturate(distanceCamToPixel2 * _MainLightShadowParams.z + _MainLightShadowParams.w);
-    half fade = saturate(distanceCamToPixel2 * 0.4 + -9);
+    half fade = saturate(distanceCamToPixel2 * _MainLightShadowParams.z + _MainLightShadowParams.w);
+    // half fade = saturate(distanceCamToPixel2 * 0.4 + -9);
     return fade * fade;
 }
 

@@ -22,8 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: PowerLit
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ShaderKeywords: ISRECEIVESHADOW_ON _EMISSIONON_OFF _IBLON_ON _ISRECEIVESHADOW_ON
-    _ZWRITE_ON
+  m_ShaderKeywords: ISRECEIVESHADOW_ON _EMISSIONON_OFF _ISRECEIVESHADOW_ON _ZWRITE_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -64,12 +63,12 @@ Material:
     - _Cutoff: 0.5
     - _DstMode: 0
     - _EmissionOn: 0
-    - _IBLOn: 1
+    - _IBLOn: 0
     - _IsReceiveShadow: 1
-    - _LightmapSH: 0.5
+    - _LightmapSH: 1
     - _Metallic: 0
     - _NormalScale: 1
-    - _Occlusion: 0.5
+    - _Occlusion: 1
     - _Smoothness: 0.5
     - _SrcMode: 1
     - _ZTest: 4
@@ -78,5 +77,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _ReflectDirOffset: {r: -1.79, g: -2.51, b: 0, a: 0}
   m_BuildTextureStacks: []

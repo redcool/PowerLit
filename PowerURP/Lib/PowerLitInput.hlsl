@@ -25,6 +25,10 @@ float _LightmapSH;
 
 int _IBLOn;
 float4 _ReflectDirOffset;
+
+int _CustomLightOn;
+float4 _CustomLightDir;
+float4 _CustomLightColor;
 CBUFFER_END
 
 // dots instancing
@@ -45,6 +49,9 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
 
     UNITY_DOTS_INSTANCED_PROP(int,_IBLOn)
     UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
+    UNITY_DOTS_INSTANCED_PROP(int,_CustomLightOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightDir)
+    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightColor)
 UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 
 #define _Color UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__Color)
@@ -60,8 +67,11 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__AlphaPremultiply)
 #define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
 #define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
-#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
+#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__IBLOnH)
 #define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ReflectDirOffset)
+#define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__CustomLightOn)
+#define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__CustomLightDir)
+#define _CustomLightColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__CustomLightColor)
 #endif
 
 TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
@@ -71,13 +81,6 @@ TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
 TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 
-// float CalcAlpha(float albedoAlpha,float colorAlpha,float cutoff,int isClipOn){
-//     float alpha = albedoAlpha * colorAlpha;
-//     if(isClipOn){
-//         clip(albedoAlpha - cutoff);
-//     }
-//     return alpha;
-// }
 
 void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(mao,sampler_Map,uv) * color;

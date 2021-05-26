@@ -32,6 +32,13 @@ Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isR
     return light;
 }
 
+void OffsetMainLight(inout Light mainLight){
+    if(_CustomLightOn){
+        mainLight.color = _CustomLightColor;
+        mainLight.direction = SafeNormalize(_CustomLightDir.xyz);
+    }
+}
+
 // float3 SafeNormalize(float3 v){
 //     float len = max(0.0000001,dot(v,v));
 //     return v/rsqrt(len);
@@ -107,6 +114,7 @@ float4 CalcPBR(SurfaceInputData data){
 
     float4 shadowMask = CalcShadowMask(inputData);
     Light mainLight = GetMainLight(inputData.shadowCoord,inputData.positionWS,shadowMask,data.isReceiveShadow);
+    OffsetMainLight(mainLight);
     
     MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
     

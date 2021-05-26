@@ -27,8 +27,13 @@ Shader "URP/PowerLit"
         
         [Header(Custom IBL)]
         [Toggle]_IBLOn("_IBLOn",float) = 0
-        _IBLCube("_IBLCube",cube) = ""{}
+        [NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
         _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
+
+        [Header(Custom Light)]
+        [Toggle]_CustomLightOn("_CustomLightOn",float) = 0
+        _CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
+        _CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
 
         [Header(Clip)]
         [Toggle]_ClipOn("_ClipOn",float) = 0

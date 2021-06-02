@@ -17,8 +17,10 @@ float _NormalScale;
 float _Metallic,_Smoothness,_Occlusion;
 float _ClipOn;
 float _Cutoff;
+
 float _EmissionOn;
 float4 _EmissionColor;
+
 float _AlphaPremultiply;
 float _IsReceiveShadow;
 float _LightmapSH;

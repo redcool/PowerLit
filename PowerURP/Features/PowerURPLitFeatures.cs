@@ -9,6 +9,7 @@ public class PowerURPLitFeatures : ScriptableRendererFeature
     [Serializable]
     public struct Settings
     {
+        public bool isActive;
         [Header("Main Light Shadow")]
         [NonSerialized] public bool _MainLightShadowOn;
         [NonSerialized] public bool _MainLightShadowCascadeOn;
@@ -29,7 +30,6 @@ public class PowerURPLitFeatures : ScriptableRendererFeature
         public void UpdateParams(CommandBuffer cmd)
         {
             var asset = UniversalRenderPipeline.asset;
-            
 
             cmd.SetGlobalInt(nameof(settings._MainLightShadowCascadeOn), asset.shadowCascadeCount>1 ? 1 : 0);
             cmd.SetGlobalInt(nameof(settings._LightmapOn),settings._LightmapOn ? 1 : 0);
@@ -55,9 +55,10 @@ public class PowerURPLitFeatures : ScriptableRendererFeature
 
     /// <inheritdoc/>
     public override void Create()
-    {
+    { 
         pass = new PowerURPLitUpdateParamsPass();
         pass.settings = settings;
+
     }
 
     // Here you can inject one or multiple render passes in the renderer.

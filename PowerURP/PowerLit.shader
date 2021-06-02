@@ -18,6 +18,7 @@ Shader "URP/PowerLit"
         [ToggleOff]_EmissionOn("_EmissionOn",int) = 0
         _EmissionMap("_EmissionMap",2d) = "white"{}
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
+        [Toggle]_BakeEmissionOn("_BakeEmissionOn",int) = 0
 
         [Header(Shadow)]
         [Toggle]_IsReceiveShadow("_IsReceiveShadow",int) = 1
@@ -149,5 +150,5 @@ box projection
         }
 
     }
-    // CustomEditor "PowerLitShaderGUI"
+    CustomEditor "PowerLitShaderGUI"
 }

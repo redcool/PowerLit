@@ -37,7 +37,7 @@ float4 CalcMetaPosition(float4 pos,float2 uv1,float2 uv2,float4 uv1ST,float4 uv2
 }
 
 float4 CalcMetaFragment(MetaInput input){
-    float4 color = float4(10,0,0,0);
+    float4 color = float4(0,0,0,0);
     if(unity_MetaFragmentControl.x){
         color = float4(input.albedo,1);
         color.rgb = clamp(PositivePow(color.rgb,saturate(unity_OneOverOutputBoost)) ,0,unity_MaxOutputValue);

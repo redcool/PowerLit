@@ -22,11 +22,11 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: PowerLit
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ShaderKeywords: ISRECEIVESHADOW_ON _EMISSIONON_OFF _ISRECEIVESHADOW_ON _ZWRITE_ON
-  m_LightmapFlags: 0
+  m_ShaderKeywords: ISRECEIVESHADOW_ON _BAKEEMISSIONON_ON _ISRECEIVESHADOW_ON _ZWRITE_ON
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -37,6 +37,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
+        m_Texture: {fileID: 2800000, guid: 82376e7bcb460784ca45dfca10d33523, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GIAlbedoTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -46,6 +50,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _IBLCube:
         m_Texture: {fileID: 8900000, guid: c853dcd774a2b8243bb8702bc635df48, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMaskMap:
@@ -58,11 +66,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaPremultiply: 0
+    - _BakeEmissionOn: 1
     - _ClipOn: 0
     - _CullMode: 2
+    - _CustomLightOn: 0
     - _Cutoff: 0.5
     - _DstMode: 0
-    - _EmissionOn: 0
+    - _EmissionOn: 1
+    - _Glossiness: 0.5
     - _IBLOn: 0
     - _IsReceiveShadow: 1
     - _LightmapSH: 1
@@ -76,6 +87,9 @@ Material:
     - isReceiveShadow: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 0}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomLightColor: {r: 1, g: 1, b: 1, a: 0}
+    - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 59.017693, g: 0, b: 0, a: 1}
+    - _GIAlbedoColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectDirOffset: {r: -1.79, g: -2.51, b: 0, a: 0}
   m_BuildTextureStacks: []

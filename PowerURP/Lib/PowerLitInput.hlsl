@@ -8,7 +8,7 @@
 // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceData.hlsl"
 // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "PowerSurfaceInputData.hlsl"
-
+#include "NatureLib.hlsl"
 
 CBUFFER_START(UnityPerMaterial)
 float4 _BaseMap_ST;
@@ -25,12 +25,16 @@ float _AlphaPremultiply;
 float _IsReceiveShadow;
 float _LightmapSH;
 
-int _IBLOn;
+float _IBLOn;
 float4 _ReflectDirOffset;
 
-int _CustomLightOn;
+float _CustomLightOn;
 float4 _CustomLightDir;
 float4 _CustomLightColor;
+
+float _WindOn;
+float4 _WindAnimParam;
+float4 _WindDir;
 CBUFFER_END
 
 // dots instancing
@@ -49,9 +53,9 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadow)
     UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
 
-    UNITY_DOTS_INSTANCED_PROP(int,_IBLOn)
+    UNITY_DOTS_INSTANCED_PROP(float,_IBLOn)
     UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
-    UNITY_DOTS_INSTANCED_PROP(int,_CustomLightOn)
+    UNITY_DOTS_INSTANCED_PROP(float,_CustomLightOn)
     UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightDir)
     UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightColor)
 UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
@@ -69,11 +73,11 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__AlphaPremultiply)
 #define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
 #define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
-#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__IBLOnH)
+#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
 #define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ReflectDirOffset)
-#define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__CustomLightOn)
-#define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__CustomLightDir)
-#define _CustomLightColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int,Metadata__CustomLightColor)
+#define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightOn)
+#define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightDir)
+#define _CustomLightColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightColor)
 #endif
 
 TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
@@ -98,7 +102,7 @@ float3 CalcNormal(float2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),float s
     return n;
 }
 
-float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor,int isEmissionOn){
+float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor,float isEmissionOn){
     if(isEmissionOn)
         return SAMPLE_TEXTURE2D(map,sampler_map,uv).xyz * emissionColor;
     return 0;

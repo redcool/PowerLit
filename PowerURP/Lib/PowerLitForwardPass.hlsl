@@ -7,6 +7,7 @@
 struct Attributes{
     float4 pos:POSITION;
     float3 normal:NORMAL;
+    float4 color:COLOR;
     float4 tangent:TANGENT;
     float2 uv:TEXCOORD;
     float2 uv1 :TEXCOORD1;
@@ -23,10 +24,13 @@ struct Varyings{
     float4 vertexLightAndFogFactor:TEXCOORD5;
     float4 shadowCoord:TEXCOORD6;
 
+    float4 color:COLOR;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
+
+
 
 Varyings vert(Attributes input){
     Varyings output = (Varyings)0;
@@ -46,6 +50,12 @@ Varyings vert(Attributes input){
     output.uv.xy = TRANSFORM_TEX(input.uv.xy,_BaseMap);
     // OUTPUT_LIGHTMAP_UV(input.uv1,unity_LightmapST,output.uv1);
     output.uv.zw = input.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+
+    float4 attenParam = input.color.x; // vertex color atten
+    if(_WindOn){
+        worldPos = WindAnimationVertex(worldPos/**/,input.pos,worldNormal,attenParam * _WindAnimParam,_WindDir);
+    }
+
     float4 clipPos = TransformWorldToHClip(worldPos);
 
     float fogFactor = ComputeFogFactor(clipPos.z);
@@ -54,7 +64,8 @@ Varyings vert(Attributes input){
 
 
     output.pos = clipPos;
-    output.shadowCoord = TransformWorldToShadowCoord(worldPos); 
+    output.shadowCoord = TransformWorldToShadowCoord(worldPos);
+    output.color = attenParam;
 
     return output;
 }
@@ -82,7 +93,8 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
 
 float4 fragTest(Varyings input,SurfaceInputData data){
     InputData inputData = data.inputData;
-
+    return input.color.w;
+    // return input.uv.y;
     // return SampleLightmap(input.uv.zw).xyzx;
     // return MainLightRealtimeShadow(data.inputData.shadowCoord,true);
     return MainLightShadow(inputData.shadowCoord,inputData.positionWS,inputData.shadowMask,_MainLightOcclusionProbes,data.isReceiveShadow);

@@ -22,7 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: PowerLitGround
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ShaderKeywords: ISRECEIVESHADOW_ON _EMISSIONON_OFF _SHADOWON_ON _ZWRITE_ON
+  m_ShaderKeywords: ISRECEIVESHADOW_ON _EMISSIONON_OFF _ISRECEIVESHADOW_ON _SHADOWON_ON
+    _ZWRITE_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -53,6 +54,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IBLCube:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -99,6 +104,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaPremultiply: 0
+    - _BakeEmissionOn: 0
     - _Blend: 1
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -106,6 +112,7 @@ Material:
     - _ClipOn: 0
     - _Cull: 2
     - _CullMode: 2
+    - _CustomLightOn: 0
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -116,6 +123,8 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _IBLOn: 0
+    - _IsReceiveShadow: 1
     - _LightmapSH: 0
     - _Metallic: 0.5
     - _NormalScale: 1
@@ -138,6 +147,9 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.078431375, g: 0.078431375, b: 0.078431375, a: 1}
+    - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
+    - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

@@ -97,7 +97,7 @@ namespace PowerUtilities
         [Serializable]
         public struct Settings
         {
-            public bool isActive;
+            //public bool isActive;
             //[Header("Main Light Shadow")]
             //[NonSerialized] public bool _MainLightShadowOn;
             //[NonSerialized] public bool _MainLightShadowCascadeOn;

@@ -35,6 +35,7 @@ float4 _CustomLightColor;
 float _WindOn;
 float4 _WindAnimParam;
 float4 _WindDir;
+float4 _GlobalWindDir; /*global wind direction controlled by script*/
 CBUFFER_END
 
 // dots instancing

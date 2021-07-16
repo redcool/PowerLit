@@ -54,6 +54,7 @@ inline float4 AnimateVertex(float4 pos, float3 normal, float4 animParams,float4 
 float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir){
     // worldPos,normal, attenParam * animParam, windDir
     atten_AnimParam *= saturate(vertex.y/10); // local position'y atten
+    windDir.xyz = clamp(windDir.xyz,-1,1);
     return AnimateVertex(float4(worldPos,1),normal,atten_AnimParam,windDir);
 }
 

@@ -53,7 +53,7 @@ Varyings vert(Attributes input){
 
     float4 attenParam = input.color.x; // vertex color atten
     if(_WindOn){
-        worldPos = WindAnimationVertex(worldPos/**/,input.pos,worldNormal,attenParam * _WindAnimParam,_WindDir);
+        worldPos = WindAnimationVertex(worldPos/**/,input.pos,worldNormal,attenParam * _WindAnimParam,_WindDir + _GlobalWindDir);
     }
 
     float4 clipPos = TransformWorldToHClip(worldPos);

@@ -34,7 +34,7 @@ Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isR
 
 void OffsetMainLight(inout Light mainLight){
     if(_CustomLightOn){
-        mainLight.color = _CustomLightColor;
+        mainLight.color = _CustomLightColor.xyz;
         mainLight.direction = SafeNormalize(_CustomLightDir.xyz);
     }
 }

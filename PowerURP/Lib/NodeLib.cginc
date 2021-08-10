@@ -3,6 +3,7 @@
 #ifndef NODE_LIB_CGINC
 #define NODE_LIB_CGINC
 
+#undef PI
 #define PI 3.14159
 
 /**

@@ -33,7 +33,7 @@ float4 CalcMetaPosition(float4 pos,float2 uv1,float2 uv2,float4 uv1ST,float4 uv2
         pos.xy = uv2 * uv2ST.xy + uv2ST.zw;
     }
         pos.z = pos.z > 0 ? REAL_MIN : 0;
-    return TransformWorldToHClip(pos);
+    return TransformWorldToHClip(pos.xyz);
 }
 
 float4 CalcMetaFragment(MetaInput input){
@@ -60,23 +60,32 @@ struct Atributes{
     float2 uv1:TEXCOORD1;
     float2 uv2:TEXCOORD2;
     float4 tangent:TANGENT;
+
+    UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 struct Varyings
 {
     float4 pos:SV_POSITION;
     float2 uv:TEXCOORD;
+    UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 
 Varyings vert(Atributes input){
     Varyings output = (Varyings)0;
+
+    UNITY_SETUP_INSTANCE_ID(input);
+    UNITY_TRANSFER_INSTANCE_ID(input, output);
+
     output.uv = TRANSFORM_TEX(input.uv,_BaseMap);
     output.pos = CalcMetaPosition(input.vertex,input.uv1,input.uv2,unity_LightmapST,unity_DynamicLightmapST);
     return output;
 }
 
 float4 frag(Varyings input):SV_Target{
+    UNITY_SETUP_INSTANCE_ID(input);
+    
     SurfaceInputData surfaceInputData = (SurfaceInputData)0;
     InitSurfaceInputData(input.uv,surfaceInputData/**/);
 

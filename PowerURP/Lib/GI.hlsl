@@ -5,6 +5,7 @@
 
 float3 SampleLightmap(float2 lightmapUV){
     // #if defined(LIGHTMAP_ON)
+    float3 lmap = 0;
     if(IsLightmapOn()){
         #if defined(UNITY_LIGHTMAP_FULL_HDR)
             bool encodedLightmap = false;
@@ -13,10 +14,10 @@ float3 SampleLightmap(float2 lightmapUV){
         #endif
         float4 decodeInstructions = float4(LIGHTMAP_HDR_MULTIPLIER,LIGHTMAP_HDR_EXPONENT,0,0);
         float4 transformUV = float4(1,1,0,0);
-        return SampleSingleLightmap(TEXTURE2D_LIGHTMAP_ARGS(LIGHTMAP_NAME,LIGHTMAP_SAMPLER_NAME),lightmapUV,transformUV,encodedLightmap,decodeInstructions);
+        lmap = SampleSingleLightmap(TEXTURE2D_LIGHTMAP_ARGS(LIGHTMAP_NAME,LIGHTMAP_SAMPLER_NAME),lightmapUV,transformUV,encodedLightmap,decodeInstructions);
     }
     //endif
-    return 0;
+    return lmap;
 }
 /**
     lerp(lightmap, sh ,t)

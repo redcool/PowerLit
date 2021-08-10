@@ -38,10 +38,10 @@ Varyings vert(Attributes input){
     UNITY_TRANSFER_INSTANCE_ID(input,output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-    float3 worldPos = TransformObjectToWorld(input.pos);
+    float3 worldPos = TransformObjectToWorld(input.pos.xyz);
     float3 worldNormal = TransformObjectToWorldNormal(input.normal);
     float sign = input.tangent.w * GetOddNegativeScale();
-    float3 worldTangent = TransformObjectToWorldDir(input.tangent);
+    float3 worldTangent = TransformObjectToWorldDir(input.tangent.xyz);
     float3 worldBinormal = cross(worldNormal,worldTangent)  * sign;
     output.tSpace0 = float4(worldTangent.x,worldBinormal.x,worldNormal.x,worldPos.x);
     output.tSpace1 = float4(worldTangent.y,worldBinormal.y,worldNormal.y,worldPos.y);
@@ -53,7 +53,7 @@ Varyings vert(Attributes input){
 
     float4 attenParam = input.color.x; // vertex color atten
     if(_WindOn){
-        worldPos = WindAnimationVertex(worldPos/**/,input.pos,worldNormal,attenParam * _WindAnimParam,_WindDir + _GlobalWindDir);
+        worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam,_WindDir + _GlobalWindDir).xyz;
     }
 
     float4 clipPos = TransformWorldToHClip(worldPos);
@@ -112,7 +112,7 @@ float4 frag(Varyings input):SV_Target{
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     SurfaceInputData data = (SurfaceInputData)0;
-    InitSurfaceInputData(input.uv,data/*inout*/);
+    InitSurfaceInputData(input.uv.xy,data/*inout*/);
     InitInputData(input,data,data.inputData/*inout*/);
 // return fragTest(input,data);
 

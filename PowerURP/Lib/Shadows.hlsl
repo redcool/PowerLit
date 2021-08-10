@@ -107,11 +107,11 @@ float4 SampleShadowMask(float2 shadowMaskUV){
     /**
      unity_ShadowMask,samplerunity_ShadowMask,shadowMaskuv [], unity_LightmapIndex.x]
      */
+     float4 mask = 1;
      if(IsLightmapOn() && IsShadowMaskOn()){
-        float4 mask = SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME,SHADOWMASK_SAMPLER_NAME,shadowMaskUV SHADOWMASK_SAMPLE_EXTRA_ARGS);
-        return mask;
+        mask = SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME,SHADOWMASK_SAMPLER_NAME,shadowMaskUV SHADOWMASK_SAMPLE_EXTRA_ARGS);
      }
-    return 1;
+    return mask;
 }
 
 float4 CalcShadowMask(InputData inputData){

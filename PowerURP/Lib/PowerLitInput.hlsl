@@ -14,74 +14,64 @@
 
 float4 _GlobalWindDir; /*global wind direction controlled by script*/
 
-// #if !defined(UNITY_ANY_INSTANCING_ENABLED)
-// CBUFFER_START(UnityPerMaterial)
-//     float4 _BaseMap_ST;
-//     float4 _Color;
-//     float _NormalScale;
-//     float _Metallic,_Smoothness,_Occlusion;
-//     float _ClipOn;
-//     float _Cutoff;
+#if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
+CBUFFER_START(UnityPerMaterial)
+    float4 _BaseMap_ST;
+    float4 _Color;
+    float _NormalScale;
+    float _Metallic,_Smoothness,_Occlusion;
+    float _ClipOn;
+    float _Cutoff;
 
-//     float _EmissionOn;
-//     float4 _EmissionColor;
+    float _EmissionOn;
+    float4 _EmissionColor;
 
-//     float _AlphaPremultiply;
-//     float _IsReceiveShadow;
-//     float _LightmapSH;
+    float _AlphaPremultiply;
+    float _IsReceiveShadow;
+    float _LightmapSH;
 
-//     float _IBLOn;
-//     float4 _ReflectDirOffset;
+    float _IBLOn;
+    float4 _ReflectDirOffset;
 
-//     float _CustomLightOn;
-//     float4 _CustomLightDir;
-//     float4 _CustomLightColor;
+    float _CustomLightOn;
+    float4 _CustomLightDir;
+    float4 _CustomLightColor;
 
-//     float _WindOn;
-//     float4 _WindAnimParam;
-//     float4 _WindDir;
-// CBUFFER_END
-// #endif
+    float _WindOn;
+    float4 _WindAnimParam;
+    float4 _WindDir;
+CBUFFER_END
+#endif
 
-#if defined(UNITY_ANY_INSTANCING_ENABLED)
+#if defined(INSTANCING_ON)
     UNITY_INSTANCING_BUFFER_START(PropBuffer)
-#else
-    CBUFFER_START(UnityPerMaterial)
-#endif
-// CBUFFER_START(UnityPerMaterial)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_BaseMap_ST)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_Color)
-    UNITY_DEFINE_INSTANCED_PROP(float,_NormalScale)
-    UNITY_DEFINE_INSTANCED_PROP(float,_Metallic)
-    UNITY_DEFINE_INSTANCED_PROP(float,_Smoothness)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_BaseMap_ST)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_Color)
+        UNITY_DEFINE_INSTANCED_PROP(float,_NormalScale)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Metallic)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Smoothness)
 
-    UNITY_DEFINE_INSTANCED_PROP(float,_Occlusion)
-    UNITY_DEFINE_INSTANCED_PROP(float,_ClipOn)
-    UNITY_DEFINE_INSTANCED_PROP(float,_Cutoff)
-    UNITY_DEFINE_INSTANCED_PROP(float,_EmissionOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_EmissionColor)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Occlusion)
+        UNITY_DEFINE_INSTANCED_PROP(float,_ClipOn)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Cutoff)
+        UNITY_DEFINE_INSTANCED_PROP(float,_EmissionOn)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_EmissionColor)
 
-    UNITY_DEFINE_INSTANCED_PROP(float,_AlphaPremultiply)
-    UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadow)
-    UNITY_DEFINE_INSTANCED_PROP(float,_LightmapSH)
-    UNITY_DEFINE_INSTANCED_PROP(float,_IBLOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_ReflectDirOffset)
+        UNITY_DEFINE_INSTANCED_PROP(float,_AlphaPremultiply)
+        UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadow)
+        UNITY_DEFINE_INSTANCED_PROP(float,_LightmapSH)
+        UNITY_DEFINE_INSTANCED_PROP(float,_IBLOn)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_ReflectDirOffset)
 
-    UNITY_DEFINE_INSTANCED_PROP(float,_CustomLightOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightDir)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightColor)
-    UNITY_DEFINE_INSTANCED_PROP(float,_WindOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_WindAnimParam)
+        UNITY_DEFINE_INSTANCED_PROP(float,_CustomLightOn)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightDir)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightColor)
+        UNITY_DEFINE_INSTANCED_PROP(float,_WindOn)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_WindAnimParam)
 
-    UNITY_DEFINE_INSTANCED_PROP(float4,_WindDir)
-// CBUFFER_END
-#if defined(UNITY_ANY_INSTANCING_ENABLED)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_WindDir)
     UNITY_INSTANCING_BUFFER_END(PropBuffer)
-#else
-    CBUFFER_END
-#endif
 
-#if defined(UNITY_ANY_INSTANCING_ENABLED)
     #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_BaseMap_ST)
     #define _Color UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Color)
     #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_NormalScale)
@@ -107,6 +97,55 @@ float4 _GlobalWindDir; /*global wind direction controlled by script*/
     #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindAnimParam)
 
     #define _WindDir UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindDir)
+#endif
+
+// dots instancing
+#if defined(DOTS_INSTANCING_ON)
+UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
+    UNITY_DOTS_INSTANCED_PROP(float4,_BaseMap_ST)
+    UNITY_DOTS_INSTANCED_PROP(float4,_Color)
+    UNITY_DOTS_INSTANCED_PROP(float,_NormalScale)
+    UNITY_DOTS_INSTANCED_PROP(float,_Metallic)
+    UNITY_DOTS_INSTANCED_PROP(float,_Smoothness)
+    UNITY_DOTS_INSTANCED_PROP(float,_Occlusion)
+    UNITY_DOTS_INSTANCED_PROP(float,_ClipOn)
+    UNITY_DOTS_INSTANCED_PROP(float,_Cutoff)
+    UNITY_DOTS_INSTANCED_PROP(float,_EmissionOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_EmissionColor)
+    UNITY_DOTS_INSTANCED_PROP(float,_AlphaPremultiply)
+    UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadow)
+    UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
+
+    UNITY_DOTS_INSTANCED_PROP(float,_IBLOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
+    UNITY_DOTS_INSTANCED_PROP(float,_CustomLightOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightDir)
+    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightColor)
+    UNITY_DOTS_INSTANCED_PROP(Float,_WindOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_WindAnimParam)
+    UNITY_DOTS_INSTANCED_PROP(float4,_WindDir)
+UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
+
+#define _Color UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__Color)
+#define _NormalScale UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__NormalScale)
+#define _Metallic UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Metallic)
+#define _Smoothness UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Smoothness)
+#define _Occlusion UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Occlusion)
+#define _ClipOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ClipOn)
+#define _Cutoff UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Cutoff)
+#define _EmissionOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EmissionOn)
+#define _EmissionColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__EmissionColor)
+#define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__AlphaPremultiply)
+#define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
+#define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
+#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
+#define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ReflectDirOffset)
+#define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightOn)
+#define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightDir)
+#define _CustomLightColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightColor)
+#define _WindOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__WindOn)
+#define _WindAnimParam UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindAnimParam)
+#define _WindDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindDir)
 #endif
 
 TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);

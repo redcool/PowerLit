@@ -22,8 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: PowerLit
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ShaderKeywords: ISRECEIVESHADOW_ON _BAKEEMISSIONON_ON _EMISSIONON_OFF _ISRECEIVESHADOW_ON
-    _ZWRITE_ON
+  m_ShaderKeywords: ISRECEIVESHADOW_ON _ALPHATESTON_ON _BAKEEMISSIONON_ON _EMISSIONON_OFF
+    _ISRECEIVESHADOW_ON _ZWRITE_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -67,11 +67,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaPremultiply: 0
+    - _AlphaTestOn: 1
     - _BakeEmissionOn: 1
     - _ClipOn: 0
     - _CullMode: 2
     - _CustomLightOn: 0
-    - _Cutoff: 0.5
+    - _Cutoff: 0
     - _DstMode: 0
     - _EmissionOn: 0
     - _Glossiness: 0.5
@@ -90,7 +91,7 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _CustomLightColor: {r: 1, g: 1, b: 1, a: 0}
-    - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
+    - _CustomLightDir: {r: 0, g: 1.82, b: 0, a: 0}
     - _EmissionColor: {r: 59.017693, g: 0, b: 0, a: 1}
     - _GIAlbedoColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectDirOffset: {r: -1.79, g: -2.51, b: 0, a: 0}

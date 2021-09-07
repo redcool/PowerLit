@@ -13,6 +13,10 @@ Shader "URP/PowerLit"
         _Metallic("_Metallic",range(0,1)) = 0.5
         _Smoothness("_Smoothness",range(0,1)) = 0.5
         _Occlusion("_Occlusion",range(0,1)) = 0.5
+        [Header(PBRMask Channel)]
+        [Enum(R,0,G,1,B,2)]_MetallicChannel("_MetallicChannel",int) = 0
+        [Enum(R,0,G,1,B,2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1
+        [Enum(R,0,G,1,B,2)]_OcclusionChannel("_OcclusionChannel",int) = 2
 
         [Header(Emission)]
         [ToggleOff]_EmissionOn("_EmissionOn",int) = 0
@@ -139,6 +143,23 @@ box projection
         }
 
         Pass{
+            Name "DepthOnly"
+            Tags{"LightMode"="DepthOnly"}
+            zwrite on
+            colorMask 0
+            cull[_CullMode]
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ DOTS_INSTANCING_ON
+
+            #include "Lib/PowerLitInput.hlsl"
+            #include "Lib/ShadowCasterPass.hlsl"
+            ENDHLSL
+        }
+
+        Pass{
             Name "Meta"
             Tags{"LightMode"="Meta"}
             cull off
@@ -155,5 +176,5 @@ box projection
         }
 
     }
-    CustomEditor "PowerLitShaderGUI"
+    CustomEditor "PowerURP.PowerLitShaderGUI"
 }

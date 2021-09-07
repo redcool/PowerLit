@@ -20,6 +20,7 @@ CBUFFER_START(UnityPerMaterial)
     float4 _Color;
     float _NormalScale;
     float _Metallic,_Smoothness,_Occlusion;
+    int _MetallicChannel,_SmoothnessChannel,_OcclusionChannel;
     float _ClipOn;
     float _Cutoff;
 
@@ -50,25 +51,24 @@ CBUFFER_END
         UNITY_DEFINE_INSTANCED_PROP(float,_NormalScale)
         UNITY_DEFINE_INSTANCED_PROP(float,_Metallic)
         UNITY_DEFINE_INSTANCED_PROP(float,_Smoothness)
-
         UNITY_DEFINE_INSTANCED_PROP(float,_Occlusion)
+        UNITY_DEFINE_INSTANCED_PROP(float,_MetallicChannel)
+        UNITY_DEFINE_INSTANCED_PROP(float,_SmoothnessChannel)
+        UNITY_DEFINE_INSTANCED_PROP(float,_OcclusionChannel)        
         UNITY_DEFINE_INSTANCED_PROP(float,_ClipOn)
         UNITY_DEFINE_INSTANCED_PROP(float,_Cutoff)
         UNITY_DEFINE_INSTANCED_PROP(float,_EmissionOn)
         UNITY_DEFINE_INSTANCED_PROP(float4,_EmissionColor)
-
         UNITY_DEFINE_INSTANCED_PROP(float,_AlphaPremultiply)
         UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadow)
         UNITY_DEFINE_INSTANCED_PROP(float,_LightmapSH)
         UNITY_DEFINE_INSTANCED_PROP(float,_IBLOn)
         UNITY_DEFINE_INSTANCED_PROP(float4,_ReflectDirOffset)
-
         UNITY_DEFINE_INSTANCED_PROP(float,_CustomLightOn)
         UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightDir)
         UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightColor)
         UNITY_DEFINE_INSTANCED_PROP(float,_WindOn)
         UNITY_DEFINE_INSTANCED_PROP(float4,_WindAnimParam)
-
         UNITY_DEFINE_INSTANCED_PROP(float4,_WindDir)
     UNITY_INSTANCING_BUFFER_END(PropBuffer)
 
@@ -77,25 +77,24 @@ CBUFFER_END
     #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_NormalScale)
     #define _Metallic UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Metallic)
     #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Smoothness)
-
     #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Occlusion)
+    #define _MetallicChannel UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_MetallicChannel)
+    #define _SmoothnessChannel UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_SmoothnessChannel)
+    #define _OcclusionChannel UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_OcclusionChannel)    
     #define _ClipOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_ClipOn)
     #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Cutoff)
     #define _EmissionOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EmissionOn)
     #define _EmissionColor UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EmissionColor)
-
     #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_AlphaPremultiply)
     #define _IsReceiveShadow UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IsReceiveShadow)
     #define _LightmapSH UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_LightmapSH)
     #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IBLOn)
     #define _ReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_ReflectDirOffset)
-
     #define _CustomLightOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightOn)
     #define _CustomLightDir UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightDir)
     #define _CustomLightColor UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightColor)
     #define _WindOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindOn)
     #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindAnimParam)
-
     #define _WindDir UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindDir)
 #endif
 
@@ -108,6 +107,10 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float,_Metallic)
     UNITY_DOTS_INSTANCED_PROP(float,_Smoothness)
     UNITY_DOTS_INSTANCED_PROP(float,_Occlusion)
+    UNITY_DOTS_INSTANCED_PROP(float,_MetallicChannel)
+    UNITY_DOTS_INSTANCED_PROP(float,_SmoothnessChannel)
+    UNITY_DOTS_INSTANCED_PROP(float,_OcclusionChannel)
+
     UNITY_DOTS_INSTANCED_PROP(float,_ClipOn)
     UNITY_DOTS_INSTANCED_PROP(float,_Cutoff)
     UNITY_DOTS_INSTANCED_PROP(float,_EmissionOn)
@@ -115,7 +118,6 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float,_AlphaPremultiply)
     UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadow)
     UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
-
     UNITY_DOTS_INSTANCED_PROP(float,_IBLOn)
     UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
     UNITY_DOTS_INSTANCED_PROP(float,_CustomLightOn)
@@ -131,6 +133,9 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #define _Metallic UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Metallic)
 #define _Smoothness UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Smoothness)
 #define _Occlusion UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Occlusion)
+#define _MetallicChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__MetallicChannel)
+#define _SmoothnessChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__SmoothnessChannel)
+#define _OcclusionChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__OcclusionChannel)
 #define _ClipOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ClipOn)
 #define _Cutoff UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Cutoff)
 #define _EmissionOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EmissionOn)
@@ -184,9 +189,9 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,_ClipOn,data.albedo/*out*/,data.alpha/*out*/);
 
     float4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
-    data.metallic = metallicMask.x * _Metallic;
-    data.smoothness = metallicMask.y * _Smoothness;
-    data.occlusion = lerp(1,metallicMask.z,_Occlusion);
+    data.metallic = metallicMask[_MetallicChannel] * _Metallic;
+    data.smoothness = metallicMask[_SmoothnessChannel] * _Smoothness;
+    data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
 
     data.normalTS = CalcNormal(uv,_NormalMap,sampler_NormalMap,_NormalScale);
     data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz,_EmissionOn);

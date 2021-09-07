@@ -1,0 +1,46 @@
+// PowerPBS 中文配置文件
+//Help行,约定 | 为换行字符
+Help=PowerURP,用于标准pbr渲染
+_BaseMap = _BaseMap
+_Color=_Color
+_NormalMap =_NormalMap
+_NormalScale = _NormalScale
+_MetallicMaskMap = _MetallicMaskMap
+_Metallic = _Metallic
+_Smoothness = _Smoothness
+_Occlusion = _Occlusion
+_MetallicChannel=_MetallicChannel
+_SmoothnessChannel=_SmoothnessChannel
+_OcclusionChannel=_OcclusionChannel
+
+_EmissionOn = _EmissionOn
+_EmissionMap = _EmissionMap
+_EmissionColor=_EmissionColor
+_Emission=_Emission
+_BakeEmissionOn = _BakeEmissionOn
+_IsReceiveShadow = _IsReceiveShadow
+_LightmapSH = _LightmapSH
+_IBLOn = _IBLOn
+_IBLCube = _IBLCube
+_EnvIntensity=_EnvIntensity
+_ReflectDirOffset=_ReflectDirOffset
+_CustomLightOn = _CustomLightOn
+_CustomLightDir=_CustomLightDir
+_CustomLightColor=_CustomLightColor
+_ClipOn = _ClipOn
+_Cutoff = _Cutoff
+/**
+    alpha : [srcAlpha][oneMinusSrcAlpha]
+    premultiply : [one][oneMinusSrcAlpha]
+    additive: [srcAlpha][one]
+    multiply : [dstColor][zero]
+*/
+_SrcMode = _SrcMode
+_DstMode = _DstMode
+_AlphaPremultiply = _AlphaPremultiply
+_ZWrite = _ZWrite
+_ZTest = _ZTest
+_CullMode = _CullMode
+_WindOn = _WindOn
+_WindAnimParam=_WindAnimParam
+_WindDir=_WindDir

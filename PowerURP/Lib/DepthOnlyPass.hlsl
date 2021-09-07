@@ -19,6 +19,7 @@ v2f vert(appdata input){
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
     output.pos = TransformObjectToHClip(input.pos);
+    output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
     return output;
 }
 float4 frag(v2f input):SV_Target{

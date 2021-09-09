@@ -16,6 +16,7 @@ namespace PowerUtilities
         public static readonly int _WorldSpaceLightPos0;
         public static readonly int _MainLightShadowmapTexture;
         public static readonly int _ShadowBias;
+        public static readonly int _MainLightShadowOn;
 
         static DrpLightShaderVarables()
         {
@@ -24,6 +25,7 @@ namespace PowerUtilities
             _MainLightShadowmapTexture = Shader.PropertyToID("_MainLightShadowmapTexture");
 
             _ShadowBias = Shader.PropertyToID("unity_LightShadowBias");
+            _MainLightShadowOn = Shader.PropertyToID("_MainLightShadowOn");
         }
 
         public static void SendLight(CommandBuffer cmd, RenderingData renderingData)
@@ -31,6 +33,8 @@ namespace PowerUtilities
             var lightData = renderingData.lightData;
             if (lightData.mainLightIndex < 0)
                 return;
+
+
 
             // light
             var vLight = lightData.visibleLights[lightData.mainLightIndex];
@@ -47,6 +51,9 @@ namespace PowerUtilities
             Vector4 shadowBias = ShadowUtils.GetShadowBias(ref vLight, lightData.mainLightIndex, ref renderingData.shadowData, projMat, shadowResolution);
 
             cmd.SetGlobalVector(_ShadowBias, shadowBias);
+
+            var asset = UniversalRenderPipeline.asset;
+            cmd.SetGlobalFloat(_MainLightShadowOn, asset.supportsMainLightShadows ? 1 : 0);
         }
     }
 

@@ -54,7 +54,7 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     brdfData.perceptualRoughness = 1 - surfaceData.smoothness;
     brdfData.roughness = max(HALF_MIN_SQRT,brdfData.perceptualRoughness * brdfData.perceptualRoughness);
     brdfData.roughness2 = max(brdfData.roughness * brdfData.roughness,HALF_MIN);
-    brdfData.grazingTerm = saturate(surfaceData.smoothness + brdfData.reflectivity); // (smoothness + metallic)
+    brdfData.grazingTerm = saturate( (surfaceData.smoothness + brdfData.reflectivity)) * 0.5; // (smoothness + metallic)
     brdfData.normalizationTerm = brdfData.roughness * 4 + 2; // mct factor
     brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
 

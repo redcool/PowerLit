@@ -80,9 +80,12 @@ Material:
     - _IsReceiveShadow: 1
     - _LightmapSH: 1
     - _Metallic: 0
+    - _MetallicChannel: 0
     - _NormalScale: 1
-    - _Occlusion: 1
-    - _Smoothness: 0.5
+    - _Occlusion: 0
+    - _OcclusionChannel: 2
+    - _Smoothness: 1
+    - _SmoothnessChannel: 1
     - _SrcMode: 1
     - _WindOn: 0
     - _ZTest: 4

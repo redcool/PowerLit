@@ -32,6 +32,8 @@ CBUFFER_START(UnityPerMaterial)
     float _LightmapSH;
 
     float _IBLOn;
+    float _EnvIntensity;
+    float _IBLMaskMainTexA;
     float4 _ReflectDirOffset;
 
     float _CustomLightOn;
@@ -63,6 +65,8 @@ CBUFFER_END
         UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadow)
         UNITY_DEFINE_INSTANCED_PROP(float,_LightmapSH)
         UNITY_DEFINE_INSTANCED_PROP(float,_IBLOn)
+        UNITY_DEFINE_INSTANCED_PROP(float,_EnvIntensity) 
+        UNITY_DEFINE_INSTANCED_PROP(float,_IBLMaskMainTexA) 
         UNITY_DEFINE_INSTANCED_PROP(float4,_ReflectDirOffset)
         UNITY_DEFINE_INSTANCED_PROP(float,_CustomLightOn)
         UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightDir)
@@ -89,6 +93,8 @@ CBUFFER_END
     #define _IsReceiveShadow UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IsReceiveShadow)
     #define _LightmapSH UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_LightmapSH)
     #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IBLOn)
+    #define _EnvIntensity UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EnvIntensity)
+    #define _IBLMaskMainTexA UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IBLMaskMainTexA)
     #define _ReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_ReflectDirOffset)
     #define _CustomLightOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightOn)
     #define _CustomLightDir UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightDir)
@@ -119,6 +125,8 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadow)
     UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
     UNITY_DOTS_INSTANCED_PROP(float,_IBLOn)
+    UNITY_DOTS_INSTANCED_PROP(float,_EnvIntensity)
+    UNITY_DOTS_INSTANCED_PROP(float,_IBLMaskMainTexA)
     UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
     UNITY_DOTS_INSTANCED_PROP(float,_CustomLightOn)
     UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightDir)
@@ -144,6 +152,8 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
 #define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
 #define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
+#define _EnvIntensity UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EnvIntensity)
+#define _IBLMaskMainTexA UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLMaskMainTexA)
 #define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ReflectDirOffset)
 #define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightOn)
 #define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightDir)

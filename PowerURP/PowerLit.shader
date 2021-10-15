@@ -33,6 +33,8 @@ Shader "URP/PowerLit"
         [Header(Custom IBL)]
         [Toggle]_IBLOn("_IBLOn",float) = 0
         [NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
+        _EnvIntensity("_EnvIntensity",float) = 1
+        [Toggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
         _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
 
         [Header(Custom Light)]

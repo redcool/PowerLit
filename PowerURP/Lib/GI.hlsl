@@ -51,19 +51,19 @@ float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perc
     // return _GlossyEnvironmentColor.rgb * occlusion;
 }
 
-float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float occlusion,bool isCustomIBL){
-    if(isCustomIBL){
+float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float occlusion,float customIBLMask){
+    if(_IBLOn){
         reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz);
-        return CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,occlusion);
+        return CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,occlusion) * _EnvIntensity * customIBLMask;
     }else{
         return CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness,occlusion);
     }
 }
 
-float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,bool isCustomIBL){
+float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask){
     float3 reflectDir = reflect(-viewDir,normal);
     float3 indirectDiffuse = bakedGI * occlusion * brdfData.diffuse;
-    float3 indirectSpecular = CalcIBL(reflectDir,brdfData.perceptualRoughness,occlusion,isCustomIBL);
+    float3 indirectSpecular = CalcIBL(reflectDir,brdfData.perceptualRoughness,occlusion,customIBLMask);
 
     float3 fresnel = CalcFresnel(brdfData,normal,viewDir);
     float3 color = indirectDiffuse + indirectSpecular * fresnel;

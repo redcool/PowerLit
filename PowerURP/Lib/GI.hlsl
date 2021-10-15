@@ -54,7 +54,8 @@ float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perc
 float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float occlusion,float customIBLMask){
     if(_IBLOn){
         reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz);
-        return CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,occlusion) * _EnvIntensity * customIBLMask;
+        float3 iblColor = CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,occlusion) * _EnvIntensity;
+        return  lerp(1, iblColor,customIBLMask);
     }else{
         return CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness,occlusion);
     }

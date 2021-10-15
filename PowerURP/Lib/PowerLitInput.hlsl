@@ -40,6 +40,8 @@ CBUFFER_START(UnityPerMaterial)
     float4 _CustomLightDir;
     float4 _CustomLightColor;
 
+    float _FresnelIntensity;
+
     float _WindOn;
     float4 _WindAnimParam;
     float4 _WindDir;

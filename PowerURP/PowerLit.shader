@@ -42,6 +42,9 @@ Shader "URP/PowerLit"
         _CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
         _CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
 
+        [Header(Specular)]
+        _FresnelIntensity("_FresnelIntensity",float) = 1
+
         [Header(Clip)]
         [Toggle]_ClipOn("_ClipOn",float) = 0
         _Cutoff("_Cutoff",range(0,1)) = 0.5

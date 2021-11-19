@@ -22,13 +22,20 @@ namespace PowerURP
 
     public class PowerShaderInspector : ShaderGUI
     {
+        // events
+        public event Action<MaterialProperty, Material> OnDrawProperty;
+        public event Action<Dictionary<string, MaterialProperty>, Material> OnDrawPropertyFinish;
+
+        // properties
         const string SRC_MODE = "_SrcMode", DST_MODE = "_DstMode";
-        public string shaderName = "";
+        public string shaderName = ""; //子类来指定,用于EditorPrefs读写
         public int AlphaTabId = 0;  // preset blend mode 显示在 号tab页
+        public int RenderQueueTabId = 0; // render Queue显示的tab页码
 
         string[] tabNames;
         List<string[]> propNameList = new List<string[]>();
         string materialSelectedId => shaderName + "_SeletectedId";
+        string materialToolbarCount => shaderName + "_ToolbarCount";
 
         int selectedTabId;
         bool showOriginalPage;
@@ -47,6 +54,8 @@ namespace PowerURP
         MaterialProperty[] materialProperties;
         PresetBlendMode presetBlendMode;
         int languageId;
+        int renderQueue = 2000;
+        int toolbarCount = 5;
 
         public PowerShaderInspector()
         {
@@ -103,6 +112,10 @@ namespace PowerURP
         /// </summary>
         private void DrawPageDetail(MaterialEditor materialEditor, Material mat)
         {
+            // content's tab 
+            EditorGUILayout.HelpBox(tabNames[selectedTabId], MessageType.Warning, true);
+
+            // contents
             var propNames = propNameList[selectedTabId];
             foreach (var propName in propNames)
             {
@@ -111,13 +124,26 @@ namespace PowerURP
 
                 var prop = propDict[propName];
                 materialEditor.ShaderProperty(prop, ConfigTool.Text(propNameTextDict, prop.name));
+
+                if (OnDrawProperty != null)
+                    OnDrawProperty(prop, mat);
+            }
+            // blend 
+            if (IsTargetShader(mat))
+            {
+                if (selectedTabId == AlphaTabId)
+                    DrawBlendMode(mat);
+                if (selectedTabId == RenderQueueTabId)
+                {
+                    // render queue, instanced, double sided gi
+                    DrawMaterialProps(mat);
+                }
             }
 
-            if (selectedTabId == AlphaTabId && IsTargetShader(mat))
-            {
-                DrawBlendMode(mat);
-            }
+            if (OnDrawPropertyFinish != null)
+                OnDrawPropertyFinish(propDict, mat);
         }
+
 
         private bool IsTargetShader(Material mat)
         {
@@ -126,10 +152,19 @@ namespace PowerURP
 
         private void DrawPageTabs()
         {
-            //cache selectedId
+            // read from cache
             selectedTabId = EditorPrefs.GetInt(materialSelectedId, selectedTabId);
-            selectedTabId = GUILayout.Toolbar(selectedTabId, tabNamesInConfig);
+            toolbarCount = EditorPrefs.GetInt(materialToolbarCount, tabNamesInConfig.Length);
+
+            // draw 
+            GUILayout.BeginVertical("Box");
+            toolbarCount = EditorGUILayout.IntSlider("ToolbarCount:", toolbarCount, 3, tabNamesInConfig.Length);
+            selectedTabId = GUILayout.SelectionGrid(selectedTabId, tabNamesInConfig, toolbarCount, EditorStyles.miniButton);
+            GUILayout.EndVertical();
+
+            //cache selectedId
             EditorPrefs.SetInt(materialSelectedId, selectedTabId);
+            EditorPrefs.SetInt(materialToolbarCount, toolbarCount);
         }
 
         private void OnInit(Material mat, MaterialProperty[] properties)
@@ -187,6 +222,20 @@ namespace PowerURP
                 mat.SetFloat(SRC_MODE, (int)blendModes[0]);
                 mat.SetFloat(DST_MODE, (int)blendModes[1]);
             }
+        }
+
+        void DrawMaterialProps(Material mat)
+        {
+            GUILayout.BeginVertical();
+            EditorGUILayout.Space(10);
+
+            GUILayout.Label("Material Props", EditorStyles.boldLabel);
+            //mat.renderQueue = EditorGUILayout.IntField(ConfigTool.Text(propNameTextDict, "RenderQueue"), mat.renderQueue);
+            materialEditor.RenderQueueField();
+            materialEditor.EnableInstancingField();
+            materialEditor.DoubleSidedGIField();
+
+            GUILayout.EndVertical();
         }
 
         PresetBlendMode GetPresetBlendMode(BlendMode srcMode, BlendMode dstMode)

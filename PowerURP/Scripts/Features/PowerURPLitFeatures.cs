@@ -89,7 +89,7 @@ namespace PowerUtilities
         public static void SendParams(CommandBuffer cmd, PowerURPLitFeatures.Settings settings,ref RenderingData renderingData)
         {
             var asset = UniversalRenderPipeline.asset;
-            bool mainLightCastShadows = renderingData.shadowData.supportsMainLightShadows;
+            var mainLightCastShadows = renderingData.shadowData.supportsMainLightShadows;
             
 
             cmd.SetGlobalInt(_MainLightShadowCascadeOn, asset.shadowCascadeCount > 1 ? 1 : 0);

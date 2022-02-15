@@ -73,6 +73,9 @@ Shader "URP/PowerLit"
         [Toggle]_WindOn("_WindOn (need vertex color.r)",float) = 0
         _WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
         _WindDir("_WindDir,dir:(xyz),intensity:(w)",vector) = (1,0.1,0,1)
+
+        [Header(Snow)]
+        _SnowIntensity("_SnowIntensity",range(0,1)) = 0
     }
     SubShader
     {

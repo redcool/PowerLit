@@ -117,7 +117,10 @@ float4 frag(Varyings input):SV_Target{
 // return fragTest(input,data);
 
     // float4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
+    data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity);
     float4 color = CalcPBR(data);
+
+
     color.rgb = MixFog(color.rgb,data.inputData.fogCoord);
     // color.a = OutputAlpha(color.a,_SurfaceType)
 

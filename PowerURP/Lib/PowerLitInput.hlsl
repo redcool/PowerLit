@@ -45,6 +45,8 @@ CBUFFER_START(UnityPerMaterial)
     float _WindOn;
     float4 _WindAnimParam;
     float4 _WindDir;
+
+    float _SnowIntensity;
 CBUFFER_END
 #endif
 

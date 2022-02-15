@@ -83,4 +83,13 @@ void SimpleWave(inout float3 worldPos,float3 vertex,float3 vertexColor,float ben
     worldPos.xz += offsetPos;
 }
 
+/**
+    Simple Snow from albedo
+*/
+half3 MixSnow(half3 albedo,half3 snowColor,half intensity){
+    half g = dot(half3(0.2,0.7,0.02),albedo);
+    half rate = smoothstep(0.4,0.2,g*intensity);
+    return lerp(snowColor,albedo,rate);
+}
+
 #endif //NATURE_LIB_HLSL

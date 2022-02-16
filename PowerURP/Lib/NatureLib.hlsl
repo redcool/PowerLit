@@ -2,6 +2,12 @@
 #define NATURE_LIB_HLSL
 #include "NodeLib.cginc"
 
+/**
+    controlled by WeahterControl.cs
+*/
+float4 _GlobalWindDir; /*global wind direction*/
+float _GlobalSnowIntensity; 
+
 float4 SmoothCurve( float4 x ) {
     return x * x *( 3.0 - 2.0 * x );
 }
@@ -53,6 +59,7 @@ inline float4 AnimateVertex(float4 pos, float3 normal, float4 animParams,float4 
 
 float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir){
     // worldPos,normal, attenParam * animParam, windDir
+    windDir.xyz = ( windDir.xyz + _GlobalWindDir.xyz * _GlobalWindDir.w);
     atten_AnimParam *= saturate(vertex.y/10); // local position'y atten
     windDir.xyz = clamp(windDir.xyz,-1,1);
     return AnimateVertex(float4(worldPos,1),normal,atten_AnimParam,windDir);
@@ -86,9 +93,12 @@ void SimpleWave(inout float3 worldPos,float3 vertex,float3 vertexColor,float ben
 /**
     Simple Snow from albedo
 */
-half3 MixSnow(half3 albedo,half3 snowColor,half intensity){
+half3 MixSnow(half3 albedo,half3 snowColor,half intensity,half3 worldNormal){
     half g = dot(half3(0.2,0.7,0.02),albedo);
-    half rate = smoothstep(0.4,0.2,g*intensity);
+    half rate = smoothstep(0.4,0.2,g*intensity * _GlobalSnowIntensity);
+
+    half dirAtten = saturate(dot(worldNormal,_GlobalWindDir.xyz)); // filter by dir
+    rate = max(rate , dirAtten);
     return lerp(snowColor,albedo,rate);
 }
 

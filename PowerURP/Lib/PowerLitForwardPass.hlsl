@@ -53,7 +53,7 @@ Varyings vert(Attributes input){
 
     float4 attenParam = input.color.x; // vertex color atten
     if(_WindOn){
-        worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam,_WindDir + _GlobalWindDir).xyz;
+        worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir).xyz;
     }
 
     float4 clipPos = TransformWorldToHClip(worldPos);
@@ -117,7 +117,7 @@ float4 frag(Varyings input):SV_Target{
 // return fragTest(input,data);
 
     // float4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
-    data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity);
+    data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity,data.inputData.normalWS);
     float4 color = CalcPBR(data);
 
 

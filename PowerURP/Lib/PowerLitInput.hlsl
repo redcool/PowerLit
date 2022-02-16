@@ -11,9 +11,6 @@
 #include "NatureLib.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 
-
-float4 _GlobalWindDir; /*global wind direction controlled by script*/
-
 #if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
 CBUFFER_START(UnityPerMaterial)
     float4 _BaseMap_ST;
@@ -49,7 +46,7 @@ CBUFFER_START(UnityPerMaterial)
     float _SnowIntensity;
 CBUFFER_END
 #endif
-
+/**
 #if defined(INSTANCING_ON)
     UNITY_INSTANCING_BUFFER_START(PropBuffer)
         UNITY_DEFINE_INSTANCED_PROP(float4,_BaseMap_ST)
@@ -107,6 +104,7 @@ CBUFFER_END
     #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindAnimParam)
     #define _WindDir UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindDir)
 #endif
+
 
 // dots instancing
 #if defined(DOTS_INSTANCING_ON)
@@ -166,6 +164,7 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #define _WindAnimParam UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindAnimParam)
 #define _WindDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindDir)
 #endif
+*/
 
 TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
 TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);

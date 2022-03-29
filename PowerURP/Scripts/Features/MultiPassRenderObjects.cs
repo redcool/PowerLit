@@ -5,6 +5,7 @@ using UnityEngine.Scripting.APIUpdating;
 using UnityEngine.Experimental.Rendering.Universal;
 using FilterSettings = UnityEngine.Experimental.Rendering.Universal.RenderObjects.FilterSettings;
 using CustomCameraSettings = UnityEngine.Experimental.Rendering.Universal.RenderObjects.CustomCameraSettings;
+using System;
 
 namespace UnityEngine.Experimental.Rendering.Universal
 {
@@ -21,7 +22,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
             public FilterSettings filterSettings = new FilterSettings();
 
             public Material overrideMaterial = null;
-            //public int overrideMaterialPassIndex = 0;
+            public int overrideMaterialPassIndex = 0;
 
             public bool overrideDepthState = false;
             public CompareFunction depthCompareFunction = CompareFunction.LessEqual;
@@ -30,11 +31,16 @@ namespace UnityEngine.Experimental.Rendering.Universal
             public StencilStateData stencilSettings = new StencilStateData();
 
             public CustomCameraSettings cameraSettings = new CustomCameraSettings();
+
+            [Header("--- MultiPass Options")]
+            public int passCount = 11;
+            public string passName = "FurPass";
         }
 
         public Settings settings = new Settings();
 
-        MultPassRenderObjectsPass renderObjectsPass;
+        //MultPassRenderObjectsPass renderObjectsPass;
+        RenderObjectsPass renderObjectsPass;
 
         public override void Create()
         {
@@ -48,12 +54,13 @@ namespace UnityEngine.Experimental.Rendering.Universal
             if (settings.Event < RenderPassEvent.BeforeRenderingPrepasses)
                 settings.Event = RenderPassEvent.BeforeRenderingPrepasses;
 
-            renderObjectsPass = new MultPassRenderObjectsPass(settings.passTag, settings.Event, filter.PassNames,
+            SetupFilterPassNames(ref filter);
+
+            renderObjectsPass = new RenderObjectsPass(settings.passTag, settings.Event, filter.PassNames,
                 filter.RenderQueueType, filter.LayerMask, settings.cameraSettings);
 
             renderObjectsPass.overrideMaterial = settings.overrideMaterial;
-            //renderObjectsPass.overrideMaterialPassIndex = settings.overrideMaterialPassIndex;
-            
+            renderObjectsPass.overrideMaterialPassIndex = settings.overrideMaterialPassIndex;
 
             if (settings.overrideDepthState)
                 renderObjectsPass.SetDetphState(settings.enableWrite, settings.depthCompareFunction);
@@ -62,6 +69,16 @@ namespace UnityEngine.Experimental.Rendering.Universal
                 renderObjectsPass.SetStencilState(settings.stencilSettings.stencilReference,
                     settings.stencilSettings.stencilCompareFunction, settings.stencilSettings.passOperation,
                     settings.stencilSettings.failOperation, settings.stencilSettings.zFailOperation);
+        }
+
+        private void SetupFilterPassNames(ref FilterSettings filter)
+        {
+            var passNames = new string[settings.passCount];
+            for (int i = 0; i < passNames.Length; i++)
+            {
+                passNames[i] = settings.passName + i;
+            }
+            filter.PassNames = passNames;
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)

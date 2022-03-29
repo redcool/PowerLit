@@ -14,7 +14,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
     public class MultiPassRenderObjects : ScriptableRendererFeature
     {
         [System.Serializable]
-        public class Settings
+        public class RenderObjectsSettings
         {
             public string passTag = "MultiPassRenderObjects";
             public RenderPassEvent Event = RenderPassEvent.AfterRenderingSkybox;
@@ -32,12 +32,12 @@ namespace UnityEngine.Experimental.Rendering.Universal
 
             public CustomCameraSettings cameraSettings = new CustomCameraSettings();
 
-            [Header("--- MultiPass Options")]
+            // MultiPass Options
             public int passCount = 11;
             public string passName = "FurPass";
         }
 
-        public Settings settings = new Settings();
+        public RenderObjectsSettings settings = new RenderObjectsSettings();
 
         //MultPassRenderObjectsPass renderObjectsPass;
         RenderObjectsPass renderObjectsPass;

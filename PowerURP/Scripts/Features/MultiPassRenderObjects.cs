@@ -1,11 +1,7 @@
-using System.Collections.Generic;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
-using UnityEngine.Scripting.APIUpdating;
-using UnityEngine.Experimental.Rendering.Universal;
-using FilterSettings = UnityEngine.Experimental.Rendering.Universal.RenderObjects.FilterSettings;
+using UnityEngine.Rendering.Universal;
 using CustomCameraSettings = UnityEngine.Experimental.Rendering.Universal.RenderObjects.CustomCameraSettings;
-using System;
+using FilterSettings = UnityEngine.Experimental.Rendering.Universal.RenderObjects.FilterSettings;
 
 namespace UnityEngine.Experimental.Rendering.Universal
 {

@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Default
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ShaderKeywords: _CLIPON_ON _EMISSIONON_OFF _ISRECEIVESHADOW_ON _WINDON_ON _ZWRITE_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0

@@ -2,12 +2,12 @@
 #define SHADOWS_HLSL
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 
-float CalcCascadeId(float3 positionWS){
-    float3 fromCenter0 = positionWS - _CascadeShadowSplitSpheres0.xyz;
-    float3 fromCenter1 = positionWS - _CascadeShadowSplitSpheres1.xyz;
-    float3 fromCenter2 = positionWS - _CascadeShadowSplitSpheres2.xyz;
-    float3 fromCenter3 = positionWS - _CascadeShadowSplitSpheres3.xyz;
-    float4 distances2 = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
+half CalcCascadeId(half3 positionWS){
+    half3 fromCenter0 = positionWS - _CascadeShadowSplitSpheres0.xyz;
+    half3 fromCenter1 = positionWS - _CascadeShadowSplitSpheres1.xyz;
+    half3 fromCenter2 = positionWS - _CascadeShadowSplitSpheres2.xyz;
+    half3 fromCenter3 = positionWS - _CascadeShadowSplitSpheres3.xyz;
+    half4 distances2 = half4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
 
     half4 weights = half4(distances2 < _CascadeShadowSplitSphereRadii);
     return 4-dot(weights,1);
@@ -17,16 +17,16 @@ float CalcCascadeId(float3 positionWS){
     Retransform worldPos to shadowCoord when _MainLightShadowCascade is true
     otherwise use vertex shadow coord
 */
-float4 TransformWorldToShadowCoord(float3 worldPos,float4 vertexShadowCoord){
+half4 TransformWorldToShadowCoord(half3 worldPos,half4 vertexShadowCoord){
     if(!_MainLightShadowCascadeOn)
         return vertexShadowCoord;
 
-    float cascadeId = ComputeCascadeIndex(worldPos);
-    float4 shadowCoord = mul(_MainLightWorldToShadow[cascadeId],float4(worldPos,1));
-    return float4(shadowCoord.xyz,cascadeId);
+    half cascadeId = ComputeCascadeIndex(worldPos);
+    half4 shadowCoord = mul(_MainLightWorldToShadow[cascadeId],half4(worldPos,1));
+    return half4(shadowCoord.xyz,cascadeId);
 }
 
-real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData, half4 shadowParams, bool isPerspectiveProjection = true)
+real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), half4 shadowCoord, ShadowSamplingData samplingData, half4 shadowParams, bool isPerspectiveProjection = true)
 {
     // Compiler will optimize this branch away as long as isPerspectiveProjection is known at compile time
     if (isPerspectiveProjection)
@@ -50,36 +50,36 @@ real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
     return BEYOND_SHADOW_FAR(shadowCoord) ? 1.0 : attenuation;
 }
 
-float MainLightRealtimeShadow(float4 shadowCoord,bool isReceiveShadow){
+half MainLightRealtimeShadow(half4 shadowCoord,bool isReceiveShadow){
     if(!isReceiveShadow)
         return 1;
     
     ShadowSamplingData samplingData = GetMainLightShadowSamplingData();
-    float4 params = GetMainLightShadowParams();
+    half4 params = GetMainLightShadowParams();
     return SampleShadowmapRealtime(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,shadowCoord,samplingData,params,false);
 }
 
-float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isMixShadow){
+half MixShadow(half realtimeShadow,half bakedShadow,half shadowFade,bool isMixShadow){
     if(isMixShadow){
         return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);
     }
     return lerp(realtimeShadow,bakedShadow,shadowFade);
 }
 
-half GetShadowFade1(float3 positionWS)
+half GetShadowFade1(half3 positionWS)
 {
-    float3 camToPixel = positionWS - _WorldSpaceCameraPos;
-    float distanceCamToPixel2 = dot(camToPixel, camToPixel);
+    half3 camToPixel = positionWS - _WorldSpaceCameraPos;
+    half distanceCamToPixel2 = dot(camToPixel, camToPixel);
 
     half fade = saturate(distanceCamToPixel2 * _MainLightShadowParams.z + _MainLightShadowParams.w);
     // half fade = saturate(distanceCamToPixel2 * 0.4 + -9);
     return fade * fade;
 }
 
-float MainLightShadow(float4 shadowCoord,float3 worldPos,float4 shadowMask,float4 occlusionProbeChannels,bool isReceiveShadow){
-    float realtimeShadow = MainLightRealtimeShadow(shadowCoord,isReceiveShadow);
+half MainLightShadow(half4 shadowCoord,half3 worldPos,half4 shadowMask,half4 occlusionProbeChannels,bool isReceiveShadow){
+    half realtimeShadow = MainLightRealtimeShadow(shadowCoord,isReceiveShadow);
 
-    float bakedShadow = 1;
+    half bakedShadow = 1;
     bool isShadowMaskOn = IsShadowMaskOn();
     // #if defined(CALCULATE_BAKED_SHADOWS)
     if(isShadowMaskOn){
@@ -87,7 +87,7 @@ float MainLightShadow(float4 shadowCoord,float3 worldPos,float4 shadowMask,float
     }
     // #endif
 
-    float shadowFade = 1;
+    half shadowFade = 1;
     if(isReceiveShadow){
         shadowFade = GetShadowFade1(worldPos);
     }
@@ -103,18 +103,18 @@ float MainLightShadow(float4 shadowCoord,float3 worldPos,float4 shadowMask,float
     return MixShadow(realtimeShadow,bakedShadow,shadowFade,false);
 }
 
-float4 SampleShadowMask(float2 shadowMaskUV){
+half4 SampleShadowMask(half2 shadowMaskUV){
     /**
      unity_ShadowMask,samplerunity_ShadowMask,shadowMaskuv [], unity_LightmapIndex.x]
      */
-     float4 mask = 1;
+     half4 mask = 1;
      if(IsLightmapOn() && IsShadowMaskOn()){
         mask = SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME,SHADOWMASK_SAMPLER_NAME,shadowMaskUV SHADOWMASK_SAMPLE_EXTRA_ARGS);
      }
     return mask;
 }
 
-float4 CalcShadowMask(InputData inputData){
+half4 CalcShadowMask(InputData inputData){
     // #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
     //     half4 shadowMask = inputData.shadowMask;
     // #elif !defined (LIGHTMAP_ON)
@@ -123,7 +123,7 @@ float4 CalcShadowMask(InputData inputData){
     //     half4 shadowMask = half4(1, 1, 1, 1);
     // #endif
 
-    float4 shadowMask = (float4)1;
+    half4 shadowMask = (half4)1;
     if(IsLightmapOn()){
         if(IsShadowMaskOn()){
             shadowMask = inputData.shadowMask;

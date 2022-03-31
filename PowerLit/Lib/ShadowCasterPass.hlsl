@@ -4,26 +4,26 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 
-float3 _LightDirection;
+half3 _LightDirection;
 
 struct Attributes{
-    float4 pos:POSITION;
-    float3 normal:NORMAL;
-    float2 uv:TEXCOORD0;
+    half4 pos:POSITION;
+    half3 normal:NORMAL;
+    half2 uv:TEXCOORD0;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 struct Varyings{
-    float2 uv:TEXCOORD0;
-    float4 pos:SV_POSITION;
+    half2 uv:TEXCOORD0;
+    half4 pos:SV_POSITION;
 };
 
-float4 GetShadowPositionHClip(Attributes input)
+half4 GetShadowPositionHClip(Attributes input)
 {
-    float3 positionWS = TransformObjectToWorld(input.pos.xyz);
-    float3 normalWS = TransformObjectToWorldNormal(input.normal);
+    half3 positionWS = TransformObjectToWorld(input.pos.xyz);
+    half3 normalWS = TransformObjectToWorldNormal(input.normal);
 
-    float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
+    half4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
 
 #if UNITY_REVERSED_Z
     positionCS.z = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
@@ -44,8 +44,8 @@ Varyings vert(Attributes input){
     return output;
 }
 
-float4 frag(Varyings input):SV_Target{
-    float4 mainTex = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
+half4 frag(Varyings input):SV_Target{
+    half4 mainTex = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
     if(_ClipOn)
         clip(mainTex.a - _Cutoff);
     

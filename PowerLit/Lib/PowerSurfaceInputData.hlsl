@@ -9,7 +9,8 @@ struct SurfaceInputData{
     InputData inputData;
     bool isAlphaPremultiply;
     bool isReceiveShadow; // material prop
-    float lightmapSH;
+    half lightmapSH;
+    half lmSaturate;
     // bool hasShadowCascade;
 };
 

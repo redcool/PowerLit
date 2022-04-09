@@ -24,7 +24,7 @@ half3 VertexLighting(half3 worldPos,half3 normal,bool isLightOn){
 ***/
 
 Light GetMainLight(half4 shadowCoord,half3 worldPos,half4 shadowMask,bool isReceiveShadow){
-    Light light;
+    Light light = (Light)0;
     light.direction = _MainLightPosition.xyz;
     light.color = _MainLightColor.rgb;
     light.distanceAttenuation = unity_LightData.z; // unity_LightData.z is 1 when not culled by the culling mask, otherwise 0.
@@ -46,8 +46,10 @@ void OffsetMainLight(inout Light mainLight){
 
 void InitBRDFData(SurfaceInputData surfaceInputData,inout half alpha,out BRDFData brdfData){
     SurfaceData surfaceData = surfaceInputData.surfaceData;
-
     half oneMinusReflectivityMetallic = OneMinusReflectivityMetallic(surfaceData.metallic);
+    
+    brdfData = (BRDFData)0;
+    brdfData.albedo = surfaceData.albedo;
     brdfData.reflectivity = 1 - oneMinusReflectivityMetallic;
     brdfData.diffuse = surfaceData.albedo * oneMinusReflectivityMetallic;
     brdfData.specular = lerp(kDieletricSpec.rgb,surfaceData.albedo,surfaceData.metallic);

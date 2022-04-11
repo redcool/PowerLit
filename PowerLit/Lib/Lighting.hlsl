@@ -49,7 +49,7 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout half alpha,out BRDFDat
     half oneMinusReflectivityMetallic = OneMinusReflectivityMetallic(surfaceData.metallic);
     
     brdfData = (BRDFData)0;
-    brdfData.albedo = surfaceData.albedo;
+    // brdfData.albedo = surfaceData.albedo;
     brdfData.reflectivity = 1 - oneMinusReflectivityMetallic;
     brdfData.diffuse = surfaceData.albedo * oneMinusReflectivityMetallic;
     brdfData.specular = lerp(kDieletricSpec.rgb,surfaceData.albedo,surfaceData.metallic);

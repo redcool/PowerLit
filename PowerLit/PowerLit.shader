@@ -185,5 +185,5 @@ box projection
         }
 
     }
-    CustomEditor "PowerURP.PowerLitShaderGUI"
+    CustomEditor "PowerUtilities.PowerLitShaderGUI"
 }

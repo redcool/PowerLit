@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-namespace PowerURP
+namespace PowerUtilities
 {
     using System;
     using System.Collections;
@@ -13,7 +13,6 @@ namespace PowerURP
         public PowerLitShaderGUI()
         {
             shaderName = "PowerLit";
-            AlphaTabId = 2;
         }
     }
 }

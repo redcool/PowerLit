@@ -39,7 +39,7 @@ namespace PowerUtilities
         WaitForSeconds aSecond = new WaitForSeconds(1);
 
         [Range(0,1)]public float globalSnowIntensity = 1;
-        [Range(0, 1)] public float globalWindIntensity = 1;
+        [Range(0, 100)] public float globalWindIntensity = 1;
 
         // Start is called before the first frame update
         void Start()

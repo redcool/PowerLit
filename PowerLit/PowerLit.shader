@@ -6,7 +6,7 @@ Shader "URP/PowerLit"
         [MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
         [gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
         [Normal]_NormalMap("_NormalMap",2d) ="bump"{}
-        _NormalScale("_NormalScale",float) = 1
+        _NormalScale("_NormalScale",range(0,5)) = 1
 
         [Header(PBRMask)]
         _MetallicMaskMap("_MetallicMaskMap(Metallic(R),Smoothness(G),Occlusion(B))",2d) = "white"{}
@@ -28,7 +28,7 @@ Shader "URP/PowerLit"
         [Toggle]_IsReceiveShadow("_IsReceiveShadow",int) = 1
 
         [Header(GI)]
-        _LightmapSH("_LightmapSH",range(0,1)) = 0.5
+        _LightmapSH("_LightmapSH",range(0,1)) = 0
         _LMSaturate("_LMSaturate",range(0,4)) = 1
         
         [Header(Custom IBL)]

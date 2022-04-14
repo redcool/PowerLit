@@ -59,7 +59,8 @@ inline half4 AnimateVertex(half4 pos, half3 normal, half4 animParams,half4 windD
 
 half4 WindAnimationVertex( half3 worldPos,half3 vertex,half3 normal,half4 atten_AnimParam,half4 windDir){
     // worldPos,normal, attenParam * animParam, windDir
-    windDir.xyz = ( windDir.xyz + _GlobalWindDir.xyz * _GlobalWindDir.w);
+    windDir += _GlobalWindDir;
+
     atten_AnimParam *= saturate(vertex.y/10); // local position'y atten
     windDir.xyz = clamp(windDir.xyz,-1,1);
     return AnimateVertex(half4(worldPos,1),normal,atten_AnimParam,windDir);
@@ -99,7 +100,7 @@ half3 MixSnow(half3 albedo,half3 snowColor,half intensity,half3 worldNormal){
 
     half dirAtten = saturate(dot(worldNormal,_GlobalWindDir.xyz)); // filter by dir
     rate = max(rate , dirAtten);
-    return lerp(snowColor,albedo,rate);
+    return lerp(snowColor,albedo,smoothstep(.2,.8,rate));
 }
 
 #endif //NATURE_LIB_HLSL

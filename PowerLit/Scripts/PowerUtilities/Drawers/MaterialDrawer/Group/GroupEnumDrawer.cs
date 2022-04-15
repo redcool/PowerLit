@@ -11,6 +11,7 @@ namespace PowerUtilities {
     /// <summary>
     /// Material's Enum Attribute
     /// GroupEnum(groupName,keywords,isKeyword)
+    /// : group dont exist , will not indent
     /// 
     /// [GroupEnum(ShadowGroup,A 0 B 1)]_Keys("_Keys",int) = 0
     /// [GroupEnum(ShadowGroup,A 0 B 1,true)]_Keys("_Keys",int) = 0
@@ -21,7 +22,7 @@ namespace PowerUtilities {
         string groupName;
         bool isKeyword;
         Dictionary<string, int> keywordValueDict = new Dictionary<string, int>();
-        public GroupEnumDrawer() : this(MaterialGroupTools.DEFAULT_GROUP_NAME, "","") { }
+        public GroupEnumDrawer() : this("", "","") { }
         public GroupEnumDrawer(string groupName,string enumName):this(groupName,enumName,""){}
         public GroupEnumDrawer(string groupName, string enumName,string keyword)
         {
@@ -93,7 +94,7 @@ namespace PowerUtilities {
             if (!MaterialGroupTools.IsGroupOn(groupName))
                 return;
 
-            EditorGUI.indentLevel++;
+            EditorGUI.indentLevel += MaterialGroupTools.GroupIndentLevel(groupName);
 
             EditorGUI.BeginChangeCheck();
             var index = (int)prop.floatValue;
@@ -101,7 +102,7 @@ namespace PowerUtilities {
             var keys = keywordValueDict.Keys.ToArray();
             index = EditorGUI.Popup(position,label.text, index, keys);
 
-            EditorGUI.indentLevel--;
+            EditorGUI.indentLevel -= MaterialGroupTools.GroupIndentLevel(groupName);
             if (EditorGUI.EndChangeCheck())
             {
                 prop.floatValue = index;

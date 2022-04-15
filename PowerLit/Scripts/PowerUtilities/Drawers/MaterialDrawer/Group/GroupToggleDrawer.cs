@@ -6,6 +6,7 @@ namespace PowerUtilities
 {
     /// <summary>
     /// Material's Toggle in group
+    /// : group dont exist , will not indent
     /// 
     /// [GroupToggle(ShadowGroup,_Ker)]_ReceiveShadow("_ReceiveShadow",int) = 1
     /// </summary>
@@ -13,7 +14,7 @@ namespace PowerUtilities
     {
         string groupName;
         string keyword;
-        public GroupToggleDrawer() : this(MaterialGroupTools.DEFAULT_GROUP_NAME, "") { }
+        public GroupToggleDrawer() : this("", "") { }
         public GroupToggleDrawer(string groupName):this(groupName,""){}
         public GroupToggleDrawer(string groupName, string keyword)
         {
@@ -32,10 +33,10 @@ namespace PowerUtilities
 
 
             EditorGUI.BeginChangeCheck();
-            EditorGUI.indentLevel++;
+            EditorGUI.indentLevel += MaterialGroupTools.GroupIndentLevel(groupName);
             bool isOn = Mathf.Abs(prop.floatValue) > 0.001f;
-            isOn = EditorGUI.Toggle(position, label,isOn);
-            EditorGUI.indentLevel--;
+            isOn = EditorGUI.Toggle(position, label, isOn);
+            EditorGUI.indentLevel -= MaterialGroupTools.GroupIndentLevel(groupName);
 
             if (EditorGUI.EndChangeCheck())
             {

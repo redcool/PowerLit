@@ -17,7 +17,8 @@ namespace PowerUtilities
         const char RANGE_SPLITTER = '_';
         readonly string[] strings_XYZ = new string[] { "X","Y","Z"};
 
-        const float LINE_HEIGHT = 18;
+        float LINE_HEIGHT => MaterialGroupTools.BASE_LINE_HEIGHT;
+
         string[] headers;
         Vector2[] ranges;
         string groupName;
@@ -83,16 +84,21 @@ namespace PowerUtilities
                 editor.DrawDefaultInspector();
 
 
-
             if (ShowUI())
             {
+                var groupLevel = !string.IsNullOrEmpty(groupName) ? 1 : 0;
+                EditorGUI.indentLevel += groupLevel;
                 DrawUI(position, prop, label);
+                EditorGUI.indentLevel -= groupLevel;
             }
 
         }
 
         private void DrawUI(Rect position, MaterialProperty prop, GUIContent label)
         {
+            // restore width
+            EditorGUIUtility.labelWidth = 150;
+
             EditorGUI.BeginChangeCheck();
             var value = prop.vectorValue;
 
@@ -104,10 +110,10 @@ namespace PowerUtilities
             position.y += LINE_HEIGHT;
             position.height -= LINE_HEIGHT;
 
-            if (headers.Length == 4)
-                Draw4Sliders(position, ref value);
-            else if (headers.Length == 2)
+            if (ranges.Length == 1) // draw vector and float
                 DrawVector3Slider1(position, ref value);
+            else // draw 4 float
+                Draw4Sliders(position, ref value);
 
             EditorGUI.indentLevel--;
 
@@ -150,10 +156,6 @@ namespace PowerUtilities
             EditorGUIUtility.labelWidth = itemWidth;
             value[3] = DrawRemapSlider(pos, ranges[0],sliderHeader, value[3]);
         }
-
-        //float Lerp(float a, float b, float t) => a + (b - a) * t;
-
-        //public static float Remap(float min, float max, float t) => t / Mathf.Max(max - min, 0.0001f);
 
         private void Draw4Sliders(Rect position, ref Vector4 value)
         {

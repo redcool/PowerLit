@@ -22,14 +22,13 @@ namespace PowerUtilities
             if(!MaterialGroupTools.IsGroupOn(groupName))
                 return;
 
-            var indentLevel = string.IsNullOrEmpty(groupName) ? 0 : 1;
-            EditorGUI.indentLevel += indentLevel;
+            EditorGUI.indentLevel += MaterialGroupTools.GroupIndentLevel(groupName);
 
             //position.y += 8;
             position = EditorGUI.IndentedRect(position);
             EditorGUI.DropShadowLabel(position, header, EditorStyles.boldLabel);
 
-            EditorGUI.indentLevel -= indentLevel;
+            EditorGUI.indentLevel -= MaterialGroupTools.GroupIndentLevel(groupName);
         }
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {

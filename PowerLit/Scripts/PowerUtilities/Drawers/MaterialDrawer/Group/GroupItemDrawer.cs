@@ -36,12 +36,12 @@ namespace PowerUtilities
 
         public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            if (MaterialGroupTools.IsGroupOn(groupName))
-            {
-                EditorGUI.indentLevel++;
-                editor.DefaultShaderProperty(position, prop, label.text);
-                EditorGUI.indentLevel--;
-            }
+            if (!MaterialGroupTools.IsGroupOn(groupName))
+                return;
+
+            EditorGUI.indentLevel += MaterialGroupTools.GroupIndentLevel(groupName);
+            editor.DefaultShaderProperty(position, prop, label.text);
+            EditorGUI.indentLevel -= MaterialGroupTools.GroupIndentLevel(groupName);
         }
 
     }

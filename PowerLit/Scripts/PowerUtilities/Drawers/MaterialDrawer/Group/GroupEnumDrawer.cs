@@ -16,17 +16,15 @@ namespace PowerUtilities {
     /// [GroupEnum(ShadowGroup,A 0 B 1)]_Keys("_Keys",int) = 0
     /// [GroupEnum(ShadowGroup,A 0 B 1,true)]_Keys("_Keys",int) = 0
     /// </summary>
-    public class GroupEnumDrawer : MaterialPropertyDrawer
+    public class GroupEnumDrawer : BaseGroupItemDrawer
     {
         public const char KEY_VALUE_SPLITTER = ' '; // space char
-        string groupName;
         bool isKeyword;
         Dictionary<string, int> keywordValueDict = new Dictionary<string, int>();
         public GroupEnumDrawer() : this("", "","") { }
         public GroupEnumDrawer(string groupName,string enumName):this(groupName,enumName,""){}
-        public GroupEnumDrawer(string groupName, string enumName,string keyword)
+        public GroupEnumDrawer(string groupName, string enumName,string keyword) : base(groupName)
         {
-            this.groupName = groupName;
             isKeyword = !string.IsNullOrEmpty(keyword);
 
             if (!string.IsNullOrEmpty(enumName))
@@ -82,27 +80,15 @@ namespace PowerUtilities {
             }
         }
 
-        public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+
+        public override void DrawGroupUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
         {
-            if (MaterialGroupTools.IsGroupOn(groupName))
-                return MaterialGroupTools.BASE_LINE_HEIGHT;
-            return -1;
-        }
-
-        public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)
-        {
-            if (!MaterialGroupTools.IsGroupOn(groupName))
-                return;
-
-            EditorGUI.indentLevel += MaterialGroupTools.GroupIndentLevel(groupName);
-
             EditorGUI.BeginChangeCheck();
             var index = (int)prop.floatValue;
 
             var keys = keywordValueDict.Keys.ToArray();
             index = EditorGUI.Popup(position,label.text, index, keys);
 
-            EditorGUI.indentLevel -= MaterialGroupTools.GroupIndentLevel(groupName);
             if (EditorGUI.EndChangeCheck())
             {
                 prop.floatValue = index;
@@ -116,6 +102,7 @@ namespace PowerUtilities {
                 }
             }
         }
+
     }
 }
 #endif

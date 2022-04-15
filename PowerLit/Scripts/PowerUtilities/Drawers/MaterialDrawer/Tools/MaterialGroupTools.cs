@@ -11,6 +11,7 @@ namespace PowerUtilities
     {
         public const string DEFAULT_GROUP_NAME = "_";
         public const float BASE_LINE_HEIGHT = 18;
+        public const float BASE_LABLE_WIDTH = 162.5f;
 
         static Dictionary<string, bool> groupDict = new Dictionary<string, bool>();
         public static Dictionary<string, bool> GroupDict => groupDict;

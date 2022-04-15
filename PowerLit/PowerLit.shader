@@ -70,14 +70,15 @@ Shader "URP/PowerLit"
         [Header(Cull)]
         [Enum(UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
+// [Group(g1)]
         [Header(Wind)]
         [Toggle]_WindOn("_WindOn (need vertex color.r)",float) = 0
-        _WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
-        _WindDir("_WindDir,dir:(xyz),intensity:(w)",vector) = (1,0.1,0,1)
-
+        [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.7)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
+        [GroupVectorSlider(WindDir(xyz) intensity,0_1)]_WindDir("_WindDir,dir:(xyz),intensity:(w)",vector) = (1,0.1,0,1)
+  
         [Header(Snow)]
         _SnowIntensity("_SnowIntensity",range(0,1)) = 0
-    }
+    } 
     SubShader
     {
         Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }

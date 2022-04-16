@@ -10,6 +10,7 @@ namespace PowerUtilities
     public class GroupHeaderDecorator : BaseGroupItemDrawer
     {
         string header;
+        public GroupHeaderDecorator(string header):this("",header) { }
         public GroupHeaderDecorator(string groupName, string header):base(groupName)
         {
             this.header = $"--------{header}--------";

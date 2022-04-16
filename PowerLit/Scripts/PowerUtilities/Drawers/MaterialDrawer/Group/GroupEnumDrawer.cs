@@ -22,6 +22,7 @@ namespace PowerUtilities {
         bool isKeyword;
         Dictionary<string, int> keywordValueDict = new Dictionary<string, int>();
         public GroupEnumDrawer() : this("", "","") { }
+        public GroupEnumDrawer(string enumName ): this("",enumName) { }
         public GroupEnumDrawer(string groupName,string enumName):this(groupName,enumName,""){}
         public GroupEnumDrawer(string groupName, string enumName,string keyword) : base(groupName)
         {

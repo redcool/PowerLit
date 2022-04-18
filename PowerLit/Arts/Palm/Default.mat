@@ -129,7 +129,7 @@ Material:
     - _Smoothness: 0
     - _SmoothnessChannel: 1
     - _SmoothnessTextureChannel: 0
-    - _SnowIntensity: 1
+    - _SnowIntensity: 0.398
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcMode: 1
@@ -147,8 +147,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _WindAnimParam: {r: 0, g: 0, b: 0, a: 0.05}
-    - _WindDir: {r: 4.1, g: 0.1, b: 0, a: 1}
+    - _WindAnimParam: {r: 0.124000005, g: 0.284, b: 0, a: 0.2023}
+    - _WindDir: {r: 7.24, g: 3.78, b: -1.08, a: 0.343}
   m_BuildTextureStacks: []
 --- !u!114 &2193394110321392520
 MonoBehaviour:

@@ -2,44 +2,45 @@ Shader "URP/PowerLit"
 {
     Properties
     {
-        [Header(MainTexture)]
-        [MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
-        [gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
-        [Normal]_NormalMap("_NormalMap",2d) ="bump"{}
-        _NormalScale("_NormalScale",range(0,5)) = 1
+        [Group(Main)]
+        [GroupHeader(Main,MainTexture)]
+        [GroupItem(Main)][MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
+        [GroupItem(Main)][gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
+        [GroupItem(Main)][Normal]_NormalMap("_NormalMap",2d) ="bump"{}
+        [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
 
-        [Header(PBRMask)]
-        _MetallicMaskMap("_MetallicMaskMap(Metallic(R),Smoothness(G),Occlusion(B))",2d) = "white"{}
-        _Metallic("_Metallic",range(0,1)) = 0.5
-        _Smoothness("_Smoothness",range(0,1)) = 0.5
-        _Occlusion("_Occlusion",range(0,1)) = 0.5
-        [Header(PBRMask Channel)]
-        [Enum(R,0,G,1,B,2)]_MetallicChannel("_MetallicChannel",int) = 0
-        [Enum(R,0,G,1,B,2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1
-        [Enum(R,0,G,1,B,2)]_OcclusionChannel("_OcclusionChannel",int) = 2
+        [GroupHeader(Main,PBRMask)]
+        [GroupItem(Main)]_MetallicMaskMap("_MetallicMaskMap(Metallic(R),Smoothness(G),Occlusion(B))",2d) = "white"{}
+        [GroupItem(Main)]_Metallic("_Metallic",range(0,1)) = 0.5
+        [GroupItem(Main)]_Smoothness("_Smoothness",range(0,1)) = 0.5
+        [GroupItem(Main)]_Occlusion("_Occlusion",range(0,1)) = 0.5
+        [GroupHeader(Main,PBRMask Channel)]
+        [GroupEnum(Main,R 0 G 1 B 2)]_MetallicChannel("_MetallicChannel",int) = 0
+        [GroupEnum(Main,R 0 G 1 B 2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1
+        [GroupEnum(Main,R 0 G 1 B 2)]_OcclusionChannel("_OcclusionChannel",int) = 2
 
         [Header(Emission)]
         [ToggleOff]_EmissionOn("_EmissionOn",int) = 0
         _EmissionMap("_EmissionMap",2d) = "white"{}
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
-        [Toggle]_BakeEmissionOn("_BakeEmissionOn",int) = 0
+        [GroupToggle]_BakeEmissionOn("_BakeEmissionOn",int) = 0
 
         [Header(Shadow)]
-        [Toggle]_IsReceiveShadow("_IsReceiveShadow",int) = 1
+        [GroupToggle]_IsReceiveShadow("_IsReceiveShadow",int) = 1
 
         [Header(GI)]
         _LightmapSH("_LightmapSH",range(0,1)) = 0
         _LMSaturate("_LMSaturate",range(0,4)) = 1
         
         [Header(Custom IBL)]
-        [Toggle]_IBLOn("_IBLOn",float) = 0
+        [GroupToggle]_IBLOn("_IBLOn",float) = 0
         [NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
         _EnvIntensity("_EnvIntensity",float) = 1
-        [Toggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
+        [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
         _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
 
         [Header(Custom Light)]
-        [Toggle]_CustomLightOn("_CustomLightOn",float) = 0
+        [GroupToggle]_CustomLightOn("_CustomLightOn",float) = 0
         _CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
         _CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
 
@@ -47,7 +48,7 @@ Shader "URP/PowerLit"
         _FresnelIntensity("_FresnelIntensity",float) = 1
 
         [Header(Clip)]
-        [Toggle]_ClipOn("_ClipOn",float) = 0
+        [GroupToggle]_ClipOn("_ClipOn",float) = 0
         _Cutoff("_Cutoff",range(0,1)) = 0.5
 
 /**
@@ -61,10 +62,10 @@ Shader "URP/PowerLit"
         [Enum(UnityEngine.Rendering.BlendMode)]_DstMode("_DstMode",int) = 0
 
         [Header(Alpha Premulti)]
-        [Toggle]_AlphaPremultiply("_AlphaPremultiply",int) = 0
+        [GroupToggle]_AlphaPremultiply("_AlphaPremultiply",int) = 0
 
         [Header(Depth)]
-        [Toggle]_ZWrite("_ZWrite",int) = 1
+        [GroupToggle]_ZWrite("_ZWrite",int) = 1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("_ZTest",int) = 4
 
         [Header(Cull)]
@@ -72,12 +73,15 @@ Shader "URP/PowerLit"
 
 // [Group(g1)]
         [Header(Wind)]
-        [Toggle]_WindOn("_WindOn (need vertex color.r)",float) = 0
+        [GroupToggle]_WindOn("_WindOn (need vertex color.r)",float) = 0
         [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.7)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
         [GroupVectorSlider(WindDir(xyz) intensity,0_1)]_WindDir("_WindDir,dir:(xyz),intensity:(w)",vector) = (1,0.1,0,1)
   
         [Header(Snow)]
         _SnowIntensity("_SnowIntensity",range(0,1)) = 0
+
+        [Header(Fog)]
+        [GroupToggle]_SphereFogOn("_SphereFogOn",int) = 0
     } 
     SubShader
     {

@@ -1,7 +1,7 @@
 // PowerVFXLayout, when edit this file need reselect material
 
 // Tabs
-tabNames =  Settings, Main,Alpha,Env,Emission,Wind,Snow
+tabNames =  Settings, Main,Alpha,Env,Emission,Wind,Snow,Fog
 
 // Tab's contents
 Settings =_ZWrite,_ZTest,_CullMode,_IsReceiveShadow
@@ -12,3 +12,4 @@ Env=_CustomLightOn,_CustomLightDir,_CustomLightColor,_IBLOn,_IBLCube,_EnvIntensi
 Emission=_EmissionOn,_EmissionMap,_EmissionColor,_Emission,_BakeEmissionOn
 Wind = _WindOn,_WindAnimParam,_WindDir
 Snow = _SnowIntensity
+Fog = _SphereFogOn

@@ -3,6 +3,7 @@
 
 #include "PowerLitInput.hlsl"
 #include "Lighting.hlsl"
+#include "FogLib.hlsl"
 
 struct Attributes{
     half4 pos:POSITION;
@@ -25,12 +26,11 @@ struct Varyings{
     half4 shadowCoord:TEXCOORD6;
 
     half4 color:COLOR;
+    half2 fogCoord:COLOR1;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
-
-
 
 Varyings vert(Attributes input){
     Varyings output = (Varyings)0;
@@ -62,6 +62,8 @@ Varyings vert(Attributes input){
     half3 vertexLight = VertexLighting(worldPos,worldNormal,IsAdditionalLightVertex());
     output.vertexLightAndFogFactor = half4(vertexLight,fogFactor);
 
+    if(_SphereFogOn)
+        output.fogCoord = CalcFogFactor(worldPos);
 
     output.pos = clipPos;
     output.shadowCoord = TransformWorldToShadowCoord(worldPos);
@@ -120,8 +122,11 @@ half4 frag(Varyings input):SV_Target{
     data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity,data.inputData.normalWS);
     half4 color = CalcPBR(data);
 
-
-    color.rgb = MixFog(color.rgb,data.inputData.fogCoord);
+    if(_SphereFogOn){
+        BlendFogSphere(input.fogCoord,true,color.rgb /**/);
+    }else{
+        color.rgb = MixFog(color.rgb,data.inputData.fogCoord);
+    }
     // color.a = OutputAlpha(color.a,_SurfaceType)
 
     return color;

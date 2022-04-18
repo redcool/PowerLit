@@ -10,6 +10,7 @@
 #include "PowerSurfaceInputData.hlsl"
 #include "NatureLib.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+#include "PowerLitCommon.hlsl"
 
 #if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
 CBUFFER_START(UnityPerMaterial)
@@ -46,6 +47,7 @@ CBUFFER_START(UnityPerMaterial)
     half4 _WindDir;
 
     half _SnowIntensity;
+    half _SphereFogOn;
 CBUFFER_END
 #endif
 /**

@@ -48,13 +48,22 @@ Material:
     - _Cutoff: 0.5
     - _DstMode: 0
     - _EmissionOn: 0
+    - _EnvIntensity: 1
+    - _FresnelIntensity: 1
+    - _IBLMaskMainTexA: 0
     - _IBLOn: 0
     - _IsReceiveShadow: 1
+    - _LMSaturate: 1
     - _LightmapSH: 0.5
     - _Metallic: 0.5
+    - _MetallicChannel: 0
     - _NormalScale: 1
     - _Occlusion: 0.5
-    - _Smoothness: 0.5
+    - _OcclusionChannel: 2
+    - _Smoothness: 1
+    - _SmoothnessChannel: 1
+    - _SnowIntensity: 0
+    - _SphereFogOn: 0
     - _SrcMode: 1
     - _WindOn: 0
     - _ZTest: 4

@@ -55,6 +55,28 @@ half3 CalcIBL(half3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),half percept
     // return _GlossyEnvironmentColor.rgb * occlusion;
 }
 
+
+half3 BoxProjectedCubemapDirection(half3 reflectionWS, float3 positionWS, float4 cubemapPositionWS, float4 boxMin, float4 boxMax)
+{
+    // Is this probe using box projection?
+    if (cubemapPositionWS.w > 0.0f)
+    {
+        float3 boxMinMax = (reflectionWS > 0.0f) ? boxMax.xyz : boxMin.xyz;
+        half3 rbMinMax = half3(boxMinMax - positionWS) / reflectionWS;
+
+        half fa = half(min(min(rbMinMax.x, rbMinMax.y), rbMinMax.z));
+
+        half3 worldPos = half3(positionWS - cubemapPositionWS.xyz);
+
+        half3 result = worldPos + reflectionWS * fa;
+        return result;
+    }
+    else
+    {
+        return reflectionWS;
+    }
+}
+
 half3 CalcIBL(half3 reflectDir,half perceptualRoughness,half occlusion,half customIBLMask){
     if(_IBLOn){
         reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz);
@@ -65,9 +87,11 @@ half3 CalcIBL(half3 reflectDir,half perceptualRoughness,half occlusion,half cust
     }
 }
 
-half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 viewDir,half customIBLMask){
+half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 viewDir,half customIBLMask,half3 worldPos){
     half3 reflectDir = reflect(-viewDir,normal);
     half3 indirectDiffuse = bakedGI * occlusion * brdfData.diffuse;
+
+    reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
     half3 indirectSpecular = CalcIBL(reflectDir,brdfData.perceptualRoughness,occlusion,customIBLMask);
 
     half3 fresnel = CalcFresnel(brdfData,normal,viewDir);

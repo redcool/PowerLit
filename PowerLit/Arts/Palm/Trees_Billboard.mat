@@ -106,24 +106,33 @@ Material:
     - _DstBlend: 10
     - _DstMode: 0
     - _EmissionOn: 0
+    - _EnvIntensity: 1
     - _EnvironmentReflections: 1
+    - _FresnelIntensity: 1
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _IBLMaskMainTexA: 0
     - _IBLOn: 0
     - _IsReceiveShadow: 1
+    - _LMSaturate: 1
     - _LightmapSH: 0.5
     - _Metallic: 0
+    - _MetallicChannel: 0
     - _Mode: 3
     - _NormalScale: 1
     - _Occlusion: 0.5
+    - _OcclusionChannel: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
+    - _SmoothnessChannel: 1
     - _SmoothnessTextureChannel: 0
+    - _SnowIntensity: 0
     - _SpecularHighlights: 1
+    - _SphereFogOn: 0
     - _SrcBlend: 5
     - _SrcMode: 1
     - _Surface: 1

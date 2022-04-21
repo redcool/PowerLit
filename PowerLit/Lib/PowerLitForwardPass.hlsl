@@ -114,7 +114,8 @@ half4 frag(Varyings input):SV_Target{
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     SurfaceInputData data = (SurfaceInputData)0;
-    InitSurfaceInputData(input.uv.xy,data/*inout*/);
+    InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
+
     InitInputData(input,data,data.inputData/*inout*/);
 // return fragTest(input,data);
 

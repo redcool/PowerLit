@@ -31,6 +31,8 @@ Shader "URP/PowerLit"
         [Header(GI)]
         _LightmapSH("_LightmapSH",range(0,1)) = 0
         _LMSaturate("_LMSaturate",range(0,4)) = 1
+        [Header(PlanarReflection)]
+        [GroupToggle]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
         
         [Header(Custom IBL)]
         [GroupToggle]_IBLOn("_IBLOn",float) = 0

@@ -48,6 +48,7 @@ CBUFFER_START(UnityPerMaterial)
 
     half _SnowIntensity;
     half _SphereFogOn;
+    half _PlanarReflectionOn;
 CBUFFER_END
 
 float4 unity_SpecCube0_BoxMax;          // w contains the blend distance
@@ -184,6 +185,7 @@ TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
 TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
 TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
+TEXTURE2D(_ReflectionTex);SAMPLER(sampler_ReflectionTex); // planer reflection camera, use screenUV
 
 
 void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),half2 uv,half4 color,half cutoff,bool isClipOn,out half3 albedo,out half alpha ){
@@ -225,12 +227,16 @@ void InitSurfaceData(half2 uv,inout SurfaceData data){
     data.clearCoatSmoothness =1;
 }
 
-void InitSurfaceInputData(half2 uv,inout SurfaceInputData data){
+void InitSurfaceInputData(half2 uv,half4 clipPos,inout SurfaceInputData data){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
     data.isAlphaPremultiply = _AlphaPremultiply;
     data.isReceiveShadow = _IsReceiveShadow && _MainLightShadowOn;
     data.lightmapSH = _LightmapSH;
     data.lmSaturate = _LMSaturate;
+
+    
+    data.screenUV = clipPos.xy/_ScreenParams.xy;
+    data.screenUV.x = 1- data.screenUV.x;
 }
 
 #endif //POWER_LIT_INPUT_HLSL

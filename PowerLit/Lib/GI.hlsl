@@ -87,12 +87,21 @@ half3 CalcIBL(half3 reflectDir,half perceptualRoughness,half occlusion,half cust
     }
 }
 
-half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 viewDir,half customIBLMask,half3 worldPos){
-    half3 reflectDir = reflect(-viewDir,normal);
+half3 CalcPlanerReflection(half2 uv){
+    return SAMPLE_TEXTURE2D(_ReflectionTex,sampler_ReflectionTex,uv);
+}
+
+half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 viewDir,half customIBLMask,half3 worldPos,half2 screenUV){
     half3 indirectDiffuse = bakedGI * occlusion * brdfData.diffuse;
 
-    reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
-    half3 indirectSpecular = CalcIBL(reflectDir,brdfData.perceptualRoughness,occlusion,customIBLMask);
+    half3 indirectSpecular = 0;
+    if(_PlanarReflectionOn){
+        indirectSpecular = CalcPlanerReflection(screenUV);
+    }else{
+        half3 reflectDir = reflect(-viewDir,normal);
+        reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
+        indirectSpecular = CalcIBL(reflectDir,brdfData.perceptualRoughness,occlusion,customIBLMask);
+    }
 
     half3 fresnel = CalcFresnel(brdfData,normal,viewDir);
     half3 color = indirectDiffuse + indirectSpecular * fresnel;

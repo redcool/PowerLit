@@ -20,15 +20,59 @@ Shader "Hidden/PowerFeature/SSAO"
         return (1 - isOrtho * z) / (isPers * z + _ZBufferParams.y);
     }
 
+    half SampleDepth(half2 screenUV){
+        return LinearizeDepth(SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x);
+    }
 
-    half AO(half2 screenUV,int samples,half intensity){
+    // Check if the camera is perspective.
+    // (returns 1.0 when orthographic)
+    half CheckPerspective(half x){
+        return lerp(x,1, unity_OrthoParams.w);
+    }
+
+    half3 ReconstructViewPos(half2 uv,half depth,half2 p11_22,half2 p13_23){
+        return half3( ((uv*2-1) - p13_23)/p11_22 * CheckPerspective(depth),depth);
+    }
+
+    half2 CosSin(half a){
+        half s,c;
+        sincos(a,s,c);
+        return half2(c,s);
+    }
+
+    half N21(half2 uv){
+        return frac(sin(dot(half2(12.789,78.234),uv)) * 43567.345);
+    }
+
+    // Interleaved gradient function from Jimenez 2014 http://goo.gl/eomGso
+    half GradientNoise(half2 uv){
+        uv = floor(uv * _ScreenParams.xy);
+        half f = dot(half2(0.06711056,0.00583715),uv);
+        return frac(52.9829189f * frac(f));
+    }
+
+    half3 PickSamplePoint(half2 uv,half index){
+        #if defined(FIX_SAMPLING_PATTERN)
+            
+        #endif
+        return 0;
+    }
+
+    half AO(half2 uv,int samples,half intensity){
         half3x3 proj = (half3x3)unity_CameraProjection;
         half2 p11_22 = half2(proj._11,proj._22);
-        half2 p13_31 = half2(proj._13,proj._31);
+        half2 p13_23 = half2(proj._13,proj._23);
 
-        half depth = LinearizeDepth(SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x);
-        
+        half depth = SampleDepth(uv);
+        half3 vpos_o = ReconstructViewPos(uv,depth,p11_22,p13_23);
+        half3 norm_o = normalize(cross(ddy(vpos_o),ddx(vpos_o)));
 
+        half ao = 0;
+        for(int s=0;s<samples;s++){
+            half3 v_s1 = PickSamplePoint(uv,s);
+
+        }
+return GradientNoise(uv);
         return depth;
     }
 

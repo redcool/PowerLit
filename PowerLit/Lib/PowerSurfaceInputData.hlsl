@@ -11,6 +11,7 @@ struct SurfaceInputData{
     bool isReceiveShadow; // material prop
     half lightmapSH;
     half lmSaturate;
+    half2 screenUV;
     // bool hasShadowCascade;
 };
 

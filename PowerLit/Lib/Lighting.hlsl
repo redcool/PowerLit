@@ -121,7 +121,7 @@ half4 CalcPBR(SurfaceInputData data){
     MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
     
     half customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
-    half3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS);
+    half3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
     color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     color += surfaceData.emission;
 

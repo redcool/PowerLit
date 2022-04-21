@@ -5,15 +5,18 @@
     using System.Collections.Generic;
     using UnityEngine;
 
-    [ExecuteAlways]
+    //[ExecuteAlways]
     public class PlanarReflectionManager : MonoBehaviour
     {
         public string reflectionTexture = "_ReflectionTex";
         public float planeY;
         public LayerMask layers = -1;
 
+        [Header("Main Camera")]
+        public Camera mainCam;
+        public bool autoGetMainCam = true;
+
         Camera reflectionCam;
-        Camera mainCam;
 
         RenderTexture reflectionRT;
 
@@ -24,7 +27,17 @@
         void Start()
         {
             reflectionCam = CreateCamera("Reflection Camera");
-            mainCam = Camera.main;
+            if (autoGetMainCam)
+            {
+                mainCam = Camera.main;
+            }
+
+            if (!mainCam)
+            {
+                enabled = false;
+                return;
+            }
+
             reflectionRT = new RenderTexture(mainCam.pixelWidth, mainCam.pixelHeight, 16);
 
 #if USE_PLANE_TRANSFORM

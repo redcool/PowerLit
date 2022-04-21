@@ -3,11 +3,15 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+
+        _ControlMap("_ControlMap(R:blend [mainTex,reflectionTex])",2d) = "white"{}
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
         LOD 100
+        
+        blend srcAlpha oneMinusSrcAlpha
 
         Pass
         {
@@ -36,6 +40,9 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
+            sampler2D _ControlMap;
+            float4 _ControlMap_ST;
+
             sampler2D _ReflectionTex;
 
             v2f vert (appdata v)
@@ -51,10 +58,14 @@
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float4 reflectionTex = tex2Dproj(_ReflectionTex,i.screenPos);
-                return reflectionTex;
+                float4 mainTex = tex2D(_MainTex,i.uv);
+                float4 controlMap = tex2D(_ControlMap,TRANSFORM_TEX(i.uv,_ControlMap));
+
+                float3 reflectionTex = tex2Dproj(_ReflectionTex,i.screenPos);
+                mainTex.xyz = lerp(mainTex.xyz,reflectionTex,controlMap.x);
+                return mainTex;
             }
             ENDCG
         }

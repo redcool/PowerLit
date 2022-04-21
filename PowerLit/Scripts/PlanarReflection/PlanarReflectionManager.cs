@@ -25,7 +25,7 @@
         {
             reflectionCam = CreateCamera("Reflection Camera");
             mainCam = Camera.main;
-            reflectionRT = new RenderTexture(Screen.width, Screen.height, 24);
+            reflectionRT = new RenderTexture(mainCam.pixelWidth, mainCam.pixelHeight, 16);
 
 #if USE_PLANE_TRANSFORM
         if (!reflectionPlane)
@@ -36,6 +36,12 @@
 
         private void Update()
         {
+#if UNITY_EDITOR
+            if (!reflectionCam)
+            {
+                Start();
+            }
+#endif
             RenderReflection(planeY);
             SendToShader();
         }

@@ -16,6 +16,8 @@
 CBUFFER_START(UnityPerMaterial)
     half4 _BaseMap_ST;
     half4 _Color;
+
+    half4 _NormalMap_ST;
     half _NormalScale;
     half _Metallic,_Smoothness,_Occlusion;
     int _MetallicChannel,_SmoothnessChannel,_OcclusionChannel;
@@ -220,7 +222,7 @@ void InitSurfaceData(half2 uv,inout SurfaceData data){
     data.smoothness = metallicMask[_SmoothnessChannel] * _Smoothness;
     data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
 
-    data.normalTS = CalcNormal(uv,_NormalMap,sampler_NormalMap,_NormalScale);
+    data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
     data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz,_EmissionOn);
     data.specular = (half3)0;
     data.clearCoatMask = 0;

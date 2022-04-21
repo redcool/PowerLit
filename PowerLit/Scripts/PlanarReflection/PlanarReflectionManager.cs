@@ -1,51 +1,54 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class PlanarReflectionManager : MonoBehaviour
+﻿namespace PowerUtilities
 {
-    public string reflectionTexture = "_ReflectionTex";
-    public float planeY;
-    public LayerMask layers = -1;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
 
-    Camera reflectionCam;
-    Camera mainCam;
+    [ExecuteAlways]
+    public class PlanarReflectionManager : MonoBehaviour
+    {
+        public string reflectionTexture = "_ReflectionTex";
+        public float planeY;
+        public LayerMask layers = -1;
 
-    RenderTexture reflectionRT;
+        Camera reflectionCam;
+        Camera mainCam;
+
+        RenderTexture reflectionRT;
 
 #if USE_PLANE_TRANSFORM
     public Transform reflectionPlane;
 #endif
-    // Start is called before the first frame update
-    void Start()
-    {
-        reflectionCam = CreateCamera("Reflection Camera");
-        mainCam = Camera.main;
-        reflectionRT = new RenderTexture(Screen.width, Screen.height, 24);
+        // Start is called before the first frame update
+        void Start()
+        {
+            reflectionCam = CreateCamera("Reflection Camera");
+            mainCam = Camera.main;
+            reflectionRT = new RenderTexture(Screen.width, Screen.height, 24);
 
 #if USE_PLANE_TRANSFORM
         if (!reflectionPlane)
             enabled = false;
 #endif
 
-    }
+        }
 
-    private void Update()
-    {
-        RenderReflection(planeY);
-        SendToShader();
-    }
+        private void Update()
+        {
+            RenderReflection(planeY);
+            SendToShader();
+        }
 
-    private void OnDestroy()
-    {
-        Destroy(reflectionRT);
-    }
+        private void OnDestroy()
+        {
+            Destroy(reflectionRT);
+        }
 
-    private void SendToShader()
-    {
-        Shader.SetGlobalTexture(reflectionTexture, reflectionRT);
-    }
+        private void SendToShader()
+        {
+            Shader.SetGlobalTexture(reflectionTexture, reflectionRT);
+        }
 #if USE_PLANE_TRANSFORM
     private void RenderReflection1()
     {
@@ -78,34 +81,35 @@ public class PlanarReflectionManager : MonoBehaviour
     }
 #endif
 
-    
-    private void RenderReflection(float planeY)
-    {
-        reflectionCam.CopyFrom(mainCam);
-        reflectionCam.targetTexture = reflectionRT;
-        reflectionCam.cullingMask = layers;
 
-        var camForward = mainCam.transform.forward;
-        var camUp = mainCam.transform.up;
-        var camPos = mainCam.transform.position;
+        private void RenderReflection(float planeY)
+        {
+            reflectionCam.CopyFrom(mainCam);
+            reflectionCam.targetTexture = reflectionRT;
+            reflectionCam.cullingMask = layers;
 
-        camForward.y *= -1;
-        camUp.y *= -1;
-        camPos.y *= -1;
+            var camForward = mainCam.transform.forward;
+            var camUp = mainCam.transform.up;
+            var camPos = mainCam.transform.position;
 
-        camPos.y += planeY;
+            camForward.y *= -1;
+            camUp.y *= -1;
+            camPos.y *= -1;
 
-        reflectionCam.transform.position = camPos;
-        reflectionCam.transform.LookAt(camPos + camForward, camUp);
+            camPos.y += planeY;
 
-        reflectionCam.Render();
-    }
+            reflectionCam.transform.position = camPos;
+            reflectionCam.transform.LookAt(camPos + camForward, camUp);
 
-    Camera CreateCamera(string cameraName)
-    {
-        var camGo = new GameObject(cameraName);
-        var cam = camGo.AddComponent<Camera>();
-        cam.enabled = false;
-        return cam;
+            reflectionCam.Render();
+        }
+
+        Camera CreateCamera(string cameraName)
+        {
+            var camGo = new GameObject(cameraName);
+            var cam = camGo.AddComponent<Camera>();
+            cam.enabled = false;
+            return cam;
+        }
     }
 }

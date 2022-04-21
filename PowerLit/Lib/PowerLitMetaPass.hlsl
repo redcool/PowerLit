@@ -79,7 +79,7 @@ Varyings vert(Atributes input){
 
 half4 frag(Varyings input):SV_Target{
     SurfaceInputData surfaceInputData = (SurfaceInputData)0;
-    InitSurfaceInputData(input.uv,surfaceInputData/**/);
+    InitSurfaceInputData(input.uv,input.pos,surfaceInputData/**/);
 
     BRDFData brdfData = (BRDFData)0;
     SurfaceData surfaceData = surfaceInputData.surfaceData;

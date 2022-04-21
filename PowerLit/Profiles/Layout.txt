@@ -4,9 +4,9 @@
 tabNames =  Settings, Main,Alpha,Env,Emission,Wind,Snow,Fog
 
 // Tab's contents
-Settings =_ZWrite,_ZTest,_CullMode,_IsReceiveShadow
+Settings =_ZWrite,_ZTest,_CullMode,_IsReceiveShadow,_RenderQueue
 Main = _BaseMap,_Color,_NormalMap,_NormalScale,_MetallicMaskMap,_Metallic,_Smoothness,_Occlusion,_MetallicChannel,_SmoothnessChannel,_OcclusionChannel
-Alpha=_ClipOn,_Cutoff,_AlphaPremultiply
+Alpha=_ClipOn,_Cutoff,_AlphaPremultiply,_PresetBlendMode
 Parallal=
 Env=_CustomLightOn,_CustomLightDir,_CustomLightColor,_IBLOn,_IBLCube,_EnvIntensity,_IBLMaskMainTexA,_ReflectDirOffset,_FresnelIntensity,_LightmapSH,_LMSaturate
 Emission=_EmissionOn,_EmissionMap,_EmissionColor,_Emission,_BakeEmissionOn

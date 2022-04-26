@@ -12,8 +12,8 @@ _Occlusion = _Occlusion
 _MetallicChannel=_MetallicChannel
 _SmoothnessChannel=_SmoothnessChannel
 _OcclusionChannel=_OcclusionChannel
-_ParallaxOn=_ParallaxOn(from PbrMask.a)
-_ParallaxMap= _ParallaxMap(R)
+_ParallaxOn=_ParallaxOn
+_ParallaxMap= _ParallaxMap
 _ParallaxHeight=_ParallaxHeight
 
 _EmissionOn = _EmissionOn

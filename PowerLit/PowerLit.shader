@@ -21,7 +21,8 @@ Shader "URP/PowerLit"
 
         [Group(Parallax)]
         [GroupToggle(Parallax)]_ParallaxOn("_ParallaxOn",int) = 0
-        [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap(R)",2d) = "white"{}
+        [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
+        [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
         [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.08)) = 0.01
 
         [Header(Emission)]

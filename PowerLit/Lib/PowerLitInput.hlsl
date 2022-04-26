@@ -55,6 +55,7 @@ CBUFFER_START(UnityPerMaterial)
 
     half _ParallaxOn;
     half _ParallaxHeight;
+    int _ParallaxMapChannel;
 CBUFFER_END
 
 float4 unity_SpecCube0_BoxMax;          // w contains the blend distance
@@ -220,7 +221,7 @@ half3 CalcEmission(half2 uv,TEXTURE2D_PARAM(map,sampler_map),half3 emissionColor
 
 void ApplyParallax(inout half2 uv,half3 viewTS){
     branch_if(_ParallaxOn){
-        half height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv);
+        half height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
     

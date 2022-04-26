@@ -24,7 +24,7 @@ v2f vert(appdata input){
 }
 half4 frag(v2f input):SV_Target{
     half4 col = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
-    if(_ClipOn){
+    branch_if(_ClipOn){
         clip(col - _Cutoff);
     }
     return 0;

@@ -9,18 +9,26 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Floor
   m_Shader: {fileID: 4800000, guid: fd7bf79e284f74d43b982bb39004bdcd, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _EMISSIONON_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2450
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ControlMap:
+        m_Texture: {fileID: 2800000, guid: caac8453e96b3ba4696f995c309a47a6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -39,12 +47,24 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
+    - _IBLCube:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: db17334dfe5991a4bbe241ee9a728c38, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -56,23 +76,54 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AlphaPremultiply: 0
+    - _BakeEmissionOn: 0
     - _BumpScale: 1
+    - _ClipOn: 0
+    - _CullMode: 2
+    - _CustomLightOn: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _DstMode: 0
+    - _EmissionOn: 0
+    - _EnvIntensity: 1
+    - _FresnelIntensity: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _IBLMaskMainTexA: 0
+    - _IBLOn: 0
+    - _IsReceiveShadow: 1
+    - _LMSaturate: 1
+    - _LightmapSH: 0
+    - _Metallic: 1
+    - _MetallicChannel: 0
     - _Mode: 0
+    - _NormalScale: 4.07
+    - _Occlusion: 0.5
+    - _OcclusionChannel: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PlanarReflectionOn: 1
+    - _Smoothness: 1
+    - _SmoothnessChannel: 1
     - _SmoothnessTextureChannel: 0
+    - _SnowIntensity: 0
     - _SpecularHighlights: 1
+    - _SphereFogOn: 0
     - _SrcBlend: 1
+    - _SrcMode: 1
     - _UVSec: 0
+    - _WindOn: 0
+    - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0, g: 0.20977783, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
+    - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _WindAnimParam: {r: 1, g: 1, b: 0.1, a: 0.3}
+    - _WindDir: {r: 1, g: 0.1, b: 0, a: 1}
   m_BuildTextureStacks: []

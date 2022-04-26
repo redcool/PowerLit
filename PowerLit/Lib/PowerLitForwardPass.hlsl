@@ -24,6 +24,7 @@ struct Varyings{
     half4 tSpace2:TEXCOORD4;
     half4 vertexLightAndFogFactor:TEXCOORD5;
     half4 shadowCoord:TEXCOORD6;
+    half4 viewDirTS:TEXCOORD7;
 
     half4 color:COLOR;
     half2 fogCoord:COLOR1;
@@ -52,7 +53,7 @@ Varyings vert(Attributes input){
     output.uv.zw = input.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
 
     half4 attenParam = input.color.x; // vertex color atten
-    if(_WindOn){
+    branch_if(_WindOn){
         worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir).xyz;
     }
 
@@ -61,13 +62,21 @@ Varyings vert(Attributes input){
     half fogFactor = ComputeFogFactor(clipPos.z);
     half3 vertexLight = VertexLighting(worldPos,worldNormal,IsAdditionalLightVertex());
     output.vertexLightAndFogFactor = half4(vertexLight,fogFactor);
-
-    if(_SphereFogOn)
-        output.fogCoord = CalcFogFactor(worldPos);
-
     output.pos = clipPos;
     output.shadowCoord = TransformWorldToShadowCoord(worldPos);
     output.color = attenParam;
+
+    branch_if(_SphereFogOn)
+        output.fogCoord = CalcFogFactor(worldPos);
+
+    branch_if(_ParallaxOn){
+        half3 viewDirWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
+        output.viewDirTS.xyz = normalize(half3(
+            dot(worldTangent,viewDirWS),
+            dot(worldBinormal,viewDirWS),
+            dot(worldNormal,viewDirWS)
+        ));
+    }
 
     return output;
 }
@@ -114,6 +123,7 @@ half4 frag(Varyings input):SV_Target{
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     SurfaceInputData data = (SurfaceInputData)0;
+    ApplyParallax(input.uv.xy/**/,input.viewDirTS.xyz);
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
 
     InitInputData(input,data,data.inputData/*inout*/);
@@ -123,7 +133,7 @@ half4 frag(Varyings input):SV_Target{
     data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity,data.inputData.normalWS);
     half4 color = CalcPBR(data);
 
-    if(_SphereFogOn){
+    branch_if(_SphereFogOn){
         BlendFogSphere(input.fogCoord,true,color.rgb /**/);
     }else{
         color.rgb = MixFog(color.rgb,data.inputData.fogCoord);

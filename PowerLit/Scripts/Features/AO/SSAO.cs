@@ -8,10 +8,10 @@ public class SSAO : ScriptableRendererFeature
     [Serializable]
     public class Settings
     {
-        [Range(1,10)]public int samples;
-        [Range(0,2)]public int downSample = 1;
-        public float radius;
-        public float intensity;
+        [Range(1,100)]public int samples = 7;
+        public bool downSample;
+        public float radius=0.07f;
+        public float intensity = 1;
     }
 
     class SSAOPass : ScriptableRenderPass
@@ -19,9 +19,13 @@ public class SSAO : ScriptableRendererFeature
         Settings settings;
 
         int _SSAOTexture = Shader.PropertyToID("_SSAOTexture");
-        int _Samples = Shader.PropertyToID("_Samples");
+        int _BlurTexture = Shader.PropertyToID("_BlurTexture");
+        int _ResultTex = Shader.PropertyToID("_ResultTex");
+
+        int _SampleCount = Shader.PropertyToID("_SampleCount");
         int _Intensity = Shader.PropertyToID("_Intensity");
         int _Radius = Shader.PropertyToID("_Radius");
+        int _DownSample = Shader.PropertyToID("_Downsample");
 
         Material mat;
 
@@ -39,19 +43,26 @@ public class SSAO : ScriptableRendererFeature
             ref var cameraData = ref renderingData.cameraData;
 
             var desc = cameraData.cameraTargetDescriptor;
-            var w = desc.width >> settings.downSample;
-            var h = desc.height >> settings.downSample;
+            var downSample = settings.downSample ? 1 : 0;
+            var w = desc.width >> downSample;
+            var h = desc.height >> downSample;
             desc.width = w;
             desc.height = h;
 
             cmd.GetTemporaryRT(_SSAOTexture, desc);
+            cmd.GetTemporaryRT(_BlurTexture,desc.width>>1,desc.height>>1);
+            cmd.GetTemporaryRT(_ResultTex, cameraData.cameraTargetDescriptor);
 
             if (!mat)
-                mat = new Material(Shader.Find("Hidden/PowerFeature/SSAO"));
+            {
+                //mat = new Material(Shader.Find("Hidden/PowerFeature/SSAO"));
+                mat = new Material(Shader.Find("Hidden/Kino/Obscurance"));
+            }
 
-            mat.SetFloat(_Samples,settings.samples);
+            mat.SetFloat(_SampleCount,settings.samples);
             mat.SetFloat(_Intensity,settings.intensity);    
             mat.SetFloat(_Radius,settings.radius);
+            mat.SetFloat(_DownSample, settings.downSample ? 0.5f : 1);
         }
 
         // Here you can implement the rendering logic.
@@ -65,7 +76,14 @@ public class SSAO : ScriptableRendererFeature
             var renderer = renderingData.cameraData.renderer;
 
             cmd.Blit( renderer.cameraColorTarget, _SSAOTexture, mat, 0);
-            cmd.Blit(_SSAOTexture, renderer.cameraColorTarget);
+
+            cmd.Blit(_SSAOTexture, _BlurTexture, mat, 1);
+            cmd.Blit(_BlurTexture, _SSAOTexture, mat, 2);
+
+            cmd.SetGlobalTexture("_OcclusionTexture", _SSAOTexture);
+            cmd.Blit(renderer.cameraColorTarget, _ResultTex, mat, 3);
+
+            cmd.Blit(_ResultTex, renderer.cameraColorTarget);
 
             cmd.EndSample(nameof(SSAOPass));
             context.ExecuteCommandBuffer(cmd);
@@ -82,7 +100,7 @@ public class SSAO : ScriptableRendererFeature
 
     SSAOPass ssaoPass;
 
-    public Settings m_Settings;
+    public Settings m_Settings = new Settings();
 
     /// <inheritdoc/>
     public override void Create()
@@ -90,8 +108,8 @@ public class SSAO : ScriptableRendererFeature
         ssaoPass = new SSAOPass(m_Settings);
 
         // Configures where the render pass should be injected.
-        ssaoPass.renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
-
+        ssaoPass.renderPassEvent = RenderPassEvent.AfterRenderingSkybox;
+         
     }
 
     // Here you can inject one or multiple render passes in the renderer.

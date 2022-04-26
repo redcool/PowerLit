@@ -4,6 +4,7 @@ Shader "Unlit/GroupDrawDemo"
     {
         //show a new Group
         [Group(group1)]
+    [GroupHeader(group1,Header1)]
         [GroupItem(group1)]_MainTex1 ("Texture1", 2D) = "white" {}
         // show group item
         [GroupItem(group1)]_FloatVlaue("_FloatVlaue1",range(0,1)) = 0.1

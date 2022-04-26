@@ -18,7 +18,7 @@ half CalcCascadeId(half3 positionWS){
     otherwise use vertex shadow coord
 */
 half4 TransformWorldToShadowCoord(half3 worldPos,half4 vertexShadowCoord){
-    if(!_MainLightShadowCascadeOn)
+    branch_if(!_MainLightShadowCascadeOn)
         return vertexShadowCoord;
 
     half cascadeId = ComputeCascadeIndex(worldPos);
@@ -29,7 +29,7 @@ half4 TransformWorldToShadowCoord(half3 worldPos,half4 vertexShadowCoord){
 real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), half4 shadowCoord, ShadowSamplingData samplingData, half4 shadowParams, bool isPerspectiveProjection = true)
 {
     // Compiler will optimize this branch away as long as isPerspectiveProjection is known at compile time
-    if (isPerspectiveProjection)
+    branch_if (isPerspectiveProjection)
         shadowCoord.xyz /= shadowCoord.w;
 
     real attenuation;
@@ -37,7 +37,7 @@ real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
     real isSoftShadow = shadowParams.y;
 
     // TODO: We could branch on if this light has soft shadows (shadowParams.y) to save perf on some platforms.
-    if(isSoftShadow){
+    branch_if(isSoftShadow){
         attenuation = SampleShadowmapFiltered(TEXTURE2D_SHADOW_ARGS(ShadowMap, sampler_ShadowMap), shadowCoord, samplingData);
     }else{
         // 1-tap hardware comparison
@@ -51,7 +51,7 @@ real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
 }
 
 half MainLightRealtimeShadow(half4 shadowCoord,bool isReceiveShadow){
-    if(!isReceiveShadow)
+    branch_if(!isReceiveShadow)
         return 1;
     
     ShadowSamplingData samplingData = GetMainLightShadowSamplingData();
@@ -60,7 +60,7 @@ half MainLightRealtimeShadow(half4 shadowCoord,bool isReceiveShadow){
 }
 
 half MixShadow(half realtimeShadow,half bakedShadow,half shadowFade,bool isMixShadow){
-    if(isMixShadow){
+    branch_if(isMixShadow){
         return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);
     }
     return lerp(realtimeShadow,bakedShadow,shadowFade);
@@ -81,18 +81,18 @@ half MainLightShadow(half4 shadowCoord,half3 worldPos,half4 shadowMask,half4 occ
 
     half bakedShadow = 1;
     bool isShadowMaskOn = IsShadowMaskOn();
-    // #if defined(CALCULATE_BAKED_SHADOWS)
-    if(isShadowMaskOn){
+    // #branch_if defined(CALCULATE_BAKED_SHADOWS)
+    branch_if(isShadowMaskOn){
         bakedShadow = BakedShadow(shadowMask,occlusionProbeChannels);
     }
     // #endif
 
     half shadowFade = 1;
-    if(isReceiveShadow){
+    branch_if(isReceiveShadow){
         shadowFade = GetShadowFade1(worldPos);
     }
     
-    if(IsMainLightShadowCascadeOn() && isShadowMaskOn){
+    branch_if(IsMainLightShadowCascadeOn() && isShadowMaskOn){
         // shadowCoord.w represents shadow cascade index
         // in case we are out of shadow cascade we need to set shadow fade to 1.0 for correct blending
         // it is needed when realtime shadows gets cut to early during fade and causes disconnect between baked shadow
@@ -108,7 +108,7 @@ half4 SampleShadowMask(half2 shadowMaskUV){
      unity_ShadowMask,samplerunity_ShadowMask,shadowMaskuv [], unity_LightmapIndex.x]
      */
      half4 mask = 1;
-     if(IsLightmapOn() && IsShadowMaskOn()){
+     branch_if(IsLightmapOn() && IsShadowMaskOn()){
         mask = SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME,SHADOWMASK_SAMPLER_NAME,shadowMaskUV SHADOWMASK_SAMPLE_EXTRA_ARGS);
      }
     return mask;
@@ -124,8 +124,8 @@ half4 CalcShadowMask(InputData inputData){
     // #endif
 
     half4 shadowMask = (half4)1;
-    if(IsLightmapOn()){
-        if(IsShadowMaskOn()){
+    branch_if(IsLightmapOn()){
+        branch_if(IsShadowMaskOn()){
             shadowMask = inputData.shadowMask;
         }else{
             shadowMask = unity_ProbesOcclusion;

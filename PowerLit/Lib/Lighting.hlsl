@@ -8,7 +8,7 @@
 
 half3 VertexLighting(half3 worldPos,half3 normal,bool isLightOn){
     half3 c = (half3)0;
-    if(isLightOn){
+    branch_if(isLightOn){
         int count = GetAdditionalLightsCount();
         for(int i=0;i<count;i++){
             Light light = GetAdditionalLight(i,worldPos);
@@ -33,7 +33,7 @@ Light GetMainLight(half4 shadowCoord,half3 worldPos,half4 shadowMask,bool isRece
 }
 
 void OffsetMainLight(inout Light mainLight){
-    if(_CustomLightOn){
+    branch_if(_CustomLightOn){
         mainLight.color = _CustomLightColor.xyz;
         mainLight.direction = SafeNormalize(_CustomLightDir.xyz);
     }
@@ -60,7 +60,7 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout half alpha,out BRDFDat
     brdfData.normalizationTerm = brdfData.roughness * 4 + 2; // mct factor
     brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
 
-    if(surfaceInputData.isAlphaPremultiply){
+    branch_if(surfaceInputData.isAlphaPremultiply){
         brdfData.diffuse *= alpha;
         alpha = alpha * oneMinusReflectivityMetallic + brdfData.reflectivity; //lerp(a,1,m)
     }
@@ -125,11 +125,11 @@ half4 CalcPBR(SurfaceInputData data){
     color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     color += surfaceData.emission;
 
-    if(IsAdditionalLightVertex()){
+    branch_if(IsAdditionalLightVertex()){
         color += inputData.vertexLighting * brdfData.diffuse;
     }
 
-    if(IsAdditionalLightPixel()){
+    branch_if(IsAdditionalLightPixel()){
         color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
     }
 

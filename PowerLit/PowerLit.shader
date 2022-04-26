@@ -19,17 +19,22 @@ Shader "URP/PowerLit"
         [GroupEnum(Main,R 0 G 1 B 2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1
         [GroupEnum(Main,R 0 G 1 B 2)]_OcclusionChannel("_OcclusionChannel",int) = 2
 
+        [Group(Parallax)]
+        [GroupToggle(Parallax)]_ParallaxOn("_ParallaxOn",int) = 0
+        [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
+        [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.08)) = 0.01
+
         [Header(Emission)]
         [ToggleOff]_EmissionOn("_EmissionOn",int) = 0
-        _EmissionMap("_EmissionMap",2d) = "white"{}
+        _EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d) = "white"{}
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
-        [GroupToggle]_BakeEmissionOn("_BakeEmissionOn",int) = 0
+        // [GroupToggle]_BakeEmissionOn("_BakeEmissionOn",int) = 0
 
         [Header(Shadow)]
         [GroupToggle]_IsReceiveShadow("_IsReceiveShadow",int) = 1
 
         [Header(GI)]
-        _LightmapSH("_LightmapSH",range(0,1)) = 0
+        _LightmapSH("_LightmapSH",range(0,1)) = 0.5
         _LMSaturate("_LMSaturate",range(0,4)) = 1
         [Header(PlanarReflection)]
         [GroupToggle]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0

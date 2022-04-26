@@ -46,7 +46,7 @@ Varyings vert(Attributes input){
 
 half4 frag(Varyings input):SV_Target{
     half4 mainTex = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
-    if(_ClipOn)
+    branch_if(_ClipOn)
         clip(mainTex.a - _Cutoff);
     
     return 0;

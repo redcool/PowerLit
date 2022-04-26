@@ -11,6 +11,7 @@
 #include "NatureLib.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "PowerLitCommon.hlsl"
+#include "ParallaxMapping.hlsl"
 
 #if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
 CBUFFER_START(UnityPerMaterial)
@@ -51,6 +52,9 @@ CBUFFER_START(UnityPerMaterial)
     half _SnowIntensity;
     half _SphereFogOn;
     half _PlanarReflectionOn;
+
+    half _ParallaxOn;
+    half _ParallaxHeight;
 CBUFFER_END
 
 float4 unity_SpecCube0_BoxMax;          // w contains the blend distance
@@ -188,13 +192,14 @@ TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
 TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 TEXTURE2D(_ReflectionTex);SAMPLER(sampler_ReflectionTex); // planer reflection camera, use screenUV
+TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 
 
 void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),half2 uv,half4 color,half cutoff,bool isClipOn,out half3 albedo,out half alpha ){
     half4 c = SAMPLE_TEXTURE2D(mao,sampler_Map,uv) * color;
     albedo = c.rgb;
     alpha = c.a;
-    if(isClipOn)
+    branch_if(isClipOn)
         clip(alpha - cutoff);
 }
 
@@ -205,10 +210,20 @@ half3 CalcNormal(half2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),half scal
 }
 
 half3 CalcEmission(half2 uv,TEXTURE2D_PARAM(map,sampler_map),half3 emissionColor,half isEmissionOn){
-    half3 emission = 0;
-    if(isEmissionOn)
-        emission = SAMPLE_TEXTURE2D(map,sampler_map,uv).xyz * emissionColor;
-    return emission;
+    half4 emission = 0;
+    branch_if(isEmissionOn){
+        emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
+        emission.xyz *= emissionColor;
+    }
+    return emission.xyz * emission.w;
+}
+
+void ApplyParallax(inout half2 uv,half3 viewTS){
+    branch_if(_ParallaxOn){
+        half height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv);
+        uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
+    }
+    
 }
 
 void InitSurfaceData(half2 uv,inout SurfaceData data){
@@ -236,9 +251,9 @@ void InitSurfaceInputData(half2 uv,half4 clipPos,inout SurfaceInputData data){
     data.lightmapSH = _LightmapSH;
     data.lmSaturate = _LMSaturate;
 
-    
     data.screenUV = clipPos.xy/_ScreenParams.xy;
-    data.screenUV.x = 1- data.screenUV.x;
+    branch_if(_PlanarReflectionOn)
+        data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
 }
 
 #endif //POWER_LIT_INPUT_HLSL

@@ -15,8 +15,6 @@ half3 SampleLightmap(half2 lightmapUV){
         half4 decodeInstructions = half4(LIGHTMAP_HDR_MULTIPLIER,LIGHTMAP_HDR_EXPONENT,0,0);
         half4 transformUV = half4(1,1,0,0);
         lmap = SampleSingleLightmap(TEXTURE2D_LIGHTMAP_ARGS(LIGHTMAP_NAME,LIGHTMAP_SAMPLER_NAME),lightmapUV,transformUV,encodedLightmap,decodeInstructions);
-        lmap = lerp(dot(half3(0.2,0.7,0.02),lmap),lmap,2);
-        // lmap = lerp(0.5,lmap,2);
     }
     //endif
     return lmap;
@@ -27,7 +25,6 @@ half3 SampleLightmap(half2 lightmapUV){
 half3 CalcLightmapAndSH(half3 normal,half2 lightmapUV,half lightmapOrSH,half lmSaturate){
     half3 lmap = SampleLightmap(lightmapUV);
     lmap = lerp(Gray(lmap),lmap,lmSaturate);
-
     half3 sh = SampleSH(normal);
     return lerp(lmap,sh,lightmapOrSH);
 }

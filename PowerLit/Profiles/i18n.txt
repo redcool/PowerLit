@@ -1,6 +1,6 @@
 // PowerPBS 中文配置文件
 //Help行,约定 | 为换行字符
-Help=PowerURP,用于标准pbr渲染
+Help=PowerLit,用于标准pbr渲染,需要PowerLitFeature
 _BaseMap = _BaseMap
 _Color=_Color
 _NormalMap =_NormalMap

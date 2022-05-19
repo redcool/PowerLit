@@ -52,7 +52,7 @@ half3 CalcIBL(half3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),half percept
     // return _GlossyEnvironmentColor.rgb * occlusion;
 }
 
-
+#if SHADER_LIBRARY_VERSION_MAJOR < 12
 half3 BoxProjectedCubemapDirection(half3 reflectionWS, float3 positionWS, float4 cubemapPositionWS, float4 boxMin, float4 boxMax)
 {
     // Is this probe using box projection?
@@ -73,6 +73,7 @@ half3 BoxProjectedCubemapDirection(half3 reflectionWS, float3 positionWS, float4
         return reflectionWS;
     }
 }
+#endif
 
 half3 CalcIBL(half3 reflectDir,half perceptualRoughness,half occlusion,half customIBLMask){
     branch_if(_IBLOn){
@@ -85,7 +86,7 @@ half3 CalcIBL(half3 reflectDir,half perceptualRoughness,half occlusion,half cust
 }
 
 half3 CalcPlanerReflection(half2 uv){
-    return SAMPLE_TEXTURE2D(_ReflectionTex,sampler_ReflectionTex,uv);
+    return SAMPLE_TEXTURE2D(_ReflectionTex,sampler_ReflectionTex,uv).xyz;
 }
 
 half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 viewDir,half customIBLMask,half3 worldPos,half2 screenUV){

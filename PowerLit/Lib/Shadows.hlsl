@@ -18,12 +18,15 @@ half CalcCascadeId(half3 positionWS){
     otherwise use vertex shadow coord
 */
 half4 TransformWorldToShadowCoord(half3 worldPos,half4 vertexShadowCoord){
+    half4 shadowCoord = 0;
     branch_if(!_MainLightShadowCascadeOn)
-        return vertexShadowCoord;
-
-    half cascadeId = ComputeCascadeIndex(worldPos);
-    half4 shadowCoord = mul(_MainLightWorldToShadow[cascadeId],half4(worldPos,1));
-    return half4(shadowCoord.xyz,cascadeId);
+        shadowCoord = vertexShadowCoord;
+    else{
+        half cascadeId = ComputeCascadeIndex(worldPos);
+        shadowCoord = mul(_MainLightWorldToShadow[cascadeId],half4(worldPos,1));
+        shadowCoord.w = cascadeId;
+    }
+    return shadowCoord;
 }
 
 real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), half4 shadowCoord, ShadowSamplingData samplingData, half4 shadowParams, bool isPerspectiveProjection = true)
@@ -51,12 +54,14 @@ real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
 }
 
 half MainLightRealtimeShadow(half4 shadowCoord,bool isReceiveShadow){
-    branch_if(!isReceiveShadow)
-        return 1;
-    
-    ShadowSamplingData samplingData = GetMainLightShadowSamplingData();
-    half4 params = GetMainLightShadowParams();
-    return SampleShadowmapRealtime(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,shadowCoord,samplingData,params,false);
+    half shadow = 1;
+    branch_if(isReceiveShadow)
+    {
+        ShadowSamplingData samplingData = GetMainLightShadowSamplingData();
+        half4 params = GetMainLightShadowParams();
+        shadow = SampleShadowmapRealtime(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,shadowCoord,samplingData,params,false);
+    }
+    return shadow;
 }
 
 half MixShadow(half realtimeShadow,half bakedShadow,half shadowFade,bool isMixShadow){

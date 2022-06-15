@@ -1,7 +1,7 @@
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-#ifndef NODE_LIB_CGINC
-#define NODE_LIB_CGINC
+#ifndef NODE_LIB_HLSL
+#define NODE_LIB_HLSL
 
 #undef PI
 #define PI 3.14159
@@ -55,7 +55,9 @@ half SimpleSubSurface(half3 l,half3 v,half3 n,half distortion,half power,half th
 }
 
 half SimpleFresnal(half3 v, half3 n, half power) {
-	return pow(1 - saturate(dot(normalize(n), normalize(v))), power);
+	half nv = saturate(1 - dot(n,v));
+	half a = nv * nv;
+	return a*a;
 }
 
 half SchlickFresnal2(half3 v, half h, half f0) {
@@ -68,12 +70,14 @@ half SchlickFresnal(half3 v, half3 n, half f0) {
 	return f0 + (1 - f0) * pow(1 - dot(v, n), 5);
 }
 
-half Random(half s) {
-	return frac(sin(s) * 100000);
+half N11(half a){
+    return frac(sin(a*123.1234) * 123456);
 }
-
-half Random(half2 st){
-	return frac(sin(dot(st,half2(12.123,78.789))) * 65432);
+half N21(half2 a){
+	return frac(sin(dot(a,half2(12.789,78.234))) * 123456);
+}
+half N31(half3 pos){
+    return frac( sin(dot(pos,half3(12.789,78.123,45.678))) * 123456);
 }
 
 half Gray(half3 rgb){

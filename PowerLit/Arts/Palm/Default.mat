@@ -124,6 +124,10 @@ Material:
     - _OcclusionChannel: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _ParallaxHeight: 0.01
+    - _ParallaxMapChannel: 3
+    - _ParallaxOn: 0
+    - _PlanarReflectionOn: 0
     - _QueueOffset: -11
     - _ReceiveShadows: 1
     - _Smoothness: 0
@@ -131,6 +135,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SnowIntensity: 0.398
     - _SpecularHighlights: 1
+    - _SphereFogOn: 1
     - _SrcBlend: 1
     - _SrcMode: 1
     - _Surface: 0
@@ -147,8 +152,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _WindAnimParam: {r: 0.124000005, g: 0.284, b: 0, a: 0.2023}
-    - _WindDir: {r: 7.24, g: 3.78, b: -1.08, a: 0.343}
+    - _WindAnimParam: {r: 0, g: 0.152, b: 0.6, a: 0.01902}
+    - _WindDir: {r: 1.05, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2193394110321392520
 MonoBehaviour:

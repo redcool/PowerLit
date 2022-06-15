@@ -97,7 +97,11 @@ half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 v
         indirectSpecular = CalcPlanerReflection(screenUV);
     }else{
         half3 reflectDir = reflect(-viewDir,normal);
+
+        #if (SHADER_LIBRARY_VERSION_MAJOR > 12)
         reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
+        #endif
+
         indirectSpecular = CalcIBL(reflectDir,brdfData.perceptualRoughness,occlusion,customIBLMask);
     }
 

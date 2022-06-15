@@ -41,6 +41,12 @@ Varyings vert(Attributes input){
 
     half3 worldPos = TransformObjectToWorld(input.pos.xyz);
     half3 worldNormal = TransformObjectToWorldNormal(input.normal);
+
+    half4 attenParam = input.color.x; // vertex color atten
+    branch_if(_WindOn){
+        worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir).xyz;
+    }
+
     half sign = input.tangent.w * GetOddNegativeScale();
     half3 worldTangent = TransformObjectToWorldDir(input.tangent.xyz);
     half3 worldBinormal = cross(worldNormal,worldTangent)  * sign;
@@ -51,11 +57,6 @@ Varyings vert(Attributes input){
     output.uv.xy = TRANSFORM_TEX(input.uv.xy,_BaseMap);
     // OUTPUT_LIGHTMAP_UV(input.uv1,unity_LightmapST,output.uv1);
     output.uv.zw = input.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-
-    half4 attenParam = input.color.x; // vertex color atten
-    branch_if(_WindOn){
-        worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir).xyz;
-    }
 
     half4 clipPos = TransformWorldToHClip(worldPos);
 
@@ -119,6 +120,8 @@ half4 fragTest(Varyings input,SurfaceInputData data){
 }
 
 half4 frag(Varyings input):SV_Target{
+    // return unity_SpecCube0_ProbePosition;
+    
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
@@ -132,7 +135,6 @@ half4 frag(Varyings input):SV_Target{
     // half4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
     data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity,data.inputData.normalWS);
     half4 color = CalcPBR(data);
-
     branch_if(_SphereFogOn){
         BlendFogSphere(input.fogCoord,true,color.rgb /**/);
     }else{

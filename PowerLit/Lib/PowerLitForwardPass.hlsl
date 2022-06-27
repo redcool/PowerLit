@@ -3,7 +3,6 @@
 
 #include "PowerLitInput.hlsl"
 #include "Lighting.hlsl"
-#include "FogLib.hlsl"
 
 struct Attributes{
     half4 pos:POSITION;
@@ -27,7 +26,7 @@ struct Varyings{
     half4 viewDirTS:TEXCOORD7;
 
     half4 color:COLOR;
-    half2 fogCoord:COLOR1;
+    half4 fogCoord:COLOR1;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
@@ -44,7 +43,7 @@ Varyings vert(Attributes input){
 
     half4 attenParam = input.color.x; // vertex color atten
     branch_if(_WindOn){
-        worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir).xyz;
+        worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
 
     half sign = input.tangent.w * GetOddNegativeScale();
@@ -68,7 +67,7 @@ Varyings vert(Attributes input){
     output.color = attenParam;
 
     branch_if(_SphereFogOn)
-        output.fogCoord = CalcFogFactor(worldPos);
+        output.fogCoord.xy = CalcFogFactor(worldPos);
 
     branch_if(_ParallaxOn){
         half3 viewDirWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
@@ -135,11 +134,9 @@ half4 frag(Varyings input):SV_Target{
     // half4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
     data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity,data.inputData.normalWS);
     half4 color = CalcPBR(data);
-    branch_if(_SphereFogOn){
-        BlendFogSphere(input.fogCoord,true,color.rgb /**/);
-    }else{
-        color.rgb = MixFog(color.rgb,data.inputData.fogCoord);
-    }
+// return input.fogCoord.x;
+    ApplyFog(color/**/,input.fogCoord,data.inputData.fogCoord,data.inputData.positionWS);
+
     // color.a = OutputAlpha(color.a,_SurfaceType)
 
     return color;

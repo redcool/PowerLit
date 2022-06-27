@@ -5,21 +5,21 @@
 /**
     controlled by WeahterControl.cs
 */
-half4 _GlobalWindDir; /*global wind direction*/
-half _GlobalSnowIntensity; 
+float4 _GlobalWindDir; /*global wind direction*/
+float _GlobalSnowIntensity; 
 
-half4 SmoothCurve( half4 x ) {
+float4 SmoothCurve( float4 x ) {
     return x * x *( 3.0 - 2.0 * x );
 }
-half4 TriangleWave( half4 x ) {
+float4 TriangleWave( float4 x ) {
     return abs( frac( x + 0.5 ) * 2.0 - 1.0 );
 }
-half4 SmoothTriangleWave( half4 x ) {
+float4 SmoothTriangleWave( float4 x ) {
     return SmoothCurve( TriangleWave( x ) );
 }
 
 // Detail bending
-inline half4 AnimateVertex(half4 pos, half3 normal, half4 animParams,half4 windDir)
+inline float4 AnimateVertex(float4 pos, float3 normal, float4 animParams,float4 windDir)
 {
     // animParams stored in color
     // animParams.x = branch phase
@@ -27,26 +27,26 @@ inline half4 AnimateVertex(half4 pos, half3 normal, half4 animParams,half4 windD
     // animParams.z = primary factor
     // animParams.w = secondary factor
 
-    half fDetailAmp = 0.1f;
-    half fBranchAmp = 0.3f;
+    float fDetailAmp = 0.1f;
+    float fBranchAmp = 0.3f;
 
     // Phases (object, vertex, branch)
-    half fObjPhase = dot(unity_ObjectToWorld._14_24_34, 1);
-    half fBranchPhase = fObjPhase + animParams.x;
+    float fObjPhase = dot(unity_ObjectToWorld._14_24_34, 1);
+    float fBranchPhase = fObjPhase + animParams.x;
 
-    half fVtxPhase = dot(pos.xyz, animParams.y + fBranchPhase);
+    float fVtxPhase = dot(pos.xyz, animParams.y + fBranchPhase);
 
     // x is used for edges; y is used for branches
-    half2 vWavesIn = _Time.yy + half2(fVtxPhase, fBranchPhase );
+    float2 vWavesIn = _Time.yy + float2(fVtxPhase, fBranchPhase );
 
     // 1.975, 0.793, 0.375, 0.193 are good frequencies
-    half4 vWaves = (frac( vWavesIn.xxyy * half4(1.975, 0.793, 0.375, 0.193) ) * 2.0 - 1.0);
+    float4 vWaves = (frac( vWavesIn.xxyy * float4(1.975, 0.793, 0.375, 0.193) ) * 2.0 - 1.0);
 
     vWaves = SmoothTriangleWave( vWaves );
-    half2 vWavesSum = vWaves.xz + vWaves.yw;
+    float2 vWavesSum = vWaves.xz + vWaves.yw;
 
     // Edge (xz) and branch bending (y)
-    half3 bend = animParams.y * fDetailAmp * normal.xyz;
+    float3 bend = animParams.y * fDetailAmp * normal.xyz;
     bend.y = animParams.w * fBranchAmp;
     pos.xyz += ((vWavesSum.xyx * bend) + (windDir.xyz * vWavesSum.y * animParams.w)) * windDir.w;
 
@@ -59,19 +59,20 @@ inline half4 AnimateVertex(half4 pos, half3 normal, half4 animParams,half4 windD
 
 
 
-half4 WindAnimationVertex( half3 worldPos,half3 vertex,half3 normal,half4 atten_AnimParam,half4 windDir){
-    half windIntensity = windDir.w;
+float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir,half windSpeed){
+    float windIntensity = windDir.w;
     // worldPos,normal, attenParam * animParam, windDir
     windDir += _GlobalWindDir;
 
-    half yAtten = saturate(vertex.y/10); // local position'y atten
+    float yAtten = saturate(vertex.y/10); // local position'y atten
 
-    half gradientNoise = unity_gradientNoise(worldPos.xz*0.1+half2(_Time.x,0)) + 0.5;
-    atten_AnimParam.w += gradientNoise * 0.1 *windIntensity;
+    float gradientNoise = unity_gradientNoise(worldPos.xz*0.1 + windDir.xz * _Time.y * windSpeed);
+    atten_AnimParam.w += windIntensity * gradientNoise*0.3;
+    // atten_AnimParam.w *= clamp(gradientNoise,-0.1,.1);
     atten_AnimParam *= yAtten;
 
     windDir.xyz = clamp(windDir.xyz,-1,1);
-    return AnimateVertex(half4(worldPos,1),normal,atten_AnimParam,windDir);
+    return AnimateVertex(float4(worldPos,1),normal,atten_AnimParam,windDir);
 }
 
 /**
@@ -84,31 +85,45 @@ half4 WindAnimationVertex( half3 worldPos,half3 vertex,half3 normal,half4 atten_
     noiseScale : 噪波的缩放
     noiseStrength : 噪波的强度
 */
-void SimpleWave(inout half3 worldPos,half3 vertex,half3 vertexColor,half bend,half3 dir,half2 noiseUV,half noiseSpeed,half noiseScale,half noiseStrength){
-    half y = vertex.y * bend * _CosTime.w * 0.01+ 1;
-    half y2 = y*y;
-    half y4 = y2*y2;
+void SimpleWave(inout float3 worldPos,float3 vertex,float3 vertexColor,float bend,float3 dir,float2 noiseUV,float noiseSpeed,float noiseScale,float noiseStrength){
+    float y = vertex.y * bend * _CosTime.w * 0.01+ 1;
+    float y2 = y*y;
+    float y4 = y2*y2;
     dir *= (y4-y2);
 
     noiseUV += _Time.xx * noiseSpeed;
-    half noise = 0;
+    float noise = 0;
     Unity_GradientNoise_half(noiseUV,noiseScale,noise/**/);
     dir.xz += noise * noiseStrength;
     
-    half2 offsetPos = lerp(0,dir.xz,vertexColor.xy);
+    float2 offsetPos = lerp(0,dir.xz,vertexColor.xy);
     worldPos.xz += offsetPos;
 }
 
 /**
     Simple Snow from albedo
 */
-half3 MixSnow(half3 albedo,half3 snowColor,half intensity,half3 worldNormal){
-    half g = dot(half3(0.2,0.7,0.02),albedo);
-    half rate = smoothstep(0.4,0.2,g*intensity * _GlobalSnowIntensity);
+float3 MixSnow(float3 albedo,float3 snowColor,float intensity,float3 worldNormal){
+    float g = dot(float3(0.2,0.7,0.02),albedo);
+    float rate = smoothstep(0.4,0.2,g*intensity * _GlobalSnowIntensity);
 
-    half dirAtten = saturate(dot(worldNormal,_GlobalWindDir.xyz)); // filter by dir
+    float dirAtten = saturate(dot(worldNormal,_GlobalWindDir.xyz)); // filter by dir
     rate = max(rate , dirAtten);
     return lerp(snowColor,albedo,smoothstep(.2,.8,rate));
+}
+
+
+float3 ComputeRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 uv, float t)
+{
+	float4 ripple = SAMPLE_TEXTURE2D(rippleTex,sampler_RippleTex, uv);
+	ripple.yz = ripple.yz * 2.0 - 1.0;
+
+	float drop = frac(ripple.a + t);
+	float move = ripple.x + drop -1;
+	float dropFactor = 1 - saturate(drop);
+
+	float final = dropFactor * sin(clamp(move*9,0,4)*PI);
+	return float3(ripple.yz * final,1);
 }
 
 #endif //NATURE_LIB_HLSL

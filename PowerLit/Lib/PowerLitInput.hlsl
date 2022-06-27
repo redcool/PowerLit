@@ -12,6 +12,19 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "PowerLitCommon.hlsl"
 #include "ParallaxMapping.hlsl"
+#include "FogLib.hlsl"
+
+
+TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
+TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
+TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
+TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
+TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
+TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
+TEXTURE2D(_ReflectionTex);SAMPLER(sampler_ReflectionTex); // planer reflection camera, use screenUV
+TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
+TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
+
 
 #if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
 CBUFFER_START(UnityPerMaterial)
@@ -48,14 +61,22 @@ CBUFFER_START(UnityPerMaterial)
     half _WindOn;
     half4 _WindAnimParam;
     half4 _WindDir;
+    half _WindSpeed;
+
+    half _PlanarReflectionOn;
 
     half _SnowIntensity;
+    half _FogOn;
     half _SphereFogOn;
-    half _PlanarReflectionOn;
+    half _FogNoiseOn;
 
     half _ParallaxOn;
     half _ParallaxHeight;
     int _ParallaxMapChannel;
+
+    int _RainRippleOn;
+    half4 _RippleTex_ST;
+    half _RippleSpeed;
 CBUFFER_END
 
 // #if (SHADER_LIBRARY_VERSION_MAJOR < 12)
@@ -189,14 +210,6 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #endif
 */
 
-TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
-TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
-TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
-TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
-TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
-TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
-TEXTURE2D(_ReflectionTex);SAMPLER(sampler_ReflectionTex); // planer reflection camera, use screenUV
-TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 
 
 void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),half2 uv,half4 color,half cutoff,bool isClipOn,out half3 albedo,out half alpha ){
@@ -260,4 +273,22 @@ void InitSurfaceInputData(half2 uv,half4 clipPos,inout SurfaceInputData data){
         data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
 }
 
+
+half3 MixRipple(float2 uv){
+    float2 rippleUV = TRANSFORM_TEX(uv,_RippleTex);
+    return ComputeRipple(_RippleTex,sampler_RippleTex,rippleUV,_Time.x * _RippleSpeed);
+}
+
+void ApplyFog(inout half4 color,half2 sphereFogCoord,half unityFogCoord,half3 worldPos){
+    branch_if(!_FogOn)
+        return;
+
+    branch_if(_SphereFogOn){
+        BlendFogSphere(worldPos,sphereFogCoord,true,_FogNoiseOn,color.rgb/**/);
+        return;
+    }
+    
+    color.rgb = MixFog(color.rgb,unityFogCoord);
+}
+// data.surfaceData.normalTS += MixRipple(input.uv);
 #endif //POWER_LIT_INPUT_HLSL

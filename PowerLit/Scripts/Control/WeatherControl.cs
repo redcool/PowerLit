@@ -39,7 +39,7 @@ namespace PowerUtilities
         WaitForSeconds aSecond = new WaitForSeconds(1);
 
         [Range(0,1)]public float globalSnowIntensity = 1;
-        [Range(0, 100)] public float globalWindIntensity = 1;
+        [Range(0, 10)] public float globalWindIntensity = 1;
 
         // Start is called before the first frame update
         void Start()
@@ -60,7 +60,7 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(_GlobalSnowIntensity,globalSnowIntensity);
 
             var forward = transform.forward;
-            Shader.SetGlobalVector(_GlobalWindDir, new Vector4(forward.x, forward.y, forward.z, globalWindIntensity*0.2f));
+            Shader.SetGlobalVector(_GlobalWindDir, new Vector4(forward.x, forward.y, forward.z, globalWindIntensity));
         }
 
 #if UNITY_EDITOR

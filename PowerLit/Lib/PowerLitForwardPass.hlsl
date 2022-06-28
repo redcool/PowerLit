@@ -5,28 +5,28 @@
 #include "Lighting.hlsl"
 
 struct Attributes{
-    half4 pos:POSITION;
-    half3 normal:NORMAL;
-    half4 color:COLOR;
-    half4 tangent:TANGENT;
-    half2 uv:TEXCOORD;
-    half2 uv1 :TEXCOORD1;
+    float4 pos:POSITION;
+    float3 normal:NORMAL;
+    float4 color:COLOR;
+    float4 tangent:TANGENT;
+    float2 uv:TEXCOORD;
+    float2 uv1 :TEXCOORD1;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 struct Varyings{
-    half4 pos : SV_POSITION;
-    half4 uv:TEXCOORD0; // xy : uv, zw: uv1 for lightmap uv
-    // half uv1:TEXCOORD1; // sh,lightmap
-    half4 tSpace0:TEXCOORD2;
-    half4 tSpace1:TEXCOORD3;
-    half4 tSpace2:TEXCOORD4;
-    half4 vertexLightAndFogFactor:TEXCOORD5;
-    half4 shadowCoord:TEXCOORD6;
-    half4 viewDirTS:TEXCOORD7;
+    float4 pos : SV_POSITION;
+    float4 uv:TEXCOORD0; // xy : uv, zw: uv1 for lightmap uv
+    // float uv1:TEXCOORD1; // sh,lightmap
+    float4 tSpace0:TEXCOORD2;
+    float4 tSpace1:TEXCOORD3;
+    float4 tSpace2:TEXCOORD4;
+    float4 vertexLightAndFogFactor:TEXCOORD5;
+    float4 shadowCoord:TEXCOORD6;
+    float4 viewDirTS:TEXCOORD7;
 
-    half4 color:COLOR;
-    half4 fogCoord:COLOR1;
+    float4 color:COLOR;
+    float4 fogCoord:COLOR1;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
@@ -38,30 +38,30 @@ Varyings vert(Attributes input){
     UNITY_TRANSFER_INSTANCE_ID(input,output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-    half3 worldPos = TransformObjectToWorld(input.pos.xyz);
-    half3 worldNormal = TransformObjectToWorldNormal(input.normal);
+    float3 worldPos = TransformObjectToWorld(input.pos.xyz);
+    float3 worldNormal = TransformObjectToWorldNormal(input.normal);
 
-    half4 attenParam = input.color.x; // vertex color atten
+    float4 attenParam = input.color.x; // vertex color atten
     branch_if(_WindOn){
         worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
 
-    half sign = input.tangent.w * GetOddNegativeScale();
-    half3 worldTangent = TransformObjectToWorldDir(input.tangent.xyz);
-    half3 worldBinormal = cross(worldNormal,worldTangent)  * sign;
-    output.tSpace0 = half4(worldTangent.x,worldBinormal.x,worldNormal.x,worldPos.x);
-    output.tSpace1 = half4(worldTangent.y,worldBinormal.y,worldNormal.y,worldPos.y);
-    output.tSpace2 = half4(worldTangent.z,worldBinormal.z,worldNormal.z,worldPos.z);
+    float sign = input.tangent.w * GetOddNegativeScale();
+    float3 worldTangent = TransformObjectToWorldDir(input.tangent.xyz);
+    float3 worldBinormal = cross(worldNormal,worldTangent)  * sign;
+    output.tSpace0 = float4(worldTangent.x,worldBinormal.x,worldNormal.x,worldPos.x);
+    output.tSpace1 = float4(worldTangent.y,worldBinormal.y,worldNormal.y,worldPos.y);
+    output.tSpace2 = float4(worldTangent.z,worldBinormal.z,worldNormal.z,worldPos.z);
 
     output.uv.xy = TRANSFORM_TEX(input.uv.xy,_BaseMap);
     // OUTPUT_LIGHTMAP_UV(input.uv1,unity_LightmapST,output.uv1);
     output.uv.zw = input.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
 
-    half4 clipPos = TransformWorldToHClip(worldPos);
+    float4 clipPos = TransformWorldToHClip(worldPos);
 
-    half fogFactor = ComputeFogFactor(clipPos.z);
-    half3 vertexLight = VertexLighting(worldPos,worldNormal,IsAdditionalLightVertex());
-    output.vertexLightAndFogFactor = half4(vertexLight,fogFactor);
+    float fogFactor = ComputeFogFactor(clipPos.z);
+    float3 vertexLight = VertexLighting(worldPos,worldNormal,IsAdditionalLightVertex());
+    output.vertexLightAndFogFactor = float4(vertexLight,fogFactor);
     output.pos = clipPos;
     output.shadowCoord = TransformWorldToShadowCoord(worldPos);
     output.color = attenParam;
@@ -69,9 +69,12 @@ Varyings vert(Attributes input){
     branch_if(_SphereFogOn)
         output.fogCoord.xy = CalcFogFactor(worldPos);
 
+    //
+    output.fogCoord.z = unity_gradientNoise(worldPos.xz*0.1 + _WindDir.xz * _Time.y * _WindSpeed);
+
     branch_if(_ParallaxOn){
-        half3 viewDirWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
-        output.viewDirTS.xyz = normalize(half3(
+        float3 viewDirWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
+        output.viewDirTS.xyz = normalize(float3(
             dot(worldTangent,viewDirWS),
             dot(worldBinormal,viewDirWS),
             dot(worldNormal,viewDirWS)
@@ -82,9 +85,16 @@ Varyings vert(Attributes input){
 }
 
 void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
-    half3 worldPos = half3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
-    half3 normalTS = siData.surfaceData.normalTS;
-    half3 normal = normalize(half3(
+    float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
+    float3 normalTS = siData.surfaceData.normalTS;
+
+    branch_if(_RainRippleOn){
+        float2 rippleUV = TRANSFORM_TEX(input.uv,_RippleTex);
+        half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,half3(0,1,0),_RippleSlopeAtten,_RippleSpeed,_RippleIntensity);
+        // normalTS += ripple;
+    }
+
+    float3 normal = normalize(float3(
         dot(normalTS,input.tSpace0.xyz),
         dot(normalTS,input.tSpace1.xyz),
         dot(normalTS,input.tSpace2.xyz)
@@ -98,11 +108,11 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
     data.fogCoord = input.vertexLightAndFogFactor.w;
     data.vertexLighting = input.vertexLightAndFogFactor.xyz;
     data.bakedGI = CalcLightmapAndSH(normal,input.uv.zw,siData.lightmapSH,siData.lmSaturate);
-    data.normalizedScreenSpaceUV = (half2)0;
+    data.normalizedScreenSpaceUV = (float2)0;
     data.shadowMask = SampleShadowMask(input.uv.zw);
 }
 
-half4 fragTest(Varyings input,SurfaceInputData data){
+float4 fragTest(Varyings input,SurfaceInputData data){
     InputData inputData = data.inputData;
     return input.color.w;
     // return input.uv.y;
@@ -110,7 +120,7 @@ half4 fragTest(Varyings input,SurfaceInputData data){
     // return MainLightRealtimeShadow(data.inputData.shadowCoord,true);
     return MainLightShadow(inputData.shadowCoord,inputData.positionWS,inputData.shadowMask,_MainLightOcclusionProbes,data.isReceiveShadow);
     // return SampleShadowMask(input.uv.zw).xyzx;
-    // return SampleSH(half4(data.inputData.normalWS,1)).xyzx;
+    // return SampleSH(float4(data.inputData.normalWS,1)).xyzx;
     // return data.inputData.bakedGI.xyzx;
     // return dot(CalcCascadeId(data.inputData.positionWS),0.25); // show cascade id
     // return data.inputData.vertexLighting.xyzx;
@@ -118,22 +128,33 @@ half4 fragTest(Varyings input,SurfaceInputData data){
     return 0;
 }
 
-half4 frag(Varyings input):SV_Target{
+float4 frag(Varyings input):SV_Target{
     // return unity_SpecCube0_ProbePosition;
     
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+    // global vars
+    float2 screenUV = input.pos.xy/_ScreenParams.xy;
+    float vertexNoise = input.fogCoord.z;
 
     SurfaceInputData data = (SurfaceInputData)0;
     ApplyParallax(input.uv.xy/**/,input.viewDirTS.xyz);
+
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
+    // return data.surfaceData.normalTS.xyzx;
 
     InitInputData(input,data,data.inputData/*inout*/);
 // return fragTest(input,data);
 
-    // half4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
+    // float4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
     data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity,data.inputData.normalWS);
-    half4 color = CalcPBR(data);
+    
+    Light mainLight = GetMainLight(data);
+
+    float rainAtten = (vertexNoise+0.5) * mainLight.shadowAttenuation;
+    ApplyRain(data.surfaceData/**/,screenUV,data.inputData.normalWS,rainAtten);
+
+    float4 color = CalcPBR(data,mainLight);
 // return input.fogCoord.x;
     ApplyFog(color/**/,input.fogCoord,data.inputData.fogCoord,data.inputData.positionWS);
 

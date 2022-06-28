@@ -1,16 +1,10 @@
 #if !defined(POWER_LIT_INPUT_HLSL)
 #define POWER_LIT_INPUT_HLSL
-#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Version.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-// #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
-// #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl"
-#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
-// #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceData.hlsl"
-// #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+
+#include "PowerLitCommon.hlsl"
+
 #include "PowerSurfaceInputData.hlsl"
 #include "NatureLib.hlsl"
-#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
-#include "PowerLitCommon.hlsl"
 #include "ParallaxMapping.hlsl"
 #include "FogLib.hlsl"
 
@@ -24,59 +18,65 @@ TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 TEXTURE2D(_ReflectionTex);SAMPLER(sampler_ReflectionTex); // planer reflection camera, use screenUV
 TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
+TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 
 
 #if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
 CBUFFER_START(UnityPerMaterial)
-    half4 _BaseMap_ST;
-    half4 _Color;
+    float4 _BaseMap_ST;
+    float4 _Color;
 
-    half4 _NormalMap_ST;
-    half _NormalScale;
-    half _Metallic,_Smoothness,_Occlusion;
+    float4 _NormalMap_ST;
+    float _NormalScale;
+    float _Metallic,_Smoothness,_Occlusion;
     int _MetallicChannel,_SmoothnessChannel,_OcclusionChannel;
-    half _ClipOn;
-    half _Cutoff;
+    float _ClipOn;
+    float _Cutoff;
 
-    half _EmissionOn;
-    half4 _EmissionColor;
+    float _EmissionOn;
+    float4 _EmissionColor;
 
-    half _AlphaPremultiply;
-    half _IsReceiveShadow;
+    float _AlphaPremultiply;
+    float _IsReceiveShadow;
 
-    half _LightmapSH;
-    half _LMSaturate;
+    float _LightmapSH;
+    float _LMSaturate;
 
-    half _IBLOn;
-    half _EnvIntensity;
-    half _IBLMaskMainTexA;
-    half4 _ReflectDirOffset;
+    float _IBLOn;
+    float _EnvIntensity;
+    float _IBLMaskMainTexA;
+    float4 _ReflectDirOffset;
 
-    half _CustomLightOn;
-    half4 _CustomLightDir;
-    half4 _CustomLightColor;
+    float _CustomLightOn;
+    float4 _CustomLightDir;
+    float4 _CustomLightColor;
 
-    half _FresnelIntensity;
+    float _FresnelIntensity;
 
-    half _WindOn;
-    half4 _WindAnimParam;
-    half4 _WindDir;
-    half _WindSpeed;
+    float _WindOn;
+    float4 _WindAnimParam;
+    float4 _WindDir;
+    float _WindSpeed;
 
-    half _PlanarReflectionOn;
+    float _PlanarReflectionOn;
 
-    half _SnowIntensity;
-    half _FogOn;
-    half _SphereFogOn;
-    half _FogNoiseOn;
+    float _SnowIntensity;
+    float _FogOn;
+    float _SphereFogOn;
+    float _FogNoiseOn;
 
-    half _ParallaxOn;
-    half _ParallaxHeight;
+    float _ParallaxOn;
+    float _ParallaxHeight;
     int _ParallaxMapChannel;
 
     int _RainRippleOn;
-    half4 _RippleTex_ST;
-    half _RippleSpeed;
+    float4 _RippleTex_ST;
+    float _RippleSpeed;
+    half _RippleSlopeAtten;
+    half _RippleIntensity;
+
+    half4 _RainColor;
+    half _RainSmoothness,_RainMetallic;
 CBUFFER_END
 
 // #if (SHADER_LIBRARY_VERSION_MAJOR < 12)
@@ -93,32 +93,32 @@ CBUFFER_END
 /**
 #if defined(INSTANCING_ON)
     UNITY_INSTANCING_BUFFER_START(PropBuffer)
-        UNITY_DEFINE_INSTANCED_PROP(half4,_BaseMap_ST)
-        UNITY_DEFINE_INSTANCED_PROP(half4,_Color)
-        UNITY_DEFINE_INSTANCED_PROP(half,_NormalScale)
-        UNITY_DEFINE_INSTANCED_PROP(half,_Metallic)
-        UNITY_DEFINE_INSTANCED_PROP(half,_Smoothness)
-        UNITY_DEFINE_INSTANCED_PROP(half,_Occlusion)
-        UNITY_DEFINE_INSTANCED_PROP(half,_MetallicChannel)
-        UNITY_DEFINE_INSTANCED_PROP(half,_SmoothnessChannel)
-        UNITY_DEFINE_INSTANCED_PROP(half,_OcclusionChannel)        
-        UNITY_DEFINE_INSTANCED_PROP(half,_ClipOn)
-        UNITY_DEFINE_INSTANCED_PROP(half,_Cutoff)
-        UNITY_DEFINE_INSTANCED_PROP(half,_EmissionOn)
-        UNITY_DEFINE_INSTANCED_PROP(half4,_EmissionColor)
-        UNITY_DEFINE_INSTANCED_PROP(half,_AlphaPremultiply)
-        UNITY_DEFINE_INSTANCED_PROP(half,_IsReceiveShadow)
-        UNITY_DEFINE_INSTANCED_PROP(half,_LightmapSH)
-        UNITY_DEFINE_INSTANCED_PROP(half,_IBLOn)
-        UNITY_DEFINE_INSTANCED_PROP(half,_EnvIntensity) 
-        UNITY_DEFINE_INSTANCED_PROP(half,_IBLMaskMainTexA) 
-        UNITY_DEFINE_INSTANCED_PROP(half4,_ReflectDirOffset)
-        UNITY_DEFINE_INSTANCED_PROP(half,_CustomLightOn)
-        UNITY_DEFINE_INSTANCED_PROP(half4,_CustomLightDir)
-        UNITY_DEFINE_INSTANCED_PROP(half4,_CustomLightColor)
-        UNITY_DEFINE_INSTANCED_PROP(half,_WindOn)
-        UNITY_DEFINE_INSTANCED_PROP(half4,_WindAnimParam)
-        UNITY_DEFINE_INSTANCED_PROP(half4,_WindDir)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_BaseMap_ST)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_Color)
+        UNITY_DEFINE_INSTANCED_PROP(float,_NormalScale)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Metallic)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Smoothness)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Occlusion)
+        UNITY_DEFINE_INSTANCED_PROP(float,_MetallicChannel)
+        UNITY_DEFINE_INSTANCED_PROP(float,_SmoothnessChannel)
+        UNITY_DEFINE_INSTANCED_PROP(float,_OcclusionChannel)        
+        UNITY_DEFINE_INSTANCED_PROP(float,_ClipOn)
+        UNITY_DEFINE_INSTANCED_PROP(float,_Cutoff)
+        UNITY_DEFINE_INSTANCED_PROP(float,_EmissionOn)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_EmissionColor)
+        UNITY_DEFINE_INSTANCED_PROP(float,_AlphaPremultiply)
+        UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadow)
+        UNITY_DEFINE_INSTANCED_PROP(float,_LightmapSH)
+        UNITY_DEFINE_INSTANCED_PROP(float,_IBLOn)
+        UNITY_DEFINE_INSTANCED_PROP(float,_EnvIntensity) 
+        UNITY_DEFINE_INSTANCED_PROP(float,_IBLMaskMainTexA) 
+        UNITY_DEFINE_INSTANCED_PROP(float4,_ReflectDirOffset)
+        UNITY_DEFINE_INSTANCED_PROP(float,_CustomLightOn)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightDir)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightColor)
+        UNITY_DEFINE_INSTANCED_PROP(float,_WindOn)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_WindAnimParam)
+        UNITY_DEFINE_INSTANCED_PROP(float4,_WindDir)
     UNITY_INSTANCING_BUFFER_END(PropBuffer)
 
     #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_BaseMap_ST)
@@ -153,81 +153,81 @@ CBUFFER_END
 // dots instancing
 #if defined(DOTS_INSTANCING_ON)
 UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-    UNITY_DOTS_INSTANCED_PROP(half4,_BaseMap_ST)
-    UNITY_DOTS_INSTANCED_PROP(half4,_Color)
-    UNITY_DOTS_INSTANCED_PROP(half,_NormalScale)
-    UNITY_DOTS_INSTANCED_PROP(half,_Metallic)
-    UNITY_DOTS_INSTANCED_PROP(half,_Smoothness)
-    UNITY_DOTS_INSTANCED_PROP(half,_Occlusion)
-    UNITY_DOTS_INSTANCED_PROP(half,_MetallicChannel)
-    UNITY_DOTS_INSTANCED_PROP(half,_SmoothnessChannel)
-    UNITY_DOTS_INSTANCED_PROP(half,_OcclusionChannel)
+    UNITY_DOTS_INSTANCED_PROP(float4,_BaseMap_ST)
+    UNITY_DOTS_INSTANCED_PROP(float4,_Color)
+    UNITY_DOTS_INSTANCED_PROP(float,_NormalScale)
+    UNITY_DOTS_INSTANCED_PROP(float,_Metallic)
+    UNITY_DOTS_INSTANCED_PROP(float,_Smoothness)
+    UNITY_DOTS_INSTANCED_PROP(float,_Occlusion)
+    UNITY_DOTS_INSTANCED_PROP(float,_MetallicChannel)
+    UNITY_DOTS_INSTANCED_PROP(float,_SmoothnessChannel)
+    UNITY_DOTS_INSTANCED_PROP(float,_OcclusionChannel)
 
-    UNITY_DOTS_INSTANCED_PROP(half,_ClipOn)
-    UNITY_DOTS_INSTANCED_PROP(half,_Cutoff)
-    UNITY_DOTS_INSTANCED_PROP(half,_EmissionOn)
-    UNITY_DOTS_INSTANCED_PROP(half4,_EmissionColor)
-    UNITY_DOTS_INSTANCED_PROP(half,_AlphaPremultiply)
-    UNITY_DOTS_INSTANCED_PROP(half,_IsReceiveShadow)
-    UNITY_DOTS_INSTANCED_PROP(half,_LightmapSH)
-    UNITY_DOTS_INSTANCED_PROP(half,_IBLOn)
-    UNITY_DOTS_INSTANCED_PROP(half,_EnvIntensity)
-    UNITY_DOTS_INSTANCED_PROP(half,_IBLMaskMainTexA)
-    UNITY_DOTS_INSTANCED_PROP(half4,_ReflectDirOffset)
-    UNITY_DOTS_INSTANCED_PROP(half,_CustomLightOn)
-    UNITY_DOTS_INSTANCED_PROP(half4,_CustomLightDir)
-    UNITY_DOTS_INSTANCED_PROP(half4,_CustomLightColor)
+    UNITY_DOTS_INSTANCED_PROP(float,_ClipOn)
+    UNITY_DOTS_INSTANCED_PROP(float,_Cutoff)
+    UNITY_DOTS_INSTANCED_PROP(float,_EmissionOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_EmissionColor)
+    UNITY_DOTS_INSTANCED_PROP(float,_AlphaPremultiply)
+    UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadow)
+    UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
+    UNITY_DOTS_INSTANCED_PROP(float,_IBLOn)
+    UNITY_DOTS_INSTANCED_PROP(float,_EnvIntensity)
+    UNITY_DOTS_INSTANCED_PROP(float,_IBLMaskMainTexA)
+    UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
+    UNITY_DOTS_INSTANCED_PROP(float,_CustomLightOn)
+    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightDir)
+    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightColor)
     UNITY_DOTS_INSTANCED_PROP(Float,_WindOn)
-    UNITY_DOTS_INSTANCED_PROP(half4,_WindAnimParam)
-    UNITY_DOTS_INSTANCED_PROP(half4,_WindDir)
+    UNITY_DOTS_INSTANCED_PROP(float4,_WindAnimParam)
+    UNITY_DOTS_INSTANCED_PROP(float4,_WindDir)
 UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 
-#define _Color UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half4,Metadata__Color)
-#define _NormalScale UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__NormalScale)
-#define _Metallic UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__Metallic)
-#define _Smoothness UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__Smoothness)
-#define _Occlusion UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__Occlusion)
-#define _MetallicChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__MetallicChannel)
-#define _SmoothnessChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__SmoothnessChannel)
-#define _OcclusionChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__OcclusionChannel)
-#define _ClipOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__ClipOn)
-#define _Cutoff UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__Cutoff)
-#define _EmissionOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__EmissionOn)
-#define _EmissionColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half4,Metadata__EmissionColor)
-#define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__AlphaPremultiply)
-#define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__IsReceiveShadow)
-#define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__LightmapSH)
-#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__IBLOnH)
-#define _EnvIntensity UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__EnvIntensity)
-#define _IBLMaskMainTexA UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__IBLMaskMainTexA)
-#define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__ReflectDirOffset)
-#define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__CustomLightOn)
-#define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__CustomLightDir)
-#define _CustomLightColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__CustomLightColor)
-#define _WindOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half,Metadata__WindOn)
-#define _WindAnimParam UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half4,Metadata__WindAnimParam)
-#define _WindDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(half4,Metadata__WindDir)
+#define _Color UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__Color)
+#define _NormalScale UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__NormalScale)
+#define _Metallic UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Metallic)
+#define _Smoothness UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Smoothness)
+#define _Occlusion UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Occlusion)
+#define _MetallicChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__MetallicChannel)
+#define _SmoothnessChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__SmoothnessChannel)
+#define _OcclusionChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__OcclusionChannel)
+#define _ClipOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ClipOn)
+#define _Cutoff UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Cutoff)
+#define _EmissionOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EmissionOn)
+#define _EmissionColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__EmissionColor)
+#define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__AlphaPremultiply)
+#define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
+#define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
+#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
+#define _EnvIntensity UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EnvIntensity)
+#define _IBLMaskMainTexA UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLMaskMainTexA)
+#define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ReflectDirOffset)
+#define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightOn)
+#define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightDir)
+#define _CustomLightColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightColor)
+#define _WindOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__WindOn)
+#define _WindAnimParam UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindAnimParam)
+#define _WindDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindDir)
 #endif
 */
 
 
 
-void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),half2 uv,half4 color,half cutoff,bool isClipOn,out half3 albedo,out half alpha ){
-    half4 c = SAMPLE_TEXTURE2D(mao,sampler_Map,uv) * color;
+void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
+    float4 c = SAMPLE_TEXTURE2D(mao,sampler_Map,uv) * color;
     albedo = c.rgb;
     alpha = c.a;
     branch_if(isClipOn)
         clip(alpha - cutoff);
 }
 
-half3 CalcNormal(half2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),half scale){
-    half4 c = SAMPLE_TEXTURE2D(normalMap,sampler_normalMap,uv);
-    half3 n = UnpackNormalScale(c,scale);
+float3 CalcNormal(float2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),float scale){
+    float4 c = SAMPLE_TEXTURE2D(normalMap,sampler_normalMap,uv);
+    float3 n = UnpackNormalScale(c,scale);
     return n;
 }
 
-half3 CalcEmission(half2 uv,TEXTURE2D_PARAM(map,sampler_map),half3 emissionColor,half isEmissionOn){
-    half4 emission = 0;
+float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor,float isEmissionOn){
+    float4 emission = 0;
     branch_if(isEmissionOn){
         emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
         emission.xyz *= emissionColor;
@@ -235,51 +235,21 @@ half3 CalcEmission(half2 uv,TEXTURE2D_PARAM(map,sampler_map),half3 emissionColor
     return emission.xyz * emission.w;
 }
 
-void ApplyParallax(inout half2 uv,half3 viewTS){
+void ApplyParallax(inout float2 uv,float3 viewTS){
     branch_if(_ParallaxOn){
-        half height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
+        float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
     
 }
 
-void InitSurfaceData(half2 uv,inout SurfaceData data){
-    // half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
-    // data.alpha = CalcAlpha(baseMap.w,_Color.a,_Cutoff,_ClipOn);
-    // data.albedo = baseMap.xyz * _Color.xyz;
-    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,_ClipOn,data.albedo/*out*/,data.alpha/*out*/);
 
-    half4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
-    data.metallic = metallicMask[_MetallicChannel] * _Metallic;
-    data.smoothness = metallicMask[_SmoothnessChannel] * _Smoothness;
-    data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
-
-    data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
-    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz,_EmissionOn);
-    data.specular = (half3)0;
-    data.clearCoatMask = 0;
-    data.clearCoatSmoothness =1;
+float3 ScreenToWorldPos(float2 screenUV){
+    float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
+    return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
 }
 
-void InitSurfaceInputData(half2 uv,half4 clipPos,inout SurfaceInputData data){
-    InitSurfaceData(uv,data.surfaceData /*inout*/);
-    data.isAlphaPremultiply = _AlphaPremultiply;
-    data.isReceiveShadow = _IsReceiveShadow && _MainLightShadowOn;
-    data.lightmapSH = _LightmapSH;
-    data.lmSaturate = _LMSaturate;
-
-    data.screenUV = clipPos.xy/_ScreenParams.xy;
-    branch_if(_PlanarReflectionOn)
-        data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
-}
-
-
-half3 MixRipple(float2 uv){
-    float2 rippleUV = TRANSFORM_TEX(uv,_RippleTex);
-    return ComputeRipple(_RippleTex,sampler_RippleTex,rippleUV,_Time.x * _RippleSpeed);
-}
-
-void ApplyFog(inout half4 color,half2 sphereFogCoord,half unityFogCoord,half3 worldPos){
+void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float3 worldPos){
     branch_if(!_FogOn)
         return;
 
@@ -290,5 +260,50 @@ void ApplyFog(inout half4 color,half2 sphereFogCoord,half unityFogCoord,half3 wo
     
     color.rgb = MixFog(color.rgb,unityFogCoord);
 }
-// data.surfaceData.normalTS += MixRipple(input.uv);
+
+void ApplyRain(inout SurfaceData data,float2 screenUV,float3 worldNormal,float atten){
+    if(!_RainRippleOn)
+        return;
+
+    float3 worldPos = ScreenToWorldPos(screenUV);
+    float2 rippleUV = TRANSFORM_TEX(worldPos.xz,_RippleTex);
+    half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,worldNormal,_RippleSlopeAtten,_RippleSpeed,_RippleIntensity);
+    half rippleCol = saturate((ripple.x) * atten );
+
+    // data.albedo = lerp(albedo,rippleCol.x,0.7);
+    data.albedo = data.albedo * _RainColor +  rippleCol;
+    data.metallic += _RainMetallic;
+    data.smoothness += _RainSmoothness;
+}
+
+void InitSurfaceData(float2 uv,inout SurfaceData data){
+    // float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
+    // data.alpha = CalcAlpha(baseMap.w,_Color.a,_Cutoff,_ClipOn);
+    // data.albedo = baseMap.xyz * _Color.xyz;
+    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,_ClipOn,data.albedo/*out*/,data.alpha/*out*/);
+
+    float4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
+    data.metallic = metallicMask[_MetallicChannel] * _Metallic;
+    data.smoothness = metallicMask[_SmoothnessChannel] * _Smoothness;
+    data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
+
+    data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
+    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz,_EmissionOn);
+    data.specular = (float3)0;
+    data.clearCoatMask = 0;
+    data.clearCoatSmoothness =1;
+
+}
+
+void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
+    InitSurfaceData(uv,data.surfaceData /*inout*/);
+    data.isAlphaPremultiply = _AlphaPremultiply;
+    data.isReceiveShadow = _IsReceiveShadow && _MainLightShadowOn;
+    data.lightmapSH = _LightmapSH;
+    data.lmSaturate = _LMSaturate;
+
+    data.screenUV = clipPos.xy/_ScreenParams.xy;
+    branch_if(_PlanarReflectionOn)
+        data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
+}
 #endif //POWER_LIT_INPUT_HLSL

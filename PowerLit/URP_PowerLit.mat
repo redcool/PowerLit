@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: e231e4c02c48ee14aafa55f7b1a843c1, type: 3}
+        m_Texture: {fileID: 2800000, guid: 68aee8197c2bca54d915cd63ef3519d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -49,7 +49,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _RippleTex:
         m_Texture: {fileID: 2800000, guid: 182ba5347a51e6c4593ac1f6c8083b9e, type: 3}
-        m_Scale: {x: 10, y: 10}
+        m_Scale: {x: 50, y: 50}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
@@ -62,25 +62,29 @@ Material:
     - _DstMode: 0
     - _EmissionOn: 0
     - _EnvIntensity: 1
-    - _FogOn: 1
+    - _FogNoiseOn: 0
+    - _FogOn: 0
     - _FresnelIntensity: 1
     - _IBLMaskMainTexA: 0
     - _IBLOn: 0
     - _IsReceiveShadow: 1
     - _LMSaturate: 1
     - _LightmapSH: 0.5
-    - _Metallic: 1
+    - _Metallic: 0.203
     - _MetallicChannel: 0
-    - _NormalScale: 0.13
-    - _Occlusion: 0.5
+    - _NormalScale: 2.86
+    - _Occlusion: 0.628
     - _OcclusionChannel: 2
     - _ParallaxHeight: 0.01
     - _ParallaxMapChannel: 3
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
     - _RainRippleOn: 1
-    - _RippleSpeed: 24.31
-    - _Smoothness: 1
+    - _RippleIntensity: 2.5
+    - _RippleSlope: 0.425
+    - _RippleSlopeAtten: 0.268
+    - _RippleSpeed: 7.85
+    - _Smoothness: 0.917
     - _SmoothnessChannel: 1
     - _SnowIntensity: 0
     - _SphereFogOn: 0
@@ -96,6 +100,7 @@ Material:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _FogDir: {r: 1, g: 1, b: 1, a: 1}
     - _FogDirIntensity: {r: 1, g: 0, b: 0, a: 0}
+    - _RainColor: {r: 0.41509432, g: 0.41509432, b: 0.41509432, a: 1}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _WindAnimParam: {r: 0, g: 0, b: 0, a: 0}
     - _WindDir: {r: 1, g: 0.1, b: 0, a: 1}

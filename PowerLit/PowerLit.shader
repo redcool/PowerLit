@@ -83,8 +83,8 @@ Shader "URP/PowerLit"
         [Header(Wind)]
         [GroupToggle]_WindOn("_WindOn (need vertex color.r)",float) = 0
         [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
-        [GroupVectorSlider(direction intensity,0_1)]_WindDir("_WindDir,dir:(xyz),intensity:(w)",vector) = (1,0.1,0,1)
-        _WindSpeed("_WindSpeed",range(0,2)) = 1
+        [GroupVectorSlider(WindVector Intensity,0_1)]_WindDir("_WindDir,dir:(xyz),Intensity:(w)",vector) = (1,0.1,0,0.5)
+        _WindSpeed("_WindSpeed",range(0,1)) = 0.3
   
         [Header(Snow)]
         _SnowIntensity("_SnowIntensity",range(0,1)) = 0
@@ -94,10 +94,16 @@ Shader "URP/PowerLit"
         [GroupToggle]_SphereFogOn("_SphereFogOn",int) = 0
         [GroupToggle]_FogNoiseOn("_FogNoiseOn",int) = 0
 
-        [Header(Rain)]
+        [Header(Rain Ripple)]
         [GroupToggle]_RainRippleOn("_RainRippleOn",int) = 0
         _RippleTex("_RippleTex",2d)=""{}
         _RippleSpeed("_RippleSpeed",float) = 1
+        _RippleSlopeAtten("_RippleSlopeAtten",range(0,1)) = 0.6
+        _RippleIntensity("_RippleIntensity",float) = 5
+        [Header(Rain)]
+        _RainColor("_RainColor",color) = (.5,.5,.5,1)
+        _RainMetallic("_RainMetallic",range(0.1,0.5)) = 0.1
+        _RainSmoothness("_RainSmoothness",range(0,0.5)) = 0.1
     } 
     SubShader
     {

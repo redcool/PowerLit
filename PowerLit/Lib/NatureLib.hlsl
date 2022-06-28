@@ -59,20 +59,22 @@ inline float4 AnimateVertex(float4 pos, float3 normal, float4 animParams,float4 
 
 
 
-float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir,half windSpeed){
-    float windIntensity = windDir.w;
-    // worldPos,normal, attenParam * animParam, windDir
+float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir,float windSpeed){
+    float localWindIntensity = windDir.w;
+    //Apply Global wind,  (xyz : dir, w : intensity)
     windDir += _GlobalWindDir;
 
-    float yAtten = saturate(vertex.y/10); // local position'y atten
-
+    // apply perlin noise
     float gradientNoise = unity_gradientNoise(worldPos.xz*0.1 + windDir.xz * _Time.y * windSpeed);
-    atten_AnimParam.w += windIntensity * gradientNoise*0.3;
-    // atten_AnimParam.w *= clamp(gradientNoise,-0.1,.1);
+    atten_AnimParam.w += localWindIntensity * gradientNoise*0.3;
+
+    // apply y atten
+    float yAtten = saturate(vertex.y/10); // local position'y atten
     atten_AnimParam *= yAtten;
 
     windDir.xyz = clamp(windDir.xyz,-1,1);
-    return AnimateVertex(float4(worldPos,1),normal,atten_AnimParam,windDir);
+    float4 animPos = AnimateVertex(float4(worldPos,1),normal,atten_AnimParam,windDir);
+    return animPos;
 }
 
 /**
@@ -124,6 +126,13 @@ float3 ComputeRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 uv, flo
 
 	float final = dropFactor * sin(clamp(move*9,0,4)*PI);
 	return float3(ripple.yz * final,1);
+}
+
+float3 CalcRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 rippleUV,float3 worldNormal,float slopeAtten,float speed,float rippleIntensity){
+    
+    half atten = saturate(dot(worldNormal,half3(0,1,0)) - slopeAtten);
+    half3 rippleCol = ComputeRipple(rippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * speed);
+    return rippleCol * atten * rippleIntensity;
 }
 
 #endif //NATURE_LIB_HLSL

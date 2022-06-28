@@ -47,8 +47,8 @@ namespace UnityEngine.Experimental.Rendering.Universal
             // Events before BeforeRenderingPrepasses should be used for input texture passes (shadow map, LUT, etc) that doesn't depend on the camera.
             // These events are filtering in the UI, but we still should prevent users from changing it from code or
             // by changing the serialized data.
-            if (settings.Event < RenderPassEvent.BeforeRenderingPrepasses)
-                settings.Event = RenderPassEvent.BeforeRenderingPrepasses;
+            if (settings.Event < RenderPassEvent.BeforeRenderingPrePasses)
+                settings.Event = RenderPassEvent.BeforeRenderingPrePasses;
 
             SetupFilterPassNames(ref filter);
 

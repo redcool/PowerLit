@@ -6,13 +6,13 @@
 #include "Shadows.hlsl"
 #include "GI.hlsl"
 
-half3 VertexLighting(half3 worldPos,half3 normal,bool isLightOn){
-    half3 c = (half3)0;
+float3 VertexLighting(float3 worldPos,float3 normal,bool isLightOn){
+    float3 c = (float3)0;
     branch_if(isLightOn){
         int count = GetAdditionalLightsCount();
         for(int i=0;i<count;i++){
             Light light = GetAdditionalLight(i,worldPos);
-            half3 lightColor = light.color * light.distanceAttenuation;
+            float3 lightColor = light.color * light.distanceAttenuation;
             c += LightingLambert(lightColor,light.direction,normal);
         }
     }
@@ -23,7 +23,7 @@ half3 VertexLighting(half3 worldPos,half3 normal,bool isLightOn){
 // Light 
 ***/
 
-Light GetMainLight(half4 shadowCoord,half3 worldPos,half4 shadowMask,bool isReceiveShadow){
+Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isReceiveShadow){
     Light light = (Light)0;
     light.direction = _MainLightPosition.xyz;
     light.color = _MainLightColor.rgb;
@@ -39,14 +39,14 @@ void OffsetMainLight(inout Light mainLight){
     }
 }
 
-// half3 SafeNormalize(half3 v){
-//     half len = max(0.0000001,dot(v,v));
+// float3 SafeNormalize(float3 v){
+//     float len = max(0.0000001,dot(v,v));
 //     return v/rsqrt(len);
 // }
 
-void InitBRDFData(SurfaceInputData surfaceInputData,inout half alpha,out BRDFData brdfData){
+void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFData brdfData){
     SurfaceData surfaceData = surfaceInputData.surfaceData;
-    half oneMinusReflectivityMetallic = OneMinusReflectivityMetallic(surfaceData.metallic);
+    float oneMinusReflectivityMetallic = OneMinusReflectivityMetallic(surfaceData.metallic);
     
     brdfData = (BRDFData)0;
     // brdfData.albedo = surfaceData.albedo;
@@ -70,14 +70,14 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout half alpha,out BRDFDat
     Minimalist cook torrance
     r2/(d*d * lh*lh *(4r+2))
 ***/
-half3 CalcDirectSpecularTerm(half r/*roughness*/,half3 lightDir,half3 viewDir,half3 normal){
-    half3 h = SafeNormalize(lightDir + viewDir);
-    half nh = saturate(dot(normal,h));
-    half lh = saturate(dot(lightDir,h));
+float3 CalcDirectSpecularTerm(float r/*roughness*/,float3 lightDir,float3 viewDir,float3 normal){
+    float3 h = SafeNormalize(lightDir + viewDir);
+    float nh = saturate(dot(normal,h));
+    float lh = saturate(dot(lightDir,h));
 
-    half r2 = r * r;
-    half d = nh * nh * (r2-1)+1;
-    half specTerm = r2/( d * d * max(0.1, lh * lh) * ( 4 * r + 2 ));
+    float r2 = r * r;
+    float d = nh * nh * (r2-1)+1;
+    float specTerm = r2/( d * d * max(0.1, lh * lh) * ( 4 * r + 2 ));
 
     #if defined (SHADER_API_MOBILE) || defined (SHADER_API_SWITCH)
         specTerm = clamp(specTerm,0,100);
@@ -87,19 +87,19 @@ half3 CalcDirectSpecularTerm(half r/*roughness*/,half3 lightDir,half3 viewDir,ha
 
 
 
-half3 CalcPBRLighting(BRDFData brdfData,half3 lightColor,half3 lightDir,half lightAtten,
-    half3 normal,half3 viewDir){
-    half nl = saturate(dot(normal,lightDir));
-    half3 radiance = lightColor * lightAtten * nl; // light's color
+float3 CalcPBRLighting(BRDFData brdfData,float3 lightColor,float3 lightDir,float lightAtten,
+    float3 normal,float3 viewDir){
+    float nl = saturate(dot(normal,lightDir));
+    float3 radiance = lightColor * lightAtten * nl; // light's color
 
-    half3 brdf = brdfData.diffuse;
+    float3 brdf = brdfData.diffuse;
     brdf += brdfData.specular * CalcDirectSpecularTerm(brdfData.roughness,lightDir,viewDir,normal);
     return brdf * radiance;
 }
 
-half3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,half4 shadowMask){
+float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 shadowMask){
     uint lightCount = GetAdditionalLightsCount();
-    half3 c = (half3)0;
+    float3 c = (float3)0;
     for(uint i=0;i<lightCount;i++){
         Light light = GetAdditionalLight(i,inputData.positionWS,shadowMask);
         c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
@@ -107,21 +107,26 @@ half3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,half4 shad
     return c;
 }
 
-half4 CalcPBR(SurfaceInputData data){
+Light GetMainLight(SurfaceInputData data){
+    float4 shadowMask = CalcShadowMask(data.inputData);
+    Light mainLight = GetMainLight(data.inputData.shadowCoord,data.inputData.positionWS,shadowMask,data.isReceiveShadow);
+    return mainLight;
+}
+
+float4 CalcPBR(SurfaceInputData data,Light mainLight){
     SurfaceData surfaceData = data.surfaceData;
     InputData inputData = data.inputData;
 
     BRDFData brdfData;
     InitBRDFData(data,surfaceData.alpha/*inout*/,brdfData/*out*/);
-
-    half4 shadowMask = CalcShadowMask(inputData);
-    Light mainLight = GetMainLight(inputData.shadowCoord,inputData.positionWS,shadowMask,data.isReceiveShadow);
+    
+    float4 shadowMask = CalcShadowMask(data.inputData);
     OffsetMainLight(mainLight);
     
     MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
     
-    half customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
-    half3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
+    float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
+    float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
     color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     color += surfaceData.emission;
 
@@ -133,7 +138,7 @@ half4 CalcPBR(SurfaceInputData data){
         color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
     }
 
-    return half4(color,surfaceData.alpha);
+    return float4(color,surfaceData.alpha);
 }
 
 #endif //LIGHTING_HLSL

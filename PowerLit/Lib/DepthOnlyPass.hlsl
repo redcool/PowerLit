@@ -3,13 +3,13 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
 struct appdata{
-    half4 pos:POSITION;
-    half2 uv:TEXCOORD;
+    float4 pos:POSITION;
+    float2 uv:TEXCOORD;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 struct v2f{
-    half4 pos:SV_POSITION;
-    half2 uv:TEXCOORD;
+    float4 pos:SV_POSITION;
+    float2 uv:TEXCOORD;
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
@@ -22,8 +22,8 @@ v2f vert(appdata input){
     output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
     return output;
 }
-half4 frag(v2f input):SV_Target{
-    half4 col = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
+float4 frag(v2f input):SV_Target{
+    float4 col = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
     branch_if(_ClipOn){
         clip(col - _Cutoff);
     }

@@ -70,7 +70,7 @@ namespace PowerUtilities
         {
             Shader.SetGlobalFloat(nameof(_GlobalFogIntensity), _GlobalFogIntensity);
             Shader.SetGlobalFloat(nameof(_GlobalRainIntensity), _GlobalRainIntensity);
-            Shader.SetGlobalFloat(nameof(_GlobalSnowIntensity), _GlobalSnowIntensity);
+            Shader.SetGlobalFloat(nameof(_GlobalSnowIntensity), Mathf.SmoothStep(0,1,_GlobalSnowIntensity));
 
             var forward = transform.forward;
             Shader.SetGlobalVector("_GlobalWindDir", new Vector4(forward.x, forward.y, forward.z, _GlobalWindIntensity));

@@ -68,7 +68,8 @@ inline float4 AnimateVertex(float4 pos, float3 normal, float4 animParams,float4 
 float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir,float windSpeed){
     float localWindIntensity = windDir.w;
     //Apply Global wind,  (xyz : dir, w : intensity)
-    windDir += _GlobalWindDir;
+    windDir.xyz += _GlobalWindDir;
+    windDir.w *= _GlobalWindDir.w;
 
     // apply perlin noise
     float gradientNoise = unity_gradientNoise(worldPos.xz*0.1 + windDir.xz * _Time.y * windSpeed);
@@ -111,22 +112,18 @@ void SimpleWave(inout float3 worldPos,float3 vertex,float3 vertexColor,float ben
 /**
     Simple Snow from albedo
 */
-float3 MixSnow(float3 albedo,float3 snowColor,float intensity,float3 worldNormal,bool useNormalOnly){
+float3 MixSnow(float3 albedo,float3 snowColor,float intensity,float3 worldNormal,bool applyEdgeOn){
     float dirAtten = saturate(dot(worldNormal,_GlobalWindDir)); // filter by dir
 
     float rate = 0;
-    UNITY_BRANCH if(useNormalOnly){
-        half upAtten = dot(worldNormal,half3(0,1,0));
-        rate = saturate(upAtten + dirAtten);
-    }
-    else{
-        float g = dot(float3(0.2,0.7,0.02),albedo);
-        rate = smoothstep(0.4,0.2,g*intensity);
-        rate = max(rate , dirAtten);
-        rate = smoothstep(.8,.2,rate);
-    }
+    half upAtten = dot(worldNormal,half3(0,1,0));
+    rate = saturate(upAtten + dirAtten);
 
-    return lerp(albedo,snowColor,rate * _GlobalSnowIntensity);
+    UNITY_BRANCH if(applyEdgeOn){
+        float g = dot(float3(0.2,0.7,0.02),albedo) ;
+        rate = smoothstep(.1,.2,rate*g);
+    }
+    return lerp(albedo,snowColor,rate * intensity * _GlobalSnowIntensity);
 }
 
 float3 ComputeRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 uv, float t)

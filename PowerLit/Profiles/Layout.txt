@@ -11,6 +11,6 @@ Parallax=_ParallaxOn,_ParallaxMap,_ParallaxMapChannel,_ParallaxHeight
 Env=_CustomLightOn,_CustomLightDir,_CustomLightColor,_IBLOn,_IBLCube,_EnvIntensity,_IBLMaskMainTexA,_ReflectDirOffset,_FresnelIntensity,_LightmapSH,_LMSaturate,_PlanarReflectionOn
 Emission=_EmissionOn,_EmissionMap,_EmissionColor,_Emission,_BakeEmissionOn
 Wind = _WindOn,_WindAnimParam,_WindDir,_WindSpeed
-Snow = _SnowOn,_SnowUseNormalOnly,_SnowIntensity
+Snow = _SnowOn,_ApplyEdgeOn,_SnowIntensity
 Fog = _FogOn,_SphereFogOn,_FogNoiseOn
 Rain = _RainOn,_RippleTex,_RippleSpeed,_RippleSlopeAtten,_RippleIntensity,_RainColor,_RainMetallic,_RainSmoothness

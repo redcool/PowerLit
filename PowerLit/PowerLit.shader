@@ -88,7 +88,7 @@ Shader "URP/PowerLit"
   
         [Header(Snow)]
         [GroupToggle]_SnowOn("_SnowOn",int) = 0
-        [GroupToggle]_SnowUseNormalOnly("_SnowUseNormalOnly",int) = 0
+        [GroupToggle]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
         _SnowIntensity("_SnowIntensity",range(0,1)) = 0
 
         [Header(Fog)]
@@ -102,7 +102,7 @@ Shader "URP/PowerLit"
         _RippleSpeed("_RippleSpeed",float) = 10
         _RippleSlopeAtten("_RippleSlopeAtten",range(0,1)) = 0.6
         _RippleIntensity("_RippleIntensity",float) = 2
-        
+
         [Header(Rain)]
         _RainColor("_RainColor",color) = (.5,.5,.5,1)
         _RainMetallic("_RainMetallic",range(0,0.5)) = 0.1

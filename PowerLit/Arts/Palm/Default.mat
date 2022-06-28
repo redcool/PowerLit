@@ -98,6 +98,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaPremultiply: 0
+    - _ApplyEdgeOn: 1
     - _BakeEmissionOn: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -139,7 +140,9 @@ Material:
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
     - _QueueOffset: -11
+    - _RainMetallic: 0.1
     - _RainOn: 1
+    - _RainSmoothness: 0.1
     - _ReceiveShadows: 1
     - _RippleIntensity: 2.5
     - _RippleSlope: 0.617
@@ -148,7 +151,9 @@ Material:
     - _Smoothness: 0
     - _SmoothnessChannel: 1
     - _SmoothnessTextureChannel: 0
-    - _SnowIntensity: 0.398
+    - _SnowIntensity: 1
+    - _SnowOn: 1
+    - _SnowUseNormalOnly: 0
     - _SpecularHighlights: 1
     - _SphereFogOn: 1
     - _SrcBlend: 1

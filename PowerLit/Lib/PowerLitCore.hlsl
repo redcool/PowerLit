@@ -78,7 +78,7 @@ void ApplySnow(inout SurfaceData data,half3 worldNormal){
     branch_if(! IsSnowOn())
         return;
     
-    data.albedo = MixSnow(data.albedo,1,_SnowIntensity,worldNormal,_SnowUseNormalOnly);
+    data.albedo = MixSnow(data.albedo,1,_SnowIntensity,worldNormal,_ApplyEdgeOn);
 }
 
 void InitSurfaceData(float2 uv,inout SurfaceData data){

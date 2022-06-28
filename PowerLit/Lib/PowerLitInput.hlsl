@@ -56,7 +56,7 @@ CBUFFER_START(UnityPerMaterial)
 //--------------------------------- Rain
     float _SnowOn;
     float _SnowIntensity;
-    float _SnowUseNormalOnly;
+    float _ApplyEdgeOn;
 //--------------------------------- Fog
     float _FogOn;
     float _SphereFogOn;

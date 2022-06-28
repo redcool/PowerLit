@@ -148,8 +148,8 @@ float4 frag(Varyings input):SV_Target{
 
     // float4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
 
-    ApplySnow(data.surfaceData,data.inputData.normalWS);
-    
+    ApplySnow(data.surfaceData/**/,data.inputData.normalWS);
+    // return data.surfaceData.albedo.xyzx;
     Light mainLight = GetMainLight(data);
 
     float rainAtten = (vertexNoise+0.5) * mainLight.shadowAttenuation;

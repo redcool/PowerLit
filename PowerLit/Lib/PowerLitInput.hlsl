@@ -3,12 +3,6 @@
 
 #include "PowerLitCommon.hlsl"
 
-#include "PowerSurfaceInputData.hlsl"
-#include "NatureLib.hlsl"
-#include "ParallaxMapping.hlsl"
-#include "FogLib.hlsl"
-
-
 TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
 TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
 TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
@@ -23,16 +17,16 @@ TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 
 #if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
 CBUFFER_START(UnityPerMaterial)
+//--------------------------------- Main
     float4 _BaseMap_ST;
     float4 _Color;
-
     float4 _NormalMap_ST;
     float _NormalScale;
     float _Metallic,_Smoothness,_Occlusion;
     int _MetallicChannel,_SmoothnessChannel,_OcclusionChannel;
     float _ClipOn;
     float _Cutoff;
-
+//--------------------------------- Emission
     float _EmissionOn;
     float4 _EmissionColor;
 
@@ -41,35 +35,38 @@ CBUFFER_START(UnityPerMaterial)
 
     float _LightmapSH;
     float _LMSaturate;
-
+//--------------------------------- IBL
     float _IBLOn;
     float _EnvIntensity;
     float _IBLMaskMainTexA;
     float4 _ReflectDirOffset;
-
+//--------------------------------- Custom Light
     float _CustomLightOn;
     float4 _CustomLightDir;
     float4 _CustomLightColor;
 
     float _FresnelIntensity;
-
+//--------------------------------- Wind
     float _WindOn;
     float4 _WindAnimParam;
     float4 _WindDir;
     float _WindSpeed;
-
+//--------------------------------- Plannar Reflection
     float _PlanarReflectionOn;
-
+//--------------------------------- Rain
+    float _SnowOn;
     float _SnowIntensity;
+    float _SnowUseNormalOnly;
+//--------------------------------- Fog
     float _FogOn;
     float _SphereFogOn;
     float _FogNoiseOn;
-
+//--------------------------------- Parallax
     float _ParallaxOn;
     float _ParallaxHeight;
     int _ParallaxMapChannel;
-
-    int _RainRippleOn;
+//--------------------------------- Rain
+    int _RainOn;
     float4 _RippleTex_ST;
     float _RippleSpeed;
     half _RippleSlopeAtten;
@@ -78,6 +75,13 @@ CBUFFER_START(UnityPerMaterial)
     half4 _RainColor;
     half _RainSmoothness,_RainMetallic;
 CBUFFER_END
+
+
+
+#define IsFogOn() (_IsGlobalFogOn && _FogOn)
+#define IsRainOn() (_IsGlobalRainOn && _RainOn)
+#define IsSnowOn() (_IsGlobalSnowOn && _SnowOn)
+#define IsWindOn() (_IsGlobalWindOn && _WindOn)
 
 // #if (SHADER_LIBRARY_VERSION_MAJOR < 12)
 // this block must define in UnityPerDraw cbuffer, change UnityInput.hlsl
@@ -210,100 +214,4 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #endif
 */
 
-
-
-void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
-    float4 c = SAMPLE_TEXTURE2D(mao,sampler_Map,uv) * color;
-    albedo = c.rgb;
-    alpha = c.a;
-    branch_if(isClipOn)
-        clip(alpha - cutoff);
-}
-
-float3 CalcNormal(float2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),float scale){
-    float4 c = SAMPLE_TEXTURE2D(normalMap,sampler_normalMap,uv);
-    float3 n = UnpackNormalScale(c,scale);
-    return n;
-}
-
-float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor,float isEmissionOn){
-    float4 emission = 0;
-    branch_if(isEmissionOn){
-        emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
-        emission.xyz *= emissionColor;
-    }
-    return emission.xyz * emission.w;
-}
-
-void ApplyParallax(inout float2 uv,float3 viewTS){
-    branch_if(_ParallaxOn){
-        float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
-        uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
-    }
-    
-}
-
-
-float3 ScreenToWorldPos(float2 screenUV){
-    float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
-    return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
-}
-
-void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float3 worldPos){
-    branch_if(!_FogOn)
-        return;
-
-    branch_if(_SphereFogOn){
-        BlendFogSphere(worldPos,sphereFogCoord,true,_FogNoiseOn,color.rgb/**/);
-        return;
-    }
-    
-    color.rgb = MixFog(color.rgb,unityFogCoord);
-}
-
-void ApplyRain(inout SurfaceData data,float2 screenUV,float3 worldNormal,float atten){
-    if(!_RainRippleOn)
-        return;
-
-    float3 worldPos = ScreenToWorldPos(screenUV);
-    float2 rippleUV = TRANSFORM_TEX(worldPos.xz,_RippleTex);
-    half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,worldNormal,_RippleSlopeAtten,_RippleSpeed,_RippleIntensity);
-    half rippleCol = saturate((ripple.x) * atten );
-
-    // data.albedo = lerp(albedo,rippleCol.x,0.7);
-    data.albedo = data.albedo * _RainColor +  rippleCol;
-    data.metallic += _RainMetallic;
-    data.smoothness += _RainSmoothness;
-}
-
-void InitSurfaceData(float2 uv,inout SurfaceData data){
-    // float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
-    // data.alpha = CalcAlpha(baseMap.w,_Color.a,_Cutoff,_ClipOn);
-    // data.albedo = baseMap.xyz * _Color.xyz;
-    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,_ClipOn,data.albedo/*out*/,data.alpha/*out*/);
-
-    float4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
-    data.metallic = metallicMask[_MetallicChannel] * _Metallic;
-    data.smoothness = metallicMask[_SmoothnessChannel] * _Smoothness;
-    data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
-
-    data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
-    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz,_EmissionOn);
-    data.specular = (float3)0;
-    data.clearCoatMask = 0;
-    data.clearCoatSmoothness =1;
-
-}
-
-void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
-    InitSurfaceData(uv,data.surfaceData /*inout*/);
-    data.isAlphaPremultiply = _AlphaPremultiply;
-    data.isReceiveShadow = _IsReceiveShadow && _MainLightShadowOn;
-    data.lightmapSH = _LightmapSH;
-    data.lmSaturate = _LMSaturate;
-
-    data.screenUV = clipPos.xy/_ScreenParams.xy;
-    branch_if(_PlanarReflectionOn)
-        data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
-}
 #endif //POWER_LIT_INPUT_HLSL

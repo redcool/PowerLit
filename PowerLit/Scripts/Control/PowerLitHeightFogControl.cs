@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
-public class HeightFogControl : MonoBehaviour
+public class PowerLitHeightFogControl : MonoBehaviour
 {
     [Header("HeightFog")]
     public float _HeightFogMin = 0;
@@ -16,8 +16,8 @@ public class HeightFogControl : MonoBehaviour
     public float _FogMax = 100;
     public Color _FogNearColor,_FogFarColor;
     [Header("Noise")]
-    public Vector3 _FogNoiseDir = Vector3.one;
-    [Range(0,1)]public float _FogNoiseTiling = 1;
+    public Vector3 _FogNoiseDir = new Vector3(0.1f,0,0);
+    [Range(0,1)]public float _FogNoiseTiling = .1f;
     [Range(0.02f, 0.99f)] public float _FogNoiseStartRate = 0.1f;
     [Range(0,1)]public float _FogNoiseIntensity = 1;
 

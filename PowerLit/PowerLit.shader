@@ -87,6 +87,8 @@ Shader "URP/PowerLit"
         _WindSpeed("_WindSpeed",range(0,1)) = 0.3
   
         [Header(Snow)]
+        [GroupToggle]_SnowOn("_SnowOn",int) = 0
+        [GroupToggle]_SnowUseNormalOnly("_SnowUseNormalOnly",int) = 0
         _SnowIntensity("_SnowIntensity",range(0,1)) = 0
 
         [Header(Fog)]
@@ -95,47 +97,45 @@ Shader "URP/PowerLit"
         [GroupToggle]_FogNoiseOn("_FogNoiseOn",int) = 0
 
         [Header(Rain Ripple)]
-        [GroupToggle]_RainRippleOn("_RainRippleOn",int) = 0
+        [GroupToggle]_RainOn("_RainOn",int) = 0
         _RippleTex("_RippleTex",2d)=""{}
-        _RippleSpeed("_RippleSpeed",float) = 1
+        _RippleSpeed("_RippleSpeed",float) = 10
         _RippleSlopeAtten("_RippleSlopeAtten",range(0,1)) = 0.6
-        _RippleIntensity("_RippleIntensity",float) = 5
+        _RippleIntensity("_RippleIntensity",float) = 2
+        
         [Header(Rain)]
         _RainColor("_RainColor",color) = (.5,.5,.5,1)
-        _RainMetallic("_RainMetallic",range(0.1,0.5)) = 0.1
+        _RainMetallic("_RainMetallic",range(0,0.5)) = 0.1
         _RainSmoothness("_RainSmoothness",range(0,0.5)) = 0.1
     } 
     SubShader
     {
-        Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
-        LOD 100
-
-        Pass
-        {
-            /*
-            no dir lightmap
+/*
+no dir lightmap
 powerUrpLit
 1 GI计算与Lit保持一致
-2 shadowcaster算法保持一致
+2 shadowcaster
 3 clip,blend,depth,cullMode暴露出来
 4 shadow receiver
 5 lightmap
 6 shadow cascade 
 7 multi lights(vertex,fragment)
 8 shadowMask 
-
-Todo:
-multi lights shadows
-detail map
 wind
 snow
 rain
 sphere fog
 box projection unity 2021
 
+Todo:
+multi lights shadows
+detail map
+*/
+        Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
+        LOD 100
 
-
-            */
+        Pass
+        {
             blend [_SrcMode][_DstMode]
             zwrite[_ZWrite]
             ztest[_ZTest]
@@ -158,7 +158,7 @@ box projection unity 2021
             #pragma multi_compile_instancing
             #pragma multi_compile_fog
 
-            #include "Lib/PowerLitInput.hlsl"
+            #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"
             ENDHLSL
         }
@@ -172,7 +172,7 @@ box projection unity 2021
             #pragma multi_compile_instancing
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
-            #include "Lib/PowerLitInput.hlsl"
+            #include "Lib/PowerLitCore.hlsl"
             #include "Lib/ShadowCasterPass.hlsl"
 
             ENDHLSL
@@ -190,7 +190,7 @@ box projection unity 2021
             #pragma multi_compile_instancing
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
-            #include "Lib/PowerLitInput.hlsl"
+            #include "Lib/PowerLitCore.hlsl"
             #include "Lib/ShadowCasterPass.hlsl"
             ENDHLSL
         }
@@ -206,7 +206,7 @@ box projection unity 2021
             #pragma multi_compile_instancing
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
-            #include "Lib/PowerLitInput.hlsl"
+            #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitMetaPass.hlsl"
             ENDHLSL
         }

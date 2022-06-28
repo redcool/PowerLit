@@ -79,7 +79,7 @@ Material:
     - _ParallaxMapChannel: 3
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
-    - _RainRippleOn: 1
+    - _RainOn: 1
     - _RippleIntensity: 2.5
     - _RippleSlope: 0.425
     - _RippleSlopeAtten: 0.268

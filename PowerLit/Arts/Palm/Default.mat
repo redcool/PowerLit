@@ -139,7 +139,7 @@ Material:
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
     - _QueueOffset: -11
-    - _RainRippleOn: 1
+    - _RainOn: 1
     - _ReceiveShadows: 1
     - _RippleIntensity: 2.5
     - _RippleSlope: 0.617

@@ -6,18 +6,18 @@ namespace PowerUtilities
 #if UNITY_EDITOR
     using UnityEditor;
 
-    [CustomEditor(typeof(WeatherControl))]
-    public class WeatherControlEditor : Editor
+    [CustomEditor(typeof(PowerLitWeatherControl))]
+    public class PowerLitWeatherControlEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            WeatherControl control = (WeatherControl)target;
+            PowerLitWeatherControl control = (PowerLitWeatherControl)target;
 
             EditorGUI.BeginChangeCheck();
             base.OnInspectorGUI();
 
             EditorGUILayout.BeginVertical("Box");
-            EditorGUILayout.SelectableLabel("use transform.forward control Global Wind Dir", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Use transform.forward control Global Wind Dir",MessageType.None);
             EditorGUILayout.EndVertical();
 
             if (EditorGUI.EndChangeCheck() || control.transform.hasChanged)
@@ -31,15 +31,26 @@ namespace PowerUtilities
     /// <summary>
     /// update weather global params
     /// </summary>
-    public class WeatherControl : MonoBehaviour
+    [ExecuteInEditMode]
+    public class PowerLitWeatherControl : MonoBehaviour
     {
-        public const string _GlobalWindDir = nameof(_GlobalWindDir);
-        public const string _GlobalSnowIntensity = nameof(_GlobalSnowIntensity);
-
         WaitForSeconds aSecond = new WaitForSeconds(1);
 
-        [Range(0,1)]public float globalSnowIntensity = 1;
-        [Range(0, 10)] public float globalWindIntensity = 1;
+        [Header("Fog")]
+        public bool _IsGlobalFogOn;
+        [Range(0,1)]public float _GlobalFogIntensity = 1;
+
+        [Header("Rain")]
+        public bool _IsGlobalRainOn;
+        [Range(0, 1)] public float _GlobalRainIntensity = 1;
+
+        [Header("Snow")]
+        public bool _IsGlobalSnowOn;
+        [Range(0,1)]public float _GlobalSnowIntensity = 1;
+
+        [Header("Wind")]
+        public bool _IsGlobalWindOn;
+        [Range(0, 15)] public float _GlobalWindIntensity = 1;
 
         // Start is called before the first frame update
         void Start()
@@ -57,10 +68,17 @@ namespace PowerUtilities
         }
         public void UpdateWeatherParams()
         {
-            Shader.SetGlobalFloat(_GlobalSnowIntensity,globalSnowIntensity);
+            Shader.SetGlobalFloat(nameof(_GlobalFogIntensity), _GlobalFogIntensity);
+            Shader.SetGlobalFloat(nameof(_GlobalRainIntensity), _GlobalRainIntensity);
+            Shader.SetGlobalFloat(nameof(_GlobalSnowIntensity), _GlobalSnowIntensity);
 
             var forward = transform.forward;
-            Shader.SetGlobalVector(_GlobalWindDir, new Vector4(forward.x, forward.y, forward.z, globalWindIntensity));
+            Shader.SetGlobalVector("_GlobalWindDir", new Vector4(forward.x, forward.y, forward.z, _GlobalWindIntensity));
+
+            Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), _IsGlobalFogOn ? 1 : 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), _IsGlobalRainOn ? 1 : 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), _IsGlobalSnowOn ? 1 : 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), _IsGlobalWindOn ? 1 : 0);
         }
 
 #if UNITY_EDITOR

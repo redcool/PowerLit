@@ -3,7 +3,7 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-#include "PowerLitInput.hlsl"
+#include "PowerLitCore.hlsl"
 
 float3 _LightDirection;
 
@@ -26,10 +26,9 @@ float4 GetShadowPositionHClip(Attributes input)
     float3 normalWS = TransformObjectToWorldNormal(input.normal);
     
     float4 attenParam = input.color.x; // vertex color atten
-    branch_if(_WindOn){
+    branch_if(IsWindOn()){
         positionWS = WindAnimationVertex(positionWS,input.pos.xyz,normalWS,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
-
 
     float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
 

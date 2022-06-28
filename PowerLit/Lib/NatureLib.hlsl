@@ -5,8 +5,16 @@
 /**
     controlled by WeahterControl.cs
 */
-float4 _GlobalWindDir; /*global wind direction*/
+float4 _GlobalWindDir; /*global (xyz)wind direction,w : wind intensity*/
 float _GlobalSnowIntensity; 
+float _GlobalRainIntensity;
+float _GlobalFogIntensity;
+
+half _IsGlobalFogOn;
+half _IsGlobalRainOn;
+half _IsGlobalSnowOn;
+half _IsGlobalWindOn;
+
 
 float4 SmoothCurve( float4 x ) {
     return x * x *( 3.0 - 2.0 * x );
@@ -57,8 +65,6 @@ inline float4 AnimateVertex(float4 pos, float3 normal, float4 animParams,float4 
     return pos;
 }
 
-
-
 float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir,float windSpeed){
     float localWindIntensity = windDir.w;
     //Apply Global wind,  (xyz : dir, w : intensity)
@@ -105,15 +111,23 @@ void SimpleWave(inout float3 worldPos,float3 vertex,float3 vertexColor,float ben
 /**
     Simple Snow from albedo
 */
-float3 MixSnow(float3 albedo,float3 snowColor,float intensity,float3 worldNormal){
-    float g = dot(float3(0.2,0.7,0.02),albedo);
-    float rate = smoothstep(0.4,0.2,g*intensity * _GlobalSnowIntensity);
+float3 MixSnow(float3 albedo,float3 snowColor,float intensity,float3 worldNormal,bool useNormalOnly){
+    float dirAtten = saturate(dot(worldNormal,_GlobalWindDir)); // filter by dir
 
-    float dirAtten = saturate(dot(worldNormal,_GlobalWindDir.xyz)); // filter by dir
-    rate = max(rate , dirAtten);
-    return lerp(snowColor,albedo,smoothstep(.2,.8,rate));
+    float rate = 0;
+    UNITY_BRANCH if(useNormalOnly){
+        half upAtten = dot(worldNormal,half3(0,1,0));
+        rate = saturate(upAtten + dirAtten);
+    }
+    else{
+        float g = dot(float3(0.2,0.7,0.02),albedo);
+        rate = smoothstep(0.4,0.2,g*intensity);
+        rate = max(rate , dirAtten);
+        rate = smoothstep(.8,.2,rate);
+    }
+
+    return lerp(albedo,snowColor,rate * _GlobalSnowIntensity);
 }
-
 
 float3 ComputeRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 uv, float t)
 {
@@ -128,11 +142,10 @@ float3 ComputeRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 uv, flo
 	return float3(ripple.yz * final,1);
 }
 
-float3 CalcRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 rippleUV,float3 worldNormal,float slopeAtten,float speed,float rippleIntensity){
-    
+float3 CalcRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 rippleUV,float3 worldNormal,float slopeAtten,float speed,float intensity){
     half atten = saturate(dot(worldNormal,half3(0,1,0)) - slopeAtten);
     half3 rippleCol = ComputeRipple(rippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * speed);
-    return rippleCol * atten * rippleIntensity;
+    return rippleCol * atten * intensity;
 }
 
 #endif //NATURE_LIB_HLSL

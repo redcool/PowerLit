@@ -1,7 +1,7 @@
 #if !defined(POWER_LIT_FORWARD_PASS_HLSL)
 #define POWER_LIT_FORWARD_PASS_HLSL
 
-#include "PowerLitInput.hlsl"
+#include "PowerLitCore.hlsl"
 #include "Lighting.hlsl"
 
 struct Attributes{
@@ -42,7 +42,7 @@ Varyings vert(Attributes input){
     float3 worldNormal = TransformObjectToWorldNormal(input.normal);
 
     float4 attenParam = input.color.x; // vertex color atten
-    branch_if(_WindOn){
+    branch_if(IsWindOn()){
         worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
 
@@ -88,7 +88,7 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
     float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
     float3 normalTS = siData.surfaceData.normalTS;
 
-    branch_if(_RainRippleOn){
+    branch_if(IsRainOn()){
         float2 rippleUV = TRANSFORM_TEX(input.uv,_RippleTex);
         half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,half3(0,1,0),_RippleSlopeAtten,_RippleSpeed,_RippleIntensity);
         // normalTS += ripple;
@@ -147,7 +147,8 @@ float4 frag(Varyings input):SV_Target{
 // return fragTest(input,data);
 
     // float4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
-    data.surfaceData.albedo = MixSnow(data.surfaceData.albedo,1,_SnowIntensity,data.inputData.normalWS);
+
+    ApplySnow(data.surfaceData,data.inputData.normalWS);
     
     Light mainLight = GetMainLight(data);
 

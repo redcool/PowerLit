@@ -36,7 +36,7 @@ float2 CalcFogFactor(float3 worldPos){
     return fog;
 }
 
-void BlendFogSphere(float3 worldPos,float2 fog,bool hasHeightFog,bool fogNoiseOn,inout float3 mainColor){
+void BlendFogSphere(inout float3 mainColor,float3 worldPos,float2 fog,bool hasHeightFog,bool fogNoiseOn,half globalFogIntensity){
     float depthFactor = fog.x;
     branch_if(fogNoiseOn){
         float gradientNoise = unity_gradientNoise( (worldPos.xz+worldPos.yz) * _FogDirTiling.w+ _FogDirTiling.xz * _Time.y );
@@ -47,12 +47,12 @@ void BlendFogSphere(float3 worldPos,float2 fog,bool hasHeightFog,bool fogNoiseOn
         float3 heightFogColor = lerp(_HeightFogMinColor,_HeightFogMaxColor,fog.y).xyz;
         float heightFactor = smoothstep(0,0.1,fog.x)* (1-fog.y);
 
-        mainColor = lerp(mainColor,heightFogColor,heightFactor);
+        mainColor = lerp(mainColor,heightFogColor,heightFactor * globalFogIntensity);
         // mainColor = heightFactor;
         // return ;
     }
     float3 fogColor = lerp(_FogNearColor.rgb,unity_FogColor.rgb,fog.x);
-    mainColor = lerp(mainColor,fogColor, depthFactor);
+    mainColor = lerp(mainColor,fogColor, depthFactor * globalFogIntensity);
     // mainColor = depthFactor;
 }
 #endif //FOG_LIB_HLSL

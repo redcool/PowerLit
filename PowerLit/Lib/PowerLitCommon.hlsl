@@ -9,7 +9,7 @@
 // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceData.hlsl"
 // #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
-
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
 #define branch_if UNITY_BRANCH if
 

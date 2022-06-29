@@ -8,11 +8,14 @@ TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
 TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
 TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
 TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
+
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 TEXTURE2D(_ReflectionTex);SAMPLER(sampler_ReflectionTex); // planer reflection camera, use screenUV
 TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
+
+TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
 
 
 #if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
@@ -74,6 +77,11 @@ CBUFFER_START(UnityPerMaterial)
 
     half4 _RainColor;
     half _RainSmoothness,_RainMetallic;
+    half4 _RainCube_HDR;
+    half4 _RainCube_ST;
+    half3 _RainReflectDirOffset;
+    half _RainHeight;
+    half _RainReflectIntensity;
 CBUFFER_END
 
 

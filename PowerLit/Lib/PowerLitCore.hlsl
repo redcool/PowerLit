@@ -57,21 +57,49 @@ void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float
     color.rgb = MixFog(color.rgb,unityFogCoord);
 }
 
-void ApplyRain(inout SurfaceData data,float2 screenUV,float3 worldNormal,float atten){
+half3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float atten,half3 albedo){
+    float noise = unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + _GlobalWindDir.xz * _RainCube_ST.zw * _Time.y) + 0.5;
+    noise += unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + half2(_Time.x*-1,0)) + 0.5;
+
+    // float3 n = normalize(cross(ddy(worldPos),ddx(worldPos)));
+    // float atten1 = saturate(dot(n,half3(0,1,0)));
+    // reflect
+    float3 reflectDir = reflect(-worldView,worldNormal);
+    reflectDir += _RainReflectDirOffset + noise*1;
+    half4 envColor = SAMPLE_TEXTURECUBE(_RainCube,sampler_RainCube,reflectDir);
+    envColor.xyz = DecodeHDREnvironment(envColor,_RainCube_HDR);
+
+    half3 reflectCol = envColor.xyz * _RainReflectIntensity ;
+
+    // ripple
+    float2 rippleUV = (worldPos.xz+noise.x*0.01) * _RippleTex_ST.xy + _RippleTex_ST.zw;
+    half3 ripple = ComputeRipple(_RippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * _RippleSpeed) * _RippleIntensity;
+    half rippleCol = saturate((ripple.x) );
+    
+    // atten
+    float heightAtten =  (worldPos.y < _RainHeight);
+    float slopeAtten = dot(worldNormal,half3(0,1,0)) - _RippleSlopeAtten;
+    float reflectAtten = saturate(slopeAtten * heightAtten);
+
+    // data.albedo = lerp(albedo,rippleCol.x,0.7);
+    half3 rainColor = _RainColor;
+    rainColor += (reflectCol + rippleCol * atten) * reflectAtten /albedo;
+    return lerp(1,rainColor,_GlobalRainIntensity);
+}
+
+void ApplyRain(inout SurfaceData data,float2 screenUV,float3 worldNormal,float3 worldView,float atten){
     branch_if(!IsRainOn())
         return;
 
     float3 worldPos = ScreenToWorldPos(screenUV);
-    float2 rippleUV = TRANSFORM_TEX(worldPos.xz,_RippleTex);
 
-    half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,worldNormal,_RippleSlopeAtten,_RippleSpeed,_RippleIntensity);
-    half rippleCol = saturate((ripple.x) * atten ) * _GlobalRainIntensity;
 
-    // data.albedo = lerp(albedo,rippleCol.x,0.7);
-    half3 rainColor = lerp(1,_RainColor,_GlobalRainIntensity);
-    data.albedo = data.albedo * rainColor +  rippleCol;
+
+    data.albedo *= CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);
     data.metallic = saturate(data.metallic + _RainMetallic * _GlobalRainIntensity);
     data.smoothness = saturate(data.smoothness + _RainSmoothness * _GlobalRainIntensity);
+
+    // data.albedo = worldPos;
 }
 
 void ApplySnow(inout SurfaceData data,half3 worldNormal){

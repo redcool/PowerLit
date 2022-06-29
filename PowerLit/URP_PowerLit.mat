@@ -82,7 +82,7 @@ Material:
     - _RainOn: 1
     - _RippleIntensity: 2.5
     - _RippleSlope: 0.425
-    - _RippleSlopeAtten: 0.268
+    - _RainSlopeAtten: 0.268
     - _RippleSpeed: 7.85
     - _Smoothness: 0.917
     - _SmoothnessChannel: 1

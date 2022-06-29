@@ -90,7 +90,7 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
 
     // branch_if(IsRainOn()){
     //     float2 rippleUV = TRANSFORM_TEX(input.uv,_RippleTex);
-    //     half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,half3(0,1,0),_RippleSlopeAtten,_RippleSpeed,_RippleIntensity);
+    //     half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,half3(0,1,0),_RainSlopeAtten,_RippleSpeed,_RippleIntensity);
     //     // normalTS += ripple;
     // }
 
@@ -153,7 +153,7 @@ float4 frag(Varyings input):SV_Target{
     Light mainLight = GetMainLight(data);
 
     float rainAtten = (vertexNoise+0.5) * (mainLight.shadowAttenuation+0.25);
-    ApplyRain(data.surfaceData/**/,screenUV,data.inputData.normalWS,data.inputData.viewDirectionWS,rainAtten);
+    ApplyRain(data.surfaceData/**/,data.inputData.positionWS,data.inputData.normalWS,data.inputData.viewDirectionWS,rainAtten);
 
     float4 color = CalcPBR(data,mainLight);
 // return input.fogCoord.x;

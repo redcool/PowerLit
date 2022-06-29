@@ -58,8 +58,9 @@ void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float
 }
 
 half3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float atten,half3 albedo){
+    // cross noise
     float noise = unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + _GlobalWindDir.xz * _RainCube_ST.zw * _Time.y) + 0.5;
-    noise += unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + half2(_Time.x*-1,0)) + 0.5;
+    noise += unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + half2(_GlobalWindDir.x* - _Time.x,0) ) + 0.5;
 
     // float3 n = normalize(cross(ddy(worldPos),ddx(worldPos)));
     // float atten1 = saturate(dot(n,half3(0,1,0)));
@@ -78,28 +79,24 @@ half3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float at
     
     // atten
     float heightAtten =  (worldPos.y < _RainHeight);
-    float slopeAtten = dot(worldNormal,half3(0,1,0)) - _RippleSlopeAtten;
+    float slopeAtten = dot(worldNormal,half3(0,1,0)) - _RainSlopeAtten;
     float reflectAtten = saturate(slopeAtten * heightAtten);
-
-    // data.albedo = lerp(albedo,rippleCol.x,0.7);
+// return reflectAtten;
     half3 rainColor = _RainColor;
-    rainColor += (reflectCol + rippleCol * atten) * reflectAtten /albedo;
+    rainColor += (reflectCol + rippleCol * atten) * reflectAtten /albedo; // so composite reflectCol and rippleCol
     return lerp(1,rainColor,_GlobalRainIntensity);
 }
 
-void ApplyRain(inout SurfaceData data,float2 screenUV,float3 worldNormal,float3 worldView,float atten){
+void ApplyRain(inout SurfaceData data,float3 worldPos,float3 worldNormal,float3 worldView,float atten){
     branch_if(!IsRainOn())
         return;
 
-    float3 worldPos = ScreenToWorldPos(screenUV);
-
-
+    // float3 worldPos = ScreenToWorldPos(screenUV);
 
     data.albedo *= CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);
     data.metallic = saturate(data.metallic + _RainMetallic * _GlobalRainIntensity);
     data.smoothness = saturate(data.smoothness + _RainSmoothness * _GlobalRainIntensity);
-
-    // data.albedo = worldPos;
+    // data.albedo = CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);;
 }
 
 void ApplySnow(inout SurfaceData data,half3 worldNormal){

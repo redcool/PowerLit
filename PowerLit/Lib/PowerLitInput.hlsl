@@ -72,7 +72,7 @@ CBUFFER_START(UnityPerMaterial)
     int _RainOn;
     float4 _RippleTex_ST;
     float _RippleSpeed;
-    half _RippleSlopeAtten;
+    half _RainSlopeAtten;
     half _RippleIntensity;
 
     half4 _RainColor;

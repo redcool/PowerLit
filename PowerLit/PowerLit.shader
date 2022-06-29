@@ -100,13 +100,14 @@ Shader "URP/PowerLit"
         [GroupToggle]_RainOn("_RainOn",int) = 0
         _RippleTex("_RippleTex",2d)=""{}
         _RippleSpeed("_RippleSpeed",float) = 10
-        _RippleSlopeAtten("_RippleSlopeAtten",range(0,1)) = 0.6
         _RippleIntensity("_RippleIntensity",range(0,2)) = 1
 
-        [Header(Rain)]
+        [Header(Env)]
         _RainColor("_RainColor",color) = (.5,.5,.5,1)
         _RainMetallic("_RainMetallic",range(0,0.5)) = 0.1
         _RainSmoothness("_RainSmoothness",range(0,0.5)) = 0.1
+        [Header(Rain Atten)]
+        _RainSlopeAtten("_RainSlopeAtten",range(0,1)) = 0.6
 
         [Header(RainReflect)]
         _RainCube("_RainCube",cube)=""{}

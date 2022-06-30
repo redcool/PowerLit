@@ -74,6 +74,7 @@ CBUFFER_START(UnityPerMaterial)
     float _RippleSpeed;
     half _RainSlopeAtten;
     half _RippleIntensity;
+    half _RippleBlendNormalOn;
 
     half4 _RainColor;
     half _RainSmoothness,_RainMetallic;

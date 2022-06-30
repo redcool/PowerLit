@@ -87,12 +87,16 @@ Varyings vert(Attributes input){
 void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
     float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
     float3 normalTS = siData.surfaceData.normalTS;
+    float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
 
-    // branch_if(IsRainOn()){
-    //     float2 rippleUV = TRANSFORM_TEX(input.uv,_RippleTex);
-    //     half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,half3(0,1,0),_RainSlopeAtten,_RippleSpeed,_RippleIntensity);
-    //     // normalTS += ripple;
-    // }
+    branch_if(IsRainOn() && _RippleBlendNormalOn){
+        float2 rippleUV = TRANSFORM_TEX(worldPos.xz,_RippleTex);
+        float atten = saturate(dot(vertexNormal,half3(0,1,0))  - _RainSlopeAtten);
+        atten *= (worldPos.y < _RainHeight);
+        half3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity) * atten;
+
+        normalTS = BlendNormal(normalTS,normalTS + ripple);
+    }
 
     float3 normal = normalize(float3(
         dot(normalTS,input.tSpace0.xyz),

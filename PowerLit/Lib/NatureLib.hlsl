@@ -139,10 +139,9 @@ float3 ComputeRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 uv, flo
 	return float3(ripple.yz * final,1);
 }
 
-float3 CalcRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 rippleUV,float3 worldNormal,float slopeAtten,float speed,float intensity){
-    half atten = saturate(dot(worldNormal,half3(0,1,0)) - slopeAtten);
+float3 CalcRipple(TEXTURE2D_PARAM(rippleTex,sampler_RippleTex),float2 rippleUV,float speed,float intensity){
     half3 rippleCol = ComputeRipple(rippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * speed);
-    return rippleCol * atten * intensity;
+    return rippleCol * intensity;
 }
 
 #endif //NATURE_LIB_HLSL

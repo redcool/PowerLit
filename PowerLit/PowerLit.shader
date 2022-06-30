@@ -101,6 +101,7 @@ Shader "URP/PowerLit"
         _RippleTex("_RippleTex",2d)=""{}
         _RippleSpeed("_RippleSpeed",float) = 10
         _RippleIntensity("_RippleIntensity",range(0,2)) = 1
+        [GroupToggle]_RippleBlendNormalOn("_RippleBlendNormalOn",int) = 0
 
         [Header(Env)]
         _RainColor("_RainColor",color) = (.5,.5,.5,1)

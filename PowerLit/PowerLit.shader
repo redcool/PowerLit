@@ -181,6 +181,8 @@ detail map
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
             #include "Lib/PowerLitCore.hlsl"
+
+            #define SHADOW_PASS
             #include "Lib/ShadowCasterPass.hlsl"
 
             ENDHLSL

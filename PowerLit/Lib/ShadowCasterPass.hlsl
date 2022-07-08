@@ -29,8 +29,11 @@ float4 GetShadowPositionHClip(Attributes input)
     branch_if(IsWindOn()){
         positionWS = WindAnimationVertex(positionWS,input.pos.xyz,normalWS,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
-
+#if defined(SHADOW_PASS)
     float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
+#else
+    float4 positionCS = TransformWorldToHClip(positionWS);
+#endif
 
 #if UNITY_REVERSED_Z
     positionCS.z = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);

@@ -102,7 +102,9 @@ float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 sh
     float3 c = (float3)0;
     for(uint i=0;i<lightCount;i++){
         Light light = GetAdditionalLight(i,inputData.positionWS,shadowMask);
-        c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
+
+        branch_if(light.distanceAttenuation)
+            c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     }
     return c;
 }
@@ -127,7 +129,10 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight){
     
     float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
     float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
-    color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
+
+    branch_if(mainLight.distanceAttenuation)
+        color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
+    
     color += surfaceData.emission;
 
     branch_if(IsAdditionalLightVertex()){

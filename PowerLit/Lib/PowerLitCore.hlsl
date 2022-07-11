@@ -102,7 +102,7 @@ void ApplyRain(inout SurfaceData data,float3 worldPos,float3 worldNormal,float3 
 void ApplySurfaceBelow(inout SurfaceData data,float3 worldPos){
     half heightRate = saturate(worldPos.y -_SurfaceDepth);
     heightRate = smoothstep(0.02,0.1,heightRate);
-    data.albedo *= lerp(_BelowColor,1,heightRate);
+    data.albedo *= lerp(_BelowColor.xyz,1,heightRate);
 }
 
 void ApplySnow(inout SurfaceData data,half3 worldNormal){

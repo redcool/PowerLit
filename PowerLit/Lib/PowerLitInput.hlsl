@@ -36,10 +36,6 @@ CBUFFER_START(UnityPerMaterial)
 
     float _AlphaPremultiply;
     float _IsReceiveShadow;
-
-    float _LightmapSH;
-    float _LMSaturate;
-    float _LMIntensity;
 //--------------------------------- IBL
     float _IBLOn;
     float _EnvIntensity;
@@ -88,9 +84,6 @@ CBUFFER_START(UnityPerMaterial)
     half _SurfaceDepth;
     half4 _BelowColor;
 CBUFFER_END
-
-
-
 
 #define IsRainOn() (_IsGlobalRainOn && _RainOn)
 #define IsSnowOn() (_IsGlobalSnowOn && _SnowOn)

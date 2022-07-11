@@ -18,6 +18,7 @@ CBUFFER_START(RenderingData)
     int _MainLightMode; //{0 : disable,1 : pixel, 2 :vertex}
     int _AdditionalLightMode;
     bool _DistanceShadowMaskOn;
+    half4 _LightmapParams; // (lightmapSH,lightmapSaturate,lightmapIntensity)
 CBUFFER_END
 
 #define IsAdditionalLightVertex() (_AdditionalLightMode == LIGHT_MODE_VERTEX)
@@ -26,5 +27,9 @@ CBUFFER_END
 #define IsLightmapOn() (_LightmapOn)
 #define IsMainLightShadowCascadeOn() (_MainLightShadowCascadeOn)
 #define IsDistanceShadowMaskOn() (_Shadows_ShadowMaskOn && _DistanceShadowMaskOn)
+
+#define _LightmapSH _LightmapParams.x
+#define _LightmapSaturate _LightmapParams.y
+#define _LightmapIntensity _LightmapParams.z
 
 #endif //RENDERING_DATA_HLSL

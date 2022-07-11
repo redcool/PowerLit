@@ -160,6 +160,8 @@ float4 frag(Varyings input):SV_Target{
     ApplyRain(data.surfaceData/**/,data.inputData.positionWS,data.inputData.normalWS,data.inputData.viewDirectionWS,rainAtten);
 
     float4 color = CalcPBR(data,mainLight);
+    // half4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
+    // color.xyz += screenColor.x*5;
 // return input.fogCoord.x;
     ApplyFog(color/**/,input.fogCoord.xy,data.inputData.fogCoord,data.inputData.positionWS);
 

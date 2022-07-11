@@ -205,6 +205,8 @@ detail map
             ENDHLSL
         }
 
+        // UsePass "Universal Render Pipeline/Lit/DEPTHNORMALS"
+
         Pass{
             Name "Meta"
             Tags{"LightMode"="Meta"}

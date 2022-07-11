@@ -15,6 +15,7 @@ TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 
+TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
 TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
 
 

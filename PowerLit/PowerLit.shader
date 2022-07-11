@@ -6,6 +6,12 @@ Shader "URP/PowerLit"
         [GroupHeader(Main,MainTexture)]
         [GroupItem(Main)][MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
         [GroupItem(Main)][gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
+
+        [GroupHeader(Main,Surface Below)]
+        [GroupItem(Main)]_SurfaceDepth("_SurfaceDepth",float) = -1
+        [GroupItem(Main)]_BelowColor("_BelowColor",color) = (.5,.5,.5,1)
+
+        [GroupHeader(Main,Normal)]
         [GroupItem(Main)][Normal]_NormalMap("_NormalMap",2d) ="bump"{}
         [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
 
@@ -115,6 +121,8 @@ Shader "URP/PowerLit"
         _RainReflectDirOffset("_RainReflectDirOffset",vector) = (0,0,0,0)
         _RainReflectIntensity("_RainReflectIntensity",range(0,.1))=0.1
         _RainHeight("_RainHeight",float) = 0
+
+
     } 
     SubShader
     {

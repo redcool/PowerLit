@@ -84,6 +84,8 @@ CBUFFER_START(UnityPerMaterial)
     half3 _RainReflectDirOffset;
     half _RainHeight;
     half _RainReflectIntensity;
+    half _SurfaceDepth;
+    half4 _BelowColor;
 CBUFFER_END
 
 

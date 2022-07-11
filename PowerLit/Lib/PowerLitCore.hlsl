@@ -99,6 +99,12 @@ void ApplyRain(inout SurfaceData data,float3 worldPos,float3 worldNormal,float3 
     // data.albedo = CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);;
 }
 
+void ApplySurfaceBelow(inout SurfaceData data,float3 worldPos){
+    half heightRate = saturate(worldPos.y -_SurfaceDepth);
+    heightRate = smoothstep(0.02,0.1,heightRate);
+    data.albedo *= lerp(_BelowColor,1,heightRate);
+}
+
 void ApplySnow(inout SurfaceData data,half3 worldNormal){
     branch_if(! IsSnowOn())
         return;

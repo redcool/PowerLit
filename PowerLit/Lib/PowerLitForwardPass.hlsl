@@ -158,6 +158,7 @@ float4 frag(Varyings input):SV_Target{
 
     float rainAtten = (vertexNoise+0.5) * (mainLight.shadowAttenuation+0.25);
     ApplyRain(data.surfaceData/**/,data.inputData.positionWS,data.inputData.normalWS,data.inputData.viewDirectionWS,rainAtten);
+    ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
 
     float4 color = CalcPBR(data,mainLight);
     // half4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);

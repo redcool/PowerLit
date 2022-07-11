@@ -87,7 +87,7 @@ CBUFFER_END
 
 
 
-#define IsFogOn() (_IsGlobalFogOn && _FogOn)
+
 #define IsRainOn() (_IsGlobalRainOn && _RainOn)
 #define IsSnowOn() (_IsGlobalSnowOn && _SnowOn)
 #define IsWindOn() (_IsGlobalWindOn && _WindOn)

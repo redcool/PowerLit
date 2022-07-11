@@ -8,9 +8,7 @@
 float4 _GlobalWindDir; /*global (xyz)wind direction,w : wind intensity*/
 float _GlobalSnowIntensity; 
 float _GlobalRainIntensity;
-float _GlobalFogIntensity;
 
-half _IsGlobalFogOn;
 half _IsGlobalRainOn;
 half _IsGlobalSnowOn;
 half _IsGlobalWindOn;
@@ -68,7 +66,7 @@ inline float4 AnimateVertex(float4 pos, float3 normal, float4 animParams,float4 
 float4 WindAnimationVertex( float3 worldPos,float3 vertex,float3 normal,float4 atten_AnimParam,float4 windDir,float windSpeed){
     float localWindIntensity = windDir.w;
     //Apply Global wind,  (xyz : dir, w : intensity)
-    windDir.xyz += _GlobalWindDir;
+    windDir.xyz += _GlobalWindDir.xyz;
     windDir.w *= _GlobalWindDir.w;
 
     // apply perlin noise
@@ -113,7 +111,7 @@ void SimpleWave(inout float3 worldPos,float3 vertex,float3 vertexColor,float ben
     Simple Snow from albedo
 */
 float3 MixSnow(float3 albedo,float3 snowColor,float intensity,float3 worldNormal,bool applyEdgeOn){
-    float dirAtten = saturate(dot(worldNormal,_GlobalWindDir)); // filter by dir
+    float dirAtten = saturate(dot(worldNormal,_GlobalWindDir.xyz)); // filter by dir
 
     float rate = 0;
     half upAtten = dot(worldNormal,half3(0,1,0));

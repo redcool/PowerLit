@@ -161,7 +161,7 @@ float4 frag(Varyings input):SV_Target{
 
     float4 color = CalcPBR(data,mainLight);
 // return input.fogCoord.x;
-    ApplyFog(color/**/,input.fogCoord,data.inputData.fogCoord,data.inputData.positionWS);
+    ApplyFog(color/**/,input.fogCoord.xy,data.inputData.fogCoord,data.inputData.positionWS);
 
     // color.a = OutputAlpha(color.a,_SurfaceType)
 

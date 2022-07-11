@@ -41,7 +41,7 @@ void ApplyParallax(inout float2 uv,float3 viewTS){
 
 
 float3 ScreenToWorldPos(float2 screenUV){
-    float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
+    float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x;
     return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
 }
 
@@ -50,7 +50,7 @@ void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float
         return;
 
     branch_if(_SphereFogOn){
-        BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,true,_FogNoiseOn,_GlobalFogIntensity);
+        BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,true,_FogNoiseOn);
         return;
     }
     
@@ -82,7 +82,7 @@ half3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float at
     float slopeAtten = dot(worldNormal,half3(0,1,0)) - _RainSlopeAtten;
     float reflectAtten = saturate(slopeAtten * heightAtten);
 // return reflectAtten;
-    half3 rainColor = _RainColor;
+    half3 rainColor = _RainColor.xyz;
     rainColor += (reflectCol + rippleCol * atten) * reflectAtten /albedo; // so composite reflectCol and rippleCol
     return lerp(1,rainColor,_GlobalRainIntensity);
 }

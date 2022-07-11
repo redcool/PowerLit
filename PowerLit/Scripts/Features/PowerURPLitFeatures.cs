@@ -18,7 +18,7 @@ namespace PowerUtilities
         public static readonly int _MainLightShadowmapTexture;
         public static readonly int _ShadowBias;
         public static readonly int _MainLightShadowOn;
-        public static readonly int _DistanceShadowMaskOn;
+
 
         static DrpLightShaderVarables()
         {
@@ -28,7 +28,7 @@ namespace PowerUtilities
 
             _ShadowBias = Shader.PropertyToID("unity_LightShadowBias");
             _MainLightShadowOn = Shader.PropertyToID(nameof(_MainLightShadowOn));
-            _DistanceShadowMaskOn = Shader.PropertyToID(nameof(_DistanceShadowMaskOn));
+
         }
 
         public static void SendLight(CommandBuffer cmd, RenderingData renderingData)
@@ -58,7 +58,6 @@ namespace PowerUtilities
             var asset = UniversalRenderPipeline.asset;
             cmd.SetGlobalFloat(_MainLightShadowOn, asset.supportsMainLightShadows ? 1 : 0);
 
-            cmd.SetGlobalFloat(_DistanceShadowMaskOn,QualitySettings.shadowmaskMode == ShadowmaskMode.DistanceShadowmask ? 1 : 0);
         }
     }
 
@@ -76,9 +75,10 @@ namespace PowerUtilities
             _MainLightShadowCascadeOn,
             _LightmapOn,
             _Shadows_ShadowMaskOn,
-            _MainLightShadowOn
+            _MainLightShadowOn,
+            _DistanceShadowMaskOn,
+            _LightmapParams
             ;
-
         static PowerLitShaderVariables()
         {
             _MainLightMode = Shader.PropertyToID("_MainLightMode");
@@ -87,6 +87,8 @@ namespace PowerUtilities
             _LightmapOn = Shader.PropertyToID("_LightmapOn");
             _Shadows_ShadowMaskOn = Shader.PropertyToID("_Shadows_ShadowMaskOn");
             _MainLightShadowOn = Shader.PropertyToID("_MainLightShadowOn");
+            _DistanceShadowMaskOn = Shader.PropertyToID(nameof(_DistanceShadowMaskOn));
+            _LightmapParams = Shader.PropertyToID(nameof(_LightmapParams));
         }
 
 
@@ -102,6 +104,12 @@ namespace PowerUtilities
             cmd.SetGlobalInt(_MainLightShadowOn, mainLightCastShadows ? 1 : 0);
             cmd.SetGlobalInt(_MainLightMode, (int)asset.mainLightRenderingMode);
             cmd.SetGlobalInt(_AdditionalLightMode, (int)asset.additionalLightsRenderingMode);
+
+            cmd.SetGlobalFloat(_DistanceShadowMaskOn, QualitySettings.shadowmaskMode == ShadowmaskMode.DistanceShadowmask ? 1 : 0);
+            cmd.SetGlobalVector(_LightmapParams, new Vector4(settings._LightmapSH,
+                settings._LightmapSaturate,
+                settings._LightmapIntensity,
+                0));
         }
     }
 
@@ -118,10 +126,17 @@ namespace PowerUtilities
             //[NonSerialized] public bool _MainLightShadowCascadeOn;
             //[NonSerialized] public bool _AdditionalVertexLightOn;
 
-            [Tooltip("enabled lightmap ?")] public bool _LightmapOn;
             [Tooltip("enable shadowMask ?")] public bool _Shadows_ShadowMaskOn;
 
+            [Header("GI")]
+            [Tooltip("enabled lightmap ?")] public bool _LightmapOn;
+            [Tooltip("blend Lightmap SH")][Range(0,1)] public float _LightmapSH;
+            [Tooltip("strength lightmap saturate")][Range(0,1)] public float _LightmapSaturate;
+            [Tooltip("strength lightmap intensity")] [Range(1,4)]public float _LightmapIntensity;
+            
+            [Header("Drp Adpater")]
             public bool updateDRPShaderVarables;
+
         }
 
         class PowerURPLitUpdateParamsPass : ScriptableRenderPass

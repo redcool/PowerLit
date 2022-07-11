@@ -39,6 +39,7 @@ CBUFFER_START(UnityPerMaterial)
 
     float _LightmapSH;
     float _LMSaturate;
+    float _LMIntensity;
 //--------------------------------- IBL
     float _IBLOn;
     float _EnvIntensity;

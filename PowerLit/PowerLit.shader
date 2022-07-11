@@ -43,6 +43,8 @@ Shader "URP/PowerLit"
         [Header(GI)]
         _LightmapSH("_LightmapSH",range(0,1)) = 0.5
         _LMSaturate("_LMSaturate",range(0,4)) = 1
+        _LMIntensity("_LMIntensity",range(1,4)) = 1
+        
         [Header(PlanarReflection)]
         [GroupToggle]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
         

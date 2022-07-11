@@ -22,8 +22,8 @@ float3 SampleLightmap(float2 lightmapUV){
 /**
     lerp(lmap, sh ,t)
 */
-float3 CalcLightmapAndSH(float3 normal,float2 lightmapUV,float lightmapOrSH,float lmSaturate){
-    float3 lmap = SampleLightmap(lightmapUV);
+float3 CalcLightmapAndSH(float3 normal,float2 lightmapUV,float lightmapOrSH,float lmSaturate,float lmIntensity){
+    float3 lmap = SampleLightmap(lightmapUV) * lmIntensity;
     lmap = lerp(Gray(lmap),lmap,lmSaturate);
     float3 sh = SampleSH(normal);
     return lerp(lmap,sh,lightmapOrSH);

@@ -135,8 +135,6 @@ void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
     data.isAlphaPremultiply = _AlphaPremultiply;
     data.isReceiveShadow = _IsReceiveShadow && _MainLightShadowOn;
-    data.lightmapSH = _LightmapSH;
-    data.lmSaturate = _LMSaturate;
 
     data.screenUV = clipPos.xy/_ScreenParams.xy;
     branch_if(_PlanarReflectionOn)

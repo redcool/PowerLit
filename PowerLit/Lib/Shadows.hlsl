@@ -105,7 +105,7 @@ float MainLightShadow(float4 shadowCoord,float3 worldPos,float4 shadowMask,float
     }
     // #endif
 
-    return MixShadow(realtimeShadow,bakedShadow,shadowFade,false);
+    return MixShadow(realtimeShadow,bakedShadow,shadowFade,!IsDistanceShadowMaskOn());
 }
 
 float4 SampleShadowMask(float2 shadowMaskUV){

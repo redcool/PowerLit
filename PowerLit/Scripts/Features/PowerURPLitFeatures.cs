@@ -18,15 +18,17 @@ namespace PowerUtilities
         public static readonly int _MainLightShadowmapTexture;
         public static readonly int _ShadowBias;
         public static readonly int _MainLightShadowOn;
+        public static readonly int _DistanceShadowMaskOn;
 
         static DrpLightShaderVarables()
         {
-            _LightColor0 = Shader.PropertyToID("_LightColor0");
-            _WorldSpaceLightPos0 = Shader.PropertyToID("_WorldSpaceLightPos0");
+            _LightColor0 = Shader.PropertyToID(nameof(_LightColor0));
+            _WorldSpaceLightPos0 = Shader.PropertyToID(nameof(_WorldSpaceLightPos0));
             _MainLightShadowmapTexture = Shader.PropertyToID("_MainLightShadowmapTexture");
 
             _ShadowBias = Shader.PropertyToID("unity_LightShadowBias");
-            _MainLightShadowOn = Shader.PropertyToID("_MainLightShadowOn");
+            _MainLightShadowOn = Shader.PropertyToID(nameof(_MainLightShadowOn));
+            _DistanceShadowMaskOn = Shader.PropertyToID(nameof(_DistanceShadowMaskOn));
         }
 
         public static void SendLight(CommandBuffer cmd, RenderingData renderingData)
@@ -55,6 +57,8 @@ namespace PowerUtilities
 
             var asset = UniversalRenderPipeline.asset;
             cmd.SetGlobalFloat(_MainLightShadowOn, asset.supportsMainLightShadows ? 1 : 0);
+
+            cmd.SetGlobalFloat(_DistanceShadowMaskOn,QualitySettings.shadowmaskMode == ShadowmaskMode.DistanceShadowmask ? 1 : 0);
         }
     }
 

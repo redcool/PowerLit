@@ -4,9 +4,9 @@
 #include "PowerLitInput.hlsl"
 
 #include "PowerSurfaceInputData.hlsl"
-#include "NatureLib.hlsl"
+#include "../../PowerShaderLib/Lib/NatureLib.hlsl"
 #include "ParallaxMapping.hlsl"
-#include "FogLib.hlsl"
+#include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
 void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(mao,sampler_Map,uv) * color;

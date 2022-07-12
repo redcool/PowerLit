@@ -59,15 +59,14 @@ Varyings vert(Attributes input){
 
     float4 clipPos = TransformWorldToHClip(worldPos);
 
-    float fogFactor = ComputeFogFactor(clipPos.z);
+    // float fogFactor = ComputeFogFactor(clipPos.z);
     float3 vertexLight = VertexLighting(worldPos,worldNormal,IsAdditionalLightVertex());
-    output.vertexLightAndFogFactor = float4(vertexLight,fogFactor);
+    output.vertexLightAndFogFactor = float4(vertexLight,0);
     output.pos = clipPos;
     output.shadowCoord = TransformWorldToShadowCoord(worldPos);
     output.color = attenParam;
 
-    branch_if(_SphereFogOn)
-        output.fogCoord.xy = CalcFogFactor(worldPos);
+    output.fogCoord.xy = CalcFogFactor(worldPos);
 
     //
     output.fogCoord.z = unity_gradientNoise(worldPos.xz*0.1 + _WindDir.xz * _Time.y * _WindSpeed);
@@ -163,9 +162,8 @@ float4 frag(Varyings input):SV_Target{
     float4 color = CalcPBR(data,mainLight);
     // half4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
-// return input.fogCoord.x;
-    ApplyFog(color/**/,input.fogCoord.xy,data.inputData.fogCoord,data.inputData.positionWS);
 
+    BlendFogSphere(color.rgb/**/,data.inputData.positionWS,input.fogCoord.xy,true,_FogNoiseOn);
     // color.a = OutputAlpha(color.a,_SurfaceType)
 
     return color;

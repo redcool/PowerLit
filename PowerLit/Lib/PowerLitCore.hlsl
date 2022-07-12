@@ -49,12 +49,9 @@ void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float
     branch_if(!IsFogOn())
         return;
 
-    branch_if(_SphereFogOn){
-        BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,true,_FogNoiseOn);
-        return;
-    }
+    BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,true,_FogNoiseOn);
     
-    color.rgb = MixFog(color.rgb,unityFogCoord);
+    // color.rgb = MixFog(color.rgb,unityFogCoord);
 }
 
 half3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float atten,half3 albedo){

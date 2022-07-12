@@ -12,5 +12,5 @@ Env=_CustomLightOn,_CustomLightDir,_CustomLightColor,_IBLOn,_IBLCube,_EnvIntensi
 Emission=_EmissionOn,_EmissionMap,_EmissionColor,_Emission,_BakeEmissionOn
 Wind = _WindOn,_WindAnimParam,_WindDir,_WindSpeed
 Snow = _SnowOn,_ApplyEdgeOn,_SnowIntensity
-Fog = _FogOn,_SphereFogOn,_FogNoiseOn
+Fog = _FogOn,_FogNoiseOn
 Rain = _RainOn,_RippleTex,_RippleSpeed,_RippleIntensity,_RippleBlendNormalOn,_RainColor,_RainMetallic,_RainSmoothness,_RainSlopeAtten,_RainCube,_RainReflectDirOffset,_RainHeight,_RainReflectIntensity

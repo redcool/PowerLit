@@ -60,7 +60,6 @@ CBUFFER_START(UnityPerMaterial)
     float _ApplyEdgeOn;
 //--------------------------------- Fog
     float _FogOn;
-    float _SphereFogOn;
     float _FogNoiseOn;
 //--------------------------------- Parallax
     float _ParallaxOn;

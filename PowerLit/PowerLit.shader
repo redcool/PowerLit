@@ -96,7 +96,6 @@ Shader "URP/PowerLit"
 
         [Header(Fog)]
         [GroupToggle]_FogOn("_FogOn",int) = 1
-        [GroupToggle]_SphereFogOn("_SphereFogOn",int) = 0
         [GroupToggle]_FogNoiseOn("_FogNoiseOn",int) = 0
 
         [Header(Rain Ripple)]

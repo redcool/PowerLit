@@ -82,8 +82,8 @@ namespace PowerUtilities
         {
             while (true)
             {
-                yield return aSecond;
                 UpdateWeatherParams();
+                yield return aSecond;
             }
         }
 

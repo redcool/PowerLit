@@ -1,6 +1,6 @@
 // Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
 
-Shader "Skybox/Procedural1" {
+Shader "Skybox/Procedural FarClouds" {
 Properties {
     [Group(Main)]
     [GroupEnum(Main,_SUNDISK_NONE 0 _SUNDISK_SIMPLE 1 _SUNDISK_HIGH_QUALITY 2)] _SunDisk ("Sun", Int) = 2
@@ -40,27 +40,29 @@ SubShader {
         #include "UnityCG.cginc"
         #include "Lighting.cginc"
 
-        half _FogOn;
+CBUFFER_START(UnityPerMaterial)
+    half _FogOn;
+    half _Exposure;     // HDR exposure
+    half3 _GroundColor;
+    half _SunSize;
+    half _SunSizeConvergence;
+    half3 _SkyTint;
+    half _AtmosphereThickness;
+    //cloud
+    // #if defined(CLOUD_ON)
+    float _Scale,_Speed;
+    sampler3D _NoiseTex;
+    float2 _Distribution;
+    float3 _CloudDir;
+    float _CloudIntensity;
+    float _CloudDisappearHeight;
+    // #endif
+CBUFFER_END
         #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
         #pragma multi_compile _SUNDISK_NONE _SUNDISK_SIMPLE _SUNDISK_HIGH_QUALITY
         #pragma multi_compile _ CLOUD_ON
 
-        uniform half _Exposure;     // HDR exposure
-        uniform half3 _GroundColor;
-        uniform half _SunSize;
-        uniform half _SunSizeConvergence;
-        uniform half3 _SkyTint;
-        uniform half _AtmosphereThickness;
-        //cloud
-    // #if defined(CLOUD_ON)
-        float _Scale,_Speed;
-        sampler3D _NoiseTex;
-        float2 _Distribution;
-        float3 _CloudDir;
-        float _CloudIntensity;
-        float _CloudDisappearHeight;
-    // #endif
 
     #if defined(UNITY_COLORSPACE_GAMMA)
         #define GAMMA 2

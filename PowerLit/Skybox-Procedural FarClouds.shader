@@ -202,7 +202,7 @@ CBUFFER_END
 
         v2f vert (appdata_t v)
         {
-            v2f OUT;
+            v2f OUT=(v2f)0;
             UNITY_SETUP_INSTANCE_ID(v);
             UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
             OUT.pos = UnityObjectToClipPos(v.vertex);

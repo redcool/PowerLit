@@ -2,7 +2,15 @@ fileFormatVersion: 2
 guid: ad46f1324a2b5e641a111ac3a66444ba
 ShaderImporter:
   externalObjects: {}
-  defaultTextures: []
+  defaultTextures:
+  - _BaseMap: {instanceID: 0}
+  - _NormalMap: {instanceID: 0}
+  - _MetallicMaskMap: {instanceID: 0}
+  - _ParallaxMap: {instanceID: 0}
+  - _EmissionMap: {instanceID: 0}
+  - _IBLCube: {instanceID: 0}
+  - _RippleTex: {instanceID: 0}
+  - _RainCube: {instanceID: 0}
   nonModifiableTextures: []
   preprocessorOverride: 0
   userData: 

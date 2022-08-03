@@ -76,13 +76,15 @@ float3 BoxProjectedCubemapDirection(float3 reflectionWS, float3 positionWS, floa
 #endif
 
 float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float occlusion,float customIBLMask){
+    reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz);
+    float3 iblColor = 0;
+    
     branch_if(_IBLOn){
-        reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz);
-        float3 iblColor = CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,occlusion) * _EnvIntensity;
-        return  lerp(1, iblColor,customIBLMask);
+        iblColor = CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,occlusion);
     }else{
-        return CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness,occlusion);
+        iblColor =  CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness,occlusion);
     }
+    return lerp(1, iblColor,customIBLMask)  * _EnvIntensity;
 }
 
 float3 CalcPlanerReflection(float2 uv){

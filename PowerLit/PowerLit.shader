@@ -59,6 +59,11 @@ Shader "URP/PowerLit"
         [Header(Specular)]
         _FresnelIntensity("_FresnelIntensity",float) = 1
 
+        [Header(GI)] // Final GI = PowerLITFeature GI + Additional
+        _LightmapSHAdditional("_LightmapSHAdditional",range(-1,1)) = 0
+        _LMSaturateAdditional("_LMSaturateAdditional",range(-1,1)) = 0
+        _LMIntensityAdditional("_LMIntensityAdditional",range(-1,1)) = 0
+
         [Header(Clip)]
         [GroupToggle]_ClipOn("_ClipOn",float) = 0
         _Cutoff("_Cutoff",range(0,1)) = 0.5

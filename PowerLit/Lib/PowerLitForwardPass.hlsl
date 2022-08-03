@@ -110,7 +110,7 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
 
     data.fogCoord = input.vertexLightAndFogFactor.w;
     data.vertexLighting = input.vertexLightAndFogFactor.xyz;
-    data.bakedGI = CalcLightmapAndSH(normal,input.uv.zw,_LightmapSH,_LightmapSaturate,_LightmapIntensity);
+    data.bakedGI = CalcLightmapAndSH(normal,input.uv.zw, saturate(_LightmapSH + _LightmapSHAdditional),_LightmapSaturate + _LMSaturateAdditional,_LightmapIntensity+_LMIntensityAdditional);
     data.normalizedScreenSpaceUV = (float2)0;
     data.shadowMask = SampleShadowMask(input.uv.zw);
 }

@@ -47,6 +47,10 @@ CBUFFER_START(UnityPerMaterial)
     float4 _CustomLightColor;
 
     float _FresnelIntensity;
+//--------------------------------- lightmap
+    float _LightmapSHAdditional;
+    float _LMSaturateAdditional;
+    float _LMIntensityAdditional;    
 //--------------------------------- Wind
     float _WindOn;
     float4 _WindAnimParam;

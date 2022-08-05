@@ -22,6 +22,8 @@ Properties {
     [GroupItem(Noise)]_CloudIntensity("_CloudIntensity",float) = 1
     [GroupItem(Noise)]_CloudDir("_CloudDir",vector) = (1,1,1,1)
     [GroupItem(Noise)]_CloudDisappearHeight("_CloudDisappearHeight",range(0,1)) = 0.1
+    [GroupItem(Noise)]_CloudMaxColor("_CloudMaxColor",color) = (1,1,1,1)
+    [GroupItem(Noise)]_CloudMinColor("_CloudMinColor",color) = (0,0,0.5,1)
 
     [Group(SphereFog)]
     [GroupToggle(SphereFog)]_FogOn("_FogOn",int) = 0
@@ -56,6 +58,7 @@ CBUFFER_START(UnityPerMaterial)
     float3 _CloudDir;
     float _CloudIntensity;
     float _CloudDisappearHeight;
+    half3 _CloudMaxColor,_CloudMinColor;
     // #endif
 CBUFFER_END
         #include "../../PowerShaderLib/Lib/FogLib.hlsl"
@@ -389,13 +392,18 @@ CBUFFER_END
         #endif
         }
 
-        half Cloud(float3 localPos){
+        float3 Cloud(float3 localPos){
             float4 noise = tex3D(_NoiseTex,localPos * _Scale + _CloudDir * _Time.x * _Speed);
-            float noiseAtten = dot(1-noise.xyz,_WorldSpaceLightPos0.xyz) *0.5+0.5;
-            // pl = smoothstep(0,0.5,pl);
+            float upAtten = max(0.05,dot(_WorldSpaceLightPos0.xyz,half3(0,1,0)));
+            float noiseAtten = (dot(1-noise.xyz,half3(0,0.5,1))) ;
+            noiseAtten = (noiseAtten*noiseAtten*noiseAtten*noiseAtten);
+
             float cloud = smoothstep(_Distribution.x,_Distribution.y,1 - noise.x) * _CloudIntensity;
-            cloud *= smoothstep(0.,0.3,localPos.y - _CloudDisappearHeight) * noiseAtten;
-            return saturate(cloud);
+            cloud *= smoothstep(0.,0.3,localPos.y - _CloudDisappearHeight);
+            cloud *= noiseAtten  * upAtten;
+            cloud *= _Exposure;
+            cloud = saturate(cloud);
+            return lerp(_CloudMinColor,_CloudMaxColor, cloud) * cloud;
         }
 
         half4 frag (v2f IN) : SV_Target
@@ -430,8 +438,7 @@ CBUFFER_END
             #endif
 
             #if defined(CLOUD_ON) && (SKYBOX_SUNDISK == SKYBOX_SUNDISK_HQ)
-                float up = saturate(dot(float3(0,1,0),_WorldSpaceLightPos0.xyz));
-                col += Cloud(-IN.vertex) * lerp(IN.skyColor,1,up);
+                col += Cloud(-IN.vertex);
             #endif
 
             // IN.fogCoord.xy = CalcFogFactor(IN.worldPos);

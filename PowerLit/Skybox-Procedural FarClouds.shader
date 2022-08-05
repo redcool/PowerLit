@@ -396,7 +396,7 @@ CBUFFER_END
             float4 noise = tex3D(_NoiseTex,localPos * _Scale + _CloudDir * _Time.x * _Speed);
             float upAtten = max(0.05,dot(_WorldSpaceLightPos0.xyz,half3(0,1,0)));
             float noiseAtten = (dot(1-noise.xyz,half3(0,0.5,1))) ;
-            noiseAtten = (noiseAtten*noiseAtten*noiseAtten*noiseAtten);
+            // noiseAtten = (noiseAtten*noiseAtten);
 
             float cloud = smoothstep(_Distribution.x,_Distribution.y,1 - noise.x) * _CloudIntensity;
             cloud *= smoothstep(0.,0.3,localPos.y - _CloudDisappearHeight);

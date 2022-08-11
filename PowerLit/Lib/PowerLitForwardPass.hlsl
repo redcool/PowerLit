@@ -69,7 +69,7 @@ Varyings vert(Attributes input){
     output.fogCoord.xy = CalcFogFactor(worldPos);
 
     //
-    output.fogCoord.z = unity_gradientNoise(worldPos.xz*0.1 + _WindDir.xz * _Time.y * _WindSpeed);
+    output.fogCoord.z = unity_gradientNoise(worldPos.xz*.1 + _WindDir.xz * _Time.y * (_IsGlobalWindOn?_WindSpeed:0));
 
     branch_if(_ParallaxOn){
         float3 viewDirWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
@@ -152,6 +152,7 @@ float4 frag(Varyings input):SV_Target{
     // float4 color = UniversalFragmentPBR(data.inputData,data.surfaceData);
 
     ApplySnow(data.surfaceData/**/,data.inputData.normalWS);
+    // data.surfaceData.albedo += vertexNoise;
     // return data.surfaceData.albedo.xyzx;
     Light mainLight = GetMainLight(data);
 

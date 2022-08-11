@@ -2,18 +2,20 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Floor
-  m_Shader: {fileID: 4800000, guid: fd7bf79e284f74d43b982bb39004bdcd, type: 3}
-  m_ShaderKeywords: _EMISSIONON_OFF
+  m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _EMISSIONON_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2450
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -28,7 +30,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ControlMap:
-        m_Texture: {fileID: 2800000, guid: caac8453e96b3ba4696f995c309a47a6, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -48,7 +50,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IBLCube:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8900000, guid: a272a10442a4a614196803ae51388006, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -75,8 +77,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _RainCube:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RippleTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AlphaPremultiply: 0
+    - _ApplyEdgeOn: 1
     - _BakeEmissionOn: 0
     - _BumpScale: 1
     - _ClipOn: 0
@@ -87,7 +99,9 @@ Material:
     - _DstBlend: 0
     - _DstMode: 0
     - _EmissionOn: 0
-    - _EnvIntensity: 1
+    - _EnvIntensity: 0.25
+    - _FogNoiseOn: 0
+    - _FogOn: 1
     - _FresnelIntensity: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -95,34 +109,54 @@ Material:
     - _IBLMaskMainTexA: 0
     - _IBLOn: 0
     - _IsReceiveShadow: 1
-    - _LMSaturate: 1
+    - _LMIntensityAdditional: 1
+    - _LightmapSHAdditional: 0.946
+    - _LMSaturateAdditional: 1.58
     - _LightmapSH: 0
     - _Metallic: 1
     - _MetallicChannel: 0
     - _Mode: 0
-    - _NormalScale: 4.07
+    - _NormalScale: 0.04
     - _Occlusion: 0.5
     - _OcclusionChannel: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _PlanarReflectionOn: 1
+    - _ParallaxHeight: 0.01
+    - _ParallaxMapChannel: 3
+    - _ParallaxOn: 0
+    - _PlanarReflectionOn: 0
+    - _RainHeight: 0
+    - _RainMetallic: 0.1
+    - _RainOn: 0
+    - _RainReflectIntensity: 0.1
+    - _RainSlopeAtten: 0.6
+    - _RainSmoothness: 0.1
+    - _RippleBlendNormalOn: 0
+    - _RippleIntensity: 1
+    - _RippleSpeed: 10
     - _Smoothness: 1
     - _SmoothnessChannel: 1
     - _SmoothnessTextureChannel: 0
     - _SnowIntensity: 0
+    - _SnowOn: 0
     - _SpecularHighlights: 1
     - _SphereFogOn: 0
     - _SrcBlend: 1
     - _SrcMode: 1
+    - _SurfaceDepth: -1
     - _UVSec: 0
     - _WindOn: 0
+    - _WindSpeed: 0.3
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
+    - _BelowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _WindAnimParam: {r: 1, g: 1, b: 0.1, a: 0.3}
     - _WindDir: {r: 1, g: 0.1, b: 0, a: 1}

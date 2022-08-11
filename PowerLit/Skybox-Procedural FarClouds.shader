@@ -25,8 +25,9 @@ Properties {
     [GroupItem(Noise)]_CloudMaxColor("_CloudMaxColor",color) = (1,1,1,1)
     [GroupItem(Noise)]_CloudMinColor("_CloudMinColor",color) = (0,0,0.5,1)
 
-    [Group(SphereFog)]
-    [GroupToggle(SphereFog)]_FogOn("_FogOn",int) = 0
+    [Group(Weather)]
+    [GroupToggle(Weather)]_FogOn("_FogOn",int) = 0
+    // [GroupToggle(Weather,WEATHER_ON)]_WeatherOn("_WeatherOn",int) = 0
 }
 
 SubShader {
@@ -42,30 +43,35 @@ SubShader {
         #include "UnityCG.cginc"
         #include "Lighting.cginc"
 
-CBUFFER_START(UnityPerMaterial)
-    half _FogOn;
-    half _Exposure;     // HDR exposure
-    half3 _GroundColor;
-    half _SunSize;
-    half _SunSizeConvergence;
-    half3 _SkyTint;
-    half _AtmosphereThickness;
-    //cloud
-    // #if defined(CLOUD_ON)
-    float _Scale,_Speed;
-    sampler3D _NoiseTex;
-    float2 _Distribution;
-    float3 _CloudDir;
-    float _CloudIntensity;
-    float _CloudDisappearHeight;
-    half3 _CloudMaxColor,_CloudMinColor;
-    // #endif
-CBUFFER_END
+        half _GlobalSkyExposure;
+        CBUFFER_START(UnityPerMaterial)
+            half _FogOn;
+            half _Exposure;     // HDR exposure
+            half3 _GroundColor;
+            half _SunSize;
+            half _SunSizeConvergence;
+            half3 _SkyTint;
+            half _AtmosphereThickness;
+            //cloud
+            // #if defined(CLOUD_ON)
+            float _Scale,_Speed;
+            sampler3D _NoiseTex;
+            float2 _Distribution;
+            float3 _CloudDir;
+            float _CloudIntensity;
+            float _CloudDisappearHeight;
+            half3 _CloudMaxColor,_CloudMinColor;
+            // #endif
+        CBUFFER_END
+
+
         #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
         #pragma multi_compile _SUNDISK_NONE _SUNDISK_SIMPLE _SUNDISK_HIGH_QUALITY
         #pragma multi_compile _ CLOUD_ON
-
+// ====================== redefine
+        #define _Exposure (_GlobalSkyExposure*_Exposure)
+// ====================== end
 
     #if defined(UNITY_COLORSPACE_GAMMA)
         #define GAMMA 2

@@ -129,7 +129,7 @@ Material:
     - _IBLMaskMainTexA: 0
     - _IBLOn: 0
     - _IsReceiveShadow: 1
-    - _LMSaturate: 1
+    - _LMSaturateAdditional: 1
     - _LightmapSH: 0.5
     - _Metallic: 0.106
     - _MetallicChannel: 0

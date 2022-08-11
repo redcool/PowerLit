@@ -3,6 +3,8 @@ namespace PowerUtilities
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
+    using PowerUtilities.Drawers;
+
 #if UNITY_EDITOR
     using UnityEditor;
 
@@ -40,34 +42,52 @@ namespace PowerUtilities
         }
         WaitForSeconds aSecond = new WaitForSeconds(1);
 
-        [Header("Fog")]
+        //[Header("Fog")]
+        [EditorGroup("Fog",true)]
         public bool _IsGlobalFogOn;
-        [Range(0,1)]public float _GlobalFogIntensity = 1;
+        [EditorGroup("Fog")][Range(0,1)]public float _GlobalFogIntensity = 1;
 
-        [Header("Rain")]
+        [EditorGroup("Rain",true)]
         public bool _IsGlobalRainOn;
-        [Range(0, 1)] public float _GlobalRainIntensity = 1;
+        [EditorGroup("Rain")][Range(0, 1)] public float _GlobalRainIntensity = 1;
 
-        [Header("Snow")]
+        [EditorGroup("Snow",true)]
         public bool _IsGlobalSnowOn;
-        [Range(0,1)]public float _GlobalSnowIntensity = 1;
+        [EditorGroup("Snow")][Range(0,1)]public float _GlobalSnowIntensity = 1;
 
-        [Header("Wind")]
+        [EditorGroup("Wind",true)]
         public bool _IsGlobalWindOn;
-        [Range(0, 15)] public float _GlobalWindIntensity = 1;
+        [EditorGroup("Wind")][Range(0, 15)] public float _GlobalWindIntensity = 1;
 
-        [Header("Thunder")]
+        [EditorGroup("Thunder",true)]
         public bool thunderOn;
-        public Light mainLight;
-        public ThunderMode thunderMode;
-        public AnimationCurve thunderCurve;
-        public PowerGradient thunderColor;
-        [Min(0.1f)]public float thunderTime = 3;
-        public Vector2 thunderInvervalTime = new Vector2(1, 10);
+        [EditorGroup("Thunder")] public Light mainLight;
+        [EditorGroup("Thunder")] public ThunderMode thunderMode;
+        [EditorGroup("Thunder")] public AnimationCurve thunderCurve;
+        [EditorGroup("Thunder")] public Gradient thunderColor;
+        [EditorGroup("Thunder")][Min(0.1f)]public float thunderTime = 3;
+        [EditorGroup("Thunder")] public Vector2 thunderInvervalTime = new Vector2(1, 10);
 
+        [EditorGroup("Sky", true)] public bool isGlobalSkyOn;
+        [EditorGroup("Sky")][Range(0, 1)] public float skyExposure;
+       
+
+        //public PowerGradient TestThunderColor;
         float thunderStartTime;
         float mainLightStartIntensity;
         Color mainLightStartColor;
+
+        [EditorGroup("Particles follow camera",true)]
+        public GameObject rainVFX;
+        [EditorGroup("Particles follow camera")] public GameObject snowVFX;
+
+        [EditorGroup("Particles follow camera")] public GameObject followTarget;
+        [EditorGroup("Particles follow camera")] public float followSpeed = 1;
+
+        #region Shader Params
+        int _GlobalSkyExposure = Shader.PropertyToID(nameof(_GlobalSkyExposure));
+
+        #endregion
 
         // Start is called before the first frame update
         void Start()
@@ -76,6 +96,12 @@ namespace PowerUtilities
             mainLightStartColor = mainLight ? mainLight.color : Color.black;
 
             StartCoroutine(WaitForUpdate());
+
+            if (!followTarget)
+                followTarget =Camera.main?.gameObject;
+
+            UpdateVFX(rainVFX, _GlobalRainIntensity, _IsGlobalRainOn,true);
+            UpdateVFX(snowVFX, _GlobalSnowIntensity, _IsGlobalSnowOn,true);
         }
             
         IEnumerator WaitForUpdate()
@@ -90,6 +116,9 @@ namespace PowerUtilities
         private void Update()
         {
             UpdateThunder();
+
+            UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
+            UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
         }
         public void UpdateWeatherParams()
         {
@@ -104,6 +133,7 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), _IsGlobalRainOn ? 1 : 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), _IsGlobalSnowOn ? 1 : 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), _IsGlobalWindOn ? 1 : 0);
+            Shader.SetGlobalFloat(_GlobalSkyExposure, isGlobalSkyOn ? skyExposure : 1);
         }
 
         void UpdateThunder()
@@ -130,6 +160,42 @@ namespace PowerUtilities
             if (ntime >=1)
             {
                 thunderStartTime = Time.time + Random.Range(thunderInvervalTime.x, thunderInvervalTime.y);
+            }
+        }
+
+        void UpdateVFX(GameObject particleGo,float intensity,bool isOn, bool isInstant=false)
+        {
+            if (!particleGo)
+                return;
+
+            ShowVFX(particleGo, intensity,isOn);
+            VFXFollowCamera(particleGo,followTarget, isInstant);
+        }
+
+        private void VFXFollowCamera(GameObject particleGo, GameObject followTarget, bool isInstant=false)
+        {
+            if (!followTarget)
+                return;
+            var curPos = particleGo.transform.position;
+            var targetPos = followTarget.transform.position;
+
+            if (isInstant)
+            {
+                particleGo.transform.position = targetPos;
+            }
+            else
+                particleGo.transform.position = Vector3.MoveTowards(curPos, targetPos, followSpeed * Time.deltaTime);
+        }
+
+        private static void ShowVFX(GameObject particleGo, float intensity,bool isOn)
+        {
+            if (intensity>0 && isOn && !particleGo.activeInHierarchy)
+            {
+                particleGo.SetActive(true);
+            };
+            if ((intensity<=0 || !isOn) && particleGo.activeInHierarchy)
+            {
+                particleGo.SetActive(false);
             }
         }
 

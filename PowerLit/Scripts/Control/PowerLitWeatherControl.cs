@@ -3,7 +3,6 @@ namespace PowerUtilities
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-    using PowerUtilities.Drawers;
 
 #if UNITY_EDITOR
     using UnityEditor;

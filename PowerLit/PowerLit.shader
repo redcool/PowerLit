@@ -174,6 +174,7 @@ detail map
 
             #pragma multi_compile_instancing
             #pragma multi_compile_fog
+            #pragma multi_compile _ LIGHTMAP_ON
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"

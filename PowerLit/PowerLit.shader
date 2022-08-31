@@ -54,7 +54,7 @@ Shader "URP/PowerLit"
         [Header(Custom Light)]
         [GroupToggle]_CustomLightOn("_CustomLightOn",float) = 0
         _CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
-        _CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
+        [hdr]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
 
         [Header(Specular)]
         _FresnelIntensity("_FresnelIntensity",float) = 1
@@ -174,7 +174,8 @@ detail map
 
             #pragma multi_compile_instancing
             #pragma multi_compile_fog
-            #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile_fragment _ LIGHTMAP_ON
+            #pragma multi_compile_fragment _REFLECTION_PROBE_BOX_PROJECTION
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"

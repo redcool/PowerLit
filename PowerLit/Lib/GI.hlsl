@@ -100,7 +100,7 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
     }else{
         float3 reflectDir = reflect(-viewDir,normal);
 
-        #if (SHADER_LIBRARY_VERSION_MAJOR >= 12)
+        #if (SHADER_LIBRARY_VERSION_MAJOR >= 12) && defined(_REFLECTION_PROBE_BOX_PROJECTION)
         reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
         #endif
 

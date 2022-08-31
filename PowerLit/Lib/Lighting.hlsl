@@ -32,7 +32,7 @@ Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isR
     return light;
 }
 
-void OffsetMainLight(inout Light mainLight){
+void OffsetLight(inout Light mainLight){
     branch_if(_CustomLightOn){
         mainLight.color = _CustomLightColor.xyz;
         mainLight.direction = SafeNormalize(_CustomLightDir.xyz);
@@ -102,6 +102,7 @@ float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 sh
     float3 c = (float3)0;
     for(uint i=0;i<lightCount;i++){
         Light light = GetAdditionalLight(i,inputData.positionWS,shadowMask);
+        OffsetLight(light/**/);
 
         branch_if(light.distanceAttenuation)
             c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
@@ -123,16 +124,17 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight){
     InitBRDFData(data,surfaceData.alpha/*inout*/,brdfData/*out*/);
     
     float4 shadowMask = CalcShadowMask(data.inputData);
-    OffsetMainLight(mainLight);
+
     
     MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
     
     float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
     float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
 
-    branch_if(mainLight.distanceAttenuation)
+    branch_if(mainLight.distanceAttenuation){
+        OffsetLight(mainLight/**/);
         color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
-    
+    }
     color += surfaceData.emission;
 
     branch_if(IsAdditionalLightVertex()){

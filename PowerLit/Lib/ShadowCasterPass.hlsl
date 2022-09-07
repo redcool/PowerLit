@@ -56,8 +56,10 @@ Varyings vert(Attributes input){
 
 float4 frag(Varyings input):SV_Target{
     float4 mainTex = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
-    branch_if(_ClipOn)
+    // branch_if(_ClipOn)
+    #if defined(_ALPHATEST_ON)
         clip(mainTex.a - _Cutoff);
+    #endif
     
     return 0;
 }

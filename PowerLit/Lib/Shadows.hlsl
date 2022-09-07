@@ -2,6 +2,22 @@
 #define SHADOWS_HLSL
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 
+#if defined(_RECEIVE_SHADOWS_ON)
+    #if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)
+        #define MAIN_LIGHT_CALCULATE_SHADOWS
+
+        #if defined(_MAIN_LIGHT_SHADOWS) || (defined(_MAIN_LIGHT_SHADOWS_SCREEN) && !defined(_SURFACE_TYPE_TRANSPARENT))
+            #define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
+        #endif
+    #endif
+
+    #if defined(_ADDITIONAL_LIGHT_SHADOWS)
+        #define ADDITIONAL_LIGHT_CALCULATE_SHADOWS
+    #endif
+#endif
+
+#define AdditionalLightShadow AdditionalLightShadow1
+
 float CalcCascadeId(float3 positionWS){
     float3 fromCenter0 = positionWS - _CascadeShadowSplitSpheres0.xyz;
     float3 fromCenter1 = positionWS - _CascadeShadowSplitSpheres1.xyz;
@@ -40,9 +56,12 @@ real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
     real isSoftShadow = shadowParams.y;
 
     // TODO: We could branch on if this light has soft shadows (shadowParams.y) to save perf on some platforms.
+    #if defined(_SHADOWS_SOFT)
     branch_if(isSoftShadow){
         attenuation = SampleShadowmapFiltered(TEXTURE2D_SHADOW_ARGS(ShadowMap, sampler_ShadowMap), shadowCoord, samplingData);
-    }else{
+    }else
+    #endif
+    {
         // 1-tap hardware comparison
         attenuation = SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz);
     }
@@ -55,12 +74,14 @@ real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
 
 float MainLightRealtimeShadow(float4 shadowCoord,bool isReceiveShadow){
     float shadow = 1;
-    branch_if(isReceiveShadow)
+    // branch_if(isReceiveShadow)
+    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS)
     {
         ShadowSamplingData samplingData = GetMainLightShadowSamplingData();
         float4 params = GetMainLightShadowParams();
         shadow = SampleShadowmapRealtime(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,shadowCoord,samplingData,params,false);
     }
+    #endif
     return shadow;
 }
 
@@ -70,6 +91,14 @@ float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isM
     }
     return lerp(realtimeShadow,bakedShadow,shadowFade);
 }
+
+float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade){
+    branch_if(IsShadowMaskOn()){
+        return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);
+    }
+    return lerp(realtimeShadow,bakedShadow,shadowFade);
+}
+
 
 float GetShadowFade1(float3 positionWS)
 {
@@ -83,19 +112,22 @@ float GetShadowFade1(float3 positionWS)
 
 float MainLightShadow(float4 shadowCoord,float3 worldPos,float4 shadowMask,float4 occlusionProbeChannels,bool isReceiveShadow){
     float realtimeShadow = MainLightRealtimeShadow(shadowCoord,isReceiveShadow);
-
     float bakedShadow = 1;
     bool isShadowMaskOn = IsShadowMaskOn();
-    // #branch_if defined(CALCULATE_BAKED_SHADOWS)
-    branch_if(isShadowMaskOn){
+    #if defined(CALCULATE_BAKED_SHADOWS)
+    // branch_if(isShadowMaskOn)
+    {
         bakedShadow = BakedShadow(shadowMask,occlusionProbeChannels);
     }
-    // #endif
+    #endif
 
     float shadowFade = 1;
-    branch_if(isReceiveShadow){
+    // branch_if(isReceiveShadow)
+    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS)
+    {
         shadowFade = GetShadowFade1(worldPos);
     }
+    #endif
     
     branch_if(IsMainLightShadowCascadeOn() && isShadowMaskOn){
         // shadowCoord.w represents shadow cascade index
@@ -103,39 +135,89 @@ float MainLightShadow(float4 shadowCoord,float3 worldPos,float4 shadowMask,float
         // it is needed when realtime shadows gets cut to early during fade and causes disconnect between baked shadow
         shadowFade = shadowCoord.w == 4 ? 1.0h : shadowFade;
     }
-    // #endif
 
     return MixShadow(realtimeShadow,bakedShadow,shadowFade,!IsDistanceShadowMaskOn());
 }
+
+
+
+
+half AdditionalLightShadow1(int lightIndex, float3 positionWS, half3 lightDirection, half4 shadowMask, half4 occlusionProbeChannels)
+{
+    half realtimeShadow = AdditionalLightRealtimeShadow(lightIndex, positionWS, lightDirection);
+
+#ifdef CALCULATE_BAKED_SHADOWS
+    half bakedShadow = BakedShadow(shadowMask, occlusionProbeChannels);
+#else
+    half bakedShadow = half(1.0);
+#endif
+
+#ifdef ADDITIONAL_LIGHT_CALCULATE_SHADOWS
+    half shadowFade = GetAdditionalLightShadowFade(positionWS);
+
+#else
+    half shadowFade = half(1.0);
+#endif
+
+    return MixShadow(realtimeShadow, bakedShadow, shadowFade,IsShadowMaskOn());
+}
+
+Light GetAdditionalLight1(uint i, float3 positionWS, half4 shadowMask)
+{
+#if USE_CLUSTERED_LIGHTING
+    int lightIndex = i;
+#else
+    int lightIndex = GetPerObjectLightIndex(i);
+#endif
+    Light light = GetAdditionalPerObjectLight(lightIndex, positionWS);
+
+#if USE_STRUCTURED_BUFFER_FOR_LIGHT_DATA
+    half4 occlusionProbeChannels = _AdditionalLightsBuffer[lightIndex].occlusionProbeChannels;
+#else
+    half4 occlusionProbeChannels = _AdditionalLightsOcclusionProbes[lightIndex];
+#endif
+    light.shadowAttenuation = AdditionalLightShadow1(lightIndex, positionWS, light.direction, shadowMask, occlusionProbeChannels);
+#if defined(_LIGHT_COOKIES)
+    real3 cookieColor = SampleAdditionalLightCookie(lightIndex, positionWS);
+    light.color *= cookieColor;
+#endif
+
+    return light;
+}
+
+
+
 
 float4 SampleShadowMask(float2 shadowMaskUV){
     /**
      unity_ShadowMask,samplerunity_ShadowMask,shadowMaskuv [], unity_LightmapIndex.x]
      */
-     float4 mask = 1;
-     branch_if(IsLightmapOn() && IsShadowMaskOn()){
+    float4 mask = 1;
+    // branch_if(IsLightmapOn() && IsShadowMaskOn())
+    #if defined(LIGHTMAP_ON)
+    if(IsShadowMaskOn())
+    {
         mask = SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME,SHADOWMASK_SAMPLER_NAME,shadowMaskUV SHADOWMASK_SAMPLE_EXTRA_ARGS);
-     }
+    }
+    #endif
     return mask;
 }
 
 float4 CalcShadowMask(InputData inputData){
-    // #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
-    //     float4 shadowMask = inputData.shadowMask;
-    // #elif !defined (LIGHTMAP_ON)
-    //     float4 shadowMask = unity_ProbesOcclusion;
-    // #else
-    //     float4 shadowMask = float4(1, 1, 1, 1);
-    // #endif
+    #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
+        float4 shadowMask = inputData.shadowMask;
+    #elif !defined (LIGHTMAP_ON)
+        float4 shadowMask = unity_ProbesOcclusion;
+    #else
+        float4 shadowMask = float4(1, 1, 1, 1);
+    #endif
 
-    float4 shadowMask = (float4)1;
-    branch_if(IsLightmapOn()){
-        branch_if(IsShadowMaskOn()){
-            shadowMask = inputData.shadowMask;
-        }else{
-            shadowMask = unity_ProbesOcclusion;
-        }
-    }
+    // #if defined(LIGHTMAP_ON)
+    // float4 shadowMask = lerp(1,inputData.shadowMask, IsShadowMaskOn());
+    // #else
+    // float4 shadowMask = unity_ProbesOcclusion;
+    // #endif
+    
     return shadowMask;
 }
 

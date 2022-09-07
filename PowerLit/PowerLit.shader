@@ -26,19 +26,19 @@ Shader "URP/PowerLit"
         [GroupEnum(Main,R 0 G 1 B 2)]_OcclusionChannel("_OcclusionChannel",int) = 2
 
         [Group(Parallax)]
-        [GroupToggle(Parallax)]_ParallaxOn("_ParallaxOn",int) = 0
+        [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
         [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
         [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
         [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.08)) = 0.01
 
         [Header(Emission)]
-        [ToggleOff]_EmissionOn("_EmissionOn",int) = 0
+        [GroupToggle(,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
         _EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d) = "white"{}
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
         // [GroupToggle]_BakeEmissionOn("_BakeEmissionOn",int) = 0
 
         [Header(Shadow)]
-        [GroupToggle]_IsReceiveShadow("_IsReceiveShadow",int) = 1
+        [GroupToggle(,_RECEIVE_SHADOWS_ON)]_IsReceiveShadowOn("_IsReceiveShadowOn",int) = 1
 
         [Header(PlanarReflection)]
         [GroupToggle]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
@@ -65,7 +65,7 @@ Shader "URP/PowerLit"
         _LMIntensityAdditional("_LMIntensityAdditional",range(-1,1)) = 0
 
         [Header(Clip)]
-        [GroupToggle]_ClipOn("_ClipOn",float) = 0
+        [GroupToggle(,_ALPHATEST_ON)]_ClipOn("_ClipOn",float) = 0
         _Cutoff("_Cutoff",range(0,1)) = 0.5
 
 /**
@@ -172,10 +172,26 @@ detail map
             #pragma vertex vert
             #pragma fragment frag
 
-            #pragma multi_compile_instancing
-            #pragma multi_compile_fog
-            #pragma multi_compile_fragment _ LIGHTMAP_ON
+            // #pragma multi_compile_instancing
+
+            // material keywords
+            #pragma shader_feature_local _PARALLAX
+            #pragma shader_feature_local _RECEIVE_SHADOWS_ON
+            #pragma shader_feature_local_fragment _EMISSION
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            // #pragma multi_compile_fog
+            
+            // urp keywords //_MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _REFLECTION_PROBE_BOX_PROJECTION
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE 
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+
+            // unity keywords
+            // #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
+            #pragma multi_compile _ LIGHTMAP_ON
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"
@@ -189,7 +205,8 @@ detail map
             #pragma fragment frag
 
             #pragma multi_compile_instancing
-            #pragma multi_compile _ DOTS_INSTANCING_ON
+            // #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
 
             #include "Lib/PowerLitCore.hlsl"
 
@@ -209,7 +226,8 @@ detail map
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_instancing
-            #pragma multi_compile _ DOTS_INSTANCING_ON
+            // #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/ShadowCasterPass.hlsl"

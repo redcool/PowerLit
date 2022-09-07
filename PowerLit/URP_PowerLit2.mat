@@ -72,7 +72,7 @@ Material:
     - _FresnelIntensity: 1
     - _IBLMaskMainTexA: 0
     - _IBLOn: 0
-    - _IsReceiveShadow: 1
+    - _IsReceiveShadowOn: 1
     - _LMIntensityAdditional: 1
     - _LMSaturateAdditional: 1
     - _LightmapSH: 0

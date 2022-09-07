@@ -124,7 +124,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _IBLOn: 0
-    - _IsReceiveShadow: 1
+    - _IsReceiveShadowOn: 1
     - _LightmapSH: 0
     - _Metallic: 0.5
     - _NormalScale: 1

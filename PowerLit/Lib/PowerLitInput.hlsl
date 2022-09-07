@@ -28,14 +28,14 @@ CBUFFER_START(UnityPerMaterial)
     float _NormalScale;
     float _Metallic,_Smoothness,_Occlusion;
     int _MetallicChannel,_SmoothnessChannel,_OcclusionChannel;
-    float _ClipOn;
+    // float _ClipOn; // to keyword _ALPHATEST_ON
     float _Cutoff;
 //--------------------------------- Emission
-    float _EmissionOn;
+    // float _EmissionOn; // to keyword _EMISSION
     float4 _EmissionColor;
 
     float _AlphaPremultiply;
-    float _IsReceiveShadow;
+    // float _IsReceiveShadowOn; // to keyword _RECEIVE_SHADOWS_OFF
 //--------------------------------- IBL
     float _IBLOn;
     float _EnvIntensity;
@@ -66,7 +66,7 @@ CBUFFER_START(UnityPerMaterial)
     float _FogOn;
     float _FogNoiseOn;
 //--------------------------------- Parallax
-    float _ParallaxOn;
+    // float _ParallaxOn; // to keyword _PARALLAX
     float _ParallaxHeight;
     int _ParallaxMapChannel;
 //--------------------------------- Rain
@@ -120,7 +120,7 @@ CBUFFER_END
         UNITY_DEFINE_INSTANCED_PROP(float,_EmissionOn)
         UNITY_DEFINE_INSTANCED_PROP(float4,_EmissionColor)
         UNITY_DEFINE_INSTANCED_PROP(float,_AlphaPremultiply)
-        UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadow)
+        UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadowOn)
         UNITY_DEFINE_INSTANCED_PROP(float,_LightmapSH)
         UNITY_DEFINE_INSTANCED_PROP(float,_IBLOn)
         UNITY_DEFINE_INSTANCED_PROP(float,_EnvIntensity) 
@@ -148,7 +148,7 @@ CBUFFER_END
     #define _EmissionOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EmissionOn)
     #define _EmissionColor UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EmissionColor)
     #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_AlphaPremultiply)
-    #define _IsReceiveShadow UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IsReceiveShadow)
+    #define _IsReceiveShadowOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IsReceiveShadowOn)
     #define _LightmapSH UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_LightmapSH)
     #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IBLOn)
     #define _EnvIntensity UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EnvIntensity)
@@ -181,7 +181,7 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float,_EmissionOn)
     UNITY_DOTS_INSTANCED_PROP(float4,_EmissionColor)
     UNITY_DOTS_INSTANCED_PROP(float,_AlphaPremultiply)
-    UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadow)
+    UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadowOn)
     UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
     UNITY_DOTS_INSTANCED_PROP(float,_IBLOn)
     UNITY_DOTS_INSTANCED_PROP(float,_EnvIntensity)
@@ -208,7 +208,7 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 #define _EmissionOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EmissionOn)
 #define _EmissionColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__EmissionColor)
 #define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__AlphaPremultiply)
-#define _IsReceiveShadow UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
+#define _IsReceiveShadowOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
 #define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
 #define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
 #define _EnvIntensity UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EnvIntensity)

@@ -71,7 +71,9 @@ Varyings vert(Attributes input){
     //
     output.fogCoord.z = unity_gradientNoise(worldPos.xz*.1 + _WindDir.xz * _Time.y * (_IsGlobalWindOn?_WindSpeed:0));
 
-    branch_if(_ParallaxOn){
+    // branch_if(_ParallaxOn)
+    #if defined(_PARALLAX)
+    {
         float3 viewDirWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
         output.viewDirTS.xyz = normalize(float3(
             dot(worldTangent,viewDirWS),
@@ -79,6 +81,7 @@ Varyings vert(Attributes input){
             dot(worldNormal,viewDirWS)
         ));
     }
+    #endif
 
     return output;
 }
@@ -117,14 +120,12 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
 
 float4 fragTest(Varyings input,SurfaceInputData data){
     InputData inputData = data.inputData;
-    return input.color.w;
     // return input.uv.y;
     // return SampleLightmap(input.uv.zw).xyzx;
     // return MainLightRealtimeShadow(data.inputData.shadowCoord,true);
-    return MainLightShadow(inputData.shadowCoord,inputData.positionWS,inputData.shadowMask,_MainLightOcclusionProbes,data.isReceiveShadow);
-    // return SampleShadowMask(input.uv.zw).xyzx;
+    // return MainLightShadow(inputData.shadowCoord,inputData.positionWS,inputData.shadowMask,_MainLightOcclusionProbes);
     // return SampleSH(float4(data.inputData.normalWS,1)).xyzx;
-    // return data.inputData.bakedGI.xyzx;
+    // return data.inputData.shadowMask.xyzx;
     // return dot(CalcCascadeId(data.inputData.positionWS),0.25); // show cascade id
     // return data.inputData.vertexLighting.xyzx;
     return IsShadowMaskOn();
@@ -132,8 +133,7 @@ float4 fragTest(Varyings input,SurfaceInputData data){
 }
 
 float4 frag(Varyings input):SV_Target{
-    // return unity_SpecCube0_ProbePosition;
-    
+
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars

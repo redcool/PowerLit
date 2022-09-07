@@ -32,6 +32,13 @@ Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isR
     return light;
 }
 
+
+Light GetMainLight(SurfaceInputData data){
+    float4 shadowMask = CalcShadowMask(data.inputData);
+    Light mainLight = GetMainLight(data.inputData.shadowCoord,data.inputData.positionWS,shadowMask,true);
+    return mainLight;
+}
+
 void OffsetLight(inout Light mainLight){
     branch_if(_CustomLightOn){
         mainLight.color = _CustomLightColor.xyz;
@@ -85,9 +92,7 @@ float3 CalcDirectSpecularTerm(float r/*roughness*/,float3 lightDir,float3 viewDi
     return specTerm;
 }
 
-
-
-float3 CalcPBRLighting(BRDFData brdfData,float3 lightColor,float3 lightDir,float lightAtten,
+float3 CalcPBRLighting(BRDFData brdfData,half3 lightColor,float3 lightDir,half3 lightAtten,
     float3 normal,float3 viewDir){
     float nl = saturate(dot(normal,lightDir));
     float3 radiance = lightColor * lightAtten * nl; // light's color
@@ -101,7 +106,9 @@ float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 sh
     uint lightCount = GetAdditionalLightsCount();
     float3 c = (float3)0;
     for(uint i=0;i<lightCount;i++){
-        Light light = GetAdditionalLight(i,inputData.positionWS,shadowMask);
+        Light light = GetAdditionalLight1(i,inputData.positionWS,shadowMask);
+        // float3 attenColor = max(light.shadowAttenuation,inputData.bakedGI);
+
         OffsetLight(light/**/);
 
         branch_if(light.distanceAttenuation)
@@ -110,11 +117,6 @@ float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 sh
     return c;
 }
 
-Light GetMainLight(SurfaceInputData data){
-    float4 shadowMask = CalcShadowMask(data.inputData);
-    Light mainLight = GetMainLight(data.inputData.shadowCoord,data.inputData.positionWS,shadowMask,data.isReceiveShadow);
-    return mainLight;
-}
 
 float4 CalcPBR(SurfaceInputData data,Light mainLight){
     SurfaceData surfaceData = data.surfaceData;
@@ -124,7 +126,6 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight){
     InitBRDFData(data,surfaceData.alpha/*inout*/,brdfData/*out*/);
     
     float4 shadowMask = CalcShadowMask(data.inputData);
-
     
     MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
     
@@ -143,6 +144,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight){
 
     branch_if(IsAdditionalLightPixel()){
         color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
+        // return CalcAdditionalPBRLighting(brdfData,inputData,shadowMask).xyzx;
     }
 
     return float4(color,surfaceData.alpha);

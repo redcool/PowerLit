@@ -77,7 +77,7 @@ Material:
     - _EmissionOn: 0
     - _Glossiness: 0.5
     - _IBLOn: 0
-    - _IsReceiveShadow: 1
+    - _IsReceiveShadowOn: 1
     - _LightmapSH: 1
     - _Metallic: 0
     - _MetallicChannel: 0

@@ -12,8 +12,11 @@ void CalcAlbedo(TEXTURE2D_PARAM(mao,sampler_Map),float2 uv,float4 color,float cu
     float4 c = SAMPLE_TEXTURE2D(mao,sampler_Map,uv) * color;
     albedo = c.rgb;
     alpha = c.a;
-    branch_if(isClipOn)
+
+    // branch_if(isClipOn)
+    #if defined(_ALPHATEST_ON)
         clip(alpha - cutoff);
+    #endif
 }
 
 float3 CalcNormal(float2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),float scale){
@@ -22,21 +25,26 @@ float3 CalcNormal(float2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),float s
     return n;
 }
 
-float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor,float isEmissionOn){
+float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor){
     float4 emission = 0;
-    branch_if(isEmissionOn){
+    //branch_if(isEmissionOn)
+    #if defined(_EMISSION)
+    {
         emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
         emission.xyz *= emissionColor;
     }
+    #endif
     return emission.xyz * emission.w;
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
-    branch_if(_ParallaxOn){
+    // branch_if(_ParallaxOn)
+    #if defined(_PARALLAX)
+    {
         float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
-    
+    #endif
 }
 
 
@@ -46,11 +54,7 @@ float3 ScreenToWorldPos(float2 screenUV){
 }
 
 void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float3 worldPos){
-    branch_if(!IsFogOn())
-        return;
-
     BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,true,_FogNoiseOn);
-    
     // color.rgb = MixFog(color.rgb,unityFogCoord);
 }
 
@@ -113,7 +117,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     // float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
     // data.alpha = CalcAlpha(baseMap.w,_Color.a,_Cutoff,_ClipOn);
     // data.albedo = baseMap.xyz * _Color.xyz;
-    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,_ClipOn,data.albedo/*out*/,data.alpha/*out*/);
+    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,data.albedo/*out*/,data.alpha/*out*/);
 
     float4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
     data.metallic = metallicMask[_MetallicChannel] * _Metallic;
@@ -121,7 +125,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
 
     data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
-    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz,_EmissionOn);
+    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz);
     data.specular = (float3)0;
     data.clearCoatMask = 0;
     data.clearCoatSmoothness =1;
@@ -131,7 +135,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
 void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
     data.isAlphaPremultiply = _AlphaPremultiply;
-    data.isReceiveShadow = _IsReceiveShadow && _MainLightShadowOn;
+    // data.isReceiveShadow = _IsReceiveShadowOn && _MainLightShadowOn;
 
     data.screenUV = clipPos.xy/_ScreenParams.xy;
     branch_if(_PlanarReflectionOn)

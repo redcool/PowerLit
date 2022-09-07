@@ -4,9 +4,10 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
 float3 SampleLightmap(float2 lightmapUV){
-    // #if defined(LIGHTMAP_ON)
     float3 lmap = 0;
-    branch_if(IsLightmapOn()){
+    #if defined(LIGHTMAP_ON)
+    // branch_if(IsLightmapOn())
+    {
         #if defined(UNITY_LIGHTMAP_FULL_HDR)
             bool encodedLightmap = false;
         #else
@@ -16,7 +17,7 @@ float3 SampleLightmap(float2 lightmapUV){
         float4 transformUV = float4(1,1,0,0);
         lmap = SampleSingleLightmap(TEXTURE2D_LIGHTMAP_ARGS(LIGHTMAP_NAME,LIGHTMAP_SAMPLER_NAME),lightmapUV,transformUV,encodedLightmap,decodeInstructions);
     }
-    //endif
+    #endif
     return lmap;
 }
 /**

@@ -181,9 +181,9 @@ detail map
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             // #pragma multi_compile_fog
             
-            // urp keywords //_MAIN_LIGHT_SHADOWS_SCREEN
+            // urp keywords 
             #pragma multi_compile_fragment _REFLECTION_PROBE_BOX_PROJECTION
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE 
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT

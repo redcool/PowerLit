@@ -56,11 +56,11 @@ real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
     real isSoftShadow = shadowParams.y;
 
     // TODO: We could branch on if this light has soft shadows (shadowParams.y) to save perf on some platforms.
-    #if defined(_SHADOWS_SOFT)
+    // #if defined(_SHADOWS_SOFT)
     branch_if(isSoftShadow){
         attenuation = SampleShadowmapFiltered(TEXTURE2D_SHADOW_ARGS(ShadowMap, sampler_ShadowMap), shadowCoord, samplingData);
     }else
-    #endif
+    // #endif
     {
         // 1-tap hardware comparison
         attenuation = SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz);
@@ -204,19 +204,20 @@ float4 SampleShadowMask(float2 shadowMaskUV){
 }
 
 float4 CalcShadowMask(InputData inputData){
-    #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
-        float4 shadowMask = inputData.shadowMask;
-    #elif !defined (LIGHTMAP_ON)
-        float4 shadowMask = unity_ProbesOcclusion;
-    #else
-        float4 shadowMask = float4(1, 1, 1, 1);
-    #endif
-
-    // #if defined(LIGHTMAP_ON)
-    // float4 shadowMask = lerp(1,inputData.shadowMask, IsShadowMaskOn());
+    // #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
+    //     float4 shadowMask = inputData.shadowMask;
+    // #elif !defined (LIGHTMAP_ON)
+    //     float4 shadowMask = unity_ProbesOcclusion;
     // #else
-    // float4 shadowMask = unity_ProbesOcclusion;
+    //     float4 shadowMask = float4(1, 1, 1, 1);
     // #endif
+    
+    // -------- only LINGHTMAP_ON 
+    #if defined(LIGHTMAP_ON)
+    float4 shadowMask = lerp(1,inputData.shadowMask, IsShadowMaskOn());
+    #else
+    float4 shadowMask = unity_ProbesOcclusion;
+    #endif
     
     return shadowMask;
 }

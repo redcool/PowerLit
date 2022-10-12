@@ -13,10 +13,10 @@
 
 #define branch_if UNITY_BRANCH if
 
-float3 ScreenToWorldPos(float2 screenUV,float depth,float4x4 invVP){
+half3 ScreenToWorldPos(half2 screenUV,half depth,half4x4 invVP){
     screenUV.y = 1 - screenUV.y;
 
-    float4 p = float4(screenUV*2-1,depth,1);
+    half4 p = half4(screenUV*2-1,depth,1);
     p = mul(invVP,p);
     return p.xyz/p.w;
 }

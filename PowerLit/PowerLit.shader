@@ -41,10 +41,10 @@ Shader "URP/PowerLit"
         [GroupToggle(,_RECEIVE_SHADOWS_ON)]_IsReceiveShadowOn("_IsReceiveShadowOn",int) = 1
 
         [Header(PlanarReflection)]
-        [GroupToggle]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
+        [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
         
         [Header(Custom IBL)]
-        [GroupToggle]_IBLOn("_IBLOn",float) = 0
+        [GroupToggle(_,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
         [NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
         [Header(IBL Params)]
         _EnvIntensity("_EnvIntensity",float) = 1
@@ -52,7 +52,7 @@ Shader "URP/PowerLit"
         _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
 
         [Header(Custom Light)]
-        [GroupToggle]_CustomLightOn("_CustomLightOn",float) = 0
+        [GroupToggle(_,_CUSTOM_LIGHT_ON)]_CustomLightOn("_CustomLightOn",float) = 0
         _CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
         [hdr]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
 
@@ -79,7 +79,7 @@ Shader "URP/PowerLit"
         [Enum(UnityEngine.Rendering.BlendMode)]_DstMode("_DstMode",int) = 0
 
         [Header(Alpha Premulti)]
-        [GroupToggle]_AlphaPremultiply("_AlphaPremultiply",int) = 0
+        [GroupToggle(_,_ALPHA_PREMULTIPLY_ON)]_AlphaPremultiply("_AlphaPremultiply",int) = 0
 
         [Header(Depth)]
         [GroupToggle]_ZWrite("_ZWrite",int) = 1
@@ -89,22 +89,24 @@ Shader "URP/PowerLit"
         [Enum(UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
         [Header(Wind)]
-        [GroupToggle]_WindOn("_WindOn (need vertex color.r)",float) = 0
+        [GroupToggle(_,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
         [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
         [GroupVectorSlider(WindVector Intensity,0_1)]_WindDir("_WindDir,dir:(xyz),Intensity:(w)",vector) = (1,0.1,0,0.5)
         _WindSpeed("_WindSpeed",range(0,1)) = 0.3
   
         [Header(Snow)]
-        [GroupToggle]_SnowOn("_SnowOn",int) = 0
+        [GroupToggle(_,_SNOW_ON)]_SnowOn("_SnowOn",int) = 0
         [GroupToggle]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
         _SnowIntensity("_SnowIntensity",range(0,1)) = 0
 
         [Header(Fog)]
-        [GroupToggle]_FogOn("_FogOn",int) = 1
-        [GroupToggle]_FogNoiseOn("_FogNoiseOn",int) = 0
+        [GroupToggle()]_FogOn("_FogOn",int) = 1
+        [GroupToggle(_,_DEPTH_FOG_NOISE_ON)]_FogNoiseOn("_FogNoiseOn",int) = 0
+        [GroupToggle(_,_DEPTH_FOG_ON)]_DepthFogOn("_DepthFogOn",int) = 1
+        [GroupToggle(_,_HEIGHT_FOG_ON)]_HeightFogOn("_HeightFogOn",int) = 1
 
         [Header(Rain Ripple)]
-        [GroupToggle]_RainOn("_RainOn",int) = 0
+        [GroupToggle(_,_RAIN_ON)]_RainOn("_RainOn",int) = 0
         _RippleTex("_RippleTex",2d)=""{}
         _RippleSpeed("_RippleSpeed",float) = 10
         _RippleIntensity("_RippleIntensity",range(0,2)) = 1
@@ -129,7 +131,6 @@ Shader "URP/PowerLit"
     {
 /*
 no dir lightmap
-powerUrpLit
 1 GI计算与Lit保持一致
 2 shadowcaster
 3 clip,blend,depth,cullMode暴露出来
@@ -179,16 +180,26 @@ detail map
             #pragma shader_feature_local _RECEIVE_SHADOWS_ON
             #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _ALPHATEST_ON
-            // #pragma multi_compile_fog
+            #pragma shader_feature_local_fragment _PLANAR_REFLECTION_ON
+            #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
+            #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
+            #pragma shader_feature_local_fragment _DEPTH_FOG_ON
+            #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
+            #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
+            #pragma shader_feature_local _SNOW_ON
+            #pragma shader_feature_local _WIND_ON
+            #pragma shader_feature_local _RAIN_ON
             
             // urp keywords 
-            #pragma multi_compile_fragment _REFLECTION_PROBE_BOX_PROJECTION
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
-            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS _ADDITIONAL_LIGHTS_VERTEX
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
 
             // unity keywords
+            // #pragma multi_compile_fog
             // #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON

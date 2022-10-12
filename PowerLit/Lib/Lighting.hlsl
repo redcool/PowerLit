@@ -6,16 +6,19 @@
 #include "Shadows.hlsl"
 #include "GI.hlsl"
 
-float3 VertexLighting(float3 worldPos,float3 normal,bool isLightOn){
-    float3 c = (float3)0;
-    branch_if(isLightOn){
+half3 VertexLighting(half3 worldPos,half3 normal,bool isLightOn=false){
+    half3 c = (half3)0;
+    #if defined(_ADDITIONAL_LIGHTS_VERTEX)
+    // branch_if(isLightOn)
+    {
         int count = GetAdditionalLightsCount();
         for(int i=0;i<count;i++){
             Light light = GetAdditionalLight(i,worldPos);
-            float3 lightColor = light.color * light.distanceAttenuation;
+            half3 lightColor = light.color * light.distanceAttenuation;
             c += LightingLambert(lightColor,light.direction,normal);
         }
     }
+    #endif
     return c;
 }
 
@@ -23,7 +26,7 @@ float3 VertexLighting(float3 worldPos,float3 normal,bool isLightOn){
 // Light 
 ***/
 
-Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isReceiveShadow){
+Light GetMainLight(half4 shadowCoord,half3 worldPos,half4 shadowMask,bool isReceiveShadow){
     Light light = (Light)0;
     light.direction = _MainLightPosition.xyz;
     light.color = _MainLightColor.rgb;
@@ -33,27 +36,24 @@ Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isR
 }
 
 
-Light GetMainLight(SurfaceInputData data){
-    float4 shadowMask = CalcShadowMask(data.inputData);
+Light GetMainLight(SurfaceInputData data,half4 shadowMask){
     Light mainLight = GetMainLight(data.inputData.shadowCoord,data.inputData.positionWS,shadowMask,true);
     return mainLight;
 }
 
 void OffsetLight(inout Light mainLight){
-    branch_if(_CustomLightOn){
+    #if defined(_CUSTOM_LIGHT_ON)
+    // branch_if(_CustomLightOn)
+    {
         mainLight.color = _CustomLightColor.xyz;
-        mainLight.direction = SafeNormalize(_CustomLightDir.xyz);
+        mainLight.direction = (_CustomLightDir.xyz);
     }
+    #endif
 }
 
-// float3 SafeNormalize(float3 v){
-//     float len = max(0.0000001,dot(v,v));
-//     return v/rsqrt(len);
-// }
-
-void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFData brdfData){
+void InitBRDFData(SurfaceInputData surfaceInputData,inout half alpha,out BRDFData brdfData){
     SurfaceData surfaceData = surfaceInputData.surfaceData;
-    float oneMinusReflectivityMetallic = OneMinusReflectivityMetallic(surfaceData.metallic);
+    half oneMinusReflectivityMetallic = OneMinusReflectivityMetallic(surfaceData.metallic);
     
     brdfData = (BRDFData)0;
     // brdfData.albedo = surfaceData.albedo;
@@ -67,24 +67,27 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     brdfData.normalizationTerm = brdfData.roughness * 4 + 2; // mct factor
     brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
 
-    branch_if(surfaceInputData.isAlphaPremultiply){
+    #if defined(_ALPHA_PREMULTIPLY_ON)
+    // branch_if(surfaceInputData.isAlphaPremultiply)
+    {
         brdfData.diffuse *= alpha;
         alpha = alpha * oneMinusReflectivityMetallic + brdfData.reflectivity; //lerp(a,1,m)
     }
+    #endif
 }
 
 /***
     Minimalist cook torrance
     r2/(d*d * lh*lh *(4r+2))
 ***/
-float3 CalcDirectSpecularTerm(float r/*roughness*/,float3 lightDir,float3 viewDir,float3 normal){
-    float3 h = SafeNormalize(lightDir + viewDir);
-    float nh = saturate(dot(normal,h));
-    float lh = saturate(dot(lightDir,h));
+half3 CalcDirectSpecularTerm(half r/*roughness*/,half3 lightDir,half3 viewDir,half3 normal){
+    half3 h = SafeNormalize(lightDir + viewDir);
+    half nh = saturate(dot(normal,h));
+    half lh = saturate(dot(lightDir,h));
 
-    float r2 = r * r;
-    float d = nh * nh * (r2-1)+1;
-    float specTerm = r2/( d * d * max(0.1, lh * lh) * ( 4 * r + 2 ));
+    half r2 = r * r;
+    half d = nh * nh * (r2-1)+1;
+    half specTerm = r2/( d * d * max(0.1, lh * lh) * ( 4 * r + 2 ));
 
     #if defined (SHADER_API_MOBILE) || defined (SHADER_API_SWITCH)
         specTerm = clamp(specTerm,0,100);
@@ -92,62 +95,65 @@ float3 CalcDirectSpecularTerm(float r/*roughness*/,float3 lightDir,float3 viewDi
     return specTerm;
 }
 
-float3 CalcPBRLighting(BRDFData brdfData,half3 lightColor,float3 lightDir,half3 lightAtten,
-    float3 normal,float3 viewDir){
-    float nl = saturate(dot(normal,lightDir));
-    float3 radiance = lightColor * lightAtten * nl; // light's color
+half3 CalcPBRLighting(BRDFData brdfData,half3 lightColor,half3 lightDir,half3 lightAtten,
+    half3 normal,half3 viewDir){
+    half nl = saturate(dot(normal,lightDir));
+    half3 radiance = lightColor * lightAtten * nl; // light's color
 
-    float3 brdf = brdfData.diffuse;
+    half3 brdf = brdfData.diffuse;
     brdf += brdfData.specular * CalcDirectSpecularTerm(brdfData.roughness,lightDir,viewDir,normal);
     return brdf * radiance;
 }
 
-float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 shadowMask){
+half3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,half4 shadowMask){
     uint lightCount = GetAdditionalLightsCount();
-    float3 c = (float3)0;
+    half3 c = (half3)0;
     for(uint i=0;i<lightCount;i++){
         Light light = GetAdditionalLight1(i,inputData.positionWS,shadowMask);
-        // float3 attenColor = max(light.shadowAttenuation,inputData.bakedGI);
-
+        // half3 attenColor = max(light.shadowAttenuation,inputData.bakedGI);
         OffsetLight(light/**/);
 
-        branch_if(light.distanceAttenuation)
+        // branch_if(light.distanceAttenuation)
             c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     }
     return c;
 }
 
 
-float4 CalcPBR(SurfaceInputData data,Light mainLight){
+half4 CalcPBR(SurfaceInputData data,Light mainLight,half4 shadowMask){
     SurfaceData surfaceData = data.surfaceData;
     InputData inputData = data.inputData;
 
     BRDFData brdfData;
     InitBRDFData(data,surfaceData.alpha/*inout*/,brdfData/*out*/);
     
-    float4 shadowMask = CalcShadowMask(data.inputData);
-    
-    MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
-    
-    float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
-    float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
-
-    branch_if(mainLight.distanceAttenuation){
+    // MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
+// return (brdfData.diffuse + inputData.bakedGI*0.2).xyzx+shadowMask*0.1;
+    half customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
+    half3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
+    // branch_if(mainLight.distanceAttenuation)
+    {
         OffsetLight(mainLight/**/);
         color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     }
     color += surfaceData.emission;
 
-    branch_if(IsAdditionalLightVertex()){
+    #if defined(_ADDITIONAL_LIGHTS_VERTEX)
+    // branch_if(IsAdditionalLightVertex())
+    {
         color += inputData.vertexLighting * brdfData.diffuse;
     }
+    #endif
 
-    branch_if(IsAdditionalLightPixel()){
+    #if defined(_ADDITIONAL_LIGHTS)
+    // branch_if(IsAdditionalLightPixel())
+    {
         color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
         // return CalcAdditionalPBRLighting(brdfData,inputData,shadowMask).xyzx;
     }
+    #endif
 
-    return float4(color,surfaceData.alpha);
+    return half4(color,surfaceData.alpha);
 }
 
 #endif //LIGHTING_HLSL

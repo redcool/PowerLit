@@ -5,34 +5,34 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 #include "PowerLitCore.hlsl"
 
-float3 _LightDirection;
+half3 _LightDirection;
 
 struct Attributes{
-    float4 pos:POSITION;
-    float3 normal:NORMAL;
-    float2 uv:TEXCOORD0;
-    float3 color:COLOR;
+    half4 pos:POSITION;
+    half3 normal:NORMAL;
+    half2 uv:TEXCOORD0;
+    half3 color:COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 struct Varyings{
-    float2 uv:TEXCOORD0;
-    float4 pos:SV_POSITION;
+    half2 uv:TEXCOORD0;
+    half4 pos:SV_POSITION;
 };
 
-float4 GetShadowPositionHClip(Attributes input)
+half4 GetShadowPositionHClip(Attributes input)
 {
-    float3 positionWS = TransformObjectToWorld(input.pos.xyz);
-    float3 normalWS = TransformObjectToWorldNormal(input.normal);
+    half3 positionWS = TransformObjectToWorld(input.pos.xyz);
+    half3 normalWS = TransformObjectToWorldNormal(input.normal);
     
-    float4 attenParam = input.color.x; // vertex color atten
+    half4 attenParam = input.color.x; // vertex color atten
     branch_if(IsWindOn()){
         positionWS = WindAnimationVertex(positionWS,input.pos.xyz,normalWS,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
 #if defined(SHADOW_PASS)
-    float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
+    half4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
 #else
-    float4 positionCS = TransformWorldToHClip(positionWS);
+    half4 positionCS = TransformWorldToHClip(positionWS);
 #endif
 
 #if UNITY_REVERSED_Z
@@ -54,8 +54,8 @@ Varyings vert(Attributes input){
     return output;
 }
 
-float4 frag(Varyings input):SV_Target{
-    float4 mainTex = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
+half4 frag(Varyings input):SV_Target{
+    half4 mainTex = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,input.uv) * _Color;
     // branch_if(_ClipOn)
     #if defined(_ALPHATEST_ON)
         clip(mainTex.a - _Cutoff);

@@ -8,8 +8,8 @@
 #include "../../PowerShaderLib/Lib/ParallaxMapping.hlsl"
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
-void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),half2 uv,half4 color,half cutoff,bool isClipOn,out half3 albedo,out half alpha ){
-    half4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;
+void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
+    float4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;
     albedo = c.rgb;
     alpha = c.a;
 
@@ -19,14 +19,14 @@ void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),half2 uv,half4 color,half cutof
     #endif
 }
 
-half3 CalcNormal(half2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),half scale){
-    half4 c = SAMPLE_TEXTURE2D(normalMap,sampler_normalMap,uv);
-    half3 n = UnpackNormalScale(c,scale);
+float3 CalcNormal(float2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),float scale){
+    float4 c = SAMPLE_TEXTURE2D(normalMap,sampler_normalMap,uv);
+    float3 n = UnpackNormalScale(c,scale);
     return n;
 }
 
-half3 CalcEmission(half2 uv,TEXTURE2D_PARAM(map,sampler_map),half3 emissionColor){
-    half4 emission = 0;
+float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor){
+    float4 emission = 0;
     #if defined(_EMISSION)
     //branch_if(isEmissionOn)
     {
@@ -37,71 +37,71 @@ half3 CalcEmission(half2 uv,TEXTURE2D_PARAM(map,sampler_map),half3 emissionColor
     return emission.xyz * emission.w;
 }
 
-void ApplyParallax(inout half2 uv,half3 viewTS){
+void ApplyParallax(inout float2 uv,float3 viewTS){
     #if defined(_PARALLAX)
     // branch_if(_ParallaxOn)
     {
-        half height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
+        float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
     #endif
 }
 
-void ApplyParallaxVertex(inout half2 uv,half3 viewTS){
+void ApplyParallaxVertex(inout float2 uv,float3 viewTS){
     #if defined(_PARALLAX)
     // branch_if(_ParallaxOn)
     {
-        half height = SAMPLE_TEXTURE2D_LOD(_ParallaxMap,sampler_ParallaxMap,uv,0)[_ParallaxMapChannel];
+        float height = SAMPLE_TEXTURE2D_LOD(_ParallaxMap,sampler_ParallaxMap,uv,0)[_ParallaxMapChannel];
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
     #endif
 }
 
-half3 ScreenToWorldPos(half2 screenUV){
-    half depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x;
+float3 ScreenToWorldPos(float2 screenUV){
+    float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x;
     return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
 }
 
-void ApplyFog(inout half4 color,half2 sphereFogCoord,half unityFogCoord,half3 worldPos){
+void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float3 worldPos){
     BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,true,_FogNoiseOn);
     // color.rgb = MixFog(color.rgb,unityFogCoord);
 }
 
-half3 CalcRainColor(half3 worldPos,half3 worldNormal,half3 worldView,half atten,half3 albedo){
+float3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float atten,float3 albedo){
     // cross noise
-    half noise = unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + _GlobalWindDir.xz * _RainCube_ST.zw * _Time.y) + 0.5;
-    noise += unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + half2(_GlobalWindDir.x* - _Time.x,0) ) + 0.5;
+    float noise = unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + _GlobalWindDir.xz * _RainCube_ST.zw * _Time.y) + 0.5;
+    noise += unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + float2(_GlobalWindDir.x* - _Time.x,0) ) + 0.5;
 
-    // half3 n = normalize(cross(ddy(worldPos),ddx(worldPos)));
-    // half atten1 = saturate(dot(n,half3(0,1,0)));
+    // float3 n = normalize(cross(ddy(worldPos),ddx(worldPos)));
+    // float atten1 = saturate(dot(n,float3(0,1,0)));
     // reflect
-    half3 reflectDir = reflect(-worldView,worldNormal);
+    float3 reflectDir = reflect(-worldView,worldNormal);
     reflectDir += _RainReflectDirOffset + noise*1;
-    half4 envColor = SAMPLE_TEXTURECUBE(_RainCube,sampler_RainCube,reflectDir);
+    float4 envColor = SAMPLE_TEXTURECUBE(_RainCube,sampler_RainCube,reflectDir);
     envColor.xyz = DecodeHDREnvironment(envColor,_RainCube_HDR);
 
-    half3 reflectCol = envColor.xyz * _RainReflectIntensity ;
+    float3 reflectCol = envColor.xyz * _RainReflectIntensity ;
 
     // ripple
-    half2 rippleUV = (worldPos.xz+noise.x*0.01) * _RippleTex_ST.xy + _RippleTex_ST.zw;
-    half3 ripple = ComputeRipple(_RippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * _RippleSpeed) * _RippleIntensity;
-    half rippleCol = saturate((ripple.x) );
+    float2 rippleUV = (worldPos.xz+noise.x*0.01) * _RippleTex_ST.xy + _RippleTex_ST.zw;
+    float3 ripple = ComputeRipple(_RippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * _RippleSpeed) * _RippleIntensity;
+    float rippleCol = saturate((ripple.x) );
     
     // atten
-    half heightAtten =  (worldPos.y < _RainHeight);
-    half slopeAtten = dot(worldNormal,half3(0,1,0)) - _RainSlopeAtten;
-    half reflectAtten = saturate(slopeAtten * heightAtten);
-// return reflectAtten;
-    half3 rainColor = _RainColor.xyz;
+    float heightAtten =  (worldPos.y < _RainHeight);
+    float slopeAtten = dot(worldNormal,float3(0,1,0)) - _RainSlopeAtten;
+    float reflectAtten = saturate(slopeAtten * heightAtten);
+
+    float3 rainColor = _RainColor.xyz;
     rainColor += (reflectCol + rippleCol * atten) * reflectAtten /albedo; // so composite reflectCol and rippleCol
     return lerp(1,rainColor,_GlobalRainIntensity);
 }
 
-void ApplyRain(inout SurfaceData data,half3 worldPos,half3 worldNormal,half3 worldView,half atten){
+void ApplyRain(inout SurfaceData data,float3 worldPos,float3 worldNormal,float3 worldView,float atten){
     branch_if(!IsRainOn())
         return;
 
-    // half3 worldPos = ScreenToWorldPos(screenUV);
+    // float3 worldPos = ScreenToWorldPos(screenUV);
 
     data.albedo *= CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);
     data.metallic = saturate(data.metallic + _RainMetallic * _GlobalRainIntensity);
@@ -109,39 +109,39 @@ void ApplyRain(inout SurfaceData data,half3 worldPos,half3 worldNormal,half3 wor
     // data.albedo = CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);;
 }
 
-void ApplySurfaceBelow(inout SurfaceData data,half3 worldPos){
-    half heightRate = saturate(worldPos.y -_SurfaceDepth);
+void ApplySurfaceBelow(inout SurfaceData data,float3 worldPos){
+    float heightRate = saturate(worldPos.y -_SurfaceDepth);
     heightRate = smoothstep(0.02,0.1,heightRate);
     data.albedo *= lerp(_BelowColor.xyz,1,heightRate);
 }
 
-void ApplySnow(inout SurfaceData data,half3 worldNormal){
+void ApplySnow(inout SurfaceData data,float3 worldNormal){
     branch_if(! IsSnowOn())
         return;
     
     data.albedo = MixSnow(data.albedo,1,_SnowIntensity,worldNormal,_ApplyEdgeOn);
 }
 
-void InitSurfaceData(half2 uv,inout SurfaceData data){
-    // half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
+void InitSurfaceData(float2 uv,inout SurfaceData data){
+    // float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
     // data.alpha = CalcAlpha(baseMap.w,_Color.a,_Cutoff,_ClipOn);
     // data.albedo = baseMap.xyz * _Color.xyz;
     CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,data.albedo/*out*/,data.alpha/*out*/);
 
-    half4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
+    float4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
     data.metallic = metallicMask[_MetallicChannel] * _Metallic;
     data.smoothness = metallicMask[_SmoothnessChannel] * _Smoothness;
     data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
 
     data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
     data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz);
-    data.specular = (half3)0;
+    data.specular = (float3)0;
     data.clearCoatMask = 0;
     data.clearCoatSmoothness =0;
 
 }
 
-void InitSurfaceInputData(half2 uv,half4 clipPos,inout SurfaceInputData data){
+void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
     // data.isAlphaPremultiply = _AlphaPremultiply;
     // data.isReceiveShadow = _IsReceiveShadowOn && _MainLightShadowOn;

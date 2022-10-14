@@ -18,3 +18,17 @@ https://github.com/redcool/PowerUtilities.git
 https://github.com/redcool/PowerShaderLib.git
 
 put them into same folder.
+
+
+========================================================
+* v2.1.1
+optimise PowerLit
+add keywords(shader_feature)
+
+1 weather fx keywords
+_SNOW_ON
+_WIND_ON
+_RAIN_ON
+
+2
+parallax move vs

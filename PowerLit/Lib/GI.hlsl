@@ -3,34 +3,34 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceData.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-half3 SampleLightmap(half2 lightmapUV){
-    half3 lmap = 0;
+float3 SampleLightmap(float2 lightmapUV){
+    float3 lmap = 0;
     #if defined(UNITY_LIGHTMAP_FULL_HDR)
         bool encodedLightmap = false;
     #else
         bool encodedLightmap = true;
     #endif
     
-    half4 decodeInstructions = half4(LIGHTMAP_HDR_MULTIPLIER,LIGHTMAP_HDR_EXPONENT,0,0);
-    half4 transformUV = half4(1,1,0,0);
+    float4 decodeInstructions = float4(LIGHTMAP_HDR_MULTIPLIER,LIGHTMAP_HDR_EXPONENT,0,0);
+    float4 transformUV = float4(1,1,0,0);
     lmap = SampleSingleLightmap(TEXTURE2D_LIGHTMAP_ARGS(LIGHTMAP_NAME,LIGHTMAP_SAMPLER_NAME),lightmapUV,transformUV,encodedLightmap,decodeInstructions);
     return lmap;
 }
 /**
     lerp(lmap, sh ,t)
 */
-half3 CalcLightmapAndSH(half3 normal,half2 lightmapUV,half lightmapOrSH,half lmSaturate,half lmIntensity){
+float3 CalcLightmapAndSH(float3 normal,float2 lightmapUV,float lightmapOrSH,float lmSaturate,float lmIntensity){
     
     #if defined(LIGHTMAP_ON)
     // branch_if(IsLightmapOn())
     {
-        half3 lmap = 0;
+        float3 lmap = 0;
         lmap = SampleLightmap(lightmapUV) * lmIntensity;
         lmap = lerp(Gray(lmap),lmap,lmSaturate);
         return lmap;
     }
     #else
-        half3 sh = SampleSH(normal);
+        float3 sh = SampleSH(normal);
         return sh;
     #endif
     // return lerp(lmap,sh,lightmapOrSH);
@@ -38,41 +38,41 @@ half3 CalcLightmapAndSH(half3 normal,half2 lightmapUV,half lightmapOrSH,half lmS
 
 
 
-half3 CalcFresnel(BRDFData brdfData,half3 normal,half3 viewDir){
-    half nv = saturate(dot(normal,viewDir));
-    half fresnelTerm = Pow4(1-nv);
-    half surfaceReduction = 1/(brdfData.roughness2 +1); //roughness[0,1] -> [1,0.5]
-    half3 fresnel = surfaceReduction * lerp(brdfData.specular,brdfData.grazingTerm,fresnelTerm);
+float3 CalcFresnel(BRDFData brdfData,float3 normal,float3 viewDir){
+    float nv = saturate(dot(normal,viewDir));
+    float fresnelTerm = Pow4(1-nv);
+    float surfaceReduction = 1/(brdfData.roughness2 +1); //roughness[0,1] -> [1,0.5]
+    float3 fresnel = surfaceReduction * lerp(brdfData.specular,brdfData.grazingTerm,fresnelTerm);
     return fresnel;
 }
 
-half3 CalcIBL(half3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),half perceptualRoughness){
-    // half mip = (6 * perceptualRoughness * (1.7-0.7 * perceptualRoughness)); // r * (1.7-0.7r)
-    half mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
-    half4 encodeIBL = SAMPLE_TEXTURECUBE_LOD(cube,sampler_Cube,reflectDir,mip);
+float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perceptualRoughness){
+    // float mip = (6 * perceptualRoughness * (1.7-0.7 * perceptualRoughness)); // r * (1.7-0.7r)
+    float mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
+    float4 encodeIBL = SAMPLE_TEXTURECUBE_LOD(cube,sampler_Cube,reflectDir,mip);
     #if defined(UNITY_USE_NATIVE_HDR) || defined(UNITY_DOTS_INSTANTING_ENABLED)
-        half3 specGI = encodeIBL.rgb;
+        float3 specGI = encodeIBL.rgb;
     #else // mobile
-        half3 specGI = DecodeHDREnvironment(encodeIBL,unity_SpecCube0_HDR);
+        float3 specGI = DecodeHDREnvironment(encodeIBL,unity_SpecCube0_HDR);
     #endif
     return specGI;
     // return _GlossyEnvironmentColor.rgb;
 }
 
 #if SHADER_LIBRARY_VERSION_MAJOR < 12
-half3 BoxProjectedCubemapDirection(half3 reflectionWS, half3 positionWS, half4 cubemapPositionWS, half4 boxMin, half4 boxMax)
+float3 BoxProjectedCubemapDirection(float3 reflectionWS, float3 positionWS, float4 cubemapPositionWS, float4 boxMin, float4 boxMax)
 {
     // Is this probe using box projection?
     branch_if (cubemapPositionWS.w > 0.0f)
     {
-        half3 boxMinMax = (reflectionWS > 0.0f) ? boxMax.xyz : boxMin.xyz;
-        half3 rbMinMax = half3(boxMinMax - positionWS) / reflectionWS;
+        float3 boxMinMax = (reflectionWS > 0.0f) ? boxMax.xyz : boxMin.xyz;
+        float3 rbMinMax = float3(boxMinMax - positionWS) / reflectionWS;
 
-        half fa = half(min(min(rbMinMax.x, rbMinMax.y), rbMinMax.z));
+        float fa = float(min(min(rbMinMax.x, rbMinMax.y), rbMinMax.z));
 
-        half3 worldPos = half3(positionWS - cubemapPositionWS.xyz);
+        float3 worldPos = float3(positionWS - cubemapPositionWS.xyz);
 
-        half3 result = worldPos + reflectionWS * fa;
+        float3 result = worldPos + reflectionWS * fa;
         return result;
     }
     else
@@ -82,9 +82,9 @@ half3 BoxProjectedCubemapDirection(half3 reflectionWS, half3 positionWS, half4 c
 }
 #endif
 
-half3 CalcIBL(half3 reflectDir,half perceptualRoughness,half customIBLMask){
+float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
     reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz);
-    half3 iblColor = 0;
+    float3 iblColor = 0;
     
     // branch_if(_IBLOn)
     #if defined(_IBL_ON)
@@ -99,14 +99,14 @@ half3 CalcIBL(half3 reflectDir,half perceptualRoughness,half customIBLMask){
     return lerp(1, iblColor,customIBLMask)  * _EnvIntensity;
 }
 
-half3 CalcPlanerReflection(half2 uv){
+float3 CalcPlanerReflection(float2 uv){
     return SAMPLE_TEXTURE2D(_ReflectionTex,sampler_ReflectionTex,uv).xyz;
 }
 
-half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 viewDir,half customIBLMask,half3 worldPos,half2 screenUV){
-    half3 indirectDiffuse = bakedGI  * brdfData.diffuse;
+float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask,float3 worldPos,float2 screenUV){
+    float3 indirectDiffuse = bakedGI  * brdfData.diffuse;
 
-    half3 indirectSpecular = 0;
+    float3 indirectSpecular = 0;
     // branch_if(_PlanarReflectionOn)
     #if defined(_PLANAR_REFLECTION_ON)
     {
@@ -115,7 +115,7 @@ half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 v
     // else
     #else
     {
-        half3 reflectDir = reflect(-viewDir,normal);
+        float3 reflectDir = reflect(-viewDir,normal);
 
         #if (SHADER_LIBRARY_VERSION_MAJOR >= 12) && defined(_REFLECTION_PROBE_BOX_PROJECTION)
         reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
@@ -125,8 +125,8 @@ half3 CalcGI(BRDFData brdfData,half3 bakedGI,half occlusion,half3 normal,half3 v
     }
     #endif
 
-    half3 fresnel = CalcFresnel(brdfData,normal,viewDir);
-    half3 color = indirectDiffuse + indirectSpecular * fresnel;
+    float3 fresnel = CalcFresnel(brdfData,normal,viewDir);
+    float3 color = indirectDiffuse + indirectSpecular * fresnel;
     color *= occlusion;
     return color;
 }

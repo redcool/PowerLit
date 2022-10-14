@@ -15,17 +15,17 @@ bool4 unity_MetaVertexControl;
 bool4 unity_MetaFragmentControl;
 CBUFFER_END
 
-half unity_OneOverOutputBoost;
-half unity_MaxOutputValue;
-half unity_UseLinearSpace;
+float unity_OneOverOutputBoost;
+float unity_MaxOutputValue;
+float unity_UseLinearSpace;
 
 struct MetaInput{
-    half3 albedo;
-    half3 emission;
-    half3 specularColor;
+    float3 albedo;
+    float3 emission;
+    float3 specularColor;
 };
 
-half4 CalcMetaPosition(half4 pos,half2 uv1,half2 uv2,half4 uv1ST,half4 uv2ST){
+float4 CalcMetaPosition(float4 pos,float2 uv1,float2 uv2,float4 uv1ST,float4 uv2ST){
     branch_if(unity_MetaVertexControl.x){
         pos.xy = uv1 * uv1ST.xy + uv1ST.zw;
     }
@@ -36,18 +36,18 @@ half4 CalcMetaPosition(half4 pos,half2 uv1,half2 uv2,half4 uv1ST,half4 uv2ST){
     return TransformWorldToHClip(pos.xyz);
 }
 
-half4 CalcMetaFragment(MetaInput input){
-    half4 color = half4(0,0,0,0);
+float4 CalcMetaFragment(MetaInput input){
+    float4 color = float4(0,0,0,0);
     branch_if(unity_MetaFragmentControl.x){
-        color = half4(input.albedo,1);
+        color = float4(input.albedo,1);
         color.rgb = clamp(PositivePow(color.rgb,saturate(unity_OneOverOutputBoost)) ,0,unity_MaxOutputValue);
     }
     branch_if(unity_MetaFragmentControl.y){
-        half3 emission= input.emission;
+        float3 emission= input.emission;
         branch_if(!unity_UseLinearSpace){
             emission = LinearToSRGB(emission);
         }
-        color = half4(emission,1);
+        color = float4(emission,1);
     }
     return color;
 }
@@ -55,17 +55,17 @@ half4 CalcMetaFragment(MetaInput input){
 // meta lighting
 
 struct Atributes{
-    half4 vertex:POSITION;
-    half2 uv:TEXCOORD0;
-    half2 uv1:TEXCOORD1;
-    half2 uv2:TEXCOORD2;
-    half4 tangent:TANGENT;
+    float4 vertex:POSITION;
+    float2 uv:TEXCOORD0;
+    float2 uv1:TEXCOORD1;
+    float2 uv2:TEXCOORD2;
+    float4 tangent:TANGENT;
 };
 
 struct Varyings
 {
-    half4 pos:SV_POSITION;
-    half2 uv:TEXCOORD;
+    float4 pos:SV_POSITION;
+    float2 uv:TEXCOORD;
 };
 
 
@@ -77,7 +77,7 @@ Varyings vert(Atributes input){
     return output;
 }
 
-half4 frag(Varyings input):SV_Target{
+float4 frag(Varyings input):SV_Target{
     SurfaceInputData surfaceInputData = (SurfaceInputData)0;
     InitSurfaceInputData(input.uv,input.pos,surfaceInputData/**/);
 

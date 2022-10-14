@@ -7,7 +7,7 @@
 struct Attributes{
     float4 pos:POSITION;
     float3 normal:NORMAL;
-    half4 color:COLOR;
+    float4 color:COLOR;
     float4 tangent:TANGENT;
     float2 uv:TEXCOORD;
     float2 uv1 :TEXCOORD1;
@@ -17,16 +17,16 @@ struct Attributes{
 struct Varyings{
     float4 pos : SV_POSITION;
     float4 uv:TEXCOORD0; // xy : uv, zw: uv1 for lightmap uv
-    // half uv1:TEXCOORD1; // sh,lightmap
+    // float uv1:TEXCOORD1; // sh,lightmap
     float4 tSpace0:TEXCOORD2;
     float4 tSpace1:TEXCOORD3;
     float4 tSpace2:TEXCOORD4;
-    half4 vertexLightAndFogFactor:TEXCOORD5;
+    float4 vertexLightAndFogFactor:TEXCOORD5;
     float4 shadowCoord:TEXCOORD6;
     float4 viewDirTS:TEXCOORD7;
 
-    half4 color:COLOR;
-    half4 fogCoord:COLOR1;
+    float4 color:COLOR;
+    float4 fogCoord:COLOR1;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
@@ -125,20 +125,20 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
     data.shadowMask = SampleShadowMask(input.uv.zw);
 }
 
-half4 fragTest(Varyings input,SurfaceInputData data){
+float4 fragTest(Varyings input,SurfaceInputData data){
     InputData inputData = data.inputData;
     // return input.uv.y;
     // return SampleLightmap(input.uv.zw).xyzx;
     // return MainLightRealtimeShadow(data.inputData.shadowCoord,true);
     // return MainLightShadow(inputData.shadowCoord,inputData.positionWS,inputData.shadowMask,_MainLightOcclusionProbes);
-    // return SampleSH(half4(data.inputData.normalWS,1)).xyzx;
+    // return SampleSH(float4(data.inputData.normalWS,1)).xyzx;
     // return data.inputData.shadowMask.xyzx;
     // return dot(CalcCascadeId(data.inputData.positionWS),0.25); // show cascade id
     // return data.inputData.vertexLighting.xyzx;
     return 0;
 }
 
-half4 frag(Varyings input):SV_Target{
+float4 frag(Varyings input):SV_Target{
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
@@ -152,7 +152,7 @@ half4 frag(Varyings input):SV_Target{
     InitInputData(input,data,data.inputData/*inout*/);
 // return fragTest(input,data);
 
-    // half4 c1 = UniversalFragmentPBR(data.inputData,data.surfaceData);
+    // float4 c1 = UniversalFragmentPBR(data.inputData,data.surfaceData);
     // return c1;
     #if defined(_SNOW_ON)
     ApplySnow(data.surfaceData/**/,data.inputData.normalWS);
@@ -161,18 +161,18 @@ half4 frag(Varyings input):SV_Target{
     // data.surfaceData.albedo += vertexNoise;
     // return data.surfaceData.albedo.xyzx;
 
-    half4 shadowMask = CalcShadowMask(data.inputData);
+    float4 shadowMask = CalcShadowMask(data.inputData);
     Light mainLight = GetMainLight(data,shadowMask);
 
     #if defined(_RAIN_ON)
-    half rainAtten = (vertexNoise+0.5) * (mainLight.shadowAttenuation+0.25);
+    float rainAtten = (vertexNoise+0.5) * (mainLight.shadowAttenuation+0.25);
     ApplyRain(data.surfaceData/**/,data.inputData.positionWS,data.inputData.normalWS,data.inputData.viewDirectionWS,rainAtten);
     #endif
     ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
 
-    half4 color = CalcPBR(data,mainLight,shadowMask);
+    float4 color = CalcPBR(data,mainLight,shadowMask);
 
-    // half4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
+    // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
 
     BlendFogSphereKeyword(color.rgb/**/,data.inputData.positionWS,input.fogCoord.xy,true,_FogNoiseOn); // 2fps

@@ -18,7 +18,7 @@ CBUFFER_START(RenderingData)
     // int _MainLightMode; //{0 : disable,1 : pixel, 2 :vertex}
     // int _AdditionalLightMode;
     // bool _DistanceShadowMaskOn;
-    half4 _LightmapParams; // (lightmapSH,lightmapSaturate,lightmapIntensity)
+    float4 _LightmapParams; // (lightmapSH,lightmapSaturate,lightmapIntensity)
 CBUFFER_END
 
 // #define IsAdditionalLightVertex() (_AdditionalLightMode == LIGHT_MODE_VERTEX)

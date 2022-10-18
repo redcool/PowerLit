@@ -83,7 +83,9 @@ Varyings vert(Attributes input){
             dot(worldBinormal,viewDirWS),
             dot(worldNormal,viewDirWS)
         ));
-        ApplyParallaxVertex(output.uv.xy/**/,output.viewDirTS.xyz);
+        #if defined(_PARALLAX_IN_VS)
+            ApplyParallaxVertex(output.uv.xy/**/,output.viewDirTS.xyz);
+        #endif
     }
     #endif
 
@@ -146,7 +148,10 @@ float4 frag(Varyings input):SV_Target{
     float vertexNoise = input.fogCoord.z;
 
     SurfaceInputData data = (SurfaceInputData)0;
-    // ApplyParallax(input.uv.xy/**/,input.viewDirTS.xyz); // move to vs
+
+    #if defined(_PARALLAX) && !defined(_PARALLAX_IN_VS)
+        ApplyParallax(input.uv.xy/**/,input.viewDirTS.xyz); // move to vs
+    #endif
 
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
     InitInputData(input,data,data.inputData/*inout*/);

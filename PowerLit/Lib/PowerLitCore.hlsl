@@ -38,23 +38,19 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionCo
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
-    #if defined(_PARALLAX)
     // branch_if(_ParallaxOn)
     {
         float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
-    #endif
 }
 
 void ApplyParallaxVertex(inout float2 uv,float3 viewTS){
-    #if defined(_PARALLAX)
     // branch_if(_ParallaxOn)
     {
         float height = SAMPLE_TEXTURE2D_LOD(_ParallaxMap,sampler_ParallaxMap,uv,0)[_ParallaxMapChannel];
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
-    #endif
 }
 
 float3 ScreenToWorldPos(float2 screenUV){

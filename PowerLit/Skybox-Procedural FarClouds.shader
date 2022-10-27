@@ -3,7 +3,7 @@
 Shader "Skybox/Procedural FarClouds" {
 Properties {
     [Group(Main)]
-    [GroupEnum(Main,_SUNDISK_NONE 0 _SUNDISK_SIMPLE 1 _SUNDISK_HIGH_QUALITY 2)] _SunDisk ("Sun", Int) = 2
+    [GroupEnum(Main,_SUNDISK_NONE _SUNDISK_SIMPLE _SUNDISK_HIGH_QUALITY ,true)] _SunDisk ("Sun", Int) = 2
     [GroupItem(Main)]_SunSize ("Sun Size", Range(0,1)) = 0.04
     [GroupItem(Main)]_SunSizeConvergence("Sun Size Convergence", Range(1,10)) = 5
 
@@ -18,10 +18,10 @@ Properties {
     [GroupItem(Noise)]_NoiseTex("_NoiseTex",3d) = ""{}
     [GroupItem(Noise)]_Scale("Scale",float) = 1
     [GroupItem(Noise)]_Speed("Speed",float) = 1
-    [GroupItem(Noise)]_Distribution("_Distribution",vector) = (0.2,0.4,1,1)
+    [GroupVectorSlider(Noise,Min Max,0_1 0_1)]_Distribution("_Distribution",vector) = (0.2,0.4,1,1)
     [GroupItem(Noise)]_CloudIntensity("_CloudIntensity",float) = 1
     [GroupItem(Noise)]_CloudDir("_CloudDir",vector) = (1,1,1,1)
-    [GroupItem(Noise)]_CloudDisappearHeight("_CloudDisappearHeight",range(0,1)) = 0.1
+    [GroupItem(Noise)]_CloudDisappearHeight("_CloudDisappearHeight",range(-1,1)) = 0.1
     [GroupItem(Noise)]_CloudMaxColor("_CloudMaxColor",color) = (1,1,1,1)
     [GroupItem(Noise)]_CloudMinColor("_CloudMinColor",color) = (0,0,0.5,1)
 

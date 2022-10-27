@@ -17,9 +17,9 @@ namespace PowerUtilities
             EditorGUI.BeginChangeCheck();
             base.OnInspectorGUI();
 
-            EditorGUILayout.BeginVertical("Box");
-            EditorGUILayout.HelpBox("Use transform.forward control Global Wind Dir",MessageType.None);
-            EditorGUILayout.EndVertical();
+            //EditorGUILayout.BeginVertical("Box");
+            //EditorGUILayout.HelpBox("Use transform.forward control Global Wind Dir",MessageType.None);
+            //EditorGUILayout.EndVertical();
 
             if (EditorGUI.EndChangeCheck() || control.transform.hasChanged)
             {
@@ -42,33 +42,33 @@ namespace PowerUtilities
         WaitForSeconds aSecond = new WaitForSeconds(1);
 
         //[Header("Fog")]
-        [EditorGroup("Fog",true)]
+        [EditorGroupLayout("Fog",true)]
         public bool _IsGlobalFogOn;
-        [EditorGroup("Fog")][Range(0,1)]public float _GlobalFogIntensity = 1;
+        [EditorGroupLayout("Fog")][Range(0,1)]public float _GlobalFogIntensity = 1;
 
-        [EditorGroup("Rain",true)]
+        [EditorGroupLayout("Rain",true)]
         public bool _IsGlobalRainOn;
-        [EditorGroup("Rain")][Range(0, 1)] public float _GlobalRainIntensity = 1;
+        [EditorGroupLayout("Rain")][Range(0, 1)] public float _GlobalRainIntensity = 1;
 
-        [EditorGroup("Snow",true)]
+        [EditorGroupLayout("Snow",true)]
         public bool _IsGlobalSnowOn;
-        [EditorGroup("Snow")][Range(0,1)]public float _GlobalSnowIntensity = 1;
+        [EditorGroupLayout("Snow")][Range(0,1)]public float _GlobalSnowIntensity = 1;
 
-        [EditorGroup("Wind",true)]
+        [EditorGroupLayout("Wind",true)]
         public bool _IsGlobalWindOn;
-        [EditorGroup("Wind")][Range(0, 15)] public float _GlobalWindIntensity = 1;
+        [EditorGroupLayout("Wind")][Range(0, 15)] public float _GlobalWindIntensity = 1;
 
-        [EditorGroup("Thunder",true)]
+        [EditorGroupLayout("Thunder",true)]
         public bool thunderOn;
-        [EditorGroup("Thunder")] public Light mainLight;
-        [EditorGroup("Thunder")] public ThunderMode thunderMode;
-        [EditorGroup("Thunder")] public AnimationCurve thunderCurve;
-        [EditorGroup("Thunder")] public Gradient thunderColor;
-        [EditorGroup("Thunder")][Min(0.1f)]public float thunderTime = 3;
-        [EditorGroup("Thunder")] public Vector2 thunderInvervalTime = new Vector2(1, 10);
+        [EditorGroupLayout("Thunder")] public Light mainLight;
+        [EditorGroupLayout("Thunder")] public ThunderMode thunderMode;
+        [EditorGroupLayout("Thunder")] public AnimationCurve thunderCurve;
+        [EditorGroupLayout("Thunder")] public Gradient thunderColor;
+        [EditorGroupLayout("Thunder")][Min(0.1f)]public float thunderTime = 3;
+        [EditorGroupLayout("Thunder")] public Vector2 thunderInvervalTime = new Vector2(1, 10);
 
-        [EditorGroup("Sky", true)] public bool isGlobalSkyOn;
-        [EditorGroup("Sky")][Range(0, 1)] public float skyExposure;
+        [EditorGroupLayout("Sky", true)] public bool isGlobalSkyOn;
+        [EditorGroupLayout("Sky")][Range(0, 1)] public float skyExposure;
        
 
         //public PowerGradient TestThunderColor;
@@ -76,12 +76,12 @@ namespace PowerUtilities
         float mainLightStartIntensity;
         Color mainLightStartColor;
 
-        [EditorGroup("Particles follow camera",true)]
+        [EditorGroupLayout("Particles follow camera",true)]
         public GameObject rainVFX;
-        [EditorGroup("Particles follow camera")] public GameObject snowVFX;
+        [EditorGroupLayout("Particles follow camera")] public GameObject snowVFX;
 
-        [EditorGroup("Particles follow camera")] public GameObject followTarget;
-        [EditorGroup("Particles follow camera")] public float followSpeed = 1;
+        [EditorGroupLayout("Particles follow camera")] public GameObject followTarget;
+        [EditorGroupLayout("Particles follow camera")] public float followSpeed = 1;
 
         #region Shader Params
         int _GlobalSkyExposure = Shader.PropertyToID(nameof(_GlobalSkyExposure));

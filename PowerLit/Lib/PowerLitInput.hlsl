@@ -65,6 +65,7 @@ CBUFFER_START(UnityPerMaterial)
 //--------------------------------- Fog
     float _FogOn;
     float _FogNoiseOn;
+    float _DepthFogOn,_HeightFogOn;
 //--------------------------------- Parallax
     // float _ParallaxOn; // to keyword _PARALLAX
     float _ParallaxHeight;

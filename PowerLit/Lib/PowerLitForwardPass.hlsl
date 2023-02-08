@@ -180,7 +180,7 @@ float4 frag(Varyings input):SV_Target{
     // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
 
-    BlendFogSphereKeyword(color.rgb/**/,data.inputData.positionWS,input.fogCoord.xy,true,_FogNoiseOn); // 2fps
+    BlendFogSphereKeyword(color.rgb/**/,data.inputData.positionWS,input.fogCoord.xy,_HeightFogOn,_FogNoiseOn,_DepthFogOn); // 2fps
     // color.a = OutputAlpha(color.a,_SurfaceType)
     return color;
 }

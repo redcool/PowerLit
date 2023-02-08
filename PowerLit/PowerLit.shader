@@ -103,8 +103,8 @@ Shader "URP/PowerLit"
         [Header(Fog)]
         [GroupToggle()]_FogOn("_FogOn",int) = 1
         [GroupToggle(_,_DEPTH_FOG_NOISE_ON)]_FogNoiseOn("_FogNoiseOn",int) = 0
-        [GroupToggle(_,_DEPTH_FOG_ON)]_DepthFogOn("_DepthFogOn",int) = 1
-        [GroupToggle(_,_HEIGHT_FOG_ON)]_HeightFogOn("_HeightFogOn",int) = 1
+        [GroupToggle(_)]_DepthFogOn("_DepthFogOn",int) = 1
+        [GroupToggle(_)]_HeightFogOn("_HeightFogOn",int) = 1
 
         [Header(Rain Ripple)]
         [GroupToggle(_,_RAIN_ON)]_RainOn("_RainOn",int) = 0
@@ -186,9 +186,9 @@ detail map
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
-            #pragma shader_feature_local_fragment _DEPTH_FOG_ON
+            // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
+            // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
             #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
-            #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             #pragma shader_feature_local _SNOW_ON
             #pragma shader_feature_local _WIND_ON
             #pragma shader_feature_local _RAIN_ON

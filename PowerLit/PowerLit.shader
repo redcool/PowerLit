@@ -124,7 +124,7 @@ Shader "URP/PowerLit"
         _RainCube("_RainCube",cube)=""{}
         _RainReflectDirOffset("_RainReflectDirOffset",vector) = (0,0,0,0)
         _RainReflectIntensity("_RainReflectIntensity",range(0,.1))=0.1
-        _RainHeight("_RainHeight",float) = 0
+        _RainHeight("_RainHeight",float) = 5
 
 
     } 

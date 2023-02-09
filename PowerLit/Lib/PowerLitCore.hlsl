@@ -99,7 +99,7 @@ void ApplyRain(inout SurfaceData data,float3 worldPos,float3 worldNormal,float3 
 
     // float3 worldPos = ScreenToWorldPos(screenUV);
 
-    data.albedo *= CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);
+    data.albedo = saturate(data.albedo * CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo));
     data.metallic = saturate(data.metallic + _RainMetallic * _GlobalRainIntensity);
     data.smoothness = saturate(data.smoothness + _RainSmoothness * _GlobalRainIntensity);
     // data.albedo = CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);;

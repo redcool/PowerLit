@@ -8,6 +8,8 @@ public class PowerLitFogControl : MonoBehaviour
     [Min(1)]public float updateInterval = 1;
     float lastTime;
 
+    public bool isFogColorApplyAlpha;
+
     [Header("HeightFog")]
     public float _HeightFogMin = 0;
     public float _HeightFogMax = 50;
@@ -50,16 +52,16 @@ public class PowerLitFogControl : MonoBehaviour
         Shader.SetGlobalFloat(nameof(_HeightFogMin), _HeightFogMin);
         Shader.SetGlobalFloat(nameof(_HeightFogMax), _HeightFogMax);
 
-        Shader.SetGlobalColor(nameof(_FogNearColor), _FogNearColor);
+        Shader.SetGlobalColor(nameof(_FogNearColor), _FogNearColor* (isFogColorApplyAlpha?_FogNearColor.a:1));
         //Shader.SetGlobalColor(nameof(_FogFarColor), _FogFarColor);
-        Shader.SetGlobalColor(nameof(_HeightFogMinColor), _HeightFogMinColor);
-        Shader.SetGlobalColor(nameof(_HeightFogMaxColor), _HeightFogMaxColor);
+        Shader.SetGlobalColor(nameof(_HeightFogMinColor), _HeightFogMinColor* (isFogColorApplyAlpha ? _HeightFogMinColor.a : 1));
+        Shader.SetGlobalColor(nameof(_HeightFogMaxColor), _HeightFogMaxColor* (isFogColorApplyAlpha ? _HeightFogMaxColor.a : 1));
 
         Shader.SetGlobalVector("_FogDistance", new Vector4(_FogMin, _FogMax));
         Shader.SetGlobalVector("_FogDirTiling", new Vector4(_FogNoiseDir.x, _FogNoiseDir.y, _FogNoiseDir.z, _FogNoiseTiling));
         Shader.SetGlobalVector("_FogNoiseParams",new Vector4(_FogNoiseStartRate,_FogNoiseIntensity));
 
-        RenderSettings.fogColor = _FogFarColor;
+        RenderSettings.fogColor = _FogFarColor * (isFogColorApplyAlpha ? _FogFarColor.a : 1);
         RenderSettings.fogStartDistance = _FogMin;
         RenderSettings.fogEndDistance = _FogMax;
     }

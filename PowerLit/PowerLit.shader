@@ -20,6 +20,10 @@ Shader "URP/PowerLit"
         [GroupItem(Main)]_Metallic("_Metallic",range(0,1)) = 0.5
         [GroupItem(Main)]_Smoothness("_Smoothness",range(0,1)) = 0.5
         [GroupItem(Main)]_Occlusion("_Occlusion",range(0,1)) = 0.5
+
+        [GroupHeader(Main,PBR Slider Options)]
+        [GroupToggle(Main)]_InvertSmoothnessOn("_InvertSmoothnessOn",int) = 0
+
         [GroupHeader(Main,PBRMask Channel)]
         [GroupEnum(Main,R 0 G 1 B 2)]_MetallicChannel("_MetallicChannel",int) = 0
         [GroupEnum(Main,R 0 G 1 B 2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1

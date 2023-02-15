@@ -7,6 +7,7 @@
 #include "../../PowerShaderLib/Lib/NatureLib.hlsl"
 #include "../../PowerShaderLib/Lib/ParallaxMapping.hlsl"
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
+#include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 
 void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;
@@ -124,10 +125,13 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     // data.albedo = baseMap.xyz * _Color.xyz;
     CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,data.albedo/*out*/,data.alpha/*out*/);
 
-    float4 metallicMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
-    data.metallic = metallicMask[_MetallicChannel] * _Metallic;
-    data.smoothness = metallicMask[_SmoothnessChannel] * _Smoothness;
-    data.occlusion = lerp(1,metallicMask[_OcclusionChannel],_Occlusion);
+    float4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
+    SplitPbrMaskTexture(pbrMask,
+        int3(_MetallicChannel,_SmoothnessChannel,_OcclusionChannel),
+        float3(_Metallic,_Smoothness,_Occlusion),
+        data.metallic/**/,data.smoothness/**/,data.occlusion/**/,
+        _InvertSmoothnessOn
+    );
 
     data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
     data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz);

@@ -19,75 +19,81 @@ TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
 TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
 
 
-#if !defined(INSTANCING_ON) || !defined(DOTS_INSTANCING_ON)
-CBUFFER_START(UnityPerMaterial)
+UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Main
-    float4 _BaseMap_ST;
-    float4 _Color;
-    float4 _NormalMap_ST;
-    float _NormalScale;
-    float _Metallic,_Smoothness,_Occlusion;
-    int _MetallicChannel,_SmoothnessChannel,_OcclusionChannel;
-    // float _ClipOn; // to keyword _ALPHATEST_ON
-    float _Cutoff;
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_BaseMap_ST)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_Color)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_NormalMap_ST)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_NormalScale)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_Metallic)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_Smoothness)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_Occlusion)
+    UNITY_DEFINE_INSTANCED_PROP(int ,_InvertSmoothnessOn)
+    UNITY_DEFINE_INSTANCED_PROP(int ,_MetallicChannel)
+    UNITY_DEFINE_INSTANCED_PROP(int ,_SmoothnessChannel)
+    UNITY_DEFINE_INSTANCED_PROP(int ,_OcclusionChannel)
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_ClipOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_ALPHATEST_ON)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_Cutoff)
 //--------------------------------- Emission
-    // float _EmissionOn; // to keyword _EMISSION
-    float4 _EmissionColor;
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_EmissionColor)
 
-    // float _AlphaPremultiply; // _ALPHA_PREMULTIPLY_ON
-    // float _IsReceiveShadowOn; // to keyword _RECEIVE_SHADOWS_OFF
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_IsReceiveShadowOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
 //--------------------------------- IBL
-    // float _IBLOn; //_IBL_ON
-    float _EnvIntensity;
-    float _IBLMaskMainTexA;
-    float4 _ReflectDirOffset;
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_IBLOn) //,_IBL_ON)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_EnvIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_IBLMaskMainTexA)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_ReflectDirOffset)
 //--------------------------------- Custom Light
-    // float _CustomLightOn; //_CUSTOM_LIGHT_ON
-    float4 _CustomLightDir;
-    float4 _CustomLightColor;
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightDir)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightColor)
 
-    float _FresnelIntensity;
+    UNITY_DEFINE_INSTANCED_PROP(float ,_FresnelIntensity)
 //--------------------------------- lightmap
-    float _LightmapSHAdditional;
-    float _LMSaturateAdditional;
-    float _LMIntensityAdditional;    
+    UNITY_DEFINE_INSTANCED_PROP(float ,_LightmapSHAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_LMSaturateAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_LMIntensityAdditional)    
 //--------------------------------- Wind
-    float _WindOn;
-    float4 _WindAnimParam;
-    float4 _WindDir;
-    float _WindSpeed;
+    UNITY_DEFINE_INSTANCED_PROP(float ,_WindOn)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_WindAnimParam)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_WindDir)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_WindSpeed)
 //--------------------------------- Plannar Reflection
-    // float _PlanarReflectionOn; // _PLANAR_REFLECTION_ON
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_PlanarReflectionOn) // ,_PLANAR_REFLECTION_ON)
 //--------------------------------- Rain
-    float _SnowOn;
-    float _SnowIntensity;
-    float _ApplyEdgeOn;
+    UNITY_DEFINE_INSTANCED_PROP(float ,_SnowOn)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_SnowIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_ApplyEdgeOn)
 //--------------------------------- Fog
-    float _FogOn;
-    float _FogNoiseOn;
-    float _DepthFogOn,_HeightFogOn;
+    UNITY_DEFINE_INSTANCED_PROP(float ,_FogOn)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_FogNoiseOn)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_DepthFogOn)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_HeightFogOn)
 //--------------------------------- Parallax
-    // float _ParallaxOn; // to keyword _PARALLAX
-    float _ParallaxHeight;
-    int _ParallaxMapChannel;
+    // UNITY_DEFINE_INSTANCED_PROP(float ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_ParallaxHeight)
+    UNITY_DEFINE_INSTANCED_PROP(int ,_ParallaxMapChannel)
 //--------------------------------- Rain
-    int _RainOn;
-    float4 _RippleTex_ST;
-    float _RippleSpeed;
-    float _RainSlopeAtten;
-    float _RippleIntensity;
-    float _RippleBlendNormalOn;
+    UNITY_DEFINE_INSTANCED_PROP(int ,_RainOn)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RippleTex_ST)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RippleSpeed)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RainSlopeAtten)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RippleIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RippleBlendNormalOn)
 
-    float4 _RainColor;
-    float _RainSmoothness,_RainMetallic;
-    float4 _RainCube_HDR;
-    float4 _RainCube_ST;
-    float3 _RainReflectDirOffset;
-    float _RainHeight;
-    float _RainReflectIntensity;
-    float _SurfaceDepth;
-    float4 _BelowColor;
-CBUFFER_END
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainColor)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RainSmoothness)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RainMetallic)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainCube_HDR)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainCube_ST)
+    UNITY_DEFINE_INSTANCED_PROP(float3 ,_RainReflectDirOffset)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RainHeight)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RainReflectIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_SurfaceDepth)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_BelowColor)
+UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 #define IsRainOn() (_IsGlobalRainOn && _RainOn)
 #define IsSnowOn() (_IsGlobalSnowOn && _SnowOn)
@@ -103,125 +109,78 @@ CBUFFER_END
 // float4 unity_SpecCube1_ProbePosition;   // w is set to 1 for box projection
 // #endif
 
-#endif
-/**
-#if defined(INSTANCING_ON)
-    UNITY_INSTANCING_BUFFER_START(PropBuffer)
-        UNITY_DEFINE_INSTANCED_PROP(float4,_BaseMap_ST)
-        UNITY_DEFINE_INSTANCED_PROP(float4,_Color)
-        UNITY_DEFINE_INSTANCED_PROP(float,_NormalScale)
-        UNITY_DEFINE_INSTANCED_PROP(float,_Metallic)
-        UNITY_DEFINE_INSTANCED_PROP(float,_Smoothness)
-        UNITY_DEFINE_INSTANCED_PROP(float,_Occlusion)
-        UNITY_DEFINE_INSTANCED_PROP(float,_MetallicChannel)
-        UNITY_DEFINE_INSTANCED_PROP(float,_SmoothnessChannel)
-        UNITY_DEFINE_INSTANCED_PROP(float,_OcclusionChannel)        
-        UNITY_DEFINE_INSTANCED_PROP(float,_ClipOn)
-        UNITY_DEFINE_INSTANCED_PROP(float,_Cutoff)
-        UNITY_DEFINE_INSTANCED_PROP(float,_EmissionOn)
-        UNITY_DEFINE_INSTANCED_PROP(float4,_EmissionColor)
-        UNITY_DEFINE_INSTANCED_PROP(float,_AlphaPremultiply)
-        UNITY_DEFINE_INSTANCED_PROP(float,_IsReceiveShadowOn)
-        UNITY_DEFINE_INSTANCED_PROP(float,_LightmapSH)
-        UNITY_DEFINE_INSTANCED_PROP(float,_IBLOn)
-        UNITY_DEFINE_INSTANCED_PROP(float,_EnvIntensity) 
-        UNITY_DEFINE_INSTANCED_PROP(float,_IBLMaskMainTexA) 
-        UNITY_DEFINE_INSTANCED_PROP(float4,_ReflectDirOffset)
-        UNITY_DEFINE_INSTANCED_PROP(float,_CustomLightOn)
-        UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightDir)
-        UNITY_DEFINE_INSTANCED_PROP(float4,_CustomLightColor)
-        UNITY_DEFINE_INSTANCED_PROP(float,_WindOn)
-        UNITY_DEFINE_INSTANCED_PROP(float4,_WindAnimParam)
-        UNITY_DEFINE_INSTANCED_PROP(float4,_WindDir)
-    UNITY_INSTANCING_BUFFER_END(PropBuffer)
+//--------------------------------- Main
+    #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BaseMap_ST)
+    #define _Color UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Color)
+    #define _NormalMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalMap_ST)
+    #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale)
+    #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Metallic)
+    #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Smoothness)
+    #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Occlusion)
+    #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_InvertSmoothnessOn)
+    #define _MetallicChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MetallicChannel)
+    #define _SmoothnessChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SmoothnessChannel)
+    #define _OcclusionChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_OcclusionChannel)
+    // #define _ClipOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ClipOn) // to keyword _ALPHATEST_ON
+    #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Cutoff)
+//--------------------------------- Emission
+    // #define _EmissionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionOn) // to keyword _EMISSION
+    #define _EmissionColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionColor)
 
-    #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_BaseMap_ST)
-    #define _Color UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Color)
-    #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_NormalScale)
-    #define _Metallic UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Metallic)
-    #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Smoothness)
-    #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Occlusion)
-    #define _MetallicChannel UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_MetallicChannel)
-    #define _SmoothnessChannel UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_SmoothnessChannel)
-    #define _OcclusionChannel UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_OcclusionChannel)    
-    #define _ClipOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_ClipOn)
-    #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_Cutoff)
-    #define _EmissionOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EmissionOn)
-    #define _EmissionColor UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EmissionColor)
-    #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_AlphaPremultiply)
-    #define _IsReceiveShadowOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IsReceiveShadowOn)
-    #define _LightmapSH UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_LightmapSH)
-    #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IBLOn)
-    #define _EnvIntensity UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_EnvIntensity)
-    #define _IBLMaskMainTexA UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_IBLMaskMainTexA)
-    #define _ReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_ReflectDirOffset)
-    #define _CustomLightOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightOn)
-    #define _CustomLightDir UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightDir)
-    #define _CustomLightColor UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_CustomLightColor)
-    #define _WindOn UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindOn)
-    #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindAnimParam)
-    #define _WindDir UNITY_ACCESS_INSTANCED_PROP(PropBuffer,_WindDir)
-#endif
+    // #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
+    // #define _IsReceiveShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IsReceiveShadowOn) // to keyword _RECEIVE_SHADOWS_OFF
+//--------------------------------- IBL
+    // #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLOn) //_IBL_ON
+    #define _EnvIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EnvIntensity)
+    #define _IBLMaskMainTexA UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLMaskMainTexA)
+    #define _ReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ReflectDirOffset)
+//--------------------------------- Custom Light
+    // #define _CustomLightOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightOn) //_CUSTOM_LIGHT_ON
+    #define _CustomLightDir UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightDir)
+    #define _CustomLightColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColor)
 
+    #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity)
+//--------------------------------- lightmap
+    #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LightmapSHAdditional)
+    #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMSaturateAdditional)
+    #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMIntensityAdditional)    
+//--------------------------------- Wind
+    #define _WindOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindOn)
+    #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindAnimParam)
+    #define _WindDir UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindDir)
+    #define _WindSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindSpeed)
+//--------------------------------- Plannar Reflection
+    // #define _PlanarReflectionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionOn) // _PLANAR_REFLECTION_ON
+//--------------------------------- Rain
+    #define _SnowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowOn)
+    #define _SnowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensity)
+    #define _ApplyEdgeOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ApplyEdgeOn)
+//--------------------------------- Fog
+    #define _FogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FogOn)
+    #define _FogNoiseOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FogNoiseOn)
+    #define _DepthFogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DepthFogOn)
+    #define _HeightFogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_HeightFogOn)
+//--------------------------------- Parallax
+    // #define _ParallaxOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxOn) // to keyword _PARALLAX
+    #define _ParallaxHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxHeight)
+    #define _ParallaxMapChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxMapChannel)
+//--------------------------------- Rain
+    #define _RainOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainOn)
+    #define _RippleTex_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleTex_ST)
+    #define _RippleSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleSpeed)
+    #define _RainSlopeAtten UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainSlopeAtten)
+    #define _RippleIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleIntensity)
+    #define _RippleBlendNormalOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleBlendNormalOn)
 
-// dots instancing
-#if defined(DOTS_INSTANCING_ON)
-UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
-    UNITY_DOTS_INSTANCED_PROP(float4,_BaseMap_ST)
-    UNITY_DOTS_INSTANCED_PROP(float4,_Color)
-    UNITY_DOTS_INSTANCED_PROP(float,_NormalScale)
-    UNITY_DOTS_INSTANCED_PROP(float,_Metallic)
-    UNITY_DOTS_INSTANCED_PROP(float,_Smoothness)
-    UNITY_DOTS_INSTANCED_PROP(float,_Occlusion)
-    UNITY_DOTS_INSTANCED_PROP(float,_MetallicChannel)
-    UNITY_DOTS_INSTANCED_PROP(float,_SmoothnessChannel)
-    UNITY_DOTS_INSTANCED_PROP(float,_OcclusionChannel)
-
-    UNITY_DOTS_INSTANCED_PROP(float,_ClipOn)
-    UNITY_DOTS_INSTANCED_PROP(float,_Cutoff)
-    UNITY_DOTS_INSTANCED_PROP(float,_EmissionOn)
-    UNITY_DOTS_INSTANCED_PROP(float4,_EmissionColor)
-    UNITY_DOTS_INSTANCED_PROP(float,_AlphaPremultiply)
-    UNITY_DOTS_INSTANCED_PROP(float,_IsReceiveShadowOn)
-    UNITY_DOTS_INSTANCED_PROP(float,_LightmapSH)
-    UNITY_DOTS_INSTANCED_PROP(float,_IBLOn)
-    UNITY_DOTS_INSTANCED_PROP(float,_EnvIntensity)
-    UNITY_DOTS_INSTANCED_PROP(float,_IBLMaskMainTexA)
-    UNITY_DOTS_INSTANCED_PROP(float4,_ReflectDirOffset)
-    UNITY_DOTS_INSTANCED_PROP(float,_CustomLightOn)
-    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightDir)
-    UNITY_DOTS_INSTANCED_PROP(float4,_CustomLightColor)
-    UNITY_DOTS_INSTANCED_PROP(float,_WindOn)
-    UNITY_DOTS_INSTANCED_PROP(float4,_WindAnimParam)
-    UNITY_DOTS_INSTANCED_PROP(float4,_WindDir)
-UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
-
-#define _Color UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__Color)
-#define _NormalScale UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__NormalScale)
-#define _Metallic UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Metallic)
-#define _Smoothness UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Smoothness)
-#define _Occlusion UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Occlusion)
-#define _MetallicChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__MetallicChannel)
-#define _SmoothnessChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__SmoothnessChannel)
-#define _OcclusionChannel UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__OcclusionChannel)
-#define _ClipOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ClipOn)
-#define _Cutoff UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__Cutoff)
-#define _EmissionOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EmissionOn)
-#define _EmissionColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__EmissionColor)
-#define _AlphaPremultiply UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__AlphaPremultiply)
-#define _IsReceiveShadowOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IsReceiveShadow)
-#define _LightmapSH UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__LightmapSH)
-#define _IBLOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLOnH)
-#define _EnvIntensity UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__EnvIntensity)
-#define _IBLMaskMainTexA UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__IBLMaskMainTexA)
-#define _ReflectDirOffset UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__ReflectDirOffset)
-#define _CustomLightOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightOn)
-#define _CustomLightDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightDir)
-#define _CustomLightColor UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__CustomLightColor)
-#define _WindOn UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float,Metadata__WindOn)
-#define _WindAnimParam UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindAnimParam)
-#define _WindDir UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4,Metadata__WindDir)
-#endif
-*/
+    #define _RainColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainColor)
+    #define _RainSmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainSmoothness)
+    #define _RainMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainMetallic)
+    #define _RainCube_HDR UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainCube_HDR)
+    #define _RainCube_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainCube_ST)
+    #define _RainReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectDirOffset)
+    #define _RainHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainHeight)
+    #define _RainReflectIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectIntensity)
+    #define _SurfaceDepth UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SurfaceDepth)
+    #define _BelowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BelowColor)
 
 #endif //POWER_LIT_INPUT_HLSL

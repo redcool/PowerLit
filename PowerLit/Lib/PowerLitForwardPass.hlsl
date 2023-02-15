@@ -57,6 +57,8 @@ Varyings vert(Attributes input){
     output.tSpace2 = float4(worldTangent.z,worldBinormal.z,worldNormal.z,worldPos.z);
 
     output.uv.xy = TRANSFORM_TEX(input.uv.xy,_BaseMap);
+    if(_WorldHeightTilingOn)
+        output.uv.y = WorldHeightTilingUV(worldPos);
     // OUTPUT_LIGHTMAP_UV(input.uv1,unity_LightmapST,output.uv1);
     output.uv.zw = input.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
 

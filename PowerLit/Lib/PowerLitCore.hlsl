@@ -152,4 +152,9 @@ void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
         data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
     #endif
 }
+
+float WorldHeightTilingUV(float3 worldPos){
+    float v = floor(worldPos.y);
+    return v;
+}
 #endif //POWER_LIT_CORE_HLSL

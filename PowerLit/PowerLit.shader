@@ -5,6 +5,9 @@ Shader "URP/PowerLit"
         [Group(Main)]
         [GroupHeader(Main,MainTexture)]
         [GroupItem(Main)][MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
+        
+        [GroupToggle(Main)]_WorldHeightTilingOn("_WorldHeightTilingOn",int) = 0
+
         [GroupItem(Main)][gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
 
         [GroupHeader(Main,Surface Below)]

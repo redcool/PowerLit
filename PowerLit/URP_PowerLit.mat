@@ -64,23 +64,28 @@ Material:
     - _CullMode: 2
     - _CustomLightOn: 0
     - _Cutoff: 0.5
+    - _DepthFogOn: 1
     - _DstMode: 0
     - _EmissionOn: 0
     - _EnvIntensity: 1
     - _FogNoiseOn: 0
-    - _FogOn: 0
+    - _FogOn: 1
     - _FresnelIntensity: 1
+    - _HeightFogOn: 1
     - _IBLMaskMainTexA: 0
     - _IBLOn: 0
     - _IsReceiveShadowOn: 1
+    - _LMIntensityAdditional: 0
     - _LMSaturateAdditional: 1
     - _LightmapSH: 0.341
+    - _LightmapSHAdditional: 0
     - _Metallic: 0
     - _MetallicChannel: 0
     - _NormalScale: 1
     - _Occlusion: 0.662
     - _OcclusionChannel: 2
     - _ParallaxHeight: 0.01
+    - _ParallaxInVSOn: 0
     - _ParallaxMapChannel: 3
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
@@ -100,11 +105,13 @@ Material:
     - _SnowOn: 0
     - _SphereFogOn: 0
     - _SrcMode: 1
+    - _SurfaceDepth: -1
     - _WindOn: 0
     - _WindSpeed: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
+    - _BelowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}

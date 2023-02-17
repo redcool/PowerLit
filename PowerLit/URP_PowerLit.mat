@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: URP_PowerLit
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _EMISSION
   m_InvalidKeywords:
   - _EMISSIONON_OFF
   - _ISRECEIVESHADOW_ON
@@ -24,11 +25,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 48ac1d26b58eb3e4695a50e65c894b8b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 56fb6e719b115ba4cb54d5497877a1a7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IBLCube:
@@ -66,7 +67,7 @@ Material:
     - _Cutoff: 0.5
     - _DepthFogOn: 1
     - _DstMode: 0
-    - _EmissionOn: 0
+    - _EmissionOn: 1
     - _EnvIntensity: 1
     - _FogNoiseOn: 0
     - _FogOn: 1
@@ -74,6 +75,7 @@ Material:
     - _HeightFogOn: 1
     - _IBLMaskMainTexA: 0
     - _IBLOn: 0
+    - _InvertSmoothnessOn: 0
     - _IsReceiveShadowOn: 1
     - _LMIntensityAdditional: 0
     - _LMSaturateAdditional: 1
@@ -108,11 +110,12 @@ Material:
     - _SurfaceDepth: -1
     - _WindOn: 0
     - _WindSpeed: 1
+    - _StoreyTilingOn: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
     - _BelowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.38431373}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

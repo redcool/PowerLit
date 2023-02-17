@@ -32,10 +32,10 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionCo
     //branch_if(isEmissionOn)
     {
         emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
-        emission.xyz *= emissionColor;
+        emission.xyz = emission.xyz * emissionColor * emission.w;
     }
     #endif
-    return emission.xyz * emission.w;
+    return emission.xyz ;
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){

@@ -57,7 +57,7 @@ Varyings vert(Attributes input){
     output.tSpace2 = float4(worldTangent.z,worldBinormal.z,worldNormal.z,worldPos.z);
 
     output.uv.xy = TRANSFORM_TEX(input.uv.xy,_BaseMap);
-    if(_WorldHeightTilingOn)
+    if(_StoreyTilingOn)
         output.uv.y = WorldHeightTilingUV(worldPos);
     // OUTPUT_LIGHTMAP_UV(input.uv1,unity_LightmapST,output.uv1);
     output.uv.zw = input.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
@@ -142,6 +142,26 @@ float4 fragTest(Varyings input,SurfaceInputData data){
     return 0;
 }
 
+float NoiseSwitch(float2 quantifyNum,float lightOffIntensity){
+    float n = N21(quantifyNum);
+    return frac(smoothstep(lightOffIntensity,1,n));
+}
+
+void ApplyWorldHeightTilingEmission(float3 worldPos,float2 uv,inout float3 emissionColor){
+    if(_StoreyTilingOn){
+        // float tn = N21(floor(_Time.x * _StoreyTilingInfo.x));
+        // tn = smoothstep(_StoreyTilingInfo.w,1,tn);
+
+        // float n = N21(floor(uv.xy*float2(5,2)) + tn);
+        // n = smoothstep(_StoreyTilingInfo.z,1,n);
+
+        float tn = NoiseSwitch(floor(_Time.x * _StoreySwitchSpeed) , _StoreyTilingInfo.w);
+        float n = NoiseSwitch(floor(uv.xy*float2(5,2)) + tn,_StoreyTilingInfo.z);
+
+        emissionColor *= n;
+    }
+}
+
 float4 frag(Varyings input):SV_Target{
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -158,7 +178,8 @@ float4 frag(Varyings input):SV_Target{
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
     InitInputData(input,data,data.inputData/*inout*/);
 // return fragTest(input,data);
-
+    ApplyWorldHeightTilingEmission(data.inputData.positionWS,input.uv,data.surfaceData.emission/**/);
+return data.surfaceData.emission.xyzx;
     // float4 c1 = UniversalFragmentPBR(data.inputData,data.surfaceData);
     // return c1;
     #if defined(_SNOW_ON)

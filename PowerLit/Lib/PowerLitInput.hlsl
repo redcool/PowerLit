@@ -24,7 +24,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_BaseMap_ST)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_Color)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_NormalMap_ST)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_WorldHeightTilingOn)
+
     UNITY_DEFINE_INSTANCED_PROP(float ,_NormalScale)
     UNITY_DEFINE_INSTANCED_PROP(float ,_Metallic)
     UNITY_DEFINE_INSTANCED_PROP(float ,_Smoothness)
@@ -94,6 +94,11 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RainReflectIntensity)
     UNITY_DEFINE_INSTANCED_PROP(float ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_BelowColor)
+
+    UNITY_DEFINE_INSTANCED_PROP(float ,_StoreyTilingOn)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_StoreyTilingInfo)
+    UNITY_DEFINE_INSTANCED_PROP(float,_StoreySwitchSpeed)
+    
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 #define IsRainOn() (_IsGlobalRainOn && _RainOn)
@@ -114,7 +119,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BaseMap_ST)
     #define _Color UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Color)
     #define _NormalMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalMap_ST)
-    #define _WorldHeightTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WorldHeightTilingOn)
+    
     #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale)
     #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Metallic)
     #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Smoothness)
@@ -184,5 +189,9 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _RainReflectIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectIntensity)
     #define _SurfaceDepth UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SurfaceDepth)
     #define _BelowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BelowColor)
+
+    #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTilingOn)
+    #define _StoreyTilingInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTilingInfo)
+    #define _StoreySwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreySwitchSpeed)
 
 #endif //POWER_LIT_INPUT_HLSL

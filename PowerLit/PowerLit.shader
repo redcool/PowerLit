@@ -5,9 +5,6 @@ Shader "URP/PowerLit"
         [Group(Main)]
         [GroupHeader(Main,MainTexture)]
         [GroupItem(Main)][MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
-        
-        [GroupToggle(Main)]_WorldHeightTilingOn("_WorldHeightTilingOn",int) = 0
-
         [GroupItem(Main)][gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
 
         [GroupHeader(Main,Surface Below)]
@@ -41,7 +38,7 @@ Shader "URP/PowerLit"
 
         [Header(Emission)]
         [GroupToggle(,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
-        _EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d) = "white"{}
+        [noscaleoffset]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d) = "white"{}
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
         // [GroupToggle]_BakeEmissionOn("_BakeEmissionOn",int) = 0
 
@@ -133,7 +130,9 @@ Shader "URP/PowerLit"
         _RainReflectIntensity("_RainReflectIntensity",range(0,.1))=0.1
         _RainHeight("_RainHeight",float) = 5
 
-
+        [GroupToggle]_StoreyTilingOn("_StoreyTilingOn",int) = 0
+        [GroupVectorSlider(_,NoiseTileX NoiseTileY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1)]_StoreyTilingInfo("_StoreyTilingInfo",vector) = (5,1,0.5,0.8)
+        _StoreySwitchSpeed("_StoreySwitchSpeed",float) = 0
     } 
     SubShader
     {

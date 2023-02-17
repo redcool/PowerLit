@@ -179,7 +179,7 @@ float4 frag(Varyings input):SV_Target{
     InitInputData(input,data,data.inputData/*inout*/);
 // return fragTest(input,data);
     ApplyWorldHeightTilingEmission(data.inputData.positionWS,input.uv,data.surfaceData.emission/**/);
-return data.surfaceData.emission.xyzx;
+// return data.surfaceData.emission.xyzx;
     // float4 c1 = UniversalFragmentPBR(data.inputData,data.surfaceData);
     // return c1;
     #if defined(_SNOW_ON)

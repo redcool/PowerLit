@@ -25,15 +25,15 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 48ac1d26b58eb3e4695a50e65c894b8b, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 56fb6e719b115ba4cb54d5497877a1a7, type: 3}
+        m_Texture: {fileID: 2800000, guid: ccc64e1bdbccc0f4782ba7b4dee73ee4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IBLCube:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8900000, guid: 5cfabade39ebd0449969495ad8221819, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMaskMap:
@@ -81,10 +81,10 @@ Material:
     - _LMSaturateAdditional: 1
     - _LightmapSH: 0.341
     - _LightmapSHAdditional: 0
-    - _Metallic: 0
+    - _Metallic: 1
     - _MetallicChannel: 0
     - _NormalScale: 1
-    - _Occlusion: 0.662
+    - _Occlusion: 1
     - _OcclusionChannel: 2
     - _ParallaxHeight: 0.01
     - _ParallaxInVSOn: 0
@@ -101,21 +101,22 @@ Material:
     - _RippleIntensity: 2.5
     - _RippleSlope: 0.425
     - _RippleSpeed: 7.85
-    - _Smoothness: 0.892
+    - _Smoothness: 0
     - _SmoothnessChannel: 1
     - _SnowIntensity: 0
     - _SnowOn: 0
     - _SphereFogOn: 0
     - _SrcMode: 1
+    - _StoreyLightSwitchSpeed: 0
+    - _StoreyTilingOn: 1
     - _SurfaceDepth: -1
     - _WindOn: 0
     - _WindSpeed: 1
-    - _StoreyTilingOn: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
     - _BelowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.38431373}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
@@ -124,6 +125,7 @@ Material:
     - _RainColor: {r: 0.41509432, g: 0.41509432, b: 0.41509432, a: 1}
     - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _StoreyWindowInfo: {r: 6, g: 8, b: 0.41, a: 0}
     - _WindAnimParam: {r: 0, g: 0, b: 0, a: 0}
     - _WindDir: {r: 1, g: 0.1, b: 0, a: 1}
   m_BuildTextureStacks: []

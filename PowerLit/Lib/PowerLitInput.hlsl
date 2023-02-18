@@ -96,8 +96,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_BelowColor)
 
     UNITY_DEFINE_INSTANCED_PROP(float ,_StoreyTilingOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_StoreyTilingInfo)
-    UNITY_DEFINE_INSTANCED_PROP(float,_StoreySwitchSpeed)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_StoreyWindowInfo)
+    UNITY_DEFINE_INSTANCED_PROP(float,_StoreyLightSwitchSpeed)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
@@ -191,7 +191,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _BelowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BelowColor)
 
     #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTilingOn)
-    #define _StoreyTilingInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTilingInfo)
-    #define _StoreySwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreySwitchSpeed)
+    #define _StoreyWindowInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyWindowInfo)
+    #define _StoreyLightSwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightSwitchSpeed)
 
 #endif //POWER_LIT_INPUT_HLSL

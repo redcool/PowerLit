@@ -7,16 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: URP_PowerLit
+  m_Name: StoreyLine
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
   m_ValidKeywords:
-  - _PARALLAX
-  - _RAIN_ON
-  - _RECEIVE_SHADOWS_ON
-  m_InvalidKeywords:
-  - _EMISSIONON_OFF
-  - _ISRECEIVESHADOW_ON
-  - _ZWRITE_ON
+  - _EMISSION
+  - _STOREY_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -30,12 +26,36 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
+    - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 2800000, guid: 56fb6e719b115ba4cb54d5497877a1a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _IBLCube:
-        m_Texture: {fileID: 8900000, guid: 5cfabade39ebd0449969495ad8221819, type: 3}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMaskMap:
@@ -43,6 +63,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -58,25 +82,54 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _StoreyLineNoiseMap:
+        m_Texture: {fileID: 2800000, guid: 563e987cdc83b7e4a8d0101aded897c2, type: 3}
+        m_Scale: {x: 2.44, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0
     - _AlphaPremultiply: 0
     - _ApplyEdgeOn: 1
+    - _Blend: 0
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
     - _ClipOn: 0
+    - _Cull: 2
     - _CullMode: 2
     - _CustomLightOn: 0
     - _Cutoff: 0.5
     - _DepthFogOn: 1
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
     - _DstMode: 0
-    - _EmissionOn: 0
+    - _EmissionOn: 1
     - _EnvIntensity: 1
+    - _EnvironmentReflections: 1
     - _FogNoiseOn: 0
     - _FogOn: 1
     - _FresnelIntensity: 1
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
     - _HeightFogOn: 1
     - _IBLMaskMainTexA: 0
     - _IBLOn: 0
@@ -90,45 +143,69 @@ Material:
     - _NormalScale: 1
     - _Occlusion: 0.5
     - _OcclusionChannel: 2
+    - _OcclusionStrength: 1
+    - _Parallax: 0.005
     - _ParallaxHeight: 0.01
     - _ParallaxInVSOn: 0
     - _ParallaxMapChannel: 3
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
-    - _RainHeight: 5
+    - _QueueOffset: 0
+    - _RainHeight: 0
     - _RainMetallic: 0.1
-    - _RainOn: 1
+    - _RainOn: 0
     - _RainReflectIntensity: 0.1
     - _RainSlopeAtten: 0.6
     - _RainSmoothness: 0.1
+    - _ReceiveShadows: 1
     - _RippleBlendNormalOn: 0
     - _RippleIntensity: 1
     - _RippleSpeed: 10
     - _Smoothness: 0
     - _SmoothnessChannel: 1
+    - _SmoothnessTextureChannel: 0
     - _SnowIntensity: 0
     - _SnowOn: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
     - _SrcMode: 1
     - _StoreyHeight: 1
     - _StoreyLightSwitchSpeed: 0
-    - _StoreyLineOn: 0
-    - _StoreyTilingOn: 0
+    - _StoreyLineOn: 1
+    - _StoreyTilingOn: 1
+    - _Surface: 0
     - _SurfaceDepth: -1
     - _WindOn: 0
     - _WindSpeed: 0.3
+    - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BelowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _RainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _StoreyLineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StoreyWindowInfo: {r: 5, g: 2, b: 0.5, a: 0.8}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _StoreyLineColor: {r: 10.39683, g: 0, b: 38.937145, a: 1}
+    - _StoreyWindowInfo: {r: 1, g: 1, b: 0, a: 0.8}
     - _WindAnimParam: {r: 1, g: 1, b: 0.1, a: 0.3}
     - _WindDir: {r: 1, g: 0.1, b: 0, a: 0.5}
   m_BuildTextureStacks: []
+--- !u!114 &254697552042438079
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

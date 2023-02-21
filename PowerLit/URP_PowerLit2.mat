@@ -22,8 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: URP_PowerLit2
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ValidKeywords:
-  - _EMISSION
+  m_ValidKeywords: []
   m_InvalidKeywords:
   - FOG_LINEAR
   - _DEPTH_FOG_ON
@@ -137,7 +136,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstMode: 0
-    - _EmissionOn: 1
+    - _EmissionOn: 0
     - _EnvIntensity: 1
     - _EnvironmentReflections: 1
     - _FogNoiseOn: 0
@@ -179,7 +178,7 @@ Material:
     - _RippleIntensity: 0.48
     - _RippleSlope: 0.425
     - _RippleSpeed: 16.9
-    - _Smoothness: 0
+    - _Smoothness: 0.906
     - _SmoothnessChannel: 1
     - _SmoothnessTextureChannel: 0
     - _SnowIntensity: 0.593
@@ -190,7 +189,8 @@ Material:
     - _SrcMode: 1
     - _StoreyHeight: 1
     - _StoreyLightSwitchSpeed: 0
-    - _StoreyTilingOn: 1
+    - _StoreyLineOn: 0
+    - _StoreyTilingOn: 0
     - _Surface: 0
     - _SurfaceDepth: -1
     - _WindOn: 0

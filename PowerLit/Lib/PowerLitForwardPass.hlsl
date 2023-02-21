@@ -158,7 +158,7 @@ void ApplyStoreyEmission(float3 worldPos,float2 uv,inout float3 emissionColor){
         float tn = NoiseSwitch(round(_Time.x * _StoreyLightSwitchSpeed) , _StoreyWindowInfo.w);
         float n = NoiseSwitch(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
 
-        // emissionColor *= n;
+        emissionColor *= n;
     }
 }
 

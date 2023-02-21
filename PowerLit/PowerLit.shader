@@ -131,7 +131,8 @@ Shader "URP/PowerLit"
         _RainHeight("_RainHeight",float) = 5
 
         [GroupToggle]_StoreyTilingOn("_StoreyTilingOn",int) = 0
-        [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 1_0,Window count info,f)]
+        _StoreyHeight("_StoreyHeight",float) = 1
+        [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,f)]
         _StoreyWindowInfo("_StoreyWindowInfo",vector) = (5,2,0.5,0.8)
         _StoreyLightSwitchSpeed("_StoreyLightSwitchSpeed",float) = 0
     } 

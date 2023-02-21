@@ -154,7 +154,7 @@ void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
 }
 
 float WorldHeightTilingUV(float3 worldPos){
-    float v = floor(worldPos.y);
+    float v = floor(worldPos.y/_StoreyHeight);
     return v;
 }
 #endif //POWER_LIT_CORE_HLSL

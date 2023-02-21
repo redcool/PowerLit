@@ -17,7 +17,7 @@ TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 
 TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
 TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
-
+TEXTURE2D(_StoreyLineNoiseMap);SAMPLER(sampler_StoreyLineNoiseMap);
 
 UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Main
@@ -99,6 +99,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_StoreyWindowInfo)
     UNITY_DEFINE_INSTANCED_PROP(float,_StoreyLightSwitchSpeed)
     UNITY_DEFINE_INSTANCED_PROP(float,_StoreyHeight)
+    UNITY_DEFINE_INSTANCED_PROP(float,_StoreyLineOn)
+    
+    UNITY_DEFINE_INSTANCED_PROP(float4,_StoreyLineColor)
     
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
@@ -196,5 +199,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _StoreyWindowInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyWindowInfo)
     #define _StoreyLightSwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightSwitchSpeed)
     #define _StoreyHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyHeight)
+    #define _StoreyLineColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineColor)
+
+    #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineOn)
 
 #endif //POWER_LIT_INPUT_HLSL

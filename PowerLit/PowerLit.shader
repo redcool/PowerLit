@@ -130,12 +130,17 @@ Shader "URP/PowerLit"
         _RainReflectIntensity("_RainReflectIntensity",range(0,.1))=0.1
         _RainHeight("_RainHeight",float) = 5
 
-        [GroupToggle]_StoreyTilingOn("_StoreyTilingOn",int) = 0
+        [GroupToggle(_,_STOREY_ON)]_StoreyTilingOn("_StoreyTilingOn",int) = 0
         _StoreyHeight("_StoreyHeight",float) = 1
         [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,f)]
         _StoreyWindowInfo("_StoreyWindowInfo",vector) = (5,2,0.5,0.8)
         _StoreyLightSwitchSpeed("_StoreyLightSwitchSpeed",float) = 0
-    } 
+
+        [Group(StoreyLine)]
+        [GroupToggle(StoreyLine)]_StoreyLineOn("_StoreyLineOn",int) = 0
+        [GroupItem(StoreyLine)][noscaleoffset]_StoreyLineNoiseMap("_StoreyLineNoiseMap",2d) = "bump"{}
+        [GroupItem(StoreyLine)][hdr]_StoreyLineColor("_StoreyLineColor",color) = (1,1,1,1)
+    }
     SubShader
     {
 /*
@@ -194,6 +199,7 @@ detail map
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
+            #pragma shader_feature_local _STOREY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
             #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON

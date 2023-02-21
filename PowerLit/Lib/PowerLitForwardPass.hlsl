@@ -23,7 +23,7 @@ struct Varyings{
     float4 tSpace2:TEXCOORD4;
     float4 vertexLightAndFogFactor:TEXCOORD5;
     float4 shadowCoord:TEXCOORD6;
-    float4 viewDirTS:TEXCOORD7;
+    float4 viewDirTS_NV:TEXCOORD7;
 
     float4 color:COLOR;
     float4 fogCoord:COLOR1;
@@ -57,8 +57,14 @@ Varyings vert(Attributes input){
     output.tSpace2 = float4(worldTangent.z,worldBinormal.z,worldNormal.z,worldPos.z);
 
     output.uv.xy = TRANSFORM_TEX(input.uv.xy,_BaseMap);
-    if(_StoreyTilingOn)
+    
+    // if(_StoreyTilingOn)
+    #if defined(_STOREY_ON)
+    {
         output.uv.y = WorldHeightTilingUV(worldPos);
+    }
+    #endif
+
     // OUTPUT_LIGHTMAP_UV(input.uv1,unity_LightmapST,output.uv1);
     output.uv.zw = input.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
 
@@ -77,16 +83,17 @@ Varyings vert(Attributes input){
     output.fogCoord.z = unity_gradientNoise(worldPos.xz*.1 + _WindDir.xz * _Time.y * (_IsGlobalWindOn?_WindSpeed:0));
 
     // branch_if(_ParallaxOn)
+    float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
+    output.viewDirTS_NV.w = saturate(dot(viewDirWS,worldNormal));
     #if defined(_PARALLAX)
     {
-        float3 viewDirWS = (_WorldSpaceCameraPos - worldPos);
-        output.viewDirTS.xyz = normalize(float3(
+        output.viewDirTS_NV.xyz = normalize(float3(
             dot(worldTangent,viewDirWS),
             dot(worldBinormal,viewDirWS),
             dot(worldNormal,viewDirWS)
         ));
         #if defined(_PARALLAX_IN_VS)
-            ApplyParallaxVertex(output.uv.xy/**/,output.viewDirTS.xyz);
+            ApplyParallaxVertex(output.uv.xy/**/,output.viewDirTS_NV.xyz);
         #endif
     }
     #endif
@@ -106,8 +113,8 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
         float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
         atten *= (worldPos.y < _RainHeight);
         float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity) * atten;
-
-        normalTS = BlendNormal(normalTS,normalTS + ripple);
+        
+        normalTS = BlendNormal(normalTS,(normalTS + ripple));
     }
     #endif
 
@@ -147,18 +154,28 @@ float NoiseSwitch(float2 quantifyNum,float lightOffIntensity){
     return frac(smoothstep(lightOffIntensity,1,n));
 }
 
-void ApplyStoreyEmission(float3 worldPos,float2 uv,inout float3 emissionColor){
-    if(_StoreyTilingOn){
-        // float tn = N21(floor(_Time.x * _StoreyWindowInfo.x));
-        // tn = smoothstep(_StoreyWindowInfo.w,1,tn);
+void ApplyStoreyEmission(inout float3 emissionColor,float3 worldPos,float2 uv){
 
-        // float n = N21(floor(uv.xy*float2(5,2)) + tn);
-        // n = smoothstep(_StoreyWindowInfo.z,1,n);
+    // float tn = N21(floor(_Time.x * _StoreyWindowInfo.x));
+    // tn = smoothstep(_StoreyWindowInfo.w,1,tn);
 
-        float tn = NoiseSwitch(round(_Time.x * _StoreyLightSwitchSpeed) , _StoreyWindowInfo.w);
-        float n = NoiseSwitch(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
+    // float n = N21(floor(uv.xy*float2(5,2)) + tn);
+    // n = smoothstep(_StoreyWindowInfo.z,1,n);
 
-        emissionColor *= n;
+    float tn = NoiseSwitch(round(_Time.x * _StoreyLightSwitchSpeed) , _StoreyWindowInfo.w);
+    float n = NoiseSwitch(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
+    emissionColor *= n;
+}
+void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 uv,float4 vertexColor,float nv){
+    if(_StoreyLineOn)
+    {
+        // storey line color
+        half4 lineNoise = SAMPLE_TEXTURE2D(_StoreyLineNoiseMap,sampler_StoreyLineNoiseMap,uv);
+        half atten = vertexColor.x * lineNoise.x * saturate(pow(1-nv,2));
+        half3 lineColor = _StoreyLineColor.xyz * atten ;
+
+        emissionColor = lerp(emissionColor,lineColor,vertexColor.x>0.1);
+        // emissionColor = vertexColor.x;// lineNoise.x ;
     }
 }
 
@@ -172,13 +189,21 @@ float4 frag(Varyings input):SV_Target{
     SurfaceInputData data = (SurfaceInputData)0;
 
     #if defined(_PARALLAX) && !defined(_PARALLAX_IN_VS)
-        ApplyParallax(input.uv.xy/**/,input.viewDirTS.xyz); // move to vs
+        ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
     #endif
 
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
     InitInputData(input,data,data.inputData/*inout*/);
 // return fragTest(input,data);
-    ApplyStoreyEmission(data.inputData.positionWS,input.uv,data.surfaceData.emission/**/);
+
+    #if defined(_STOREY_ON)
+    // if(_StoreyTilingOn)
+    {
+        ApplyStoreyEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv);
+        // float nv = saturate(dot(data.inputData.normalWS,data.inputData.viewDirectionWS));
+        ApplyStoreyLineEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv,input.color,input.viewDirTS_NV.w);
+    }
+    #endif
 // return data.surfaceData.emission.xyzx;
     // float4 c1 = UniversalFragmentPBR(data.inputData,data.surfaceData);
     // return c1;

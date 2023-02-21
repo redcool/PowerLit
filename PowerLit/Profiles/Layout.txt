@@ -14,4 +14,4 @@ Wind = _WindOn,_WindAnimParam,_WindDir,_WindSpeed
 Snow = _SnowOn,_ApplyEdgeOn,_SnowIntensity
 Fog = _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn
 Rain = _RainOn,_RippleTex,_RippleSpeed,_RippleIntensity,_RippleBlendNormalOn,_RainColor,_RainMetallic,_RainSmoothness,_RainSlopeAtten,_RainCube,_RainReflectDirOffset,_RainHeight,_RainReflectIntensity
-Storey = _StoreyTilingOn,_StoreyHeight,_StoreyWindowInfo,_StoreyLightSwitchSpeed
+Storey = _StoreyTilingOn,_StoreyHeight,_StoreyWindowInfo,_StoreyLightSwitchSpeed,_StoreyLineOn,_StoreyLineNoiseMap,_StoreyLineColor

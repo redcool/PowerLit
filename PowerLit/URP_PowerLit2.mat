@@ -22,7 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: URP_PowerLit2
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _EMISSION
   m_InvalidKeywords:
   - FOG_LINEAR
   - _DEPTH_FOG_ON
@@ -57,7 +58,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 3eaca917f61a7e84ca70d657d9beb0ae, type: 3}
+        m_Texture: {fileID: 2800000, guid: 56fb6e719b115ba4cb54d5497877a1a7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IBLCube:
@@ -100,6 +101,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _StoreyLineNoiseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -132,7 +137,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstMode: 0
-    - _EmissionOn: 0
+    - _EmissionOn: 1
     - _EnvIntensity: 1
     - _EnvironmentReflections: 1
     - _FogNoiseOn: 0
@@ -174,7 +179,7 @@ Material:
     - _RippleIntensity: 0.48
     - _RippleSlope: 0.425
     - _RippleSpeed: 16.9
-    - _Smoothness: 1
+    - _Smoothness: 0
     - _SmoothnessChannel: 1
     - _SmoothnessTextureChannel: 0
     - _SnowIntensity: 0.593
@@ -183,12 +188,14 @@ Material:
     - _SphereFogOn: 0
     - _SrcBlend: 1
     - _SrcMode: 1
+    - _StoreyHeight: 1
+    - _StoreyLightSwitchSpeed: 0
+    - _StoreyTilingOn: 1
     - _Surface: 0
     - _SurfaceDepth: -1
     - _WindOn: 0
     - _WindSpeed: 1
     - _WorkflowMode: 1
-    - _StoreyTilingOn: 0
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
@@ -197,13 +204,15 @@ Material:
     - _Color: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 1}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
-    - _EmissionColor: {r: 1, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _FogDir: {r: 1, g: 1, b: 1, a: 1}
     - _FogDirIntensity: {r: 1, g: 0, b: 0, a: 0}
     - _RainColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
     - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _StoreyLineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StoreyWindowInfo: {r: 5, g: 2, b: 0.5, a: 0.8}
     - _WindAnimParam: {r: 0.0996, g: 0.1495, b: 0.19860001, a: 0.02178}
     - _WindDir: {r: 1, g: 0.1, b: 0, a: 1}
   m_BuildTextureStacks: []

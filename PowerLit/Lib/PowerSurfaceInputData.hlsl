@@ -7,7 +7,7 @@
 struct SurfaceInputData{
     SurfaceData surfaceData;
     InputData inputData;
-    // bool isAlphaPremultiply;
+    bool isAlphaPremultiply;
     // bool isReceiveShadow; // material prop
     float2 screenUV;
 };

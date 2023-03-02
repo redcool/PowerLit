@@ -143,7 +143,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
 
 void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
-    // data.isAlphaPremultiply = _AlphaPremultiply;
+    data.isAlphaPremultiply = _AlphaPremultiply;
     // data.isReceiveShadow = _IsReceiveShadowOn && _MainLightShadowOn;
 
     data.screenUV = clipPos.xy/_ScreenParams.xy;

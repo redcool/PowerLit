@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.12297416, g: 0.1488274, b: 0.20059878, a: 1}
+  m_IndirectSpecularColor: {r: 0.15907829, g: 0.1849398, b: 0.2445277, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1020,8 +1020,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d234d4c335ed7642939de44db0c2636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _IsGlobalFogOn: 0
-  _GlobalFogIntensity: 1
+  _IsGlobalFogOn: 1
+  _GlobalFogIntensity: 0.595
   _IsGlobalRainOn: 0
   _GlobalRainIntensity: 1
   _IsGlobalSnowOn: 0
@@ -14804,8 +14804,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.031040875, y: -0.6869154, z: -0.029390858, w: 0.7254791}
-  m_LocalPosition: {x: 10.985176, y: 30.367268, z: 17.1306}
+  m_LocalRotation: {x: 0.151852, y: -0.73058814, z: 0.1697962, w: 0.64370126}
+  m_LocalPosition: {x: 14.375076, y: 13.253811, z: 25.972439}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15253,7 +15253,7 @@ RectTransform:
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &977387984
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -15270,7 +15270,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!114 &977387985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22271,7 +22271,7 @@ CanvasRenderer:
   m_CullTransparentMesh: 1
 --- !u!95 &1436234264
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -22288,7 +22288,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!114 &1436234265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22674,6 +22674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateInterval: 1
+  isFogColorApplyAlpha: 0
   _HeightFogMin: 22.4
   _HeightFogMax: 44.4
   _HeightFogMinColor: {r: 0.3820755, g: 0.47173524, b: 1, a: 0}
@@ -25317,6 +25318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
@@ -25333,6 +25335,7 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!1001 &1614732162
 PrefabInstance:
   m_ObjectHideFlags: 0

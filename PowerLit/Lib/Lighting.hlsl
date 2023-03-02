@@ -67,13 +67,13 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     brdfData.normalizationTerm = brdfData.roughness * 4 + 2; // mct factor
     brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
 
-    #if defined(_ALPHA_PREMULTIPLY_ON)
-    // branch_if(surfaceInputData.isAlphaPremultiply)
+    // #if defined(_ALPHA_PREMULTIPLY_ON)
+    branch_if(surfaceInputData.isAlphaPremultiply)
     {
         brdfData.diffuse *= alpha;
         alpha = alpha * oneMinusReflectivityMetallic + brdfData.reflectivity; //lerp(a,1,m)
     }
-    #endif
+    // #endif
 }
 
 /***

@@ -39,7 +39,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     // UNITY_DEFINE_INSTANCED_PROP(float ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_EmissionColor)
 
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IsReceiveShadowOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
 //--------------------------------- IBL
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IBLOn) //,_IBL_ON)
@@ -139,7 +139,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     // #define _EmissionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionOn) // to keyword _EMISSION
     #define _EmissionColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionColor)
 
-    // #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
+    #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
     // #define _IsReceiveShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IsReceiveShadowOn) // to keyword _RECEIVE_SHADOWS_OFF
 //--------------------------------- IBL
     // #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLOn) //_IBL_ON

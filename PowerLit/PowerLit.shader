@@ -84,7 +84,7 @@ Shader "URP/PowerLit"
         [Enum(UnityEngine.Rendering.BlendMode)]_DstMode("_DstMode",int) = 0
 
         [Header(Alpha Premulti)]
-        [GroupToggle(_,_ALPHA_PREMULTIPLY_ON)]_AlphaPremultiply("_AlphaPremultiply",int) = 0
+        [GroupToggle(_)]_AlphaPremultiply("_AlphaPremultiply",int) = 0 //_ALPHA_PREMULTIPLY_ON
 
         [Header(Depth)]
         [GroupToggle]_ZWrite("_ZWrite",int) = 1
@@ -198,7 +198,7 @@ detail map
             #pragma shader_feature_local_fragment _PLANAR_REFLECTION_ON
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
-            #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
+            // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
             #pragma shader_feature_local _STOREY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
@@ -273,6 +273,7 @@ detail map
 
             #pragma multi_compile_instancing
             #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature_local_fragment _EMISSION
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitMetaPass.hlsl"

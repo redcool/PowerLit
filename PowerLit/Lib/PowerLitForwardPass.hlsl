@@ -199,7 +199,7 @@ float4 frag(Varyings input):SV_Target{
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)
     {
-        ApplyStoreyEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv);
+        ApplyStoreyEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv.xy);
         // float nv = saturate(dot(data.inputData.normalWS,data.inputData.viewDirectionWS));
         ApplyStoreyLineEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv,input.color,input.viewDirTS_NV.w);
     }

@@ -273,6 +273,7 @@ detail map
 
             #pragma multi_compile_instancing
             #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature_local_fragment _EMISSION
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitMetaPass.hlsl"

@@ -4,7 +4,7 @@
 tabNames =  Settings, Main,Alpha,Parallax,Env,Emission,Wind,Snow,Fog,Rain,Storey
 
 // Tab's contents
-Settings =_ZWrite,_ZTest,_CullMode,_IsReceiveShadowOn,_RenderQueue
+Settings =_ZWrite,_ZTest,_CullMode,_IsReceiveShadowOn,_RenderQueue,_BakedEmission
 Main = _BaseMap,_Color,_SurfaceDepth,_BelowColor,_NormalMap,_NormalScale,_MetallicMaskMap,_Metallic,_Smoothness,_Occlusion,_InvertSmoothnessOn,_MetallicChannel,_SmoothnessChannel,_OcclusionChannel,
 Alpha=_ClipOn,_Cutoff,_AlphaPremultiply,_PresetBlendMode
 Parallax=_ParallaxOn,_ParallaxInVSOn,_ParallaxMap,_ParallaxMapChannel,_ParallaxHeight

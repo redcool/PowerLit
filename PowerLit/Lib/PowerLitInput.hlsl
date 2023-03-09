@@ -102,6 +102,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float,_StoreyLineOn)
     
     UNITY_DEFINE_INSTANCED_PROP(float4,_StoreyLineColor)
+    UNITY_DEFINE_INSTANCED_PROP(int,_StoreyLightOpaque)
     
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
@@ -202,5 +203,6 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _StoreyLineColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineColor)
 
     #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineOn)
-
+    #define _StoreyLightOpaque UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightOpaque)
+    
 #endif //POWER_LIT_INPUT_HLSL

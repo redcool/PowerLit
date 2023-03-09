@@ -154,7 +154,7 @@ float NoiseSwitchLight(float2 quantifyNum,float lightOffIntensity){
     return frac(smoothstep(lightOffIntensity,1,n));
 }
 
-void ApplyStoreyEmission(inout float3 emissionColor,float3 worldPos,float2 uv){
+void ApplyStoreyEmission(inout float3 emissionColor,inout float alpha,float3 worldPos,float2 uv){
 
     // float tn = N21(floor(_Time.x * _StoreyWindowInfo.x));
     // tn = smoothstep(_StoreyWindowInfo.w,1,tn);
@@ -162,10 +162,13 @@ void ApplyStoreyEmission(inout float3 emissionColor,float3 worldPos,float2 uv){
     // float n = N21(floor(uv.xy*float2(5,2)) + tn);
     // n = smoothstep(_StoreyWindowInfo.z,1,n);
 
+    // auto light swidth
     float tn = NoiseSwitchLight(round(_Time.x * _StoreyLightSwitchSpeed) , _StoreyWindowInfo.w);
     float n = NoiseSwitchLight(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
     emissionColor *= n;
-    // emissionColor = tn;
+
+    if(_StoreyLightOpaque)
+        alpha = Luminance(emissionColor) > 0.1? 1 : alpha;
 }
 void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 uv,float4 vertexColor,float nv){
     if(_StoreyLineOn)
@@ -201,9 +204,10 @@ float4 frag(Varyings input):SV_Target{
     // if(_StoreyTilingOn)
     {
         // return (input.uv.x / 1);
-        ApplyStoreyEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv.xy);
-        // float nv = saturate(dot(data.inputData.normalWS,data.inputData.viewDirectionWS));
+        ApplyStoreyEmission(data.surfaceData.emission/**/,data.surfaceData.alpha/**/,data.inputData.positionWS,input.uv.xy);
+
         ApplyStoreyLineEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv,input.color,input.viewDirTS_NV.w);
+        
     }
     #endif
 // return data.surfaceData.emission.xyzx;

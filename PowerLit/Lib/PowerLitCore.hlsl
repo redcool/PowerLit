@@ -133,6 +133,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
         _InvertSmoothnessOn
     );
 
+
     data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
     data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz);
     data.specular = (float3)0;
@@ -156,5 +157,62 @@ void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
 float WorldHeightTilingUV(float3 worldPos){
     float v = floor(worldPos.y/_StoreyHeight);
     return v;
+}
+
+float NoiseSwitchLight(float2 quantifyNum,float lightOffIntensity){
+    float n = N21(quantifyNum);
+    return frac(smoothstep(lightOffIntensity,1,n));
+}
+
+void ApplyStoreyEmission(inout float3 emissionColor,inout float alpha,float3 worldPos,float2 uv){
+
+    // float tn = N21(floor(_Time.x * _StoreyWindowInfo.x));
+    // tn = smoothstep(_StoreyWindowInfo.w,1,tn);
+
+    // float n = N21(floor(uv.xy*float2(5,2)) + tn);
+    // n = smoothstep(_StoreyWindowInfo.z,1,n);
+
+    // auto light swidth
+    float tn = NoiseSwitchLight(round(_Time.x * _StoreyLightSwitchSpeed) , _StoreyWindowInfo.w);
+    float n = NoiseSwitchLight(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
+    emissionColor *= n;
+
+    if(_StoreyLightOpaque)
+        alpha = Luminance(emissionColor) > 0.1? 1 : alpha;
+}
+void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 uv,float4 vertexColor,float nv){
+    if(_StoreyLineOn)
+    {
+        // storey line color
+        half4 lineNoise = SAMPLE_TEXTURE2D(_StoreyLineNoiseMap,sampler_StoreyLineNoiseMap,uv);
+        half atten = vertexColor.x * lineNoise.x * saturate(pow(1-nv,2));
+        half3 lineColor = _StoreyLineColor.xyz * atten ;
+
+        emissionColor = lerp(emissionColor,lineColor,vertexColor.x>0.1);
+        // emissionColor = vertexColor.x;// lineNoise.x ;
+    }
+}
+
+void ApplyDetails(float2 uv,inout SurfaceInputData data){
+    #if defined(_DETAIL_ON)
+#define sData data.surfaceData
+#define iData data.inputData
+
+    if(_DetailUVUseWorldPos)
+    {
+        uv = iData.positionWS.xz;
+    }
+    uv = uv * _DetailPBRMaskMap_ST.xy + _DetailPBRMaskMap_ST.zw;
+
+    float4 detailPbrMask = SAMPLE_TEXTURE2D(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,uv);
+    float4 pbrMask = 0;
+    // saturate(float4(sData.metallic,sData.smoothness,sData.occlusion,1) * detailPbrMask);
+    pbrMask = detailPbrMask;
+
+    sData.metallic = lerp(sData.metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
+    sData.smoothness = lerp(sData.smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);
+    sData.occlusion = lerp(sData.occlusion,pbrMask.z,_DetailPbrMaskApplyOcclusion);
+
+    #endif
 }
 #endif //POWER_LIT_CORE_HLSL

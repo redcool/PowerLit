@@ -130,6 +130,16 @@ Shader "URP/PowerLit"
         _RainReflectIntensity("_RainReflectIntensity",range(0,.1))=0.1
         _RainHeight("_RainHeight",float) = 5
 
+        //------------Details
+        [Group(Details)]
+        [GroupToggle(Details,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0
+        [GroupItem(Details)]_DetailPBRMaskMap("_DetailPBRMaskMap",2d) = ""{}
+        [GroupToggle(Details)]_DetailUVUseWorldPos("_DetailUVUseWorldPos",int) = 1
+        [GroupItem(Details)]_DetailPbrMaskApplyMetallic("_DetailPbrMaskApplyMetallic",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPbrMaskApplySmoothness("_DetailPbrMaskApplySmoothness",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPbrMaskApplyOcclusion("_DetailPbrMaskApplyOcclusion",range(0,1)) = 1
+        //------------Storey
+
         [GroupToggle(_,_STOREY_ON)]_StoreyTilingOn("_StoreyTilingOn",int) = 0
         _StoreyHeight("_StoreyHeight",float) = 1
         [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,f)]
@@ -202,13 +212,14 @@ detail map
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
-            #pragma shader_feature_local _STOREY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
             #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
             #pragma shader_feature_local _SNOW_ON
             #pragma shader_feature_local _WIND_ON
             #pragma shader_feature_local _RAIN_ON
+            #pragma shader_feature_local _STOREY_ON
+            #pragma shader_feature_local _DETAIL_ON
             
             // urp keywords 
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION

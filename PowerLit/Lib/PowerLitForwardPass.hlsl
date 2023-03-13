@@ -149,40 +149,6 @@ float4 fragTest(Varyings input,SurfaceInputData data){
     return 0;
 }
 
-float NoiseSwitchLight(float2 quantifyNum,float lightOffIntensity){
-    float n = N21(quantifyNum);
-    return frac(smoothstep(lightOffIntensity,1,n));
-}
-
-void ApplyStoreyEmission(inout float3 emissionColor,inout float alpha,float3 worldPos,float2 uv){
-
-    // float tn = N21(floor(_Time.x * _StoreyWindowInfo.x));
-    // tn = smoothstep(_StoreyWindowInfo.w,1,tn);
-
-    // float n = N21(floor(uv.xy*float2(5,2)) + tn);
-    // n = smoothstep(_StoreyWindowInfo.z,1,n);
-
-    // auto light swidth
-    float tn = NoiseSwitchLight(round(_Time.x * _StoreyLightSwitchSpeed) , _StoreyWindowInfo.w);
-    float n = NoiseSwitchLight(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
-    emissionColor *= n;
-
-    if(_StoreyLightOpaque)
-        alpha = Luminance(emissionColor) > 0.1? 1 : alpha;
-}
-void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 uv,float4 vertexColor,float nv){
-    if(_StoreyLineOn)
-    {
-        // storey line color
-        half4 lineNoise = SAMPLE_TEXTURE2D(_StoreyLineNoiseMap,sampler_StoreyLineNoiseMap,uv);
-        half atten = vertexColor.x * lineNoise.x * saturate(pow(1-nv,2));
-        half3 lineColor = _StoreyLineColor.xyz * atten ;
-
-        emissionColor = lerp(emissionColor,lineColor,vertexColor.x>0.1);
-        // emissionColor = vertexColor.x;// lineNoise.x ;
-    }
-}
-
 float4 frag(Varyings input):SV_Target{
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -198,6 +164,7 @@ float4 frag(Varyings input):SV_Target{
 
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
     InitInputData(input,data,data.inputData/*inout*/);
+    ApplyDetails(input.uv.xy,data/**/);
 // return fragTest(input,data);
 
     #if defined(_STOREY_ON)

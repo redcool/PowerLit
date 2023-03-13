@@ -1,0 +1,8 @@
+// powerLit helps
+//details
+_DetailOn = 使用细节模式
+_DetailPBRMaskMap = r:metallic,g:smoothness,b:occlusion
+_DetailUVUseWorldPos = uv使用世界坐标
+_DetailPbrMaskApplyMetallic = 影响metallic
+_DetailPbrMaskApplySmoothness = 影响smoothness
+_DetailPbrMaskApplyOcclusion = 影响occlusion

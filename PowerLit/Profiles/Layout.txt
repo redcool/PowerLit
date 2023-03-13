@@ -1,7 +1,7 @@
 // PowerVFXLayout, when edit this file need reselect material
 
 // Tabs
-tabNames =  Settings, Main,Alpha,Parallax,Env,Emission,Wind,Snow,Fog,Rain,Storey
+tabNames =  Settings, Main,Details,Alpha,Parallax,Env,Emission,Wind,Snow,Fog,Rain,Storey
 
 // Tab's contents
 Settings =_ZWrite,_ZTest,_CullMode,_IsReceiveShadowOn,_RenderQueue,_BakedEmission
@@ -15,3 +15,4 @@ Snow = _SnowOn,_ApplyEdgeOn,_SnowIntensity
 Fog = _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn
 Rain = _RainOn,_RippleTex,_RippleSpeed,_RippleIntensity,_RippleBlendNormalOn,_RainColor,_RainMetallic,_RainSmoothness,_RainSlopeAtten,_RainCube,_RainReflectDirOffset,_RainHeight,_RainReflectIntensity
 Storey = _StoreyTilingOn,_StoreyHeight,_StoreyWindowInfo,_StoreyLightSwitchSpeed,_StoreyLightOpaque,_StoreyLineOn,_StoreyLineNoiseMap,_StoreyLineColor
+Details = _DetailOn,_DetailPBRMaskMap,_DetailUVUseWorldPos,_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion

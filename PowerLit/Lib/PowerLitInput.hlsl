@@ -18,6 +18,7 @@ TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
 TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
 TEXTURE2D(_StoreyLineNoiseMap);SAMPLER(sampler_StoreyLineNoiseMap);
+TEXTURE2D(_DetailPBRMaskMap);SAMPLER(sampler_DetailPBRMaskMap);
 
 UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Main
@@ -103,7 +104,12 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     
     UNITY_DEFINE_INSTANCED_PROP(float4,_StoreyLineColor)
     UNITY_DEFINE_INSTANCED_PROP(int,_StoreyLightOpaque)
-    
+// detail
+    UNITY_DEFINE_INSTANCED_PROP(int,_DetailUVUseWorldPos)
+    UNITY_DEFINE_INSTANCED_PROP(float4,_DetailPBRMaskMap_ST)
+    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyMetallic)
+    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplySmoothness)
+    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyOcclusion)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
@@ -204,5 +210,12 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
     #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineOn)
     #define _StoreyLightOpaque UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightOpaque)
+    //details
+    #define _DetailUVUseWorldPos UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailUVUseWorldPos)
+    #define _DetailPBRMaskMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBRMaskMap_ST)
+    #define _DetailPbrMaskApplyMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyMetallic)
+    #define _DetailPbrMaskApplySmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplySmoothness)
+    #define _DetailPbrMaskApplyOcclusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyOcclusion)
+    
     
 #endif //POWER_LIT_INPUT_HLSL

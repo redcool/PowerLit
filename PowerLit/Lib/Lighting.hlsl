@@ -64,8 +64,8 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     brdfData.roughness = max(HALF_MIN_SQRT,brdfData.perceptualRoughness * brdfData.perceptualRoughness);
     brdfData.roughness2 = max(brdfData.roughness * brdfData.roughness,HALF_MIN);
     brdfData.grazingTerm = saturate( (surfaceData.smoothness + brdfData.reflectivity)) * _FresnelIntensity; // (smoothness + metallic)
-    brdfData.normalizationTerm = brdfData.roughness * 4 + 2; // mct factor
-    brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
+    // brdfData.normalizationTerm = brdfData.roughness * 4 + 2; // mct factor
+    // brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
 
     // #if defined(_ALPHA_PREMULTIPLY_ON)
     branch_if(surfaceInputData.isAlphaPremultiply)
@@ -80,12 +80,11 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     Minimalist cook torrance
     r2/(d*d * lh*lh *(4r+2))
 ***/
-float3 CalcDirectSpecularTerm(float r/*roughness*/,float3 lightDir,float3 viewDir,float3 normal){
+float3 CalcDirectSpecularTerm(float r/*roughness*/,float r2,float3 lightDir,float3 viewDir,float3 normal){
     float3 h = SafeNormalize(lightDir + viewDir);
     float nh = saturate(dot(normal,h));
     float lh = saturate(dot(lightDir,h));
 
-    float r2 = r * r;
     float d = nh * nh * (r2-1)+1;
     float specTerm = r2/( d * d * max(0.1, lh * lh) * ( 4 * r + 2 ));
 
@@ -101,7 +100,7 @@ float3 CalcPBRLighting(BRDFData brdfData,float3 lightColor,float3 lightDir,float
     float3 radiance = lightColor * lightAtten * nl; // light's color
 
     float3 brdf = brdfData.diffuse;
-    brdf += brdfData.specular * CalcDirectSpecularTerm(brdfData.roughness,lightDir,viewDir,normal);
+    brdf += brdfData.specular * CalcDirectSpecularTerm(brdfData.roughness,brdfData.roughness2,lightDir,viewDir,normal);
     return brdf * radiance;
 }
 

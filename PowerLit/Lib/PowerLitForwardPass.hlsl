@@ -173,7 +173,7 @@ float4 frag(Varyings input):SV_Target{
         // return (input.uv.x / 1);
         ApplyStoreyEmission(data.surfaceData.emission/**/,data.surfaceData.alpha/**/,data.inputData.positionWS,input.uv.xy);
 
-        ApplyStoreyLineEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv,input.color,input.viewDirTS_NV.w);
+        ApplyStoreyLineEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv.xy,input.color,input.viewDirTS_NV.w);
         
     }
     #endif

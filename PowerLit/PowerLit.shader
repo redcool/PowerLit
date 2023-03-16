@@ -9,7 +9,7 @@ Shader "URP/PowerLit"
 
         [GroupHeader(Main,Surface Below)]
         [GroupItem(Main)]_SurfaceDepth("_SurfaceDepth",float) = -1
-        [GroupItem(Main)]_BelowColor("_BelowColor",color) = (.5,.5,.5,1)
+        [GroupItem(Main)]_BelowColor("_BelowColor",color) = (1,1,1,1)
 
         [GroupHeader(Main,Normal)]
         [GroupItem(Main)][Normal]_NormalMap("_NormalMap",2d) ="bump"{}

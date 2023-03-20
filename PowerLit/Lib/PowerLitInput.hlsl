@@ -48,7 +48,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float ,_IBLMaskMainTexA)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_ReflectDirOffset)
 //--------------------------------- Custom Light
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightDir)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightColor)
 
@@ -154,7 +154,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _IBLMaskMainTexA UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLMaskMainTexA)
     #define _ReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ReflectDirOffset)
 //--------------------------------- Custom Light
-    // #define _CustomLightOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightOn) //_CUSTOM_LIGHT_ON
+    #define _CustomLightOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightOn) //_CUSTOM_LIGHT_ON
     #define _CustomLightDir UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightDir)
     #define _CustomLightColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColor)
 

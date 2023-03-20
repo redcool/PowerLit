@@ -42,13 +42,13 @@ Light GetMainLight(SurfaceInputData data,float4 shadowMask){
 }
 
 void OffsetLight(inout Light mainLight){
-    #if defined(_CUSTOM_LIGHT_ON)
-    // branch_if(_CustomLightOn)
+    // #if defined(_CUSTOM_LIGHT_ON)
+    branch_if(_CustomLightOn)
     {
         mainLight.color = _CustomLightColor.xyz;
         mainLight.direction = (_CustomLightDir.xyz);
     }
-    #endif
+    // #endif
 }
 
 void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFData brdfData){
@@ -107,10 +107,12 @@ float3 CalcPBRLighting(BRDFData brdfData,float3 lightColor,float3 lightDir,float
 float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 shadowMask){
     uint lightCount = GetAdditionalLightsCount();
     float3 c = (float3)0;
-    for(uint i=0;i<lightCount;i++){
+    for(uint i=0;i<lightCount;i++)
+    {
         Light light = GetAdditionalLight1(i,inputData.positionWS,shadowMask);
         // float3 attenColor = max(light.shadowAttenuation,inputData.bakedGI);
-        OffsetLight(light/**/);
+
+        // OffsetLight(light/**/);
 
         // branch_if(light.distanceAttenuation)
             c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);

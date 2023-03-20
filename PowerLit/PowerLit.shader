@@ -57,9 +57,9 @@ Shader "URP/PowerLit"
         _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
 
         [Header(Custom Light)]
-        [GroupToggle(_,_CUSTOM_LIGHT_ON)]_CustomLightOn("_CustomLightOn",float) = 0
-        _CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
-        [hdr]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
+        [GroupToggle(_)]_CustomLightOn("_CustomLightOn",float) = 0
+        [LightInfo]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
+        [hdr][LightInfo(Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
 
         [Header(Specular)]
         _FresnelIntensity("_FresnelIntensity",float) = 1
@@ -210,7 +210,7 @@ detail map
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_fragment _PLANAR_REFLECTION_ON
             #pragma shader_feature_local_fragment _IBL_ON
-            #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
+            // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON

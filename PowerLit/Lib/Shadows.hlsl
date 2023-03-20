@@ -98,7 +98,7 @@ float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isM
 }
 
 float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade){
-    #if defined(SHADOWS_SHADOWMASK)
+    #if defined(LIGHTMAP_SHADOW_MIXING)
     // branch_if(IsShadowMaskOn())
     {
         return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);

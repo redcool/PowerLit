@@ -39,10 +39,12 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionCo
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
+    float size = 1.0/_ParallaxIterate;
     // branch_if(_ParallaxOn)
+    UNITY_LOOP for(int i=0;i<_ParallaxIterate;i++)
     {
         float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
-        uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
+        uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height) * height * size;
     }
 }
 

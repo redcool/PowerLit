@@ -31,10 +31,11 @@ Shader "URP/PowerLit"
 
         [Group(Parallax)]
         [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
+        [GroupSlider(Parallax,iterate count,int)]_ParallaxIterate("_ParallaxIterate",range(1,10)) = 1
         [GroupToggle(Parallax,_PARALLAX_IN_VS,run in vertex shader)]_ParallaxInVSOn("_ParallaxInVSOn",int) = 0
         [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
         [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
-        [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.08)) = 0.01
+        [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.3)) = 0.01
 
         [Header(Emission)]
         [GroupToggle(,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0

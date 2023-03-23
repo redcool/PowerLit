@@ -51,7 +51,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightDir)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightColor)
-
+    UNITY_DEFINE_INSTANCED_PROP(int,_CustomLightColorUsage)
     UNITY_DEFINE_INSTANCED_PROP(float ,_FresnelIntensity)
 //--------------------------------- lightmap
     UNITY_DEFINE_INSTANCED_PROP(float ,_LightmapSHAdditional)
@@ -157,7 +157,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CustomLightOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightOn) //_CUSTOM_LIGHT_ON
     #define _CustomLightDir UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightDir)
     #define _CustomLightColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColor)
-
+    #define _CustomLightColorUsage UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColorUsage)
     #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity)
 //--------------------------------- lightmap
     #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LightmapSHAdditional)

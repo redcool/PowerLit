@@ -60,6 +60,7 @@ Shader "URP/PowerLit"
         [GroupToggle(_)]_CustomLightOn("_CustomLightOn",float) = 0
         [LightInfo]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
         [hdr][LightInfo(Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
+        [GroupEnum(_,LightColor 0 SpecularColor 1)]_CustomLightColorUsage("_CustomLightColorUsage",int) = 0
 
         [Header(Specular)]
         _FresnelIntensity("_FresnelIntensity",float) = 1

@@ -41,12 +41,16 @@ Light GetMainLight(SurfaceInputData data,float4 shadowMask){
     return mainLight;
 }
 
-void OffsetLight(inout Light mainLight){
+void OffsetLight(inout Light mainLight,inout BRDFData brdfData){
     // #if defined(_CUSTOM_LIGHT_ON)
     branch_if(_CustomLightOn)
     {
-        mainLight.color = _CustomLightColor.xyz;
         mainLight.direction = (_CustomLightDir.xyz);
+
+        switch(_CustomLightColorUsage){
+            case 0 : mainLight.color = _CustomLightColor.xyz; break;
+            case 1 : brdfData.specular *= _CustomLightColor.xyz; break;
+        }
     }
     // #endif
 }
@@ -134,7 +138,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data.screenUV);
     // branch_if(mainLight.distanceAttenuation)
     {
-        OffsetLight(mainLight/**/);
+        OffsetLight(mainLight/**/,brdfData/**/);
         color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     }
     color += surfaceData.emission;

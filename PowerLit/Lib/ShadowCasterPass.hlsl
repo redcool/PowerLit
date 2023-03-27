@@ -18,6 +18,8 @@ struct Attributes{
 struct Varyings{
     float2 uv:TEXCOORD0;
     float4 pos:SV_POSITION;
+    UNITY_VERTEX_INPUT_INSTANCE_ID
+    UNITY_VERTEX_OUTPUT_STEREO
 };
 
 float4 GetShadowPositionHClip(Attributes input)
@@ -31,14 +33,13 @@ float4 GetShadowPositionHClip(Attributes input)
     }
 #if defined(SHADOW_PASS)
     float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
+    #if UNITY_REVERSED_Z
+        positionCS.z = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
+    #else
+        positionCS.z = max(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
+    #endif
 #else
     float4 positionCS = TransformWorldToHClip(positionWS);
-#endif
-
-#if UNITY_REVERSED_Z
-    positionCS.z = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
-#else
-    positionCS.z = max(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
 #endif
 
     return positionCS;

@@ -119,7 +119,7 @@ float CalcRainNoise(float3 worldPos){
     change normalTS
 */
 void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
-    float3 ripple = GetRainRipple(worldPos + data.rainNoise * 0.2 * _RippleIntensity) * data.rainAtten;
+    float3 ripple = GetRainRipple(worldPos + data.rainNoise * 0.02 * _RippleIntensity) * data.rainAtten;
     // apply ripple color 
     data.surfaceData.albedo += ripple.x;
 
@@ -127,44 +127,7 @@ void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
     branch_if(_RippleBlendNormalOn)
         data.surfaceData.normalTS = BlendNormal(data.surfaceData.normalTS,(data.surfaceData.normalTS + ripple));
 }
-/*
-float3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float atten,float3 albedo){
-    // cross noise
-    float2 noiseUV = worldPos.xz * _RainReflectTilingOffset.xy+ _GlobalWindDir.xz * _RainReflectTilingOffset.zw* _Time.y;
-    float2 noiseUV2 = worldPos.xz * _RainReflectTilingOffset.xy + float2(_GlobalWindDir.x * -_Time.x,0);
-    float noise = unity_gradientNoise(noiseUV) + 0.5;
-    noise += unity_gradientNoise(noiseUV2) + 0.5;
-    // float noise = SampleWeatherNoise(noiseUV);
-    // noise += SampleWeatherNoise(noiseUV2);
-    // noise *= 0.5;
 
-    // reflect
-    float3 reflectCol = 0;
-    branch_if(_RainReflectOn)
-    {
-        float3 reflectDir = reflect(-worldView,worldNormal);
-        reflectDir += _RainReflectDirOffset + noise;
-        float4 envColor = SAMPLE_TEXTURECUBE(_RainCube,sampler_RainCube,reflectDir);
-        envColor.xyz = DecodeHDREnvironment(envColor,1);
-
-        reflectCol = envColor.xyz * _RainReflectIntensity ;
-    }
-
-    // ripple
-    float2 rippleUV = (worldPos.xz+noise.x*0.01) * _RippleTex_ST.xy + _RippleTex_ST.zw;
-    float3 ripple = ComputeRipple(_RippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * _RippleSpeed) * _RippleIntensity;
-    float rippleCol = saturate((ripple.x) );
-
-    // atten
-    float heightAtten =  (worldPos.y < _RainHeight);
-    float slopeAtten = dot(worldNormal,float3(0,1,0)) - _RainSlopeAtten;
-    float reflectAtten = saturate(slopeAtten * heightAtten);
-
-    float3 rainColor = _RainColor.xyz;
-    rainColor += (reflectCol + rippleCol * atten) * reflectAtten /albedo; // so composite reflectCol and rippleCol
-    return lerp(1,rainColor,_GlobalRainIntensity);
-}
-*/
 void ApplyRainPbr(inout SurfaceInputData data){
     // float3 worldPos = ScreenToWorldPos(screenUV);
     data.surfaceData.albedo *= lerp(1,_RainColor,_GlobalRainIntensity);
@@ -218,6 +181,8 @@ void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     // branch_if(_PlanarReflectionOn)
         data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
     #endif
+    
+    data.envIntensity = _EnvIntensity;
 }
 
 void InitSurfaceInputDataRain(inout SurfaceInputData data,float3 worldPos,float3 vertexNormal){
@@ -226,6 +191,7 @@ void InitSurfaceInputDataRain(inout SurfaceInputData data,float3 worldPos,float3
 
     data.rainAtten = rainAtten;
     data.rainNoise = rainNoise;
+    data.envIntensity = _RainReflectIntensity;
 }
 
 float WorldHeightTilingUV(float3 worldPos){

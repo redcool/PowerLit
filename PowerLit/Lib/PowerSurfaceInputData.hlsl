@@ -11,6 +11,8 @@ struct SurfaceInputData{
     // bool isReceiveShadow; // material prop
     float2 screenUV;
 
+    float envIntensity;
+
     // rain's info
     float3 rainReflectDirOffset;
     float rainAtten;

@@ -185,7 +185,7 @@ float4 frag(Varyings input):SV_Target{
     Light mainLight = GetMainLight(data,shadowMask);
 
     #if defined(_RAIN_ON)
-        data.rainAtten *= (vertexNoise+0.5) * (mainLight.shadowAttenuation+0.25);
+        data.rainAtten *= (vertexNoise+0.5) ;//* (mainLight.shadowAttenuation+0.25);
         data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
         // apply rain pbr 
         ApplyRainPbr(data/**/);

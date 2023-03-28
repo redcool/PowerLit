@@ -96,7 +96,7 @@ float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
         iblColor =  CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness);
     }
     #endif
-    return lerp(1, iblColor,customIBLMask)  * _EnvIntensity;
+    return lerp(1, iblColor,customIBLMask);
 }
 
 float3 CalcPlanerReflection(float2 uv){
@@ -127,7 +127,7 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
     #endif
 
     float3 fresnel = CalcFresnel(brdfData,normal,viewDir);
-    float3 color = indirectDiffuse + indirectSpecular * fresnel;
+    float3 color = indirectDiffuse + indirectSpecular * fresnel * data.envIntensity ;
     color *= occlusion;
     return color;
 }

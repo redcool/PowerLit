@@ -83,7 +83,7 @@ float3 BoxProjectedCubemapDirection(float3 reflectionWS, float3 positionWS, floa
 #endif
 
 float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
-    reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz);
+
     float3 iblColor = 0;
     
     // branch_if(_IBLOn)
@@ -103,19 +103,20 @@ float3 CalcPlanerReflection(float2 uv){
     return SAMPLE_TEXTURE2D(_ReflectionTex,sampler_ReflectionTex,uv).xyz;
 }
 
-float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask,float3 worldPos,float2 screenUV){
+float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask,float3 worldPos,SurfaceInputData data){
     float3 indirectDiffuse = bakedGI  * brdfData.diffuse;
 
     float3 indirectSpecular = 0;
     // branch_if(_PlanarReflectionOn)
     #if defined(_PLANAR_REFLECTION_ON)
     {
-        indirectSpecular = CalcPlanerReflection(screenUV);
+        indirectSpecular = CalcPlanerReflection(data.screenUV+data.rainReflectDirOffset.xz);
     }
     // else
     #else
     {
         float3 reflectDir = reflect(-viewDir,normal);
+        reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz + data.rainReflectDirOffset);
 
         #if (SHADER_LIBRARY_VERSION_MAJOR >= 12) && defined(_REFLECTION_PROBE_BOX_PROJECTION)
         reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);

@@ -12,18 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 4
+  version: 5
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PowerLit
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
-  m_ShaderKeywords: ISRECEIVESHADOW_ON _ALPHATESTON_ON _BAKEEMISSIONON_ON _EMISSIONON_OFF
-    _ISRECEIVESHADOW_ON _ZWRITE_ON
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - ISRECEIVESHADOW_ON
+  - _ALPHATESTON_ON
+  - _BAKEEMISSIONON_ON
+  - _CUSTOM_LIGHT_ON
+  - _EMISSIONON_OFF
+  - _ISRECEIVESHADOW_ON
+  - _ZWRITE_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -34,26 +41,18 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 82376e7bcb460784ca45dfca10d33523, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 82376e7bcb460784ca45dfca10d33523, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _GIAlbedoTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _IBL:
-        m_Texture: {fileID: 8900000, guid: c853dcd774a2b8243bb8702bc635df48, type: 3}
+    - _DetailPBRMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IBLCube:
-        m_Texture: {fileID: 8900000, guid: c853dcd774a2b8243bb8702bc635df48, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -62,42 +61,100 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 61acca955fd47ef44816e59fd78416ec, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 2800000, guid: abfce24a1a47424478877a9989ef479f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RainCube:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RippleTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StoreyLineNoiseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AlphaPremultiply: 0
-    - _AlphaTestOn: 1
-    - _BakeEmissionOn: 1
+    - _ApplyEdgeOn: 1
     - _ClipOn: 0
     - _CullMode: 2
-    - _CustomLightOn: 0
-    - _Cutoff: 0
+    - _CustomLightColorUsage: 1
+    - _CustomLightOn: 1
+    - _Cutoff: 0.5
+    - _DepthFogOn: 1
+    - _DetailOn: 0
+    - _DetailPbrMaskApplyMetallic: 1
+    - _DetailPbrMaskApplyOcclusion: 1
+    - _DetailPbrMaskApplySmoothness: 1
+    - _DetailUVUseWorldPos: 1
     - _DstMode: 0
     - _EmissionOn: 0
-    - _Glossiness: 0.5
+    - _EnvIntensity: 1
+    - _FogNoiseOn: 0
+    - _FogOn: 1
+    - _FresnelIntensity: 1
+    - _HeightFogOn: 1
+    - _IBLMaskMainTexA: 0
     - _IBLOn: 0
+    - _InvertSmoothnessOn: 0
     - _IsReceiveShadowOn: 1
-    - _LightmapSH: 1
+    - _LMIntensityAdditional: 0
+    - _LMSaturateAdditional: 0
+    - _LightmapSHAdditional: 0
     - _Metallic: 0
     - _MetallicChannel: 0
     - _NormalScale: 1
     - _Occlusion: 0
     - _OcclusionChannel: 2
+    - _ParallaxHeight: 0.16135
+    - _ParallaxInVSOn: 0
+    - _ParallaxIterate: 4
+    - _ParallaxMapChannel: 0
+    - _ParallaxOn: 0
+    - _PlanarReflectionOn: 0
+    - _RainHeight: 5
+    - _RainMetallic: 0.1
+    - _RainOn: 0
+    - _RainReflectIntensity: 0.1
+    - _RainSlopeAtten: 0.6
+    - _RainSmoothness: 0.1
+    - _RippleBlendNormalOn: 0
+    - _RippleIntensity: 1
+    - _RippleSpeed: 10
     - _Smoothness: 1
     - _SmoothnessChannel: 1
+    - _SnowIntensity: 0
+    - _SnowOn: 0
     - _SrcMode: 1
+    - _StoreyHeight: 1
+    - _StoreyLightOpaque: 1
+    - _StoreyLightSwitchSpeed: 0
+    - _StoreyLineOn: 0
+    - _StoreyTilingOn: 0
+    - _SurfaceDepth: -1
     - _WindOn: 0
+    - _WindSpeed: 0.3
     - _ZTest: 4
     - _ZWrite: 1
-    - isReceiveShadow: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
-    - _CustomLightColor: {r: 1, g: 1, b: 1, a: 0}
-    - _CustomLightDir: {r: 0, g: 1.82, b: 0, a: 0}
-    - _EmissionColor: {r: 59.017693, g: 0, b: 0, a: 1}
-    - _GIAlbedoColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ReflectDirOffset: {r: -1.79, g: -2.51, b: 0, a: 0}
-    - _WindAnimParam: {r: 1, g: 1, b: 0.1, a: 0.3}
-    - _WindDir: {r: 1, g: 0.1, b: 0, a: 1}
+    - _BelowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
+    - _CustomLightColor: {r: 1, g: 0, b: 0, a: 1}
+    - _CustomLightDir: {r: 0.0000000037252903, g: 0.7071068, b: -0.7071068, a: -0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _StoreyLineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StoreyWindowInfo: {r: 5, g: 2, b: 0.5, a: 0.8}
+    - _WindAnimParam: {r: 0.4, g: 0.5, b: 0.1128, a: 0.041519996}
+    - _WindDir: {r: 1, g: 0.1, b: 0, a: 0.322}
   m_BuildTextureStacks: []

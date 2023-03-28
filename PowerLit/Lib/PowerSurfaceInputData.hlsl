@@ -10,6 +10,11 @@ struct SurfaceInputData{
     bool isAlphaPremultiply;
     // bool isReceiveShadow; // material prop
     float2 screenUV;
+
+    // rain's info
+    float3 rainReflectDirOffset;
+    float rainAtten;
+    float rainNoise;
 };
 
 

@@ -8,6 +8,7 @@
 #include "../../PowerShaderLib/Lib/ParallaxMapping.hlsl"
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
+#include "../../PowerShaderLib/Lib/NoiseLib.hlsl"
 
 void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;
@@ -61,31 +62,99 @@ float3 ScreenToWorldPos(float2 screenUV){
     return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
 }
 
-void ApplyFog(inout float4 color,float2 sphereFogCoord,float unityFogCoord,float3 worldPos){
-    BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,true,_FogNoiseOn);
-    // color.rgb = MixFog(color.rgb,unityFogCoord);
+
+
+float SampleWeatherNoise(float2 uv,half4 ratio=half4(.5,.25,.0125,.063)){
+    float4 n = SAMPLE_TEXTURE2D(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1);
+    n = n*2-1;
+    return dot(n,ratio);
 }
 
+float SampleWeatherNoiseLOD(float2 uv,half lod){
+    float4 n = SAMPLE_TEXTURE2D_LOD(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1,lod);
+    return dot(n,half4(0.5,0.25,0.125,0.06).wzyx);
+}
+
+void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord){
+    float fogNoise = 0;
+    #if defined(_DEPTH_FOG_NOISE_ON)
+    // if(_FogNoiseOn)
+    {
+        float2 fogNoiseUV = (worldPos.xz+worldPos.yz) * _FogDirTiling.w+ _FogDirTiling.xz * _Time.y;
+        fogNoise = SampleWeatherNoise(fogNoiseUV);
+    }
+    #endif
+    BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,_HeightFogOn,fogNoise,_DepthFogOn);
+}
+
+float GetRainAtten(float3 worldPos,float3 vertexNormal){
+    float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
+    atten *= saturate(_RainHeight - worldPos.y);
+    atten *= _GlobalRainIntensity;
+    return atten;
+}
+
+float3 GetRainRipple(float3 worldPos){
+    float2 rippleUV = TRANSFORM_TEX(worldPos.xz,_RippleTex);
+    float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
+    return ripple;
+}
+
+float CalcRainNoise(float3 worldPos){
+    // cross noise
+    float2 noiseUV = worldPos.xz * _RainReflectTilingOffset.xy+ _GlobalWindDir.xz * _RainReflectTilingOffset.zw* _Time.y;
+    float2 noiseUV2 = worldPos.xz * _RainReflectTilingOffset.xy + float2(_GlobalWindDir.x * -_Time.x,0);
+    // float noise = unity_gradientNoise(noiseUV) + 0.5;
+    // noise += unity_gradientNoise(noiseUV2) + 0.5;
+    float noise = SampleWeatherNoise(noiseUV,half4(0.05,0.15,0.3,0.5));
+    noise += SampleWeatherNoise(noiseUV2+noise,half4(0.05,0.15,0.3,0.5));
+    noise *= 0.5;
+    return noise;
+}
+
+/**
+    ApplyRainRipple
+
+    change albedo
+    change normalTS
+*/
+void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
+    float3 ripple = GetRainRipple(worldPos + data.rainNoise * 0.2 * _RippleIntensity) * data.rainAtten;
+    // apply ripple color 
+    data.surfaceData.albedo += ripple.x;
+
+    // apply ripple blend normal
+    branch_if(_RippleBlendNormalOn)
+        data.surfaceData.normalTS = BlendNormal(data.surfaceData.normalTS,(data.surfaceData.normalTS + ripple));
+}
+/*
 float3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float atten,float3 albedo){
     // cross noise
-    float noise = unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + _GlobalWindDir.xz * _RainCube_ST.zw * _Time.y) + 0.5;
-    noise += unity_gradientNoise(worldPos.xz * _RainCube_ST.xy + float2(_GlobalWindDir.x* - _Time.x,0) ) + 0.5;
+    float2 noiseUV = worldPos.xz * _RainReflectTilingOffset.xy+ _GlobalWindDir.xz * _RainReflectTilingOffset.zw* _Time.y;
+    float2 noiseUV2 = worldPos.xz * _RainReflectTilingOffset.xy + float2(_GlobalWindDir.x * -_Time.x,0);
+    float noise = unity_gradientNoise(noiseUV) + 0.5;
+    noise += unity_gradientNoise(noiseUV2) + 0.5;
+    // float noise = SampleWeatherNoise(noiseUV);
+    // noise += SampleWeatherNoise(noiseUV2);
+    // noise *= 0.5;
 
-    // float3 n = normalize(cross(ddy(worldPos),ddx(worldPos)));
-    // float atten1 = saturate(dot(n,float3(0,1,0)));
     // reflect
-    float3 reflectDir = reflect(-worldView,worldNormal);
-    reflectDir += _RainReflectDirOffset + noise*1;
-    float4 envColor = SAMPLE_TEXTURECUBE(_RainCube,sampler_RainCube,reflectDir);
-    envColor.xyz = DecodeHDREnvironment(envColor,_RainCube_HDR);
+    float3 reflectCol = 0;
+    branch_if(_RainReflectOn)
+    {
+        float3 reflectDir = reflect(-worldView,worldNormal);
+        reflectDir += _RainReflectDirOffset + noise;
+        float4 envColor = SAMPLE_TEXTURECUBE(_RainCube,sampler_RainCube,reflectDir);
+        envColor.xyz = DecodeHDREnvironment(envColor,1);
 
-    float3 reflectCol = envColor.xyz * _RainReflectIntensity ;
+        reflectCol = envColor.xyz * _RainReflectIntensity ;
+    }
 
     // ripple
     float2 rippleUV = (worldPos.xz+noise.x*0.01) * _RippleTex_ST.xy + _RippleTex_ST.zw;
     float3 ripple = ComputeRipple(_RippleTex,sampler_RippleTex,frac(rippleUV),_Time.x * _RippleSpeed) * _RippleIntensity;
     float rippleCol = saturate((ripple.x) );
-    
+
     // atten
     float heightAtten =  (worldPos.y < _RainHeight);
     float slopeAtten = dot(worldNormal,float3(0,1,0)) - _RainSlopeAtten;
@@ -95,17 +164,12 @@ float3 CalcRainColor(float3 worldPos,float3 worldNormal,float3 worldView,float a
     rainColor += (reflectCol + rippleCol * atten) * reflectAtten /albedo; // so composite reflectCol and rippleCol
     return lerp(1,rainColor,_GlobalRainIntensity);
 }
-
-void ApplyRain(inout SurfaceData data,float3 worldPos,float3 worldNormal,float3 worldView,float atten){
-    branch_if(!IsRainOn())
-        return;
-
+*/
+void ApplyRainPbr(inout SurfaceInputData data){
     // float3 worldPos = ScreenToWorldPos(screenUV);
-
-    data.albedo = saturate(data.albedo * CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo));
-    data.metallic = saturate(data.metallic + _RainMetallic * _GlobalRainIntensity);
-    data.smoothness = saturate(data.smoothness + _RainSmoothness * _GlobalRainIntensity);
-    // data.albedo = CalcRainColor(worldPos,worldNormal,worldView,atten,data.albedo);;
+    data.surfaceData.albedo *= lerp(1,_RainColor,_GlobalRainIntensity);
+    data.surfaceData.metallic = lerp(data.surfaceData.metallic , _RainMetallic, _GlobalRainIntensity);
+    data.surfaceData.smoothness = lerp(data.surfaceData.smoothness , _RainSmoothness , _GlobalRainIntensity);
 }
 
 void ApplySurfaceBelow(inout SurfaceData data,float3 worldPos){
@@ -156,6 +220,14 @@ void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     #endif
 }
 
+void InitSurfaceInputDataRain(inout SurfaceInputData data,float3 worldPos,float3 vertexNormal){
+    float rainAtten = GetRainAtten(worldPos,vertexNormal);
+    float rainNoise = CalcRainNoise(worldPos);
+
+    data.rainAtten = rainAtten;
+    data.rainNoise = rainNoise;
+}
+
 float WorldHeightTilingUV(float3 worldPos){
     float v = floor(worldPos.y/_StoreyHeight);
     return v;
@@ -179,16 +251,17 @@ void ApplyStoreyEmission(inout float3 emissionColor,inout float alpha,float3 wor
     float n = NoiseSwitchLight(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
     emissionColor *= n;
 
-    if(_StoreyLightOpaque)
+    branch_if(_StoreyLightOpaque)
         alpha = Luminance(emissionColor) > 0.1? 1 : alpha;
 }
-void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 uv,float4 vertexColor,float nv){
-    if(_StoreyLineOn)
+void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 screenUV,float4 vertexColor,float nv){
+    branch_if(_StoreyLineOn)
     {
         // storey line color
-        half4 lineNoise = SAMPLE_TEXTURE2D(_StoreyLineNoiseMap,sampler_StoreyLineNoiseMap,uv);
+        half4 lineNoise = SAMPLE_TEXTURE2D(_StoreyLineNoiseMap,sampler_StoreyLineNoiseMap,screenUV);
+        // half lineNoise = InterleavedGradientNoise(screenUV);
         half atten = vertexColor.x * lineNoise.x * saturate(pow(1-nv,2));
-        half3 lineColor = _StoreyLineColor.xyz * atten ;
+        half3 lineColor = _StoreyLineColor.xyz * saturate(atten) ;
 
         emissionColor = lerp(emissionColor,lineColor,vertexColor.x>0.1);
         // emissionColor = vertexColor.x;// lineNoise.x ;
@@ -197,8 +270,8 @@ void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 u
 
 void ApplyDetails(float2 uv,inout SurfaceInputData data){
     #if defined(_DETAIL_ON)
-#define sData data.surfaceData
-#define iData data.inputData
+    #define sData data.surfaceData
+    #define iData data.inputData
 
     if(_DetailUVUseWorldPos)
     {
@@ -217,4 +290,6 @@ void ApplyDetails(float2 uv,inout SurfaceInputData data){
 
     #endif
 }
+
+
 #endif //POWER_LIT_CORE_HLSL

@@ -121,16 +121,18 @@ Shader "URP/PowerLit"
 
         [Header(Env)]
         _RainColor("_RainColor",color) = (.5,.5,.5,1)
-        _RainMetallic("_RainMetallic",range(0,0.5)) = 0.1
-        _RainSmoothness("_RainSmoothness",range(0,0.5)) = 0.1
+        _RainMetallic("_RainMetallic",range(0,1)) = 0.1
+        _RainSmoothness("_RainSmoothness",range(0,1)) = 0.1
         [Header(Rain Atten)]
         _RainSlopeAtten("_RainSlopeAtten",range(0,1)) = 0.6
+        _RainHeight("_RainHeight",float) = 5
 
         [Header(RainReflect)]
-        _RainCube("_RainCube",cube)=""{}
+        // [GroupToggle]_RainReflectOn("_RainReflectOn",int) = 0
+		// _RainCube("_RainCube",cube)=""{}
         _RainReflectDirOffset("_RainReflectDirOffset",vector) = (0,0,0,0)
-        _RainReflectIntensity("_RainReflectIntensity",range(0,.1))=0.1
-        _RainHeight("_RainHeight",float) = 5
+        _RainReflectTilingOffset("_RainReflectTilingOffset",vector) = (50,50,10,10)
+        _RainReflectIntensity("_RainReflectIntensity",range(0,1))=0.1
 
         //------------Details
         [Group(Details)]
@@ -144,7 +146,7 @@ Shader "URP/PowerLit"
 
         [GroupToggle(_,_STOREY_ON)]_StoreyTilingOn("_StoreyTilingOn",int) = 0
         _StoreyHeight("_StoreyHeight",float) = 1
-        [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,f)]
+        [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,float)]
         _StoreyWindowInfo("_StoreyWindowInfo",vector) = (5,2,0.5,0.8)
         [GroupItem(,light auto switching speed)]_StoreyLightSwitchSpeed("_StoreyLightSwitchSpeed",float) = 0
         [GroupToggle(_,,no alpha when light on)]_StoreyLightOpaque("_StoreyLightOpaque",int) = 1

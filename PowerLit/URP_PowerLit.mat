@@ -23,9 +23,8 @@ Material:
   m_Name: URP_PowerLit
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
   m_ValidKeywords:
-  - _EMISSION
+  - _DEPTH_FOG_NOISE_ON
   - _PARALLAX
-  - _RAIN_ON
   - _RECEIVE_SHADOWS_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 2
@@ -41,14 +40,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailPBRMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 2800000, guid: 43057c5a9418b6945875a680539945e5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IBLCube:
-        m_Texture: {fileID: 8900000, guid: 5cfabade39ebd0449969495ad8221819, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 8900000, guid: a85eb1095ea218145a6b055db2b27d47, type: 3}
+        m_Scale: {x: 1, y: 0}
+        m_Offset: {x: 100, y: 0}
     - _MetallicMaskMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -62,12 +65,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RainCube:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8900000, guid: a85eb1095ea218145a6b055db2b27d47, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 1, y: 4.3}
     - _RippleTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 182ba5347a51e6c4593ac1f6c8083b9e, type: 3}
+        m_Scale: {x: 0.2, y: 0.2}
         m_Offset: {x: 0, y: 0}
     - _StoreyLineNoiseMap:
         m_Texture: {fileID: 0}
@@ -79,13 +82,19 @@ Material:
     - _ApplyEdgeOn: 1
     - _ClipOn: 0
     - _CullMode: 2
+    - _CustomLightColorUsage: 0
     - _CustomLightOn: 0
     - _Cutoff: 0.5
     - _DepthFogOn: 1
+    - _DetailOn: 0
+    - _DetailPbrMaskApplyMetallic: 1
+    - _DetailPbrMaskApplyOcclusion: 1
+    - _DetailPbrMaskApplySmoothness: 1
+    - _DetailUVUseWorldPos: 1
     - _DstMode: 0
-    - _EmissionOn: 1
+    - _EmissionOn: 0
     - _EnvIntensity: 1
-    - _FogNoiseOn: 0
+    - _FogNoiseOn: 1
     - _FogOn: 1
     - _FresnelIntensity: 1
     - _HeightFogOn: 1
@@ -99,21 +108,23 @@ Material:
     - _Metallic: 0
     - _MetallicChannel: 0
     - _NormalScale: 1
-    - _Occlusion: 0.5
+    - _Occlusion: 0.543
     - _OcclusionChannel: 2
     - _ParallaxHeight: 0.01
     - _ParallaxInVSOn: 0
+    - _ParallaxIterate: 1
     - _ParallaxMapChannel: 3
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
-    - _RainHeight: 5
-    - _RainMetallic: 0.1
-    - _RainOn: 1
-    - _RainReflectIntensity: 0.1
-    - _RainSlopeAtten: 0.6
-    - _RainSmoothness: 0.1
-    - _RippleBlendNormalOn: 0
-    - _RippleIntensity: 1
+    - _RainHeight: 2.78
+    - _RainMetallic: 0.303
+    - _RainOn: 0
+    - _RainReflectIntensity: 0.261
+    - _RainReflectOn: 1
+    - _RainSlopeAtten: 0
+    - _RainSmoothness: 1
+    - _RippleBlendNormalOn: 1
+    - _RippleIntensity: 0.92
     - _RippleSpeed: 10
     - _Smoothness: 0
     - _SmoothnessChannel: 1
@@ -121,6 +132,7 @@ Material:
     - _SnowOn: 0
     - _SrcMode: 1
     - _StoreyHeight: 1
+    - _StoreyLightOpaque: 1
     - _StoreyLightSwitchSpeed: 0
     - _StoreyLineOn: 0
     - _StoreyTilingOn: 0
@@ -131,12 +143,13 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BelowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.4528302, g: 0.4528302, b: 0.4528302, a: 1}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 78.79325, g: 78.79325, b: 78.79325, a: 1}
-    - _RainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _RainColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
     - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _RainReflectTilingOffset: {r: 2, g: 2, b: 1, a: 1}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _StoreyLineColor: {r: 1, g: 1, b: 1, a: 1}
     - _StoreyWindowInfo: {r: 5, g: 2, b: 0.5, a: 0.8}

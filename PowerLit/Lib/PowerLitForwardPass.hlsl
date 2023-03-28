@@ -80,7 +80,9 @@ Varyings vert(Attributes input){
     output.fogCoord.xy = CalcFogFactor(worldPos);
 
     // vertex noise
-    output.fogCoord.z = unity_gradientNoise(worldPos.xz*.1 + _WindDir.xz * _Time.y * (_IsGlobalWindOn?_WindSpeed:0));
+    float2 noiseUV = worldPos.xz*0.5 + _WindDir.xz * _Time.y * (_IsGlobalWindOn?_WindSpeed:0);
+    // output.fogCoord.z = unity_gradientNoise(noiseUV);
+    output.fogCoord.z = SampleWeatherNoiseLOD(noiseUV,0);
 
     // branch_if(_ParallaxOn)
     float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
@@ -101,23 +103,9 @@ Varyings vert(Attributes input){
     return output;
 }
 
-void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
-    float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
+void InitInputData(inout InputData data,float3 worldPos,Varyings input,SurfaceInputData siData){
     float3 normalTS = siData.surfaceData.normalTS;
-    float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
-
-    #if defined(_RAIN_ON)
-    branch_if(IsRainOn() && _RippleBlendNormalOn)
-    {
-        float2 rippleUV = TRANSFORM_TEX(worldPos.xz,_RippleTex);
-        float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
-        atten *= (worldPos.y < _RainHeight);
-        float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity) * atten;
-        
-        normalTS = BlendNormal(normalTS,(normalTS + ripple));
-    }
-    #endif
-
+    
     float3 normal = normalize(float3(
         dot(normalTS,input.tSpace0.xyz),
         dot(normalTS,input.tSpace1.xyz),
@@ -128,8 +116,7 @@ void InitInputData(Varyings input,SurfaceInputData siData,inout InputData data){
     data.normalWS = normal;
     data.viewDirectionWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
     data.shadowCoord = TransformWorldToShadowCoord(worldPos,input.shadowCoord); // transform to shadow or use input.shadowCoord
-// return;
-    data.fogCoord = input.vertexLightAndFogFactor.w;
+    // data.fogCoord = input.vertexLightAndFogFactor.w;
     data.vertexLighting = input.vertexLightAndFogFactor.xyz;
     data.bakedGI = CalcLightmapAndSH(normal,input.uv.zw, (_LightmapSH + _LightmapSHAdditional),_LightmapSaturate + _LMSaturateAdditional,_LightmapIntensity+_LMIntensityAdditional);
     data.normalizedScreenSpaceUV = 0;
@@ -153,6 +140,8 @@ float4 frag(Varyings input):SV_Target{
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
+    float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
+    float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
     float2 screenUV = input.pos.xy/_ScreenParams.xy;
     float vertexNoise = input.fogCoord.z;
 
@@ -163,23 +152,28 @@ float4 frag(Varyings input):SV_Target{
     #endif
 
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
-    InitInputData(input,data,data.inputData/*inout*/);
+    
+    #if defined(_RAIN_ON)
+    // blend rain normalTS
+    branch_if(IsRainOn())
+    {
+        InitSurfaceInputDataRain(data/**/,worldPos,vertexNormal);
+        ApplyRainRipple(data/**/,worldPos);
+    }
+    #endif
+
+    InitInputData(data.inputData/*inout*/,worldPos,input,data);
     ApplyDetails(input.uv.xy,data/**/);
 // return fragTest(input,data);
 
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)
     {
-        // return (input.uv.x / 1);
-        ApplyStoreyEmission(data.surfaceData.emission/**/,data.surfaceData.alpha/**/,data.inputData.positionWS,input.uv.xy);
-
-        ApplyStoreyLineEmission(data.surfaceData.emission/**/,data.inputData.positionWS,input.uv.xy,input.color,input.viewDirTS_NV.w);
-        
+        ApplyStoreyEmission(data.surfaceData.emission/**/,data.surfaceData.alpha/**/,worldPos,input.uv.xy);
+        ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,input.viewDirTS_NV.w);
     }
     #endif
-// return data.surfaceData.emission.xyzx;
-    // float4 c1 = UniversalFragmentPBR(data.inputData,data.surfaceData);
-    // return c1;
+
     #if defined(_SNOW_ON)
     ApplySnow(data.surfaceData/**/,data.inputData.normalWS);
     #endif
@@ -191,9 +185,12 @@ float4 frag(Varyings input):SV_Target{
     Light mainLight = GetMainLight(data,shadowMask);
 
     #if defined(_RAIN_ON)
-    float rainAtten = (vertexNoise+0.5) * (mainLight.shadowAttenuation+0.25);
-    ApplyRain(data.surfaceData/**/,data.inputData.positionWS,data.inputData.normalWS,data.inputData.viewDirectionWS,rainAtten);
+        data.rainAtten *= (vertexNoise+0.5) * (mainLight.shadowAttenuation+0.25);
+        data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
+        // apply rain pbr 
+        ApplyRainPbr(data/**/);
     #endif
+
     ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
 
     float4 color = CalcPBR(data,mainLight,shadowMask);
@@ -201,8 +198,8 @@ float4 frag(Varyings input):SV_Target{
     // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
 
-    BlendFogSphereKeyword(color.rgb/**/,data.inputData.positionWS,input.fogCoord.xy,_HeightFogOn,_FogNoiseOn,_DepthFogOn); // 2fps
-    // color.a = OutputAlpha(color.a,_SurfaceType)
+    ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy);
+
     return color;
 }
 

@@ -3,7 +3,6 @@
 
 #include "PowerLitCommon.hlsl"
 
-TEXTURE2D(_MetallicMask); SAMPLER(sampler_MetallicMask);
 TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
 TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
 TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
@@ -16,9 +15,10 @@ TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 
 TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
-TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
+// TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
 TEXTURE2D(_StoreyLineNoiseMap);SAMPLER(sampler_StoreyLineNoiseMap);
 TEXTURE2D(_DetailPBRMaskMap);SAMPLER(sampler_DetailPBRMaskMap);
+TEXTURE2D(_WeatherNoiseTexture);SAMPLER(sampler_WeatherNoiseTexture);
 
 UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Main
@@ -89,11 +89,12 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainColor)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RainSmoothness)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RainMetallic)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainCube_HDR)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainCube_ST)
-    UNITY_DEFINE_INSTANCED_PROP(float3 ,_RainReflectDirOffset)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RainHeight)
+    // UNITY_DEFINE_INSTANCED_PROP(half,_RainReflectOn)
+    UNITY_DEFINE_INSTANCED_PROP(float3 ,_RainReflectDirOffset)
+    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainReflectTilingOffset)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RainReflectIntensity)
+
     UNITY_DEFINE_INSTANCED_PROP(float ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_BelowColor)
 
@@ -171,7 +172,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _WindSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindSpeed)
 //--------------------------------- Plannar Reflection
     // #define _PlanarReflectionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionOn) // _PLANAR_REFLECTION_ON
-//--------------------------------- Rain
+//--------------------------------- Snow
     #define _SnowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowOn)
     #define _SnowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensity)
     #define _ApplyEdgeOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ApplyEdgeOn)
@@ -192,18 +193,18 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _RainSlopeAtten UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainSlopeAtten)
     #define _RippleIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleIntensity)
     #define _RippleBlendNormalOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleBlendNormalOn)
-
+//--------------------------------- Rain reflection
     #define _RainColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainColor)
     #define _RainSmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainSmoothness)
     #define _RainMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainMetallic)
-    #define _RainCube_HDR UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainCube_HDR)
-    #define _RainCube_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainCube_ST)
+    // #define _RainReflectOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectOn)
     #define _RainReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectDirOffset)
+    #define _RainReflectTilingOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectTilingOffset)
     #define _RainHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainHeight)
     #define _RainReflectIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectIntensity)
     #define _SurfaceDepth UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SurfaceDepth)
     #define _BelowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BelowColor)
-
+//--------------------------------- Storey
     #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTilingOn)
     #define _StoreyWindowInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyWindowInfo)
     #define _StoreyLightSwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightSwitchSpeed)
@@ -212,7 +213,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
     #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineOn)
     #define _StoreyLightOpaque UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightOpaque)
-    //details
+//--------------------------------- Details    
     #define _DetailUVUseWorldPos UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailUVUseWorldPos)
     #define _DetailPBRMaskMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBRMaskMap_ST)
     #define _DetailPbrMaskApplyMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyMetallic)

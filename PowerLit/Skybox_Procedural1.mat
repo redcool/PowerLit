@@ -45,6 +45,6 @@ Material:
     - _CloudMaxColor: {r: 1, g: 1, b: 1, a: 1}
     - _CloudMinColor: {r: 0, g: 0, b: 0.5, a: 1}
     - _Distribution: {r: 0.2, g: 0.4, b: 1, a: 1}
-    - _GroundColor: {r: 0.36899996, g: 0.34899998, b: 0.34099993, a: 1}
-    - _SkyTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _GroundColor: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+    - _SkyTint: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 1}
   m_BuildTextureStacks: []

@@ -104,11 +104,13 @@ float CalcRainNoise(float3 worldPos){
     // cross noise
     float2 noiseUV = worldPos.xz * _RainReflectTilingOffset.xy+ _GlobalWindDir.xz * _RainReflectTilingOffset.zw* _Time.y;
     float2 noiseUV2 = worldPos.xz * _RainReflectTilingOffset.xy + float2(_GlobalWindDir.x * -_Time.x,0);
-    // float noise = unity_gradientNoise(noiseUV) + 0.5;
-    // noise += unity_gradientNoise(noiseUV2) + 0.5;
-    float noise = SampleWeatherNoise(noiseUV,half4(0.05,0.15,0.3,0.5));
-    noise += SampleWeatherNoise(noiseUV2+noise,half4(0.05,0.15,0.3,0.5));
-    noise *= 0.5;
+
+    float noise =0;
+    noise += unity_gradientNoise(noiseUV) + 0.5;
+    noise += unity_gradientNoise(noiseUV2) + 0.5;
+    // noise += SampleWeatherNoise(noiseUV,half4(0.05,0.15,0.3,0.5));
+    // noise += SampleWeatherNoise(noiseUV2+noise,half4(0.05,0.15,0.3,0.5));
+    // noise *= 0.5;
     return noise;
 }
 
@@ -119,9 +121,10 @@ float CalcRainNoise(float3 worldPos){
     change normalTS
 */
 void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
-    float3 ripple = GetRainRipple(worldPos + data.rainNoise * 0.02 * _RippleIntensity) * data.rainAtten;
+    float3 ripple = GetRainRipple(worldPos + data.rainNoise * 0.002) * data.rainAtten  * _RippleIntensity;
     // apply ripple color 
     data.surfaceData.albedo += ripple.x;
+    data.surfaceData.albedo += data.rainNoise *data.rainAtten * _RainFlowIntensity;
 
     // apply ripple blend normal
     branch_if(_RippleBlendNormalOn)
@@ -130,6 +133,7 @@ void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
 
 void ApplyRainPbr(inout SurfaceInputData data){
     // float3 worldPos = ScreenToWorldPos(screenUV);
+
     data.surfaceData.albedo *= lerp(1,_RainColor,_GlobalRainIntensity);
     data.surfaceData.metallic = lerp(data.surfaceData.metallic , _RainMetallic, _GlobalRainIntensity);
     data.surfaceData.smoothness = lerp(data.surfaceData.smoothness , _RainSmoothness , _GlobalRainIntensity);

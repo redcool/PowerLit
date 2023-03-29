@@ -116,7 +116,7 @@ Shader "URP/PowerLit"
         [GroupToggle(_,_RAIN_ON)]_RainOn("_RainOn",int) = 0
         _RippleTex("_RippleTex",2d)=""{}
         _RippleSpeed("_RippleSpeed",float) = 10
-        _RippleIntensity("_RippleIntensity",range(0,2)) = 1
+        _RippleIntensity("_RippleIntensity",range(0,5)) = 1
         [GroupToggle]_RippleBlendNormalOn("_RippleBlendNormalOn",int) = 0
 
         [Header(Env)]
@@ -124,7 +124,7 @@ Shader "URP/PowerLit"
         _RainMetallic("_RainMetallic",range(0,1)) = 0.1
         _RainSmoothness("_RainSmoothness",range(0,1)) = 0.1
         [Header(Rain Atten)]
-        _RainSlopeAtten("_RainSlopeAtten",range(0,1)) = 0.6
+        _RainSlopeAtten("_RainSlopeAtten",range(0,1)) = 0.5
         _RainHeight("_RainHeight",float) = 5
 
         [Header(RainReflect)]
@@ -132,8 +132,8 @@ Shader "URP/PowerLit"
 		// _RainCube("_RainCube",cube)=""{}
         _RainReflectDirOffset("_RainReflectDirOffset",vector) = (0,0,0,0)
         _RainReflectTilingOffset("_RainReflectTilingOffset",vector) = (50,50,10,10)
-        _RainReflectIntensity("_RainReflectIntensity",range(0,1))=0.1
-
+        _RainReflectIntensity("_RainReflectIntensity",range(0,1))=0.5
+        _RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
         //------------Details
         [Group(Details)]
         [GroupToggle(Details,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0

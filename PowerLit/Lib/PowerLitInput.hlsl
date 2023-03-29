@@ -94,6 +94,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float3 ,_RainReflectDirOffset)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainReflectTilingOffset)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RainReflectIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_RainFlowIntensity)
+    
 
     UNITY_DEFINE_INSTANCED_PROP(float ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_BelowColor)
@@ -202,6 +204,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _RainReflectTilingOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectTilingOffset)
     #define _RainHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainHeight)
     #define _RainReflectIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectIntensity)
+    #define _RainFlowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainFlowIntensity)
+    
     #define _SurfaceDepth UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SurfaceDepth)
     #define _BelowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BelowColor)
 //--------------------------------- Storey

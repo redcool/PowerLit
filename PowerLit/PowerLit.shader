@@ -142,6 +142,8 @@ Shader "URP/PowerLit"
         [GroupHeader(Details,Detail UV)]
         [GroupToggle(Details)]_DetailUVUseWorldPos("_DetailUVUseWorldPos",int) = 1
         [GroupEnum(Details,XZ 0 XY 1 YZ 2)] _DetailWorldPlaneMode("_DetailWorldPlaneMode",int) = 0
+        [GroupHeader(Details,Detail UV 3 plane)]
+        [GroupToggle(Details)]_DetailWorldPosTriplanar("_DetailWorldPosTriplanar",int) = 0
 
         [GroupHeader(Details,PBR Mask Override)]
         [GroupItem(Details)]_DetailPbrMaskApplyMetallic("_DetailPbrMaskApplyMetallic",range(0,1)) = 1

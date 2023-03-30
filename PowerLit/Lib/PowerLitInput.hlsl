@@ -111,6 +111,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 // detail
     UNITY_DEFINE_INSTANCED_PROP(int,_DetailUVUseWorldPos)
     UNITY_DEFINE_INSTANCED_PROP(int,_DetailWorldPlaneMode)
+    UNITY_DEFINE_INSTANCED_PROP(int,_DetailWorldPosTriplanar)
     
     UNITY_DEFINE_INSTANCED_PROP(float4,_DetailPBRMaskMap_ST)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyMetallic)
@@ -222,6 +223,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 //--------------------------------- Details    
     #define _DetailUVUseWorldPos UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailUVUseWorldPos)
     #define _DetailWorldPlaneMode UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailWorldPlaneMode)
+    #define _DetailWorldPosTriplanar UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailWorldPosTriplanar)
     
     #define _DetailPBRMaskMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBRMaskMap_ST)
     #define _DetailPbrMaskApplyMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyMetallic)

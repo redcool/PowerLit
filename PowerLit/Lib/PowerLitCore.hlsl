@@ -242,17 +242,21 @@ void ApplyDetails(float2 uv,inout SurfaceInputData data){
     #define sData data.surfaceData
     #define iData data.inputData
 
-    if(_DetailUVUseWorldPos)
-    {
-        float2 uvs[3] = {iData.positionWS.xz,iData.positionWS.xy,iData.positionWS.yz};
-        uv = uvs[_DetailWorldPlaneMode];
-    }
-    uv = uv * _DetailPBRMaskMap_ST.xy + _DetailPBRMaskMap_ST.zw;
-
-    float4 detailPbrMask = SAMPLE_TEXTURE2D(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,uv);
     float4 pbrMask = 0;
-    // saturate(float4(sData.metallic,sData.smoothness,sData.occlusion,1) * detailPbrMask);
-    pbrMask = detailPbrMask;
+
+    branch_if(_DetailWorldPosTriplanar)
+    {
+        pbrMask = TriplanarSample(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,iData.positionWS,iData.normalWS,_DetailPBRMaskMap_ST);
+    }else{
+        // 1 plane sample
+        float2 uvs[3] = {iData.positionWS.xz,iData.positionWS.xy,iData.positionWS.yz};
+        branch_if(_DetailUVUseWorldPos)
+        {
+            uv = uvs[_DetailWorldPlaneMode];
+        }
+        uv = uv * _DetailPBRMaskMap_ST.xy + _DetailPBRMaskMap_ST.zw;
+        pbrMask = SAMPLE_TEXTURE2D(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,uv);
+    }
 
     sData.metallic = lerp(sData.metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
     sData.smoothness = lerp(sData.smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);

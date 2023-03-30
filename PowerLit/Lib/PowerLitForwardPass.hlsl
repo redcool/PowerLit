@@ -163,7 +163,9 @@ float4 frag(Varyings input):SV_Target{
     #endif
 
     InitInputData(data.inputData/*inout*/,worldPos,input,data);
-    ApplyDetails(input.uv.xy,data/**/);
+    #if defined(_DETAIL_ON)
+        ApplyDetails(input.uv.xy,data/**/);
+    #endif
 // return fragTest(input,data);
 
     #if defined(_STOREY_ON)

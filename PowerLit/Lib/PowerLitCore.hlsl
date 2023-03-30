@@ -239,13 +239,13 @@ void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 s
 }
 
 void ApplyDetails(float2 uv,inout SurfaceInputData data){
-    #if defined(_DETAIL_ON)
     #define sData data.surfaceData
     #define iData data.inputData
 
     if(_DetailUVUseWorldPos)
     {
-        uv = iData.positionWS.xz;
+        float2 uvs[3] = {iData.positionWS.xz,iData.positionWS.xy,iData.positionWS.yz};
+        uv = uvs[_DetailWorldPlaneMode];
     }
     uv = uv * _DetailPBRMaskMap_ST.xy + _DetailPBRMaskMap_ST.zw;
 
@@ -257,8 +257,6 @@ void ApplyDetails(float2 uv,inout SurfaceInputData data){
     sData.metallic = lerp(sData.metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
     sData.smoothness = lerp(sData.smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);
     sData.occlusion = lerp(sData.occlusion,pbrMask.z,_DetailPbrMaskApplyOcclusion);
-
-    #endif
 }
 
 

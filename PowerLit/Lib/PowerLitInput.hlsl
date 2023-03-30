@@ -110,6 +110,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(int,_StoreyLightOpaque)
 // detail
     UNITY_DEFINE_INSTANCED_PROP(int,_DetailUVUseWorldPos)
+    UNITY_DEFINE_INSTANCED_PROP(int,_DetailWorldPlaneMode)
+    
     UNITY_DEFINE_INSTANCED_PROP(float4,_DetailPBRMaskMap_ST)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyMetallic)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplySmoothness)
@@ -219,6 +221,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _StoreyLightOpaque UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightOpaque)
 //--------------------------------- Details    
     #define _DetailUVUseWorldPos UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailUVUseWorldPos)
+    #define _DetailWorldPlaneMode UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailWorldPlaneMode)
+    
     #define _DetailPBRMaskMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBRMaskMap_ST)
     #define _DetailPbrMaskApplyMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyMetallic)
     #define _DetailPbrMaskApplySmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplySmoothness)

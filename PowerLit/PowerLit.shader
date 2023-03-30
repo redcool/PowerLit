@@ -138,7 +138,12 @@ Shader "URP/PowerLit"
         [Group(Details)]
         [GroupToggle(Details,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0
         [GroupItem(Details)]_DetailPBRMaskMap("_DetailPBRMaskMap",2d) = ""{}
+
+        [GroupHeader(Details,Detail UV)]
         [GroupToggle(Details)]_DetailUVUseWorldPos("_DetailUVUseWorldPos",int) = 1
+        [GroupEnum(Details,XZ 0 XY 1 YZ 2)] _DetailWorldPlaneMode("_DetailWorldPlaneMode",int) = 0
+
+        [GroupHeader(Details,PBR Mask Override)]
         [GroupItem(Details)]_DetailPbrMaskApplyMetallic("_DetailPbrMaskApplyMetallic",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplySmoothness("_DetailPbrMaskApplySmoothness",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplyOcclusion("_DetailPbrMaskApplyOcclusion",range(0,1)) = 1

@@ -175,8 +175,12 @@ float4 frag(Varyings input):SV_Target{
         ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,input.viewDirTS_NV.w);
     }
     #endif
+    float upFace = saturate(dot(vertexNormal,half3(0,1,0)));
 
-    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos);
+//  world emission
+    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,1 - upFace);
+    ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
+    
 
     #if defined(_SNOW_ON)
     ApplySnow(data.surfaceData/**/,data.inputData.normalWS);

@@ -39,11 +39,18 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionCo
     return emission.xyz ;
 }
 
-void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos){
-    float rate = saturate( worldPos.y/ (_EmissionHeight +0.0001));
+void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float atten){
+    float rate = 1 - saturate(worldPos.y/ (_EmissionHeight +0.0001));
+    rate *= atten;
     // half4 heightEmission = _EmissionHeightColor * rate;
-    half3 heightEmission = lerp(_EmissionHeightColor,emissionColor,rate);
+    half3 heightEmission = lerp(emissionColor,_EmissionHeightColor,rate);
     emissionColor = _EmissionHeightOn? heightEmission : emissionColor;
+}
+
+void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
+    return;
+    half rate = (worldPos - _EmissionScanLineMin)/(_EmissionScanLineMax - _EmissionScanLineMin);
+    emissionColor = rate;
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){

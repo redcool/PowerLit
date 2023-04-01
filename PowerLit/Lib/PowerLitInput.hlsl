@@ -43,6 +43,13 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half, _EmissionHeight)
     UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionHeightColor)
 
+    UNITY_DEFINE_INSTANCED_PROP(half, _EmissionScanLineOn)
+    UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineColor)
+    UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineMin)
+    UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineMax)
+    UNITY_DEFINE_INSTANCED_PROP(half, _EmissionScanLineRate)
+    
+
     UNITY_DEFINE_INSTANCED_PROP(float ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IsReceiveShadowOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
 //--------------------------------- IBL
@@ -159,6 +166,12 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _EmissionHeightOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeightOn)
     #define _EmissionHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight)
     #define _EmissionHeightColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeightColor)
+
+    #define _EmissionScanLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineOn)
+    #define _EmissionScanLineColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineColor)
+    #define _EmissionScanLineMin UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineMin)
+    #define _EmissionScanLineMax UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineMax)
+    #define _EmissionScanLineRate UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineRate)
 
     #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
     // #define _IsReceiveShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IsReceiveShadowOn) // to keyword _RECEIVE_SHADOWS_OFF

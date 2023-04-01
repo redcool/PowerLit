@@ -111,6 +111,7 @@ Material:
     - _AlphaClip: 0
     - _AlphaPremultiply: 0
     - _ApplyEdgeOn: 1
+    - _BakeEmissionOn: 0
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -129,9 +130,16 @@ Material:
     - _DetailPbrMaskApplyOcclusion: 1
     - _DetailPbrMaskApplySmoothness: 1
     - _DetailUVUseWorldPos: 1
+    - _DetailWorldPlaneMode: 0
+    - _DetailWorldPosTriplanar: 0
     - _DstBlend: 0
     - _DstMode: 0
+    - _EmissionHeight: 8.9
+    - _EmissionHeightOn: 1
     - _EmissionOn: 1
+    - _EmissionScaleLineRate: 0
+    - _EmissionScanLineOn: 0
+    - _EmissionScanLineRate: 0.181
     - _EnvIntensity: 1
     - _EnvironmentReflections: 1
     - _FogNoiseOn: 0
@@ -162,6 +170,7 @@ Material:
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
     - _QueueOffset: 0
+    - _RainFlowIntensity: 0.5
     - _RainHeight: 0
     - _RainMetallic: 0.1
     - _RainOn: 0
@@ -199,6 +208,10 @@ Material:
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionHeightColor: {r: 1, g: 0, b: 0.54094934, a: 1}
+    - _EmissionScanLineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionScanLineMax: {r: 100, g: 0, b: 0, a: 0}
+    - _EmissionScanLineMin: {r: -67.67, g: 0, b: 0, a: 0}
     - _RainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _RainReflectTilingOffset: {r: 50, g: 50, b: 10, a: 10}

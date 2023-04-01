@@ -23,7 +23,6 @@ Material:
   m_Name: URP_PowerLit2
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
   m_ValidKeywords:
-  - _DETAIL_ON
   - _STOREY_ON
   m_InvalidKeywords:
   - FOG_LINEAR
@@ -141,16 +140,21 @@ Material:
     - _DepthFogOn: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DetailOn: 1
+    - _DetailOn: 0
     - _DetailPbrMaskApplyMetallic: 1
     - _DetailPbrMaskApplyOcclusion: 1
     - _DetailPbrMaskApplySmoothness: 1
     - _DetailUVUseWorldPos: 1
-    - _DetailWorldPlaneMode: 1
-    - _DetailWorldPosTriplanar: 1
+    - _DetailWorldPlaneMode: 0
+    - _DetailWorldPosTriplanar: 0
     - _DstBlend: 0
     - _DstMode: 0
+    - _EmissionHeight: 20
+    - _EmissionHeightOn: 0
     - _EmissionOn: 0
+    - _EmissionScaleLineRate: 0
+    - _EmissionScanLineOn: 0
+    - _EmissionScanLineRate: 0
     - _EnvIntensity: 1
     - _EnvironmentReflections: 1
     - _FogNoiseOn: 0
@@ -222,6 +226,10 @@ Material:
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionHeightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionScanLineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionScanLineMax: {r: 100, g: 0, b: 0, a: 0}
+    - _EmissionScanLineMin: {r: 0, g: 0, b: 0, a: 0}
     - _FogDir: {r: 1, g: 1, b: 1, a: 1}
     - _FogDirIntensity: {r: 1, g: 0, b: 0, a: 0}
     - _RainColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}

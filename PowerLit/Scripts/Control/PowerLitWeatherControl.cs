@@ -248,7 +248,7 @@ namespace PowerUtilities
 
                 var size = maxPos - minPos;
                 var halfSize = size * 0.5f;
-                Handles.DrawWireCube(sceneMinTr.position+ halfSize, size);
+                Handles.DrawWireCube(minPos+ halfSize, size);
             }
         }
 #endif

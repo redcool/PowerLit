@@ -39,6 +39,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Emission
     // UNITY_DEFINE_INSTANCED_PROP(float ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_EmissionColor)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionHeightOn)
+    UNITY_DEFINE_INSTANCED_PROP(half, _EmissionHeight)
+    UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionHeightColor)
 
     UNITY_DEFINE_INSTANCED_PROP(float ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IsReceiveShadowOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
@@ -152,6 +155,10 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 //--------------------------------- Emission
     // #define _EmissionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionOn) // to keyword _EMISSION
     #define _EmissionColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionColor)
+
+    #define _EmissionHeightOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeightOn)
+    #define _EmissionHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight)
+    #define _EmissionHeightColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeightColor)
 
     #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
     // #define _IsReceiveShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IsReceiveShadowOn) // to keyword _RECEIVE_SHADOWS_OFF

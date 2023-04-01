@@ -152,7 +152,7 @@ float4 frag(Varyings input):SV_Target{
     #endif
 
     InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
-    
+
     #if defined(_RAIN_ON)
     // blend rain normalTS
     branch_if(IsRainOn())
@@ -175,6 +175,8 @@ float4 frag(Varyings input):SV_Target{
         ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,input.viewDirTS_NV.w);
     }
     #endif
+
+    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos);
 
     #if defined(_SNOW_ON)
     ApplySnow(data.surfaceData/**/,data.inputData.normalWS);

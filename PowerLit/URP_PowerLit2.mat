@@ -23,6 +23,7 @@ Material:
   m_Name: URP_PowerLit2
   m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
   m_ValidKeywords:
+  - _DETAIL_ON
   - _STOREY_ON
   m_InvalidKeywords:
   - FOG_LINEAR
@@ -58,8 +59,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailPBRMaskMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 0c7231f00d742e94e9fda593f6d00fb1, type: 3}
+        m_Scale: {x: 0.1, y: 0.1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 2800000, guid: 56fb6e719b115ba4cb54d5497877a1a7, type: 3}
@@ -140,11 +141,13 @@ Material:
     - _DepthFogOn: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DetailOn: 0
+    - _DetailOn: 1
     - _DetailPbrMaskApplyMetallic: 1
     - _DetailPbrMaskApplyOcclusion: 1
     - _DetailPbrMaskApplySmoothness: 1
     - _DetailUVUseWorldPos: 1
+    - _DetailWorldPlaneMode: 1
+    - _DetailWorldPosTriplanar: 1
     - _DstBlend: 0
     - _DstMode: 0
     - _EmissionOn: 0
@@ -179,6 +182,7 @@ Material:
     - _ParallaxOn: 0
     - _PlanarReflectionOn: 0
     - _QueueOffset: 0
+    - _RainFlowIntensity: 0.5
     - _RainHeight: 0.5
     - _RainMetallic: 0.204
     - _RainOn: 0

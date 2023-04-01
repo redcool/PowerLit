@@ -23,7 +23,7 @@ namespace PowerUtilities
 
             if (EditorGUI.EndChangeCheck() || control.transform.hasChanged)
             {
-                control.UpdateWeatherParams();
+                control.UpdateParams();
             }
         }
     }
@@ -39,6 +39,12 @@ namespace PowerUtilities
         {
             Additive=0,Replace
         }
+           
+        public enum ScanLineAxis
+        {
+            X,Y,Z
+        }
+
         WaitForSeconds aSecond = new WaitForSeconds(1);
 
         [EditorGroupLayout("WeatherTex",true)]
@@ -86,6 +92,18 @@ namespace PowerUtilities
         [EditorGroupLayout("Particles follow camera")] public GameObject followTarget;
         [EditorGroupLayout("Particles follow camera")] public float followSpeed = 1;
 
+        // world scanline
+        [EditorGroupLayout("World ScanLine", true)]
+        public bool showSceneBound=true;
+
+        [EditorGroupLayout("World ScanLine")] public Color _EmissionScanLineColor = Color.white;
+        [EditorGroupLayout("World ScanLine")] public Transform sceneMinTr;
+        [EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;
+        [EditorGroupLayout("World ScanLine")] public Transform sceneMaxTr;
+        [EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMax = new Vector3(100,0,0);
+        [EditorGroupLayout("World ScanLine")][Range(0,1)] public float _EmissionScanLineRate = 0;
+        [EditorGroupLayout("World ScanLine")] public ScanLineAxis _ScanLineAxis;
+
         #region Shader Params
         int _GlobalSkyExposure = Shader.PropertyToID(nameof(_GlobalSkyExposure));
 
@@ -110,7 +128,7 @@ namespace PowerUtilities
         {
             while (true)
             {
-                UpdateWeatherParams();
+                UpdateParams();
                 yield return aSecond;
             }
         }
@@ -122,11 +140,11 @@ namespace PowerUtilities
             UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
             UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
         }
-        public void UpdateWeatherParams()
+        public void UpdateParams()
         {
             Shader.SetGlobalFloat(nameof(_GlobalFogIntensity), _GlobalFogIntensity);
             Shader.SetGlobalFloat(nameof(_GlobalRainIntensity), _GlobalRainIntensity);
-            Shader.SetGlobalFloat(nameof(_GlobalSnowIntensity), Mathf.SmoothStep(0,1,_GlobalSnowIntensity));
+            Shader.SetGlobalFloat(nameof(_GlobalSnowIntensity), Mathf.SmoothStep(0, 1, _GlobalSnowIntensity));
 
             var forward = transform.forward;
             Shader.SetGlobalVector("_GlobalWindDir", new Vector4(forward.x, forward.y, forward.z, _GlobalWindIntensity));
@@ -138,6 +156,13 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), _IsGlobalSnowOn ? 1 : 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), _IsGlobalWindOn ? 1 : 0);
             Shader.SetGlobalFloat(_GlobalSkyExposure, isGlobalSkyOn ? skyExposure : 1);
+
+            // world scan line
+            Shader.SetGlobalFloat(nameof(_EmissionScanLineRate), _EmissionScanLineRate);
+            Shader.SetGlobalVector(nameof(_EmissionScanLineMin), sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin);
+            Shader.SetGlobalVector(nameof(_EmissionScanLineMax), sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax);
+            Shader.SetGlobalColor(nameof(_EmissionScanLineColor), _EmissionScanLineColor);
+            Shader.SetGlobalInt(nameof(_ScanLineAxis), (int)_ScanLineAxis);
         }
 
         void UpdateThunder()
@@ -215,6 +240,16 @@ namespace PowerUtilities
                 transform.position,
                 transform.rotation * Quaternion.LookRotation(Vector3.forward),
                 3, EventType.Repaint);
+
+            if(showSceneBound)
+            {
+                var maxPos = sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax;
+                var minPos = sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin;
+
+                var size = maxPos - minPos;
+                var halfSize = size * 0.5f;
+                Handles.DrawWireCube(sceneMinTr.position+ halfSize, size);
+            }
         }
 #endif
     }

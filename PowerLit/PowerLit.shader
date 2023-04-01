@@ -42,17 +42,8 @@ Shader "URP/PowerLit"
         [noscaleoffset]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d) = "white"{}
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
 
-        [Group(World Emission)]
-        [GroupToggle(World Emission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
-        [GroupItem(World Emission)]_EmissionHeight("_EmissionHeight",float)  = 20
-        [GroupItem(World Emission)]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
-
-        // [Group(WorldScaneLine)]
-        // [GroupToggle(WorldScaneLine)]_EmissionScanLineOn("_EmissionScanLineOn",int) = 0
-        // [GroupItem(WorldScaneLine)]_EmissionScanLineColor("_EmissionScanLineColor",color) = (1,1,1,1)
-        // [GroupItem(WorldScaneLine)]_EmissionScanLineMin("_EmissionScanLineMin",vector) = (0,0,0,0)
-        // [GroupItem(WorldScaneLine)]_EmissionScanLineMax("_EmissionScanLineMax",vector) = (100,0,0,0)
-        // [GroupItem(WorldScaneLine)]_EmissionScanLineRate("_EmissionScanLineRate",range(0,1)) = 0
+        [Group(WorldScaneLine)]
+        [GroupToggle(WorldScaneLine)]_EmissionScanLineOn("_EmissionScanLineOn",int) = 0
 
         [Header(Shadow)]
         [GroupToggle(,_RECEIVE_SHADOWS_ON)]_IsReceiveShadowOn("_IsReceiveShadowOn",int) = 1

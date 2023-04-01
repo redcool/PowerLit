@@ -175,12 +175,11 @@ float4 frag(Varyings input):SV_Target{
         ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,input.viewDirTS_NV.w);
     }
     #endif
-    float upFace = saturate(dot(vertexNormal,half3(0,1,0)));
+    half upFaceAtten = 1 - saturate(dot(vertexNormal,half3(0,1,0)));
 
 //  world emission
-    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,1 - upFace);
     ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
-    
+
 
     #if defined(_SNOW_ON)
     ApplySnow(data.surfaceData/**/,data.inputData.normalWS);
@@ -206,7 +205,7 @@ float4 frag(Varyings input):SV_Target{
     // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
 
-    ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy);
+    ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy,upFaceAtten);
 
     return color;
 }

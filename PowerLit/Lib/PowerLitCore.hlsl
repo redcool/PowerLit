@@ -53,8 +53,8 @@ void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
         return;
 
     half3 rate = (worldPos - _EmissionScanLineMin)/(_EmissionScanLineMax - _EmissionScanLineMin);
-    rate = abs(rate - _EmissionScanLineRate);
-    rate = 1-smoothstep(0.01,0.4,rate);
+    rate = abs(rate - _EmissionScanLineRange_Rate.z);
+    rate = 1-smoothstep(_EmissionScanLineRange_Rate.x,_EmissionScanLineRange_Rate.y,rate);
     emissionColor += rate[_ScanLineAxis] * _EmissionScanLineColor;
 }
 

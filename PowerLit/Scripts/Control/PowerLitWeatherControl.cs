@@ -97,15 +97,21 @@ namespace PowerUtilities
         public bool showSceneBound=true;
 
         [EditorGroupLayout("World ScanLine")] public Color _EmissionScanLineColor = Color.white;
+        [Space(10)]
         [EditorGroupLayout("World ScanLine")] public Transform sceneMinTr;
         [EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;
         [EditorGroupLayout("World ScanLine")] public Transform sceneMaxTr;
         [EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMax = new Vector3(100,0,0);
+        [Space(10)]
         [EditorGroupLayout("World ScanLine")][Range(0,1)] public float _EmissionScanLineRate = 0;
+        [EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMin = 0.1f;
+        [EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMax = 0.2f;
         [EditorGroupLayout("World ScanLine")] public ScanLineAxis _ScanLineAxis;
 
         #region Shader Params
         int _GlobalSkyExposure = Shader.PropertyToID(nameof(_GlobalSkyExposure));
+        int _EmissionScanLineRange_Rate = Shader.PropertyToID(nameof(_EmissionScanLineRange_Rate));
+        int _GlobalWindDir = Shader.PropertyToID(nameof(_GlobalWindDir));
 
         #endregion
 
@@ -147,7 +153,7 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(nameof(_GlobalSnowIntensity), Mathf.SmoothStep(0, 1, _GlobalSnowIntensity));
 
             var forward = transform.forward;
-            Shader.SetGlobalVector("_GlobalWindDir", new Vector4(forward.x, forward.y, forward.z, _GlobalWindIntensity));
+            Shader.SetGlobalVector(_GlobalWindDir, new Vector4(forward.x, forward.y, forward.z, _GlobalWindIntensity));
 
             Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), _IsGlobalFogOn ? 1 : 0);
             Shader.SetGlobalTexture(nameof(_WeatherNoiseTexture), _WeatherNoiseTexture);
@@ -158,7 +164,7 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(_GlobalSkyExposure, isGlobalSkyOn ? skyExposure : 1);
 
             // world scan line
-            Shader.SetGlobalFloat(nameof(_EmissionScanLineRate), _EmissionScanLineRate);
+            Shader.SetGlobalVector(_EmissionScanLineRange_Rate, new Vector4(_ScanLineRangeMin*0.01f, _ScanLineRangeMax*0.01f, _EmissionScanLineRate));
             Shader.SetGlobalVector(nameof(_EmissionScanLineMin), sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin);
             Shader.SetGlobalVector(nameof(_EmissionScanLineMax), sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax);
             Shader.SetGlobalColor(nameof(_EmissionScanLineColor), _EmissionScanLineColor);

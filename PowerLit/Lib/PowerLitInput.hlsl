@@ -258,6 +258,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     half4 _EmissionScanLineColor;
     float3 _EmissionScanLineMin;
     float3 _EmissionScanLineMax;
-    float _EmissionScanLineRate;
+    float4 _EmissionScanLineRange_Rate;
     half _ScanLineAxis;
+    
 #endif //POWER_LIT_INPUT_HLSL

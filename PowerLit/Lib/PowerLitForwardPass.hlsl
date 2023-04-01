@@ -178,6 +178,7 @@ float4 frag(Varyings input):SV_Target{
     half upFaceAtten = 1 - saturate(dot(vertexNormal,half3(0,1,0)));
 
 //  world emission
+    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
     ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
 
 

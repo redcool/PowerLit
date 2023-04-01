@@ -39,6 +39,15 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionCo
     return emission.xyz ;
 }
 
+void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalAtten){
+    // float random = N21(floor(worldPos*1));
+    float rate = 1 - saturate((worldPos.y - _EmissionHeight.x)/ (_EmissionHeight.y - _EmissionHeight.x +0.0001));
+    rate *= globalAtten;
+    // half4 heightEmission = _EmissionHeightColor * rate;
+    half3 heightEmission = lerp(emissionColor,_EmissionHeightColor,rate);
+    emissionColor = _EmissionHeightOn? heightEmission : emissionColor;
+}
+
 void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
     branch_if(!_EmissionScanLineOn)
         return;
@@ -46,7 +55,7 @@ void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
     half3 rate = (worldPos - _EmissionScanLineMin)/(_EmissionScanLineMax - _EmissionScanLineMin);
     rate = abs(rate - _EmissionScanLineRate);
     rate = 1-smoothstep(0.01,0.4,rate);
-    emissionColor = rate[_ScanLineAxis] * _EmissionScanLineColor;
+    emissionColor += rate[_ScanLineAxis] * _EmissionScanLineColor;
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
@@ -72,8 +81,6 @@ float3 ScreenToWorldPos(float2 screenUV){
     return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
 }
 
-
-
 float SampleWeatherNoise(float2 uv,half4 ratio=half4(.5,.25,.0125,.063)){
     float4 n = SAMPLE_TEXTURE2D(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1);
     n = n*2-1;
@@ -85,7 +92,7 @@ float SampleWeatherNoiseLOD(float2 uv,half lod){
     return dot(n,half4(0.5,0.25,0.125,0.06).wzyx);
 }
 
-void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half atten){
+void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half globalAtten){
     float fogNoise = 0;
     #if defined(_DEPTH_FOG_NOISE_ON)
     // if(_FogNoiseOn)
@@ -94,7 +101,7 @@ void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half atte
         fogNoise = SampleWeatherNoise(fogNoiseUV);
     }
     #endif
-    BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,_HeightFogOn,fogNoise,_DepthFogOn,atten);
+    BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,_HeightFogOn,fogNoise,_DepthFogOn,globalAtten);
 }
 
 float GetRainAtten(float3 worldPos,float3 vertexNormal){

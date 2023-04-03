@@ -96,7 +96,9 @@ namespace PowerUtilities
         [EditorGroupLayout("World ScanLine", true)]
         public bool showSceneBound=true;
 
-        [EditorGroupLayout("World ScanLine")] public Color _EmissionScanLineColor = Color.white;
+        [EditorGroupLayout("World ScanLine")]
+        [ColorUsage(false,true)]
+        public Color _EmissionScanLineColor = Color.white;
         [Space(10)]
         [EditorGroupLayout("World ScanLine")] public Transform sceneMinTr;
         [EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;

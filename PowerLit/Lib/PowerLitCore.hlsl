@@ -40,8 +40,10 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionCo
 }
 
 void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalAtten){
-    // float random = N21(floor(worldPos*1));
-    float rate = 1 - saturate((worldPos.y - _EmissionHeight.x)/ (_EmissionHeight.y - _EmissionHeight.x +0.0001));
+    float maxHeight = length(float3(unity_ObjectToWorld._11,unity_ObjectToWorld._22,unity_ObjectToWorld._32));
+    maxHeight -= _EmissionHeight.y; // apply height offset
+
+    float rate = 1 - saturate((worldPos.y - _EmissionHeight.x)/ (maxHeight - _EmissionHeight.x +0.0001));
     rate *= globalAtten;
     // half4 heightEmission = _EmissionHeightColor * rate;
     half3 heightEmission = lerp(emissionColor,_EmissionHeightColor,rate);

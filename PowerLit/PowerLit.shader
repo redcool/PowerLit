@@ -44,7 +44,7 @@ Shader "URP/PowerLit"
 
         [Group(World Emission)]
         [GroupToggle(World Emission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
-        [GroupVectorSlider(World Emission,min max,0_1 0_1,field)]_EmissionHeight("_EmissionHeight",vector)  = (0,20,0,0)
+        [GroupVectorSlider(World Emission,min maxOffset,0_1 0_1,field)]_EmissionHeight("_EmissionHeight",vector)  = (20,0,0,0)
         [GroupItem(World Emission)][hdr]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
 
         [Group(WorldScaneLine)]

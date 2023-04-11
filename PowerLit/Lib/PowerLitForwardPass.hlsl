@@ -179,7 +179,11 @@ float4 frag(Varyings input):SV_Target{
 
 //  world emission
     ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
-    ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
+
+    branch_if(_EmissionScanLineOn)
+    {
+        ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
+    }
 
 
     #if defined(_SNOW_ON)

@@ -46,18 +46,15 @@ void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalA
     float rate = 1 - saturate((worldPos.y - _EmissionHeight.x)/ (maxHeight - _EmissionHeight.x +0.0001));
     rate *= globalAtten;
     // half4 heightEmission = _EmissionHeightColor * rate;
-    half3 heightEmission = lerp(emissionColor,_EmissionHeightColor,rate);
+    half3 heightEmission = lerp(emissionColor.xyz,_EmissionHeightColor.xyz,rate);
     emissionColor = _EmissionHeightOn? heightEmission : emissionColor;
 }
 
 void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
-    branch_if(!_EmissionScanLineOn)
-        return;
-
     half3 rate = (worldPos - _EmissionScanLineMin)/(_EmissionScanLineMax - _EmissionScanLineMin);
     rate = abs(rate - _EmissionScanLineRange_Rate.z);
     rate = 1-smoothstep(_EmissionScanLineRange_Rate.x,_EmissionScanLineRange_Rate.y,rate);
-    emissionColor += rate[_ScanLineAxis] * _EmissionScanLineColor;
+    emissionColor += rate[_ScanLineAxis] * _EmissionScanLineColor.xyz;
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
@@ -153,7 +150,7 @@ void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
 void ApplyRainPbr(inout SurfaceInputData data){
     // float3 worldPos = ScreenToWorldPos(screenUV);
 
-    data.surfaceData.albedo *= lerp(1,_RainColor,_GlobalRainIntensity);
+    data.surfaceData.albedo *= lerp(1,_RainColor.xyz,_GlobalRainIntensity);
     data.surfaceData.metallic = lerp(data.surfaceData.metallic , _RainMetallic, _GlobalRainIntensity);
     data.surfaceData.smoothness = lerp(data.surfaceData.smoothness , _RainSmoothness , _GlobalRainIntensity);
 }

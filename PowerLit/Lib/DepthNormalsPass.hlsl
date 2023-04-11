@@ -1,11 +1,10 @@
 #if !defined(DEPTH_NORMALS_PASS_HLSL)
 #define DEPTH_NORMALS_PASS_HLSL
-#include "PowerLitInput.hlsl"
 
 struct appdata{
     float4 pos:POSITION;
     float2 uv:TEXCOORD;
-    float3 normal:NOMRAL;
+    float3 normal:NORMAL;
     float4 tangent:TANGENT;
     float4 color:COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID

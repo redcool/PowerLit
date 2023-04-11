@@ -297,7 +297,22 @@ detail map
             ENDHLSL
         }
 
-        // UsePass "Universal Render Pipeline/Lit/DEPTHNORMALS"
+        Pass{
+            Name "DepthNormals"
+            Tags{"LightMode"="DepthNormals"}
+
+            cull[_CullMode]
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            // #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+
+            #include "Lib/PowerLitCore.hlsl"
+            #include "Lib/DepthNormalsPass.hlsl"
+            ENDHLSL
+        }
 
         Pass{
             Name "Meta"

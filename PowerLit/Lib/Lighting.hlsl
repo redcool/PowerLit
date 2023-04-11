@@ -136,6 +136,10 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
 // return (brdfData.diffuse + inputData.bakedGI*0.2).xyzx+shadowMask*0.1;
     float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
     float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data);
+
+    if(_GIApplyMainLightShadow)
+        color *= clamp(mainLight.shadowAttenuation,0.5,1);
+
     // branch_if(mainLight.distanceAttenuation)
     {
         OffsetLight(mainLight/**/,brdfData/**/);

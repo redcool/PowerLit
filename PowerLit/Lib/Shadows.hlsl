@@ -1,6 +1,9 @@
 #if !defined(SHADOWS_HLSL)
 #define SHADOWS_HLSL
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+#undef MAIN_LIGHT_CALCULATE_SHADOWS
+#undef REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
+#undef ADDITIONAL_LIGHT_CALCULATE_SHADOWS
 
 #if defined(_RECEIVE_SHADOWS_ON)
     #if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)

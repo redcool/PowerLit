@@ -52,7 +52,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     
 
     UNITY_DEFINE_INSTANCED_PROP(float ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
+
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IsReceiveShadowOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
+    UNITY_DEFINE_INSTANCED_PROP(float,_GIApplyMainLightShadow) 
 //--------------------------------- IBL
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IBLOn) //,_IBL_ON)
     UNITY_DEFINE_INSTANCED_PROP(float ,_EnvIntensity)
@@ -175,7 +177,10 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     // #define _EmissionScanLineRate UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineRate)
 
     #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
+
     // #define _IsReceiveShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IsReceiveShadowOn) // to keyword _RECEIVE_SHADOWS_OFF
+    #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_GIApplyMainLightShadow) 
+    
 //--------------------------------- IBL
     // #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLOn) //_IBL_ON
     #define _EnvIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EnvIntensity)

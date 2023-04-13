@@ -60,6 +60,7 @@ Shader "URP/PowerLit"
 
         [Header(PlanarReflection)]
         [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
+        [GroupToggle()]_PlanarReflectionReverseUVX("_PlanarReflectionReverseUVX",int) = 0
         
         [Header(Custom IBL)]
         [GroupToggle(_,_IBL_ON)]_IBLOn("_IBLOn",float) = 0

@@ -196,9 +196,9 @@ void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     data.isAlphaPremultiply = _AlphaPremultiply;
     // data.isReceiveShadow = _IsReceiveShadowOn && _MainLightShadowOn;
 
-    data.screenUV = clipPos.xy/_ScreenParams.xy;
+    data.screenUV = clipPos.xy/_ScaledScreenParams.xy;
     #if defined(_PLANAR_REFLECTION_ON)
-    // branch_if(_PlanarReflectionOn)
+    branch_if(_PlanarReflectionReverseUVX)
         data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
     #endif
     

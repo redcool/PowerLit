@@ -9,7 +9,7 @@ TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
 TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
 
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
-TEXTURE2D(_ReflectionTex);SAMPLER(sampler_ReflectionTex); // planer reflection camera, use screenUV
+TEXTURE2D(_ReflectionTexture);SAMPLER(sampler_ReflectionTexture); // planer reflection camera, use screenUV
 TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
@@ -77,6 +77,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float ,_WindSpeed)
 //--------------------------------- Plannar Reflection
     // UNITY_DEFINE_INSTANCED_PROP(float ,_PlanarReflectionOn) // ,_PLANAR_REFLECTION_ON)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_PlanarReflectionReverseUVX)
 //--------------------------------- Rain
     UNITY_DEFINE_INSTANCED_PROP(float ,_SnowOn)
     UNITY_DEFINE_INSTANCED_PROP(float ,_SnowIntensity)
@@ -203,6 +204,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _WindSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindSpeed)
 //--------------------------------- Plannar Reflection
     // #define _PlanarReflectionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionOn) // _PLANAR_REFLECTION_ON
+    #define _PlanarReflectionReverseUVX UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionReverseUVX)
 //--------------------------------- Snow
     #define _SnowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowOn)
     #define _SnowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensity)

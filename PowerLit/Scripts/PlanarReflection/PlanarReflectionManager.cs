@@ -8,7 +8,7 @@
     //[ExecuteAlways]
     public class PlanarReflectionManager : MonoBehaviour
     {
-        public string reflectionTexture = "_ReflectionTex";
+        public string reflectionTexture = "_ReflectionTexture";
         public float planeY;
         public LayerMask layers = -1;
 

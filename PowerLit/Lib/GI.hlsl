@@ -99,30 +99,30 @@ float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
     return lerp(1, iblColor,customIBLMask);
 }
 
-float3 CalcPlanerReflection(float2 uv){
-    return SAMPLE_TEXTURE2D(_ReflectionTex,sampler_ReflectionTex,uv).xyz;
+float4 CalcPlanerReflection(float2 suv){
+    return SAMPLE_TEXTURE2D(_ReflectionTexture,sampler_ReflectionTexture,suv);
+}
+
+float3 CalcReflectDir(float3 worldPos,float3 viewDir,float3 normal,float3 reflectDirOffset){
+    float3 reflectDir = reflect(-viewDir,normal);
+    reflectDir = normalize(reflectDir + reflectDirOffset);
+
+    #if (SHADER_LIBRARY_VERSION_MAJOR >= 12) && defined(_REFLECTION_PROBE_BOX_PROJECTION)
+    reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
+    #endif
+    return reflectDir;
 }
 
 float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask,float3 worldPos,SurfaceInputData data){
     float3 indirectDiffuse = bakedGI  * brdfData.diffuse;
 
-    float3 indirectSpecular = 0;
+    float3 reflectDir = CalcReflectDir(worldPos,viewDir,normal,_ReflectDirOffset.xyz + data.rainReflectDirOffset);
+    float3 indirectSpecular  = CalcIBL(reflectDir,brdfData.perceptualRoughness,customIBLMask);
     // branch_if(_PlanarReflectionOn)
     #if defined(_PLANAR_REFLECTION_ON)
     {
-        indirectSpecular = CalcPlanerReflection(data.screenUV+data.rainReflectDirOffset.xz);
-    }
-    // else
-    #else
-    {
-        float3 reflectDir = reflect(-viewDir,normal);
-        reflectDir = normalize(reflectDir + _ReflectDirOffset.xyz + data.rainReflectDirOffset);
-
-        #if (SHADER_LIBRARY_VERSION_MAJOR >= 12) && defined(_REFLECTION_PROBE_BOX_PROJECTION)
-        reflectDir = BoxProjectedCubemapDirection(reflectDir,worldPos,unity_SpecCube0_ProbePosition,unity_SpecCube0_BoxMin,unity_SpecCube0_BoxMax);
-        #endif
-
-        indirectSpecular = CalcIBL(reflectDir,brdfData.perceptualRoughness,customIBLMask);
+        float4 planarReflectColor = CalcPlanerReflection(data.screenUV+data.rainReflectDirOffset.xz);
+        indirectSpecular = lerp(indirectSpecular,planarReflectColor.xyz,planarReflectColor.w);
     }
     #endif
 

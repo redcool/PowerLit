@@ -43,7 +43,7 @@
             sampler2D _ControlMap;
             float4 _ControlMap_ST;
 
-            sampler2D _ReflectionTex;
+            sampler2D _ReflectionTexture;
 
             v2f vert (appdata v)
             {
@@ -63,7 +63,7 @@
                 float4 mainTex = tex2D(_MainTex,i.uv);
                 float4 controlMap = tex2D(_ControlMap,TRANSFORM_TEX(i.uv,_ControlMap));
 
-                float3 reflectionTex = tex2Dproj(_ReflectionTex,i.screenPos);
+                float3 reflectionTex = tex2Dproj(_ReflectionTexture,i.screenPos);
                 mainTex.xyz = lerp(mainTex.xyz,reflectionTex,controlMap.x);
                 return mainTex;
             }

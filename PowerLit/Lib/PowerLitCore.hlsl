@@ -194,7 +194,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
 void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
     data.isAlphaPremultiply = _AlphaPremultiply;
-    // data.isReceiveShadow = _IsReceiveShadowOn && _MainLightShadowOn;
+    // data.isReceiveShadow = _IsReceiveShadowOff && _MainLightShadowOn;
 
     data.screenUV = clipPos.xy/_ScaledScreenParams.xy;
     #if defined(_PLANAR_REFLECTION_ON)

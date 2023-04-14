@@ -55,7 +55,7 @@ Shader "URP/PowerLit"
         // [GroupItem(WorldScaneLine)]_EmissionScanLineRate("_EmissionScanLineRate",range(0,1)) = 0
 
         [Header(Shadow)]
-        [GroupToggle(,_RECEIVE_SHADOWS_ON)]_IsReceiveShadowOn("_IsReceiveShadowOn",int) = 1
+        [GroupToggle(,_RECEIVE_SHADOWS_OFF)]_IsReceiveShadowOff("_IsReceiveShadowOff",int) = 0
         [GroupToggle()]_GIApplyMainLightShadow("_GIApplyMainLightShadow",int) = 0
 
         [Header(PlanarReflection)]
@@ -229,7 +229,7 @@ detail map
             // material keywords
             #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_local _PARALLAX_IN_VS
-            #pragma shader_feature_local _RECEIVE_SHADOWS_ON
+            #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_fragment _PLANAR_REFLECTION_ON

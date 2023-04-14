@@ -1,36 +1,9 @@
 #if !defined(SHADOWS_HLSL)
 #define SHADOWS_HLSL
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-#undef MAIN_LIGHT_CALCULATE_SHADOWS
-#undef REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-#undef ADDITIONAL_LIGHT_CALCULATE_SHADOWS
-
-#if defined(_RECEIVE_SHADOWS_ON)
-    #if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)
-        #define MAIN_LIGHT_CALCULATE_SHADOWS
-
-        #if defined(_MAIN_LIGHT_SHADOWS) || (defined(_MAIN_LIGHT_SHADOWS_SCREEN) && !defined(_SURFACE_TYPE_TRANSPARENT))
-            #define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-        #endif
-    #endif
-
-    #if defined(_ADDITIONAL_LIGHT_SHADOWS)
-        #define ADDITIONAL_LIGHT_CALCULATE_SHADOWS
-    #endif
-#endif
 
 #define AdditionalLightShadow AdditionalLightShadow1
 
-float CalcCascadeId(float3 positionWS){
-    float3 fromCenter0 = positionWS - _CascadeShadowSplitSpheres0.xyz;
-    float3 fromCenter1 = positionWS - _CascadeShadowSplitSpheres1.xyz;
-    float3 fromCenter2 = positionWS - _CascadeShadowSplitSpheres2.xyz;
-    float3 fromCenter3 = positionWS - _CascadeShadowSplitSpheres3.xyz;
-    float4 distances2 = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
-
-    float4 weights = float4(distances2 < _CascadeShadowSplitSphereRadii);
-    return 4-dot(weights,1);
-}
 
 /**
     Retransform worldPos to shadowCoord when _MainLightShadowCascade is true
@@ -51,106 +24,7 @@ float4 TransformWorldToShadowCoord(float3 worldPos,float4 vertexShadowCoord){
     return shadowCoord;
 }
 
-real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData, float4 shadowParams, bool isPerspectiveProjection = true)
-{
-    // Compiler will optimize this branch away as long as isPerspectiveProjection is known at compile time
-    branch_if (isPerspectiveProjection)
-        shadowCoord.xyz /= shadowCoord.w;
 
-    real attenuation;
-    real shadowStrength = shadowParams.x;
-    real isSoftShadow = shadowParams.y;
-
-    // TODO: We could branch on if this light has soft shadows (shadowParams.y) to save perf on some platforms.
-    #if defined(_SHADOWS_SOFT)
-    // branch_if(isSoftShadow)
-    {
-        attenuation = SampleShadowmapFiltered(TEXTURE2D_SHADOW_ARGS(ShadowMap, sampler_ShadowMap), shadowCoord, samplingData);
-    }
-    #else
-    {
-        // 1-tap hardware comparison
-        attenuation = SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz);
-    }
-    #endif
-    attenuation = LerpWhiteTo(attenuation, shadowStrength);
-
-    // Shadow coords that fall out of the light frustum volume must always return attenuation 1.0
-    // TODO: We could use branch here to save some perf on some platforms.
-    return BEYOND_SHADOW_FAR(shadowCoord) ? 1.0 : attenuation;
-}
-
-float MainLightRealtimeShadow(float4 shadowCoord,bool isReceiveShadow){
-    float shadow = 1;
-    // branch_if(isReceiveShadow)
-    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS)
-    {
-        ShadowSamplingData samplingData = GetMainLightShadowSamplingData();
-        float4 params = GetMainLightShadowParams();
-        shadow = SampleShadowmapRealtime(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,shadowCoord,samplingData,params,false);
-    }
-    #endif
-    return shadow;
-}
-
-float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isMixShadow){
-    branch_if(isMixShadow){
-        return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);
-    }
-    return lerp(realtimeShadow,bakedShadow,shadowFade);
-}
-
-float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade){
-    #if defined(LIGHTMAP_SHADOW_MIXING)
-    // branch_if(IsShadowMaskOn())
-    {
-        return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);
-    }
-    #endif
-    return lerp(realtimeShadow,bakedShadow,shadowFade);
-}
-
-
-float GetShadowFade1(float3 positionWS)
-{
-    float3 camToPixel = positionWS - _WorldSpaceCameraPos;
-    float distanceCamToPixel2 = dot(camToPixel, camToPixel);
-
-    float fade = saturate(distanceCamToPixel2 * _MainLightShadowParams.z + _MainLightShadowParams.w);
-    // float fade = saturate(distanceCamToPixel2 * 0.4 + -9);
-    return fade * fade;
-}
-
-float MainLightShadow(float4 shadowCoord,float3 worldPos,float4 shadowMask,float4 occlusionProbeChannels,bool isReceiveShadow){
-    float realtimeShadow = MainLightRealtimeShadow(shadowCoord,isReceiveShadow);
-    float bakedShadow = 1;
-    #if defined(CALCULATE_BAKED_SHADOWS)
-    // branch_if(isShadowMaskOn)
-    {
-        bakedShadow = BakedShadow(shadowMask,occlusionProbeChannels);
-    }
-    #endif
-
-    float shadowFade = 1;
-    // branch_if(isReceiveShadow)
-    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS)
-    {
-        shadowFade = GetShadowFade1(worldPos);
-    }
-    #endif
-    
-    #if defined(SHADOWS_SHADOWMASK) && defined(_MAIN_LIGHT_SHADOWS_CASCADE)
-    // branch_if(IsMainLightShadowCascadeOn())
-    {
-        // shadowCoord.w represents shadow cascade index
-        // in case we are out of shadow cascade we need to set shadow fade to 1.0 for correct blending
-        // it is needed when realtime shadows gets cut to early during fade and causes disconnect between baked shadow
-        shadowFade = shadowCoord.w == 4 ? 1.0h : shadowFade;
-    }
-    #endif
-
-    return MixShadow(realtimeShadow,bakedShadow,shadowFade);
-}
 
 
 
@@ -172,7 +46,7 @@ float AdditionalLightShadow1(int lightIndex, float3 positionWS, float3 lightDire
     float shadowFade = float(1.0);
 #endif
 
-    return MixShadow(realtimeShadow, bakedShadow, shadowFade);
+    return MixRealtimeAndBakedShadows(realtimeShadow, bakedShadow, shadowFade);
 }
 
 Light GetAdditionalLight1(uint i, float3 positionWS, float4 shadowMask)

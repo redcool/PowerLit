@@ -1,5 +1,7 @@
 #if !defined(POWER_LIT_INPUT_HLSL)
 #define POWER_LIT_INPUT_HLSL
+// in srp batcher, wanna use instanced, uncomment this
+// #define UnityPerMaterial UnityPerMaterial_
 
 #include "PowerLitCommon.hlsl"
 

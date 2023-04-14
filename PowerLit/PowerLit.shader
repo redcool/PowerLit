@@ -224,7 +224,7 @@ detail map
             #pragma vertex vert
             #pragma fragment frag
 
-            // #pragma multi_compile_instancing
+            #pragma multi_compile_instancing
 
             // material keywords
             #pragma shader_feature_local _PARALLAX 

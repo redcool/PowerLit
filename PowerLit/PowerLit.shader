@@ -254,7 +254,7 @@ detail map
 
             // unity keywords
             // #pragma multi_compile_fog
-            // #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
 

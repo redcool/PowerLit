@@ -87,7 +87,7 @@ Shader "URP/PowerLit"
         [Header(Clip)]
         [GroupToggle(,_ALPHATEST_ON)]_ClipOn("_ClipOn",float) = 0
         _Cutoff("_Cutoff",range(0,1)) = 0.5
-
+//----------------------------------- settings
 /**
     alpha : [srcAlpha][oneMinusSrcAlpha]
     premultiply : [one][oneMinusSrcAlpha]
@@ -108,6 +108,11 @@ Shader "URP/PowerLit"
         [Header(Cull)]
         [Enum(UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
+		[Header(Color Mask)]
+		[GroupEnum(_,RGBA 16 RGB 15 RG 12 GB 6 RB 10 R 8 G 4 B 2 A 1 None 0)]
+		_ColorMask("_ColorMask",int) = 15
+
+//----------------------------------- weather
         [Header(Wind)]
         [GroupToggle(_,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
         [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
@@ -162,7 +167,7 @@ Shader "URP/PowerLit"
         [GroupItem(Details)]_DetailPbrMaskApplyMetallic("_DetailPbrMaskApplyMetallic",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplySmoothness("_DetailPbrMaskApplySmoothness",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplyOcclusion("_DetailPbrMaskApplyOcclusion",range(0,1)) = 1
-        //------------Storey
+//----------------------------------- storey
 
         [GroupToggle(_,_STOREY_ON)]_StoreyTilingOn("_StoreyTilingOn",int) = 0
         _StoreyHeight("_StoreyHeight",float) = 1
@@ -176,7 +181,13 @@ Shader "URP/PowerLit"
         [GroupItem(StoreyLine)][noscaleoffset]_StoreyLineNoiseMap("_StoreyLineNoiseMap",2d) = "bump"{}
         [GroupItem(StoreyLine)][hdr]_StoreyLineColor("_StoreyLineColor",color) = (1,1,1,1)
 
-
+// ================================================== stencil settings
+		[Group(Stencil)]
+		[GroupEnum(Stencil,UnityEngine.Rendering.CompareFunction)]_StencilComp ("Stencil Comparison", Float) = 0
+        [GroupItem(Stencil)]_Stencil ("Stencil ID", int) = 0
+        [GroupEnum(Stencil,UnityEngine.Rendering.StencilOp)]_StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
     }
     SubShader
     {
@@ -209,13 +220,15 @@ detail map
             zwrite[_ZWrite]
             ztest[_ZTest]
             cull [_CullMode]
-            // stencil{
-            //     ref [_Ref]
-            //     comp[_Comp]
-            //     pass[_Pass]
-            //     zfail[_ZFail]
-            //     fail[_Fail]
-            // }
+            ColorMask[_ColorMask]
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }
 
             Name "ForwardLit"
             Tags{"LightMode"="UniversalForward"}

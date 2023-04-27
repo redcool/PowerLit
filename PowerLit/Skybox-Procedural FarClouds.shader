@@ -27,7 +27,6 @@ Properties {
 
     [Group(Weather)]
     [GroupToggle(Weather)]_FogOn("_FogOn",int) = 0
-    // [GroupToggle(Weather,WEATHER_ON)]_WeatherOn("_WeatherOn",int) = 0
 }
 
 SubShader {
@@ -43,7 +42,11 @@ SubShader {
         #include "UnityCG.cginc"
         #include "Lighting.cginc"
 
+        // global vars
+        half _GlobalSkyOn;
         half _GlobalSkyExposure;
+
+        // material vars
         CBUFFER_START(UnityPerMaterial)
             half _FogOn;
             half _Exposure;     // HDR exposure
@@ -69,8 +72,8 @@ SubShader {
 
         #pragma multi_compile _SUNDISK_NONE _SUNDISK_SIMPLE _SUNDISK_HIGH_QUALITY
         #pragma multi_compile _ CLOUD_ON
-// ====================== redefine
-        #define _Exposure (_GlobalSkyExposure*_Exposure)
+// ====================== redefine, PowerLitWeatherControl will pass _GlobalSkyExposure
+        #define _Exposure ((_GlobalSkyExposure?_GlobalSkyExposure:1) *_Exposure)
 // ====================== end
 
     #if defined(UNITY_COLORSPACE_GAMMA)

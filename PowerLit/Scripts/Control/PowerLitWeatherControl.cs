@@ -111,9 +111,12 @@ namespace PowerUtilities
         [EditorGroupLayout("World ScanLine")] public ScanLineAxis _ScanLineAxis;
 
         #region Shader Params
-        int _GlobalSkyExposure = Shader.PropertyToID(nameof(_GlobalSkyExposure));
-        int _EmissionScanLineRange_Rate = Shader.PropertyToID(nameof(_EmissionScanLineRange_Rate));
-        int _GlobalWindDir = Shader.PropertyToID(nameof(_GlobalWindDir));
+        int 
+            _GlobalSkyExposure = Shader.PropertyToID(nameof(_GlobalSkyExposure)),
+            _GlobalSkyOn = Shader.PropertyToID(nameof(_GlobalSkyOn)),
+            _EmissionScanLineRange_Rate = Shader.PropertyToID(nameof(_EmissionScanLineRange_Rate)),
+            _GlobalWindDir = Shader.PropertyToID(nameof(_GlobalWindDir))
+            ;
 
         #endregion
 
@@ -163,7 +166,8 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), _IsGlobalRainOn ? 1 : 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), _IsGlobalSnowOn ? 1 : 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), _IsGlobalWindOn ? 1 : 0);
-            Shader.SetGlobalFloat(_GlobalSkyExposure, isGlobalSkyOn ? skyExposure : 1);
+
+            Shader.SetGlobalFloat(_GlobalSkyExposure, isGlobalSkyOn ? Mathf.Max(0.02f,skyExposure) : 1);
 
             // world scan line
             Shader.SetGlobalVector(_EmissionScanLineRange_Rate, new Vector4(_ScanLineRangeMin*0.01f, _ScanLineRangeMax*0.01f, _EmissionScanLineRate));

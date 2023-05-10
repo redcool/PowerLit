@@ -82,7 +82,7 @@ Shader "URP/PowerLit"
         [Header(GI)] // Final GI = PowerLITFeature GI + Additional
         _LightmapSHAdditional("_LightmapSHAdditional",range(-1,1)) = 0
         _LMSaturateAdditional("_LMSaturateAdditional",range(-1,1)) = 0
-        _LMIntensityAdditional("_LMIntensityAdditional",range(-1,1)) = 0
+        _LMIntensityAdditional("_LMIntensityAdditional",range(0,1)) = 1
 
         [Header(Clip)]
         [GroupToggle(,_ALPHATEST_ON)]_ClipOn("_ClipOn",float) = 0

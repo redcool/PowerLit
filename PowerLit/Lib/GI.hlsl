@@ -46,14 +46,14 @@ float3 CalcFresnel(BRDFData brdfData,float3 normal,float3 viewDir){
     return fresnel;
 }
 
-float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perceptualRoughness){
-    // float mip = (6 * perceptualRoughness * (1.7-0.7 * perceptualRoughness)); // r * (1.7-0.7r)
-    float mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
+float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perceptualRoughness,float4 hdrEncode){
+    // float mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
+    float mip = (6 * perceptualRoughness * (1.7-0.7 * perceptualRoughness)); // r * (1.7-0.7r)
     float4 encodeIBL = SAMPLE_TEXTURECUBE_LOD(cube,sampler_Cube,reflectDir,mip);
     #if defined(UNITY_USE_NATIVE_HDR) || defined(UNITY_DOTS_INSTANTING_ENABLED)
         float3 specGI = encodeIBL.rgb;
     #else // mobile
-        float3 specGI = DecodeHDREnvironment(encodeIBL,unity_SpecCube0_HDR);
+        float3 specGI = DecodeHDREnvironment(encodeIBL,hdrEncode);//_IBLCube_HDR,unity_SpecCube0_HDR
     #endif
     return specGI;
     // return _GlossyEnvironmentColor.rgb;
@@ -86,14 +86,14 @@ float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
 
     float3 iblColor = 0;
     
-    // branch_if(_IBLOn)
+    // branch_if(_IBLOn) 
     #if defined(_IBL_ON)
     {
-        iblColor = CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness);
+        iblColor = CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,_IBLCube_HDR);
     }
     #else
     {
-        iblColor =  CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness);
+        iblColor =  CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness,unity_SpecCube0_HDR);
     }
     #endif
     return lerp(1, iblColor,customIBLMask);

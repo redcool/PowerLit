@@ -269,5 +269,5 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     float3 _EmissionScanLineMax;
     float4 _EmissionScanLineRange_Rate;
     half _ScanLineAxis;
-    
+    float4 _IBLCube_HDR;
 #endif //POWER_LIT_INPUT_HLSL

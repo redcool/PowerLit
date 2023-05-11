@@ -212,6 +212,18 @@ float4 frag(Varyings input):SV_Target{
 
     ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy,upFaceAtten);
 
+
+    DebugColor(color/**/,data.surfaceData.albedo,
+    data.surfaceData.specular,
+    data.surfaceData.alpha,
+    data.surfaceData.metallic,
+    data.surfaceData.smoothness,
+    data.surfaceData.occlusion,
+    data.surfaceData.emission,
+    data.inputData.normalWS,
+    data.surfaceData.normalTS
+    );
+
     return color;
 }
 

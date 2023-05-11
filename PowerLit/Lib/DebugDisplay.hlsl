@@ -26,6 +26,10 @@ half3 CalculateDebugLightingComplexityColor(float2 screenUV, half3 albedo)
     return lerp(base.rgb, overlay.rgb, overlay.a);
 }
 
+/**
+    Get urp debug display color
+*/
+
 half3 CalcDebugColor(
     half3 albedo,
     half3 specular,
@@ -38,7 +42,9 @@ half3 CalcDebugColor(
     half3 tangentNormal,
     half2 screenUV
 ){
-    switch(_DebugMaterialMode){
+    // run material check mode
+    switch(_DebugMaterialMode)
+    {
         case DEBUGMATERIALMODE_ALBEDO:
             return albedo;
         case DEBUGMATERIALMODE_SPECULAR:
@@ -62,42 +68,24 @@ half3 CalcDebugColor(
         case DEBUGMATERIALMODE_LIGHTING_COMPLEXITY:
             return CalculateDebugLightingComplexityColor(screenUV,albedo);
     }
-    return 0;
+
+    // run validate mode
+    half4 debugColor = 0;
+    switch(_DebugMaterialValidationMode)
+    {
+        case DEBUGMATERIALVALIDATIONMODE_ALBEDO:
+            CalculateValidationAlbedo(albedo,debugColor/**/);
+            break;
+        case DEBUGMATERIALVALIDATIONMODE_METALLIC:
+            CalculateValidationMetallic(albedo,metallic,debugColor/**/);
+            break;
+    }
+
+    return debugColor.xyz;
 }
 
-half3 CalcValidateColor(){
-
-}
 
 #endif //DEBUG_DISPLAY
 
-void DebugColor(
-    inout float4 mainColor,
-    half3 albedo,
-    half3 specular,
-    half alpha,
-    half metallic,
-    half smoothness,
-    half occlusion,
-    half3 emission,
-    half3 worldNormal,
-    half3 tangentNormal,
-    half2 screenUV
-){
-    #if defined(DEBUG_DISPLAY)
-    mainColor.xyz = CalcDebugColor(
-        albedo,
-        specular,
-        alpha,
-        metallic,
-        smoothness,
-        occlusion,
-        emission,
-        worldNormal,
-        tangentNormal,
-        screenUV
-    );
-    #endif
-}
 
 #endif //DEBUG_DISPLAY_HLSL

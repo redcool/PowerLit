@@ -9,7 +9,7 @@
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/Lib/NoiseLib.hlsl"
-#include "DebugDisplay.hlsl"
+#include "../../PowerShaderLib/URPLib/URPDebugDisplay.hlsl"
 
 void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;

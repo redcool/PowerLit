@@ -205,28 +205,37 @@ float4 frag(Varyings input):SV_Target{
 
     ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
 
-    float4 color = CalcPBR(data,mainLight,shadowMask);
+
+    #if defined(DEBUG_DISPLAY)
+        half4 debugColor = half4(0,0,0,1);
+        bool isBreak=0;
+        debugColor.xyz = CalcDebugColor(
+            isBreak/**/,
+            data.surfaceData.albedo/**/,
+            data.surfaceData.specular/**/,
+            data.surfaceData.alpha,
+            data.surfaceData.metallic/**/,
+            data.surfaceData.smoothness/**/,
+            data.surfaceData.occlusion/**/,
+            data.surfaceData.emission/**/,
+            data.inputData.normalWS/**/,
+            data.surfaceData.normalTS/**/,
+            data.screenUV,
+            data.inputData.positionWS,
+            input.tSpace0,
+            input.tSpace1,
+            input.tSpace2
+        );
+        if(isBreak)
+            return debugColor;
+    #endif 
+
+    half4 color = CalcPBR(data,mainLight,shadowMask);
 
     // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
 
     ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy,upFaceAtten);
-
-    #if defined(DEBUG_DISPLAY)
-    color.xyz = CalcDebugColor(
-        data.surfaceData.albedo,
-        data.surfaceData.specular,
-        data.surfaceData.alpha,
-        data.surfaceData.metallic,
-        data.surfaceData.smoothness,
-        data.surfaceData.occlusion,
-        data.surfaceData.emission,
-        data.inputData.normalWS,
-        data.surfaceData.normalTS,
-        data.screenUV
-    );
-    #endif 
-
     return color;
 }
 

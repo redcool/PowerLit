@@ -230,7 +230,7 @@ detail map
                 WriteMask [_StencilWriteMask]
             }
 
-            Name "ForwardLit"
+            Name "PowerLit"
             Tags{"LightMode"="UniversalForward"}
             HLSLPROGRAM
             // #pragma prefer_hlslcc gles

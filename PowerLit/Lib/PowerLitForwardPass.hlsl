@@ -136,7 +136,9 @@ float4 fragTest(Varyings input,SurfaceInputData data){
     return 0;
 }
 
-float4 frag(Varyings input):SV_Target{
+float4 frag(Varyings input,
+    out float4 outputNormal:SV_TARGET1
+):SV_Target{
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
@@ -205,7 +207,6 @@ float4 frag(Varyings input):SV_Target{
 
     ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
 
-
     #if defined(DEBUG_DISPLAY)
         half4 debugColor = half4(0,0,0,1);
         bool isBreak=0;
@@ -229,7 +230,7 @@ float4 frag(Varyings input):SV_Target{
         if(isBreak)
             return debugColor;
     #endif 
-
+    outputNormal = data.inputData.normalWS.xyzx;
     half4 color = CalcPBR(data,mainLight,shadowMask);
 
     // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);

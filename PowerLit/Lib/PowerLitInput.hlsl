@@ -133,6 +133,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyMetallic)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplySmoothness)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyOcclusion)
+    UNITY_DEFINE_INSTANCED_PROP(float4,_IBLCube_HDR)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
@@ -259,6 +260,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _DetailPbrMaskApplyMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyMetallic)
     #define _DetailPbrMaskApplySmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplySmoothness)
     #define _DetailPbrMaskApplyOcclusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyOcclusion)
+    #define _IBLCube_HDR UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLCube_HDR)
     
 /**
     Global Variables Emission Scanline
@@ -269,5 +271,4 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     float3 _EmissionScanLineMax;
     float4 _EmissionScanLineRange_Rate;
     half _ScanLineAxis;
-    float4 _IBLCube_HDR;
 #endif //POWER_LIT_INPUT_HLSL

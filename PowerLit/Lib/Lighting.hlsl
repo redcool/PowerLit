@@ -132,6 +132,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     BRDFData brdfData;
     InitBRDFData(data,surfaceData.alpha/*inout*/,brdfData/*out*/);
     
+    half3 lastSpecular = brdfData.specular;
     // MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
 // return (brdfData.diffuse + inputData.bakedGI*0.2).xyzx+shadowMask*0.1;
     float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
@@ -157,6 +158,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     #if defined(_ADDITIONAL_LIGHTS)
     // branch_if(IsAdditionalLightPixel())
     {
+        brdfData.specular = lastSpecular;
         color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
         // return CalcAdditionalPBRLighting(brdfData,inputData,shadowMask).xyzx;
     }

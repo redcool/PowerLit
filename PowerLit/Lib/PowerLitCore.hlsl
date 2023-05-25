@@ -176,10 +176,11 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,data.albedo/*out*/,data.alpha/*out*/);
 
     float4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
-    SplitPbrMaskTexture(pbrMask,
+    SplitPbrMaskTexture(
+        data.metallic/**/,data.smoothness/**/,data.occlusion/**/,
+        pbrMask,
         int3(_MetallicChannel,_SmoothnessChannel,_OcclusionChannel),
         float3(_Metallic,_Smoothness,_Occlusion),
-        data.metallic/**/,data.smoothness/**/,data.occlusion/**/,
         _InvertSmoothnessOn
     );
 

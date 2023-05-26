@@ -62,13 +62,14 @@ Shader "URP/PowerLit"
         [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
         [GroupToggle()]_PlanarReflectionReverseUVX("_PlanarReflectionReverseUVX",int) = 0
         
-        [Header(Custom IBL)]
+        [GroupHeader(,Custom IBL)]
         [GroupToggle(_,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
         [NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
         [Header(IBL Params)]
         _EnvIntensity("_EnvIntensity",float) = 1
         [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
         _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
+        [GroupEnum(,Reflection InteriorMap,0 1)]_ReflectMode("_ReflectMode",int) = 0
 
         [Header(Custom Light)]
         [GroupToggle(_)]_CustomLightOn("_CustomLightOn",float) = 0
@@ -246,7 +247,7 @@ detail map
             #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_fragment _PLANAR_REFLECTION_ON
-            #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local _IBL_ON
             // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON

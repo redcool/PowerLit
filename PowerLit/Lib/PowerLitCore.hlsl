@@ -10,6 +10,7 @@
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/Lib/NoiseLib.hlsl"
 #include "../../PowerShaderLib/URPLib/URPDebugDisplay.hlsl"
+#include "../../PowerShaderLib/Lib/ReflectionLib.hlsl"
 
 void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;
@@ -193,12 +194,13 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
 
 }
 
-void InitSurfaceInputData(float2 uv,float4 clipPos,inout SurfaceInputData data){
+void InitSurfaceInputData(inout SurfaceInputData data,float2 uv,float4 clipPos,float3 viewDirTS=0){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
     data.isAlphaPremultiply = _AlphaPremultiply;
     // data.isReceiveShadow = _IsReceiveShadowOff && _MainLightShadowOn;
-
     data.screenUV = clipPos.xy/_ScaledScreenParams.xy;
+    data.uv = uv;
+    data.viewDirTS = viewDirTS;
     #if defined(_PLANAR_REFLECTION_ON)
     branch_if(_PlanarReflectionReverseUVX)
         data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera

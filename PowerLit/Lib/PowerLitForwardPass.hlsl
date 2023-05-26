@@ -87,9 +87,9 @@ Varyings vert(Attributes input){
     // branch_if(_ParallaxOn)
     float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
     output.viewDirTS_NV.w = saturate(dot(viewDirWS,worldNormal));
-    #if defined(_PARALLAX)
+    #if defined(_PARALLAX) || defined(_IBL_ON)
     {
-        output.viewDirTS_NV.xyz = normalize(float3(
+        output.viewDirTS_NV.xyz = (float3(
             dot(worldTangent,viewDirWS),
             dot(worldBinormal,viewDirWS),
             dot(worldNormal,viewDirWS)
@@ -153,7 +153,7 @@ float4 frag(Varyings input,
         ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
     #endif
 
-    InitSurfaceInputData(input.uv.xy,input.pos,data/*inout*/);
+    InitSurfaceInputData(data/*inout*/,input.uv.xy,input.pos,input.viewDirTS_NV.xyz);
 
     #if defined(_RAIN_ON)
     // blend rain normalTS

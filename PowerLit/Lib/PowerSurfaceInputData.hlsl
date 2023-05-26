@@ -10,6 +10,8 @@ struct SurfaceInputData{
     bool isAlphaPremultiply;
     // bool isReceiveShadow; // material prop
     float2 screenUV;
+    float2 uv;
+    float3 viewDirTS;
 
     float envIntensity;
 

@@ -59,28 +59,6 @@ float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perc
     // return _GlossyEnvironmentColor.rgb;
 }
 
-#if SHADER_LIBRARY_VERSION_MAJOR < 12
-float3 BoxProjectedCubemapDirection(float3 reflectionWS, float3 positionWS, float4 cubemapPositionWS, float4 boxMin, float4 boxMax)
-{
-    // Is this probe using box projection?
-    branch_if (cubemapPositionWS.w > 0.0f)
-    {
-        float3 boxMinMax = (reflectionWS > 0.0f) ? boxMax.xyz : boxMin.xyz;
-        float3 rbMinMax = float3(boxMinMax - positionWS) / reflectionWS;
-
-        float fa = float(min(min(rbMinMax.x, rbMinMax.y), rbMinMax.z));
-
-        float3 worldPos = float3(positionWS - cubemapPositionWS.xyz);
-
-        float3 result = worldPos + reflectionWS * fa;
-        return result;
-    }
-    else
-    {
-        return reflectionWS;
-    }
-}
-#endif
 
 float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
 
@@ -109,13 +87,18 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
     float3 indirectDiffuse = bakedGI  * brdfData.diffuse;
 
     float3 reflectDir = 0;
+    float rough = brdfData.perceptualRoughness;
+    float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
 
-    branch_if(_ReflectMode == REFLECT_MODE_INTERIROR_MAP)
-        reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv);
-    else
+    branch_if(_ReflectMode == REFLECT_MODE_INTERIROR_MAP){
+        reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
+        rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
+    }else
         reflectDir = CalcReflectDir(worldPos,normal,viewDir,_ReflectDirOffset.xyz + data.rainReflectDirOffset);
 
-    float3 indirectSpecular  = CalcIBL(reflectDir,brdfData.perceptualRoughness,customIBLMask);
+    float3 indirectSpecular  = CalcIBL(reflectDir,rough,customIBLMask);
+    // indirectSpecular = lerp(indirectSpecular,1,UVBorder(data.uv,float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w)));
+
     // branch_if(_PlanarReflectionOn)
     #if defined(_PLANAR_REFLECTION_ON)
     {

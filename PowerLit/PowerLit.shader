@@ -68,7 +68,7 @@ Shader "URP/PowerLit"
         [Header(IBL Params)]
         _EnvIntensity("_EnvIntensity",float) = 1
         [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
-        _ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
+        [GroupVectorSlider(_,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
         [GroupEnum(,Reflection InteriorMap,0 1)]_ReflectMode("_ReflectMode",int) = 0
 
         [Header(Custom Light)]

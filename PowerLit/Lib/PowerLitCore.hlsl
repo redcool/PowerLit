@@ -278,6 +278,8 @@ void ApplyDetails(float2 uv,inout SurfaceInputData data){
         uv = uv * _DetailPBRMaskMap_ST.xy + _DetailPBRMaskMap_ST.zw;
         pbrMask = SAMPLE_TEXTURE2D(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,uv);
     }
+    // remove high light flickers
+    pbrMask.z = saturate(pbrMask.z);
 
     sData.metallic = lerp(sData.metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
     sData.smoothness = lerp(sData.smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);

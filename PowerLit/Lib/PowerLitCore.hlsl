@@ -106,6 +106,13 @@ void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half glob
     BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,_HeightFogOn,fogNoise,_DepthFogOn,globalAtten);
 }
 
+void ApplyScreenShadow(inout half3 color,float2 screenUV){
+    branch_if(_ScreenShadowOn)
+    {
+        color *= SAMPLE_TEXTURE2D(_ScreenSpaceShadowmapTexture,sampler_ScreenSpaceShadowmapTexture,screenUV).x;
+    }
+}
+
 float GetRainAtten(float3 worldPos,float3 vertexNormal){
     float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
     atten *= saturate(_RainHeight - worldPos.y);

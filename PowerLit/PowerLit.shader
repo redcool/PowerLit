@@ -57,6 +57,8 @@ Shader "URP/PowerLit"
         [Header(Shadow)]
         [GroupToggle(,_RECEIVE_SHADOWS_OFF)]_IsReceiveShadowOff("_IsReceiveShadowOff",int) = 0
         [GroupToggle()]_GIApplyMainLightShadow("_GIApplyMainLightShadow",int) = 0
+        [Header(ScreenShadow)]
+        [GroupToggle]_ScreenShadowOn("_ScreenShadowOn",int) = 0
 
         [Header(PlanarReflection)]
         [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0

@@ -233,6 +233,8 @@ float4 frag(Varyings input,
     outputNormal = data.inputData.normalWS.xyzx;
     half4 color = CalcPBR(data,mainLight,shadowMask);
 
+    ApplyScreenShadow(color.xyz,data.screenUV);
+
     // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
 

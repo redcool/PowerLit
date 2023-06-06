@@ -57,6 +57,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IsReceiveShadowOff) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
     UNITY_DEFINE_INSTANCED_PROP(float,_GIApplyMainLightShadow) 
+    UNITY_DEFINE_INSTANCED_PROP(half,_ScreenShadowOn)
 //--------------------------------- IBL
     // UNITY_DEFINE_INSTANCED_PROP(float ,_IBLOn) //,_IBL_ON)
     UNITY_DEFINE_INSTANCED_PROP(float ,_EnvIntensity)
@@ -186,6 +187,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
     // #define _IsReceiveShadowOff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IsReceiveShadowOff) // to keyword _RECEIVE_SHADOWS_OFF
     #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_GIApplyMainLightShadow) 
+    #define _ScreenShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ScreenShadowOn) 
     
 //--------------------------------- IBL
     // #define _IBLOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLOn) //_IBL_ON

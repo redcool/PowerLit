@@ -19,3 +19,6 @@ _StoreyWindowInfo = WindowCountXY(x:number of windows in x or y),ratio of LightO
 _StoreyLightSwitchSpeed = _StoreyLightSwitchSpeed
 _StoreyLightOpaque = no alpha when surface emission 
 _StoreyLineOn = use vertex color(R) control 
+
+//shadow
+_ScreenShadowOn=sample _ScreenSpaceShadowmapTexture,apply final ps color

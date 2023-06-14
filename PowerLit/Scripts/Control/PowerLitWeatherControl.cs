@@ -161,7 +161,8 @@ namespace PowerUtilities
             Shader.SetGlobalVector(_GlobalWindDir, new Vector4(forward.x, forward.y, forward.z, _GlobalWindIntensity));
 
             Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), _IsGlobalFogOn ? 1 : 0);
-            Shader.SetGlobalTexture(nameof(_WeatherNoiseTexture), _WeatherNoiseTexture);
+
+            Shader.SetGlobalTexture(nameof(_WeatherNoiseTexture), _WeatherNoiseTexture ?? Texture2D.whiteTexture);
 
             Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), _IsGlobalRainOn ? 1 : 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), _IsGlobalSnowOn ? 1 : 0);

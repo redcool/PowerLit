@@ -32,7 +32,8 @@ Shader "URP/PowerLit"
         [Group(Parallax)]
         [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
         [GroupSlider(Parallax,iterate count,int)]_ParallaxIterate("_ParallaxIterate",range(1,10)) = 1
-        [GroupToggle(Parallax,_PARALLAX_IN_VS,run in vertex shader)]_ParallaxInVSOn("_ParallaxInVSOn",int) = 0
+        [GroupToggle(Parallax,run in vertex shader)]_ParallaxInVSOn("_ParallaxInVSOn",int) = 0
+        
         [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
         [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
         [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.3)) = 0.01
@@ -244,7 +245,6 @@ detail map
 
             // material keywords
             #pragma shader_feature_local _PARALLAX 
-            #pragma shader_feature_local _PARALLAX_IN_VS
             #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _ALPHATEST_ON

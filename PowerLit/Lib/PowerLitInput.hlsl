@@ -93,8 +93,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float ,_DepthFogOn)
     UNITY_DEFINE_INSTANCED_PROP(float ,_HeightFogOn)
 //--------------------------------- Parallax
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
+    UNITY_DEFINE_INSTANCED_PROP(float ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
     UNITY_DEFINE_INSTANCED_PROP(int ,_ParallaxIterate)
+    UNITY_DEFINE_INSTANCED_PROP(int ,_ParallaxInVSOn)
     UNITY_DEFINE_INSTANCED_PROP(float ,_ParallaxHeight)
     UNITY_DEFINE_INSTANCED_PROP(int ,_ParallaxMapChannel)
 //--------------------------------- Rain
@@ -225,6 +226,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 //--------------------------------- Parallax
     // #define _ParallaxOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxOn) // to keyword _PARALLAX
     #define _ParallaxIterate UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxIterate)
+    #define _ParallaxInVSOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxInVSOn)
     #define _ParallaxHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxHeight)
     #define _ParallaxMapChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ParallaxMapChannel)
 //--------------------------------- Rain

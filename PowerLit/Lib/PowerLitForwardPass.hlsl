@@ -87,16 +87,16 @@ Varyings vert(Attributes input){
     // branch_if(_ParallaxOn)
     float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
     output.viewDirTS_NV.w = saturate(dot(viewDirWS,worldNormal));
-    #if defined(_PARALLAX) || defined(_IBL_ON)
+    output.viewDirTS_NV.xyz = (float3(
+        dot(worldTangent,viewDirWS),
+        dot(worldBinormal,viewDirWS),
+        dot(worldNormal,viewDirWS)
+    ));
+
+    #if defined(_PARALLAX)
     {
-        output.viewDirTS_NV.xyz = (float3(
-            dot(worldTangent,viewDirWS),
-            dot(worldBinormal,viewDirWS),
-            dot(worldNormal,viewDirWS)
-        ));
-        #if defined(_PARALLAX_IN_VS)
+        branch_if(_ParallaxInVSOn)
             ApplyParallaxVertex(output.uv.xy/**/,output.viewDirTS_NV.xyz);
-        #endif
     }
     #endif
 
@@ -149,8 +149,9 @@ float4 frag(Varyings input,
 
     SurfaceInputData data = (SurfaceInputData)0;
 
-    #if defined(_PARALLAX) && !defined(_PARALLAX_IN_VS)
-        ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
+    #if defined(_PARALLAX)
+        branch_if(! _ParallaxInVSOn)
+            ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
     #endif
 
     InitSurfaceInputData(data/*inout*/,input.uv.xy,input.pos,input.viewDirTS_NV.xyz);

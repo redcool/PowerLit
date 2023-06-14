@@ -91,10 +91,13 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
     float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
 
     branch_if(_ReflectMode == REFLECT_MODE_INTERIROR_MAP){
-        reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
+        reflectDir = CalcInteriorMapReflectDir(data.viewDirTS*0.01,data.uv,uvRange);
         rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
     }else
-        reflectDir = CalcReflectDir(worldPos,normal,viewDir,_ReflectDirOffset.xyz + data.rainReflectDirOffset);
+        reflectDir = CalcReflectDir(worldPos,normal,viewDir);
+    
+    // apply offset
+    reflectDir+=_ReflectDirOffset.xyz + data.rainReflectDirOffset;
 
     float3 indirectSpecular  = CalcIBL(reflectDir,rough,customIBLMask);
     // indirectSpecular = lerp(indirectSpecular,1,UVBorder(data.uv,float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w)));

@@ -118,7 +118,7 @@ float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 sh
 
         // OffsetLight(light/**/);
 
-        // branch_if(light.distanceAttenuation)
+        branch_if(light.distanceAttenuation)
             c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     }
     return c;
@@ -141,7 +141,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     if(_GIApplyMainLightShadow)
         color *= clamp(mainLight.shadowAttenuation,0.5,1);
 
-    // branch_if(mainLight.distanceAttenuation)
+    branch_if(mainLight.distanceAttenuation)
     {
         OffsetLight(mainLight/**/,brdfData/**/);
         color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);

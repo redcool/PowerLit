@@ -9,14 +9,14 @@ TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
 TEXTURE2D(_NormalMap);SAMPLER(sampler_NormalMap);
 TEXTURE2D(_MetallicMaskMap); SAMPLER(sampler_MetallicMaskMap);
 TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
-
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
+
 TEXTURE2D(_ReflectionTexture);SAMPLER(sampler_ReflectionTexture); // planer reflection camera, use screenUV
 TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
-
 TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
+
 // TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
 TEXTURE2D(_StoreyLineNoiseMap);SAMPLER(sampler_StoreyLineNoiseMap);
 TEXTURE2D(_DetailPBRMaskMap);SAMPLER(sampler_DetailPBRMaskMap);
@@ -101,15 +101,21 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Rain
     UNITY_DEFINE_INSTANCED_PROP(int ,_RainOn)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_RippleTex_ST)
+    UNITY_DEFINE_INSTANCED_PROP(half,_RippleOffsetAutoStop)
+    UNITY_DEFINE_INSTANCED_PROP(half,_RippleAlbedoIntensity)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RippleSpeed)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RainSlopeAtten)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RippleIntensity)
     UNITY_DEFINE_INSTANCED_PROP(float ,_RippleBlendNormalOn)
 
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainColor)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RainSmoothness)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RainMetallic)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RainHeight)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_RainColor)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainSmoothness)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainMetallic)
+    UNITY_DEFINE_INSTANCED_PROP(half,_RainIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainHeight)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainSlopeAtten)
+    UNITY_DEFINE_INSTANCED_PROP(int ,_RainMaskFrom)
+    
+    
     // UNITY_DEFINE_INSTANCED_PROP(half,_RainReflectOn)
     UNITY_DEFINE_INSTANCED_PROP(float3 ,_RainReflectDirOffset)
     UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainReflectTilingOffset)
@@ -134,6 +140,10 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(int,_DetailWorldPosTriplanar)
     
     UNITY_DEFINE_INSTANCED_PROP(float4,_DetailPBRMaskMap_ST)
+    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPBRMetallic)
+    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPBRSmoothness)
+    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPBROcclusion)
+    
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyMetallic)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplySmoothness)
     UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyOcclusion)
@@ -141,6 +151,10 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
+
+/**
+    Weather vars
+*/
 #define IsRainOn() (_IsGlobalRainOn && _RainOn)
 #define IsSnowOn() (_IsGlobalSnowOn && _SnowOn)
 #define IsWindOn() (_IsGlobalWindOn && _WindOn)
@@ -232,8 +246,13 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 //--------------------------------- Rain
     #define _RainOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainOn)
     #define _RippleTex_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleTex_ST)
+    #define _RippleOffsetAutoStop UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleOffsetAutoStop)
+    #define _RippleAlbedoIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleAlbedoIntensity)
+    
     #define _RippleSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleSpeed)
     #define _RainSlopeAtten UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainSlopeAtten)
+    #define _RainMaskFrom UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainMaskFrom)
+    
     #define _RippleIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleIntensity)
     #define _RippleBlendNormalOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleBlendNormalOn)
 //--------------------------------- Rain reflection
@@ -244,6 +263,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _RainReflectDirOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectDirOffset)
     #define _RainReflectTilingOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectTilingOffset)
     #define _RainHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainHeight)
+    #define _RainIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainIntensity)
     #define _RainReflectIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainReflectIntensity)
     #define _RainFlowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainFlowIntensity)
     
@@ -264,6 +284,10 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _DetailWorldPosTriplanar UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailWorldPosTriplanar)
     
     #define _DetailPBRMaskMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBRMaskMap_ST)
+    #define _DetailPBRMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBRMetallic)
+    #define _DetailPBRSmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBRSmoothness)
+    #define _DetailPBROcclusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPBROcclusion)
+    
     #define _DetailPbrMaskApplyMetallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyMetallic)
     #define _DetailPbrMaskApplySmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplySmoothness)
     #define _DetailPbrMaskApplyOcclusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyOcclusion)

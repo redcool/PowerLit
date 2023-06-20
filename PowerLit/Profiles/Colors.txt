@@ -1,0 +1,10 @@
+// powerLit colors
+//_RippleTex=#00ff00
+_RippleOffsetAutoStop=#00ff00
+_RainIntensity=#00ff00
+_RainMaskFrom=#00ff00
+_RippleAlbedoIntensity=#00ff00
+
+_DetailPBRMetallic=#00ff00
+_DetailPBRSmoothness=#00ff00
+_DetailPBROcclusion=#00ff00

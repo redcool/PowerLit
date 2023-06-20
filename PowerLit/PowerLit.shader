@@ -134,20 +134,26 @@ Shader "URP/PowerLit"
         [GroupToggle(_)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(_)]_HeightFogOn("_HeightFogOn",int) = 1
 
-        [Header(Rain Ripple)]
         [GroupToggle(_,_RAIN_ON)]_RainOn("_RainOn",int) = 0
+
+        [Header(Rain Ripple)]
         _RippleTex("_RippleTex",2d)=""{}
+        [GroupToggle]_RippleOffsetAutoStop("_RippleOffsetAutoStop",int)=0
         _RippleSpeed("_RippleSpeed",float) = 10
-        _RippleIntensity("_RippleIntensity",range(0,5)) = 1
+        _RippleIntensity("_RippleIntensity",range(0,10)) = 1
         [GroupToggle]_RippleBlendNormalOn("_RippleBlendNormalOn",int) = 0
+        _RippleAlbedoIntensity("_RippleAlbedoIntensity",range(0,1)) = 0.1
 
         [Header(Env)]
         _RainColor("_RainColor",color) = (.5,.5,.5,1)
         _RainMetallic("_RainMetallic",range(0,1)) = 0.1
         _RainSmoothness("_RainSmoothness",range(0,1)) = 0.1
+
         [Header(Rain Atten)]
+        _RainIntensity("_RainIntensity",range(0,1)) = 1
         _RainSlopeAtten("_RainSlopeAtten",range(0,1)) = 0.5
         _RainHeight("_RainHeight",float) = 5
+        [GroupEnum(,DetailPbrSmoothness MainTexAlpha,0 1)]_RainMaskFrom("_RainMaskFrom",int) = 0
 
         [Header(RainReflect)]
         // [GroupToggle]_RainReflectOn("_RainReflectOn",int) = 0
@@ -156,10 +162,15 @@ Shader "URP/PowerLit"
         _RainReflectTilingOffset("_RainReflectTilingOffset",vector) = (50,50,10,10)
         _RainReflectIntensity("_RainReflectIntensity",range(0,1))=0.5
         _RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
+
         //------------Details
+        [GroupToggle(,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0
+        
         [Group(Details)]
-        [GroupToggle(Details,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0
         [GroupItem(Details)]_DetailPBRMaskMap("_DetailPBRMaskMap",2d) = ""{}
+        [GroupItem(Details)]_DetailPBRMetallic("_DetailPBRMetallic",range(0,1)) = 0.5
+        [GroupItem(Details)]_DetailPBRSmoothness("_DetailPBRSmoothness",range(0,1)) = 0.5
+        [GroupItem(Details)]_DetailPBROcclusion("_DetailPBROcclusion",range(0,1)) = 0.5
 
         [GroupHeader(Details,Detail UV)]
         [GroupToggle(Details)]_DetailUVUseWorldPos("_DetailUVUseWorldPos",int) = 1

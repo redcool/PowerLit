@@ -24,6 +24,9 @@ struct Varyings{
     float4 vertexLightAndFogFactor:TEXCOORD5;
     float4 shadowCoord:TEXCOORD6;
     float4 viewDirTS_NV:TEXCOORD7;
+    // motion vectors
+    float4 lastHClipPos:TEXCOORD1;
+    float4 hClipPos:TEXCOORD8;
 
     float4 color:COLOR;
     float4 fogCoord:COLOR1;
@@ -100,6 +103,9 @@ Varyings vert(Attributes input){
     }
     #endif
 
+    output.hClipPos = mul(_NonJitteredViewProjMatrix,mul(UNITY_MATRIX_M,input.pos));
+    output.lastHClipPos = mul(_PrevViewProjMatrix,mul(UNITY_PREV_MATRIX_M,input.pos));
+
     return output;
 }
 
@@ -136,15 +142,28 @@ float4 fragTest(Varyings input,SurfaceInputData data){
     return 0;
 }
 
-float4 frag(Varyings input,
-    out float4 outputNormal:SV_TARGET1
+float4 CalcMotionVectors(float4 hClipPos,float4 lastHClipPos){
+    hClipPos.xyz /= hClipPos.w;
+    lastHClipPos.xyz /= lastHClipPos.w;
+
+    hClipPos.xyz = hClipPos.xyz *0.5 + 0.5;
+    lastHClipPos.xyz = lastHClipPos.xyz * 0.5 + 0.5;
+    #if UNITY_UV_STARTS_AT_TOP
+        hClipPos.y = 1 - hClipPos.y;
+        lastHClipPos.y = 1 - lastHClipPos.y;
+    #endif
+    return float4(hClipPos.xy-lastHClipPos.xy,0,1);
+}
+
+float4 frag(Varyings input
+    ,out float4 outputNormal:SV_TARGET1
+    ,out float4 outputMotionVectors:SV_TARGET2
 ):SV_Target{
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
     float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
     float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
-    float2 screenUV = input.pos.xy/_ScreenParams.xy;
     float vertexNoise = input.fogCoord.z;
 
     SurfaceInputData data = (SurfaceInputData)0;
@@ -153,22 +172,25 @@ float4 frag(Varyings input,
         branch_if(! _ParallaxInVSOn)
             ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
     #endif
-
+    
     InitSurfaceInputData(data/*inout*/,input.uv.xy,input.pos,input.viewDirTS_NV.xyz);
 
-    #if defined(_RAIN_ON)
+    // apply detail layers
+    #if defined(_DETAIL_ON)
+        ApplyDetails(data.surfaceData.metallic/**/,data.surfaceData.smoothness,data.surfaceData.occlusion,input.uv.xy,worldPos,vertexNormal);
+    #endif
+
     // blend rain normalTS
+    #if defined(_RAIN_ON)
     branch_if(IsRainOn())
     {
         InitSurfaceInputDataRain(data/**/,worldPos,vertexNormal);
         ApplyRainRipple(data/**/,worldPos);
+        return data.rainAtten;
     }
     #endif
 
     InitInputData(data.inputData/*inout*/,worldPos,input,data);
-    #if defined(_DETAIL_ON)
-        ApplyDetails(input.uv.xy,data/**/);
-    #endif
 // return fragTest(input,data);
 
     #if defined(_STOREY_ON)
@@ -231,7 +253,12 @@ float4 frag(Varyings input,
         if(isBreak)
             return debugColor;
     #endif 
+    // output world normal
     outputNormal = data.inputData.normalWS.xyzx;
+
+    // output motion
+    outputMotionVectors = CalcMotionVectors(input.hClipPos,input.lastHClipPos);
+
     half4 color = CalcPBR(data,mainLight,shadowMask);
 
     ApplyScreenShadow(color.xyz,data.screenUV);

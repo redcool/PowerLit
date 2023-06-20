@@ -186,7 +186,7 @@ float4 frag(Varyings input
     {
         InitSurfaceInputDataRain(data/**/,worldPos,vertexNormal);
         ApplyRainRipple(data/**/,worldPos);
-        return data.rainAtten;
+        // return data.rainAtten;
     }
     #endif
 

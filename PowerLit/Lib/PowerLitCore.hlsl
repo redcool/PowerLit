@@ -86,9 +86,9 @@ float3 ScreenToWorldPos(float2 screenUV){
 
 float SampleWeatherNoise(float2 uv,half4 ratio=half4(.5,.25,.0125,.063)){
     float4 n = SAMPLE_TEXTURE2D(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1);
-    n = dot(n,ratio);
-    n = n*2-1;
-    return n;
+    n.x = dot(n,ratio);
+    n.x = n.x*2-1;
+    return n.x;
 }
 
 float SampleWeatherNoiseLOD(float2 uv,half lod){
@@ -117,12 +117,13 @@ void ApplyScreenShadow(inout half3 color,float2 screenUV){
 
 /** 
     rain atten mode
+    
+    #define RAIN_MASK_PBR_SMOOTHNESS 1
+    #define RAIN_MASK_MAIN_TEX_ALPHA 2
 */
-#define RAIN_MASK_PBR_SMOOTHNESS 0
-#define RAIN_MASK_MAIN_TEX_ALPHA 1
 
 float GetRainAtten(float3 worldPos,float3 vertexNormal,float smoothness,float mainTexAlpha){
-    float attenMaskMode[2] = {smoothness,mainTexAlpha};
+    float attenMaskMode[3] = {1,smoothness,mainTexAlpha};
 
     float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
     atten *= saturate(_RainHeight - worldPos.y);

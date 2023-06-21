@@ -136,7 +136,7 @@ Shader "URP/PowerLit"
 
         [GroupToggle(_,_RAIN_ON)]_RainOn("_RainOn",int) = 0
 
-        [Header(Rain Ripple)]
+        [GroupHeader(Rain Ripple)]
         _RippleTex("_RippleTex",2d)=""{}
         [GroupToggle]_RippleOffsetAutoStop("_RippleOffsetAutoStop",int)=0
         _RippleSpeed("_RippleSpeed",float) = 10
@@ -144,23 +144,25 @@ Shader "URP/PowerLit"
         [GroupToggle]_RippleBlendNormalOn("_RippleBlendNormalOn",int) = 0
         _RippleAlbedoIntensity("_RippleAlbedoIntensity",range(0,1)) = 0.1
 
-        [Header(Env)]
+        [GroupHeader(Rain Env)]
         _RainColor("_RainColor",color) = (.5,.5,.5,1)
         _RainMetallic("_RainMetallic",range(0,1)) = 0.1
         _RainSmoothness("_RainSmoothness",range(0,1)) = 0.1
 
-        [Header(Rain Atten)]
+        [GroupHeader(Rain Atten)]
         _RainIntensity("_RainIntensity",range(0,1)) = 1
         _RainSlopeAtten("_RainSlopeAtten",range(0,1)) = 0.5
         _RainHeight("_RainHeight",float) = 5
-        [GroupEnum(,DetailPbrSmoothness MainTexAlpha,0 1)]_RainMaskFrom("_RainMaskFrom",int) = 0
+        [GroupEnum(,None DetailPbrSmoothness MainTexAlpha,0 1 2)]_RainMaskFrom("_RainMaskFrom",int) = 0
 
-        [Header(RainReflect)]
+        [GroupHeader(RainReflect)]
         // [GroupToggle]_RainReflectOn("_RainReflectOn",int) = 0
 		// _RainCube("_RainCube",cube)=""{}
         _RainReflectDirOffset("_RainReflectDirOffset",vector) = (0,0,0,0)
         _RainReflectTilingOffset("_RainReflectTilingOffset",vector) = (50,50,10,10)
         _RainReflectIntensity("_RainReflectIntensity",range(0,1))=0.5
+
+        [GroupHeader(Flow)]
         _RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
 
         //------------Details
@@ -168,9 +170,9 @@ Shader "URP/PowerLit"
         
         [Group(Details)]
         [GroupItem(Details)]_DetailPBRMaskMap("_DetailPBRMaskMap",2d) = ""{}
-        [GroupItem(Details)]_DetailPBRMetallic("_DetailPBRMetallic",range(0,1)) = 0.5
-        [GroupItem(Details)]_DetailPBRSmoothness("_DetailPBRSmoothness",range(0,1)) = 0.5
-        [GroupItem(Details)]_DetailPBROcclusion("_DetailPBROcclusion",range(0,1)) = 0.5
+        [GroupItem(Details)]_DetailPBRMetallic("_DetailPBRMetallic",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPBRSmoothness("_DetailPBRSmoothness",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPBROcclusion("_DetailPBROcclusion",range(0,1)) = 1
 
         [GroupHeader(Details,Detail UV)]
         [GroupToggle(Details)]_DetailUVUseWorldPos("_DetailUVUseWorldPos",int) = 1

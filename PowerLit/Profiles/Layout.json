@@ -1,0 +1,19 @@
+
+{
+    "tabNames":["Settings"," Main","Details","Alpha","Parallax","Shadow","Env","Emission","Wind","Snow","Fog","Rain","Storey"],
+    "contents":[
+        {"array":["_ZWrite","_ZTest","_CullMode","_RenderQueue","_ColorMask","_BakedEmission","_StencilComp","_Stencil","_StencilOp"]},
+        {"array":[ "_BaseMap","_Color","_SurfaceDepth","_BelowColor","_NormalMap","_NormalScale","_MetallicMaskMap","_Metallic","_Smoothness","_Occlusion","_InvertSmoothnessOn","_MetallicChannel","_SmoothnessChannel","_OcclusionChannel"]},
+        {"array":[ "_DetailOn","_DetailPBRMaskMap","_DetailPBRMetallic","_DetailPBRSmoothness","_DetailPBROcclusion","_DetailUVUseWorldPos","_DetailWorldPlaneMode","_DetailWorldPosTriplanar","_DetailPbrMaskApplyMetallic","_DetailPbrMaskApplySmoothness","_DetailPbrMaskApplyOcclusion"]},
+        {"array":["_ClipOn","_Cutoff","_AlphaPremultiply","_PresetBlendMode","_RenderQueue"]},
+        {"array":["_ParallaxOn","_ParallaxIterate","_ParallaxInVSOn","_ParallaxMap","_ParallaxMapChannel","_ParallaxHeight"]},
+        {"array":["_IsReceiveShadowOff","_GIApplyMainLightShadow","_ScreenShadowOn"]},
+        {"array":["_CustomLightOn","_CustomLightDir","_CustomLightColor","_CustomLightColorUsage","_IBLOn","_IBLCube","_EnvIntensity","_IBLMaskMainTexA","_ReflectDirOffset","_ReflectMode","_LightmapSHAdditional","_LMSaturateAdditional","_LMIntensityAdditional","_FresnelIntensity","_PlanarReflectionOn","_PlanarReflectionReverseUVX"]},
+        {"array":["_EmissionOn","_EmissionMap","_EmissionColor","_EmissionHeightOn","_EmissionHeight","_EmissionHeightColor","_EmissionScanLineOn","_EmissionScanLineColor","_EmissionScanLineMin","_EmissionScanLineMax","_EmissionScanLineRate"]},
+        {"array":[ "_WindOn","_WindAnimParam","_WindDir","_WindSpeed"]},
+        {"array":[ "_SnowOn","_ApplyEdgeOn","_SnowIntensity"]},
+        {"array":[ "_FogOn","_FogNoiseOn","_DepthFogOn","_HeightFogOn"]},
+        {"array":[ "_RainOn","_RippleTex","_RippleOffsetAutoStop","_RippleSpeed","_RippleIntensity","_RippleBlendNormalOn","_RippleAlbedoIntensity","_RainColor","_RainMetallic","_RainSmoothness","_RainIntensity","_RainSlopeAtten","_RainHeight","_RainMaskFrom","_RainReflectDirOffset","_RainReflectTilingOffset","_RainReflectIntensity","_RainFlowIntensity"]},
+        {"array":[ "_StoreyTilingOn","_StoreyHeight","_StoreyWindowInfo","_StoreyLightSwitchSpeed","_StoreyLightOpaque","_StoreyLineOn","_StoreyLineNoiseMap","_StoreyLineColor"]}
+    ]
+}

@@ -13,6 +13,7 @@ namespace PowerUtilities
         public PowerLitShaderGUI()
         {
             shaderName = "PowerLit";
+            //isLayoutUseJson = true;
         }
     }
 }

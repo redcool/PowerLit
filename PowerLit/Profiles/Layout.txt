@@ -1,4 +1,4 @@
-// PowerVFXLayout, when edit this file need reselect material
+// when edit this file need reselect material
 
 // Tabs
 tabNames =  Settings, Main,Details,Alpha,Parallax,Shadow,Env,Emission,Wind,Snow,Fog,Rain,Storey

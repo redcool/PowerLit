@@ -11,6 +11,7 @@ struct Attributes{
     float4 tangent:TANGENT;
     float2 uv:TEXCOORD;
     float2 uv1 :TEXCOORD1;
+    float3 prevPos:TEXCOORD4;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -103,8 +104,9 @@ Varyings vert(Attributes input){
     }
     #endif
 
-    output.hClipPos = mul(_NonJitteredViewProjMatrix,mul(UNITY_MATRIX_M,input.pos));
-    output.lastHClipPos = mul(_PrevViewProjMatrix,mul(UNITY_PREV_MATRIX_M,input.pos));
+    const float4 prevPos = (unity_MotionVectorsParams.x ==1)? float4(input.prevPos,1) : input.pos;
+    output.hClipPos = mul(UNITY_MATRIX_VP,mul(UNITY_MATRIX_M,input.pos));
+    output.lastHClipPos = mul(_PrevViewProjMatrix,mul(UNITY_PREV_MATRIX_M,prevPos));
 
     return output;
 }
@@ -146,13 +148,14 @@ float4 CalcMotionVectors(float4 hClipPos,float4 lastHClipPos){
     hClipPos.xyz /= hClipPos.w;
     lastHClipPos.xyz /= lastHClipPos.w;
 
-    hClipPos.xyz = hClipPos.xyz *0.5 + 0.5;
-    lastHClipPos.xyz = lastHClipPos.xyz * 0.5 + 0.5;
+    float2 velocity = hClipPos.xy - lastHClipPos.xy;
     #if UNITY_UV_STARTS_AT_TOP
-        hClipPos.y = 1 - hClipPos.y;
-        lastHClipPos.y = 1 - lastHClipPos.y;
+        velocity.y *=-1;
     #endif
-    return float4(hClipPos.xy-lastHClipPos.xy,0,1);
+    // Convert from Clip space (-1..1) to NDC 0..1 space.
+    // Note it doesn't mean we don't have negative value, we store negative or positive offset in NDC space.
+    // Note: ((positionCS * 0.5 + 0.5) - (previousPositionCS * 0.5 + 0.5)) = (velocity * 0.5)    
+    return float4(velocity*0.5,0,1);
 }
 
 float4 frag(Varyings input

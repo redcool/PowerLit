@@ -105,7 +105,7 @@ Varyings vert(Attributes input){
     #endif
 
     const float4 prevPos = (unity_MotionVectorsParams.x ==1)? float4(input.prevPos,1) : input.pos;
-    output.hClipPos = mul(UNITY_MATRIX_VP,mul(UNITY_MATRIX_M,input.pos));
+    output.hClipPos = clipPos;//mul(UNITY_MATRIX_VP,mul(UNITY_MATRIX_M,input.pos));
     output.lastHClipPos = mul(_PrevViewProjMatrix,mul(UNITY_PREV_MATRIX_M,prevPos));
 
     return output;

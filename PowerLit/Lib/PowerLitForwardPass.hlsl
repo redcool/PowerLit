@@ -27,8 +27,6 @@ struct Varyings{
     float4 shadowCoord:TEXCOORD6;
     float4 viewDirTS_NV:TEXCOORD7;
     // motion vectors
-    // float4 lastHClipPos:TEXCOORD1;
-    // float4 hClipPos:TEXCOORD8;
     DECLARE_MOTION_VS_OUTPUT(1,8);
 
     float4 color:COLOR;
@@ -106,9 +104,7 @@ Varyings vert(Attributes input){
     }
     #endif
 
-    const float4 prevPos = (unity_MotionVectorsParams.x ==1)? float4(input.prevPos,1) : input.pos;
-    output.hClipPos = clipPos;//mul(UNITY_MATRIX_VP,mul(UNITY_MATRIX_M,input.pos));
-    output.lastHClipPos = mul(_PrevViewProjMatrix,mul(UNITY_PREV_MATRIX_M,prevPos));
+    CALC_MOTION_POSITIONS(input,output,clipPos);
 
     return output;
 }

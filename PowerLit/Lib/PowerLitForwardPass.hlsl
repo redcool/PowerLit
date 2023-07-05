@@ -11,7 +11,8 @@ struct Attributes{
     float4 tangent:TANGENT;
     float2 uv:TEXCOORD;
     float2 uv1 :TEXCOORD1;
-    float3 prevPos:TEXCOORD4;
+    // float3 prevPos:TEXCOORD4;
+    DECLARE_MOTION_VS_INPUT(prevPos);
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -26,8 +27,9 @@ struct Varyings{
     float4 shadowCoord:TEXCOORD6;
     float4 viewDirTS_NV:TEXCOORD7;
     // motion vectors
-    float4 lastHClipPos:TEXCOORD1;
-    float4 hClipPos:TEXCOORD8;
+    // float4 lastHClipPos:TEXCOORD1;
+    // float4 hClipPos:TEXCOORD8;
+    DECLARE_MOTION_VS_OUTPUT(1,8);
 
     float4 color:COLOR;
     float4 fogCoord:COLOR1;
@@ -144,20 +146,6 @@ float4 fragTest(Varyings input,SurfaceInputData data){
     return 0;
 }
 
-float4 CalcMotionVectors(float4 hClipPos,float4 lastHClipPos){
-    hClipPos.xyz /= hClipPos.w;
-    lastHClipPos.xyz /= lastHClipPos.w;
-
-    float2 velocity = hClipPos.xy - lastHClipPos.xy;
-    #if UNITY_UV_STARTS_AT_TOP
-        velocity.y *=-1;
-    #endif
-    // Convert from Clip space (-1..1) to NDC 0..1 space.
-    // Note it doesn't mean we don't have negative value, we store negative or positive offset in NDC space.
-    // Note: ((positionCS * 0.5 + 0.5) - (previousPositionCS * 0.5 + 0.5)) = (velocity * 0.5)    
-    return float4(velocity*0.5,0,1);
-}
-
 float4 frag(Varyings input
     ,out float4 outputNormal:SV_TARGET1
     ,out float4 outputMotionVectors:SV_TARGET2
@@ -260,7 +248,7 @@ float4 frag(Varyings input
     outputNormal = data.inputData.normalWS.xyzx;
 
     // output motion
-    outputMotionVectors = CalcMotionVectors(input.hClipPos,input.lastHClipPos);
+    outputMotionVectors = CALC_MOTION_VECTORS(input);
 
     half4 color = CalcPBR(data,mainLight,shadowMask);
 

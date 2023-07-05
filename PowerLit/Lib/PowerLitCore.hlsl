@@ -10,6 +10,7 @@
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/Lib/NoiseLib.hlsl"
 #include "../../PowerShaderLib/URPLib/URPDebugDisplay.hlsl"
+#include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
 #include "../../PowerShaderLib/Lib/ReflectionLib.hlsl"
 #include "../../PowerShaderLib/Lib/SDF.hlsl"
 #include "../../PowerShaderLib/Lib/MathLib.hlsl"

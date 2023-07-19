@@ -288,7 +288,7 @@ detail map
             #pragma shader_feature_local _DETAIL_ON
             
             // urp keywords 
-            #pragma shader_feature_fragment _ _REFLECTION_PROBE_BOX_PROJECTION // change to shader_feature
+            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION // change to shader_feature
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS _ADDITIONAL_LIGHTS_VERTEX
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
@@ -299,7 +299,7 @@ detail map
             #pragma shader_feature_local_fragment LIGHTMAP_SHADOW_MIXING // change to shader_feature
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
-            #pragma shader_feature_local DEBUG_DISPLAY // change to shader_feature
+            #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"

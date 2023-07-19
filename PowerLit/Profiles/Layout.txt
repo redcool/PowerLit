@@ -1,15 +1,15 @@
 // when edit this file need reselect material
 
 // Tabs
-tabNames =  Settings, Main,Details,Alpha,Parallax,Shadow,Env,Emission,Wind,Snow,Fog,Rain,Storey
+tabNames =  Settings, Main,Details,Alpha,Parallax,Shadow,Env,Emission,Wind,Snow,Fog,Rain,Storey,Debug
 
 // Tab's contents
 Settings =_ZWrite,_ZTest,_CullMode,_RenderQueue,_ColorMask,_BakedEmission,_StencilComp,_Stencil,_StencilOp
 Main = _BaseMap,_Color,_SurfaceDepth,_BelowColor,_NormalMap,_NormalScale,_MetallicMaskMap,_Metallic,_Smoothness,_Occlusion,_InvertSmoothnessOn,_MetallicChannel,_SmoothnessChannel,_OcclusionChannel,
 Alpha=_ClipOn,_Cutoff,_AlphaPremultiply,_PresetBlendMode,_RenderQueue
 Parallax=_ParallaxOn,_ParallaxIterate,_ParallaxInVSOn,_ParallaxMap,_ParallaxMapChannel,_ParallaxHeight
-Shadow=_IsReceiveShadowOff,_GIApplyMainLightShadow,_ScreenShadowOn
-Env=_CustomLightOn,_CustomLightDir,_CustomLightColor,_CustomLightColorUsage,_IBLOn,_IBLCube,_EnvIntensity,_IBLMaskMainTexA,_ReflectDirOffset,_ReflectMode,_LightmapSHAdditional,_LMSaturateAdditional,_LMIntensityAdditional,_FresnelIntensity,_PlanarReflectionOn,_PlanarReflectionReverseUVX
+Shadow=_IsReceiveShadowOff,_GIApplyMainLightShadow,_ScreenShadowOn,_LightMapShadowMixing,
+Env=_CustomLightOn,_CustomLightDir,_CustomLightColor,_CustomLightColorUsage,_IBLOn,_IBLCube,_EnvIntensity,_IBLMaskMainTexA,_ReflectDirOffset,_ReflectMode,_BoxProjectionOn,_LightmapSHAdditional,_LMSaturateAdditional,_LMIntensityAdditional,_FresnelIntensity,_PlanarReflectionOn,_PlanarReflectionReverseUVX
 Emission=_EmissionOn,_EmissionMap,_EmissionColor,_EmissionHeightOn,_EmissionHeight,_EmissionHeightColor,_EmissionScanLineOn,_EmissionScanLineColor,_EmissionScanLineMin,_EmissionScanLineMax,_EmissionScanLineRate
 Wind = _WindOn,_WindAnimParam,_WindDir,_WindSpeed
 Snow = _SnowOn,_ApplyEdgeOn,_SnowIntensity
@@ -17,3 +17,4 @@ Fog = _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn
 Rain = _RainOn,_RippleTex,_RippleOffsetAutoStop,_RippleSpeed,_RippleIntensity,_RippleBlendNormalOn,_RippleAlbedoIntensity,_RainColor,_RainMetallic,_RainSmoothness,_RainIntensity,_RainSlopeAtten,_RainHeight,_RainMaskFrom,_RainReflectDirOffset,_RainReflectTilingOffset,_RainReflectIntensity,_RainFlowIntensity
 Storey = _StoreyTilingOn,_StoreyHeight,_StoreyWindowInfo,_StoreyLightSwitchSpeed,_StoreyLightOpaque,_StoreyLineOn,_StoreyLineNoiseMap,_StoreyLineColor
 Details = _DetailOn,_DetailPBRMaskMap,_DetailPBRMetallic,_DetailPBRSmoothness,_DetailPBROcclusion,_DetailUVUseWorldPos,_DetailWorldPlaneMode,_DetailWorldPosTriplanar,_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion
+Debug = _DebugDisplay

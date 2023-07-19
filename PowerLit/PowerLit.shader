@@ -2,6 +2,7 @@ Shader "URP/PowerLit"
 {
     Properties
     {
+//================================================= Main        
         [Group(Main)]
         [GroupHeader(Main,MainTexture)]
         [GroupItem(Main)][MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
@@ -28,7 +29,7 @@ Shader "URP/PowerLit"
         [GroupEnum(Main,R 0 G 1 B 2)]_MetallicChannel("_MetallicChannel",int) = 0
         [GroupEnum(Main,R 0 G 1 B 2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1
         [GroupEnum(Main,R 0 G 1 B 2)]_OcclusionChannel("_OcclusionChannel",int) = 2
-
+//================================================= Parallax
         [Group(Parallax)]
         [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
         [GroupSlider(Parallax,iterate count,int)]_ParallaxIterate("_ParallaxIterate",range(1,10)) = 1
@@ -38,6 +39,7 @@ Shader "URP/PowerLit"
         [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
         [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.3)) = 0.01
 
+//================================================= Emission
         [Header(Emission)]
         [GroupToggle(,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
         [noscaleoffset]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d) = "white"{}
@@ -55,24 +57,29 @@ Shader "URP/PowerLit"
         // [GroupItem(WorldScaneLine)]_EmissionScanLineMax("_EmissionScanLineMax",vector) = (100,0,0,0)
         // [GroupItem(WorldScaneLine)]_EmissionScanLineRate("_EmissionScanLineRate",range(0,1)) = 0
 
-        [Header(Shadow)]
+//================================================= Shadow
+        [GroupHeader(,Shadow)]
         [GroupToggle(,_RECEIVE_SHADOWS_OFF)]_IsReceiveShadowOff("_IsReceiveShadowOff",int) = 0
         [GroupToggle()]_GIApplyMainLightShadow("_GIApplyMainLightShadow",int) = 0
-        [Header(ScreenShadow)]
+
+        [GroupHeader(,ScreenShadow)]
         [GroupToggle]_ScreenShadowOn("_ScreenShadowOn",int) = 0
 
-        [Header(PlanarReflection)]
-        [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
-        [GroupToggle()]_PlanarReflectionReverseUVX("_PlanarReflectionReverseUVX",int) = 0
-        
+        [GroupHeader(,ShadowMask)]
+        [GroupToggle(_,LIGHTMAP_SHADOW_MIXING)]_LightMapShadowMixing("_LightMapShadowMixing",int) = 0
+//================================================= Env
         [GroupHeader(,Custom IBL)]
         [GroupToggle(_,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
         [NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
-        [Header(IBL Params)]
+
+        [GroupHeader(,IBL Params)]
         _EnvIntensity("_EnvIntensity",float) = 1
         [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
         [GroupVectorSlider(_,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
         [GroupEnum(,Reflection InteriorMap,0 1)]_ReflectMode("_ReflectMode",int) = 0
+
+        [GroupHeader(,BoxProjection)]
+        [GroupToggle(_,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [Header(Custom Light)]
         [GroupToggle(_)]_CustomLightOn("_CustomLightOn",float) = 0
@@ -83,15 +90,19 @@ Shader "URP/PowerLit"
         [Header(Specular)]
         _FresnelIntensity("_FresnelIntensity",float) = 1
 
+        [Header(PlanarReflection)]
+        [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
+        [GroupToggle()]_PlanarReflectionReverseUVX("_PlanarReflectionReverseUVX",int) = 0
+        
         [Header(GI)] // Final GI = PowerLITFeature GI + Additional
         _LightmapSHAdditional("_LightmapSHAdditional",range(-1,1)) = 0
         _LMSaturateAdditional("_LMSaturateAdditional",range(-1,1)) = 0
         _LMIntensityAdditional("_LMIntensityAdditional",range(0,1)) = 1
-
+//================================================= Alpha
         [Header(Clip)]
         [GroupToggle(,_ALPHATEST_ON)]_ClipOn("_ClipOn",float) = 0
         _Cutoff("_Cutoff",range(0,1)) = 0.5
-//----------------------------------- settings
+
 /**
     alpha : [srcAlpha][oneMinusSrcAlpha]
     premultiply : [one][oneMinusSrcAlpha]
@@ -104,7 +115,7 @@ Shader "URP/PowerLit"
 
         [Header(Alpha Premulti)]
         [GroupToggle(_)]_AlphaPremultiply("_AlphaPremultiply",int) = 0 //_ALPHA_PREMULTIPLY_ON
-
+//================================================= settings
         [Header(Depth)]
         [GroupToggle]_ZWrite("_ZWrite",int) = 1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("_ZTest",int) = 4
@@ -116,7 +127,7 @@ Shader "URP/PowerLit"
 		[GroupEnum(_,RGBA 16 RGB 15 RG 12 GB 6 RB 10 R 8 G 4 B 2 A 1 None 0)]
 		_ColorMask("_ColorMask",int) = 15
 
-//----------------------------------- weather
+//=================================================  weather
         [Header(Wind)]
         [GroupToggle(_,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
         [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
@@ -165,7 +176,7 @@ Shader "URP/PowerLit"
         [GroupHeader(Flow)]
         _RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
 
-        //------------Details
+//================================================= Details
         [GroupToggle(,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0
         
         [Group(Details)]
@@ -184,7 +195,7 @@ Shader "URP/PowerLit"
         [GroupItem(Details)]_DetailPbrMaskApplyMetallic("_DetailPbrMaskApplyMetallic",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplySmoothness("_DetailPbrMaskApplySmoothness",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplyOcclusion("_DetailPbrMaskApplyOcclusion",range(0,1)) = 1
-//----------------------------------- storey
+//=================================================  storey
 
         [GroupToggle(_,_STOREY_ON)]_StoreyTilingOn("_StoreyTilingOn",int) = 0
         _StoreyHeight("_StoreyHeight",float) = 1
@@ -205,6 +216,8 @@ Shader "URP/PowerLit"
         [GroupEnum(Stencil,UnityEngine.Rendering.StencilOp)]_StencilOp ("Stencil Operation", Float) = 0
         _StencilWriteMask ("Stencil Write Mask", Float) = 255
         _StencilReadMask ("Stencil Read Mask", Float) = 255
+//================================================= Debug display
+        [GroupToggle(_,DEBUG_DISPLAY)]_DebugDisplay("_DebugDisplay",int) = 0
     }
     SubShader
     {
@@ -275,7 +288,7 @@ detail map
             #pragma shader_feature_local _DETAIL_ON
             
             // urp keywords 
-            #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+            #pragma shader_feature_fragment _ _REFLECTION_PROBE_BOX_PROJECTION // change to shader_feature
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS _ADDITIONAL_LIGHTS_VERTEX
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
@@ -283,10 +296,10 @@ detail map
 
             // unity keywords
             // #pragma multi_compile_fog
-            #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #pragma shader_feature_local_fragment LIGHTMAP_SHADOW_MIXING // change to shader_feature
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
-            #pragma multi_compile _ DEBUG_DISPLAY
+            #pragma shader_feature_local DEBUG_DISPLAY // change to shader_feature
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"

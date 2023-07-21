@@ -65,8 +65,8 @@ Shader "URP/PowerLit"
         [GroupHeader(,ScreenShadow)]
         [GroupToggle]_ScreenShadowOn("_ScreenShadowOn",int) = 0
 
-        [GroupHeader(,ShadowMask)]
-        [GroupToggle(_,LIGHTMAP_SHADOW_MIXING)]_LightMapShadowMixing("_LightMapShadowMixing",int) = 0
+        // [GroupHeader(,ShadowMask)]
+        // [GroupToggle(_,LIGHTMAP_SHADOW_MIXING)]_LightMapShadowMixing("_LightMapShadowMixing",int) = 0
 //================================================= Env
         [GroupHeader(,Custom IBL)]
         [GroupToggle(_,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
@@ -296,7 +296,7 @@ detail map
 
             // unity keywords
             // #pragma multi_compile_fog
-            #pragma shader_feature_local_fragment LIGHTMAP_SHADOW_MIXING // change to shader_feature
+            // #pragma shader_feature_local_fragment LIGHTMAP_SHADOW_MIXING // use _Shadows_ShadowMaskOn
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature

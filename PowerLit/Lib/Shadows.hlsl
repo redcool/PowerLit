@@ -95,7 +95,8 @@ float MainLightRealtimeShadow(float4 shadowCoord,bool isReceiveShadow){
 }
 
 float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isMixShadow){
-    branch_if(isMixShadow){
+    if(isMixShadow)
+    {
         return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);
     }
     return lerp(realtimeShadow,bakedShadow,shadowFade);
@@ -103,11 +104,9 @@ float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isM
 
 float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade){
     #if defined(LIGHTMAP_SHADOW_MIXING)
-    // branch_if(IsShadowMaskOn())
-    {
         return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);
-    }
     #endif
+    
     return lerp(realtimeShadow,bakedShadow,shadowFade);
 }
 
@@ -150,7 +149,7 @@ float MainLightShadow1(float4 shadowCoord,float3 worldPos,float4 shadowMask,floa
     }
     #endif
 
-    return MixShadow(realtimeShadow,bakedShadow,shadowFade);
+    return MixShadow(realtimeShadow,bakedShadow,shadowFade,_Shadows_ShadowMaskOn);
 }
 
 

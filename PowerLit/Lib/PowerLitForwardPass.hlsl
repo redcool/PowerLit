@@ -190,6 +190,7 @@ float4 frag(Varyings input
     half upFaceAtten = 1 - saturate(dot(vertexNormal,half3(0,1,0)));
 
 //  world emission
+    upFaceAtten = lerp(1,upFaceAtten,_EmissionHeightColorNormalAttenOn);
     ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
 
     branch_if(_EmissionScanLineOn)

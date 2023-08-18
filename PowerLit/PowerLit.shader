@@ -269,7 +269,8 @@ detail map
             #pragma fragment frag
 
             #pragma multi_compile_instancing
-
+            #pragma instancing_options forcemaxcount:70
+            
             // material keywords
             #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_local _RECEIVE_SHADOWS_OFF

@@ -210,10 +210,13 @@ float4 frag(Varyings input
     Light mainLight = GetMainLight(data,shadowMask);
 
     #if defined(_RAIN_ON)
+    branch_if(IsRainOn())
+    {
         data.rainAtten *= (vertexNoise+0.5) ;//* (mainLight.shadowAttenuation+0.25);
         data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
         // apply rain pbr 
         ApplyRainPbr(data/**/);
+    }
     #endif
 
     ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);

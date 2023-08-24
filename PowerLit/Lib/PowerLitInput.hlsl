@@ -24,23 +24,23 @@ TEXTURE2D(_WeatherNoiseTexture);SAMPLER(sampler_WeatherNoiseTexture);
 
 UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Main
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_BaseMap_ST)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_Color)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_NormalMap_ST)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_BaseMap_ST)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_Color)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_NormalMap_ST)
 
-    UNITY_DEFINE_INSTANCED_PROP(float ,_NormalScale)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_Metallic)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_Smoothness)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_Occlusion)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_InvertSmoothnessOn)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_MetallicChannel)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_SmoothnessChannel)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_OcclusionChannel)
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_ClipOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_ALPHATEST_ON)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_Cutoff)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_NormalScale)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_Metallic)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_Smoothness)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_Occlusion)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_InvertSmoothnessOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_MetallicChannel)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SmoothnessChannel)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_OcclusionChannel)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_ClipOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_ALPHATEST_ON)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_Cutoff)
 //--------------------------------- Emission
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_EmissionColor)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_EmissionColor)
     
     UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionHeightOn)
     UNITY_DEFINE_INSTANCED_PROP(half2, _EmissionHeight)
@@ -54,59 +54,59 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     // UNITY_DEFINE_INSTANCED_PROP(half, _EmissionScanLineRate)
     
 
-    UNITY_DEFINE_INSTANCED_PROP(float ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
 
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_IsReceiveShadowOff) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
-    UNITY_DEFINE_INSTANCED_PROP(float,_GIApplyMainLightShadow) 
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_IsReceiveShadowOff) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_RECEIVE_SHADOWS_OFF)
+    UNITY_DEFINE_INSTANCED_PROP(half,_GIApplyMainLightShadow) 
     UNITY_DEFINE_INSTANCED_PROP(half,_ScreenShadowOn)
 //--------------------------------- IBL
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_IBLOn) //,_IBL_ON)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_EnvIntensity)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_IBLMaskMainTexA)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_ReflectDirOffset)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_IBLOn) //,_IBL_ON)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_EnvIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_IBLMaskMainTexA)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_ReflectDirOffset)
     UNITY_DEFINE_INSTANCED_PROP(half,_ReflectMode)
     
 //--------------------------------- Custom Light
-    UNITY_DEFINE_INSTANCED_PROP(float ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightDir)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_CustomLightColor)
-    UNITY_DEFINE_INSTANCED_PROP(int,_CustomLightColorUsage)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_FresnelIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_CustomLightDir)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_CustomLightColor)
+    UNITY_DEFINE_INSTANCED_PROP(half,_CustomLightColorUsage)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_FresnelIntensity)
 //--------------------------------- lightmap
-    UNITY_DEFINE_INSTANCED_PROP(float ,_LightmapSHAdditional)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_LMSaturateAdditional)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_LMIntensityAdditional)    
+    UNITY_DEFINE_INSTANCED_PROP(half ,_LightmapSHAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_LMSaturateAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_LMIntensityAdditional)    
 //--------------------------------- Wind
-    UNITY_DEFINE_INSTANCED_PROP(float ,_WindOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_WindAnimParam)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_WindDir)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_WindSpeed)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindAnimParam)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindDir)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_WindSpeed)
 //--------------------------------- Plannar Reflection
-    // UNITY_DEFINE_INSTANCED_PROP(float ,_PlanarReflectionOn) // ,_PLANAR_REFLECTION_ON)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_PlanarReflectionReverseUVX)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionOn) // ,_PLANAR_REFLECTION_ON)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionReverseUVX)
 //--------------------------------- Rain
-    UNITY_DEFINE_INSTANCED_PROP(float ,_SnowOn)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_SnowIntensity)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_ApplyEdgeOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SnowOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SnowIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_ApplyEdgeOn)
 //--------------------------------- Fog
-    UNITY_DEFINE_INSTANCED_PROP(float ,_FogOn)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_FogNoiseOn)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_DepthFogOn)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_HeightFogOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_FogOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_FogNoiseOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_DepthFogOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_HeightFogOn)
 //--------------------------------- Parallax
-    UNITY_DEFINE_INSTANCED_PROP(float ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_ParallaxIterate)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_ParallaxInVSOn)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_ParallaxHeight)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_ParallaxMapChannel)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxIterate)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxInVSOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxHeight)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxMapChannel)
 //--------------------------------- Rain
-    UNITY_DEFINE_INSTANCED_PROP(int ,_RainOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RippleTex_ST)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainOn)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_RippleTex_ST)
     UNITY_DEFINE_INSTANCED_PROP(half,_RippleOffsetAutoStop)
     UNITY_DEFINE_INSTANCED_PROP(half,_RippleAlbedoIntensity)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RippleSpeed)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RippleIntensity)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RippleBlendNormalOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RippleSpeed)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RippleIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RippleBlendNormalOn)
 
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_RainColor)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainSmoothness)
@@ -114,41 +114,43 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half,_RainIntensity)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainHeight)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainSlopeAtten)
-    UNITY_DEFINE_INSTANCED_PROP(int ,_RainMaskFrom)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainMaskFrom)
     
     
     // UNITY_DEFINE_INSTANCED_PROP(half,_RainReflectOn)
-    UNITY_DEFINE_INSTANCED_PROP(float3 ,_RainReflectDirOffset)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_RainReflectTilingOffset)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RainReflectIntensity)
-    UNITY_DEFINE_INSTANCED_PROP(float ,_RainFlowIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half3 ,_RainReflectDirOffset)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_RainReflectTilingOffset)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainReflectIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RainFlowIntensity)
     
 
-    UNITY_DEFINE_INSTANCED_PROP(float ,_SurfaceDepth)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_BelowColor)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceDepth)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_BelowColor)
 
-    UNITY_DEFINE_INSTANCED_PROP(float ,_StoreyTilingOn)
-    UNITY_DEFINE_INSTANCED_PROP(float4 ,_StoreyWindowInfo)
-    UNITY_DEFINE_INSTANCED_PROP(float,_StoreyLightSwitchSpeed)
-    UNITY_DEFINE_INSTANCED_PROP(float,_StoreyHeight)
-    UNITY_DEFINE_INSTANCED_PROP(float,_StoreyLineOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_StoreyTilingOn)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_StoreyWindowInfo)
+    UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLightSwitchSpeed)
+    UNITY_DEFINE_INSTANCED_PROP(half,_StoreyHeight)
+    UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLineOn)
     
-    UNITY_DEFINE_INSTANCED_PROP(float4,_StoreyLineColor)
-    UNITY_DEFINE_INSTANCED_PROP(int,_StoreyLightOpaque)
+    UNITY_DEFINE_INSTANCED_PROP(half4,_StoreyLineColor)
+    UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLightOpaque)
 // detail
-    UNITY_DEFINE_INSTANCED_PROP(int,_DetailUVUseWorldPos)
-    UNITY_DEFINE_INSTANCED_PROP(int,_DetailWorldPlaneMode)
-    UNITY_DEFINE_INSTANCED_PROP(int,_DetailWorldPosTriplanar)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailUVUseWorldPos)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPlaneMode)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPosTriplanar)
     
-    UNITY_DEFINE_INSTANCED_PROP(float4,_DetailPBRMaskMap_ST)
-    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPBRMetallic)
-    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPBRSmoothness)
-    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPBROcclusion)
+    UNITY_DEFINE_INSTANCED_PROP(half4,_DetailPBRMaskMap_ST)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBRMetallic)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBRSmoothness)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBROcclusion)
     
-    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyMetallic)
-    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplySmoothness)
-    UNITY_DEFINE_INSTANCED_PROP(float,_DetailPbrMaskApplyOcclusion)
-    UNITY_DEFINE_INSTANCED_PROP(float4,_IBLCube_HDR)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailPbrMaskApplyMetallic)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailPbrMaskApplySmoothness)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailPbrMaskApplyOcclusion)
+    UNITY_DEFINE_INSTANCED_PROP(half4,_IBLCube_HDR)
+
+    UNITY_DEFINE_INSTANCED_PROP(half,_BoxProjectionOn)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
@@ -162,12 +164,12 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 // #if (SHADER_LIBRARY_VERSION_MAJOR < 12)
 // this block must define in UnityPerDraw cbuffer, change UnityInput.hlsl
-// float4 unity_SpecCube0_BoxMax;          // w contains the blend distance
-// float4 unity_SpecCube0_BoxMin;          // w contains the lerp value
-// float4 unity_SpecCube0_ProbePosition;   // w is set to 1 for box projection
-// float4 unity_SpecCube1_BoxMax;          // w contains the blend distance
-// float4 unity_SpecCube1_BoxMin;          // w contains the sign of (SpecCube0.importance - SpecCube1.importance)
-// float4 unity_SpecCube1_ProbePosition;   // w is set to 1 for box projection
+// half4 unity_SpecCube0_BoxMax;          // w contains the blend distance
+// half4 unity_SpecCube0_BoxMin;          // w contains the lerp value
+// half4 unity_SpecCube0_ProbePosition;   // w is set to 1 for box projection
+// half4 unity_SpecCube1_BoxMax;          // w contains the blend distance
+// half4 unity_SpecCube1_BoxMin;          // w contains the sign of (SpecCube0.importance - SpecCube1.importance)
+// half4 unity_SpecCube1_ProbePosition;   // w is set to 1 for box projection
 // #endif
 
 //--------------------------------- Main
@@ -294,14 +296,15 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _DetailPbrMaskApplySmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplySmoothness)
     #define _DetailPbrMaskApplyOcclusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyOcclusion)
     #define _IBLCube_HDR UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLCube_HDR)
+    #define _BoxProjectionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BoxProjectionOn)
     
 /**
     Global Variables Emission Scanline
 */    
 
     half4 _EmissionScanLineColor;
-    float3 _EmissionScanLineMin;
-    float3 _EmissionScanLineMax;
-    float4 _EmissionScanLineRange_Rate;
+    half3 _EmissionScanLineMin;
+    half3 _EmissionScanLineMax;
+    half4 _EmissionScanLineRange_Rate;
     half _ScanLineAxis;
 #endif //POWER_LIT_INPUT_HLSL

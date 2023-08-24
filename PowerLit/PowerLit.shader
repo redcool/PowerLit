@@ -80,7 +80,7 @@ Shader "URP/PowerLit"
         [GroupEnum(,Reflection InteriorMap,0 1)]_ReflectMode("_ReflectMode",int) = 0
 
         [GroupHeader(,BoxProjection)]
-        [GroupToggle(_,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
+        [GroupToggle(_)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [Header(Custom Light)]
         [GroupToggle(_)]_CustomLightOn("_CustomLightOn",float) = 0
@@ -290,9 +290,9 @@ detail map
             #pragma shader_feature_local _DETAIL_ON
             
             // urp keywords 
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION // change to shader_feature
+            // #pragma multi_compile _ _REFLECTION_PROBE_BOX_PROJECTION // change to uniform vars
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
-            #pragma multi_compile _ _ADDITIONAL_LIGHTS _ADDITIONAL_LIGHTS_VERTEX
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
 

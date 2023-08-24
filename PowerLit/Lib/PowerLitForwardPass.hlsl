@@ -252,11 +252,11 @@ float4 frag(Varyings input
 
     half4 color = CalcPBR(data,mainLight,shadowMask);
 
-    ApplyScreenShadow(color.xyz,data.screenUV);
+    ApplyScreenShadow(color.xyz/**/,data.screenUV);
 
     // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
     // color.xyz += screenColor.x*5;
-
+    ApplyCloudShadow(color.xyz/**/,worldPos);
     ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy,upFaceAtten);
     return color;
 }

@@ -151,6 +151,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half4,_IBLCube_HDR)
 
     UNITY_DEFINE_INSTANCED_PROP(half,_BoxProjectionOn)
+    UNITY_DEFINE_INSTANCED_PROP(half,_CloudShadowOn)
+    UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowIntensityInfo)
+    UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowTilingOffset)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
@@ -297,6 +300,9 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _DetailPbrMaskApplyOcclusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyOcclusion)
     #define _IBLCube_HDR UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLCube_HDR)
     #define _BoxProjectionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BoxProjectionOn)
+    #define _CloudShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowOn)
+    #define _CloudShadowTilingOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowTilingOffset)
+    #define _CloudShadowIntensityInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowIntensityInfo)
     
 /**
     Global Variables Emission Scanline

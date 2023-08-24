@@ -66,6 +66,13 @@ Shader "URP/PowerLit"
         [GroupHeader(,ScreenShadow)]
         [GroupToggle]_ScreenShadowOn("_ScreenShadowOn",int) = 0
 
+        [GroupHeader(CloudShadow)]
+        [GroupToggle]_CloudShadowOn("_CloudShadowOn",int) = 0
+        // [GroupVectorSlider(,TilingX TilingZ OffsetX OffsetZ,m0.0001_10)]
+        _CloudShadowTilingOffset("_CloudShadowTilingOffset",vector) = (0.1,0.1,0.1,0.1)
+
+        [GroupVectorSlider(,Intensity BaseIntensity,m0_10 m0_1)]
+        _CloudShadowIntensityInfo("_CloudShadowIntensityInfo",vector) = (0.5,0.5,0,0)
         // [GroupHeader(,ShadowMask)]
         // [GroupToggle(_,LIGHTMAP_SHADOW_MIXING)]_LightMapShadowMixing("_LightMapShadowMixing",int) = 0
 //================================================= Env

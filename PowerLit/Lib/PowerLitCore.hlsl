@@ -85,6 +85,7 @@ float3 ScreenToWorldPos(float2 screenUV){
     return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
 }
 
+
 float SampleWeatherNoise(float2 uv,half4 ratio=half4(.5,.25,.0125,.063)){
     float4 n = SAMPLE_TEXTURE2D(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1);
     n.x = dot(n,ratio);
@@ -96,6 +97,24 @@ float SampleWeatherNoiseLOD(float2 uv,half lod){
     float4 n = SAMPLE_TEXTURE2D_LOD(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1,lod);
     return dot(n,half4(0.5,0.25,0.125,0.06).wzyx);
 }
+
+float CalcWorldNoise(float3 worldPos,float4 tilingOffset,float3 windDir){
+    // cross noise
+    float2 noiseUV = worldPos.xz * tilingOffset.xy+ windDir.xz * tilingOffset.zw* _Time.y;
+    float2 noiseUV2 = worldPos.xz * tilingOffset.xy + float2(windDir.x * -_Time.x,0);
+
+    float noise =0;
+    // noise version
+    // noise += unity_gradientNoise(noiseUV) + 0.5;
+    // noise += unity_gradientNoise(noiseUV2) + 0.5;
+
+    // texture version
+    noise += SampleWeatherNoise(noiseUV,half4(0.05,0.15,0.3,0.5))+0.5;
+    noise += SampleWeatherNoise(noiseUV2,half4(0.05,0.15,0.3,0.5))+0.5;
+    noise *= 0.5;
+    return noise;  
+}
+
 
 void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half globalAtten){
     float fogNoise = 0;
@@ -113,6 +132,15 @@ void ApplyScreenShadow(inout half3 color,float2 screenUV){
     branch_if(_ScreenShadowOn)
     {
         color *= SAMPLE_TEXTURE2D(_ScreenSpaceShadowmapTexture,sampler_ScreenSpaceShadowmapTexture,screenUV).x;
+    }
+}
+
+void ApplyCloudShadow(inout half3 color,float3 worldPos){
+    #define _CloudShadowIntensity _CloudShadowIntensityInfo.x
+    #define _CloudShadowBaseIntensity _CloudShadowIntensityInfo.y
+    if(_CloudShadowOn){
+        float noise = CalcWorldNoise(worldPos,_CloudShadowTilingOffset,1) * _CloudShadowIntensityInfo;
+        color *= 1 - saturate(noise) + _CloudShadowBaseIntensity;
     }
 }
 
@@ -140,21 +168,12 @@ float3 GetRainRipple(float3 worldPos){
     return ripple;
 }
 
+
 float CalcRainNoise(float3 worldPos){
+    return CalcWorldNoise(worldPos,_RainReflectTilingOffset,_GlobalWindDir);
     // cross noise
-    float2 noiseUV = worldPos.xz * _RainReflectTilingOffset.xy+ _GlobalWindDir.xz * _RainReflectTilingOffset.zw* _Time.y;
-    float2 noiseUV2 = worldPos.xz * _RainReflectTilingOffset.xy + float2(_GlobalWindDir.x * -_Time.x,0);
-
-    float noise =0;
-    // noise version
-    // noise += unity_gradientNoise(noiseUV) + 0.5;
-    // noise += unity_gradientNoise(noiseUV2) + 0.5;
-
-    // texture version
-    noise += SampleWeatherNoise(noiseUV,half4(0.05,0.15,0.3,0.5))+0.5;
-    noise += SampleWeatherNoise(noiseUV2,half4(0.05,0.15,0.3,0.5))+0.5;
-    noise *= 0.5;
-    return noise;
+    // float2 noiseUV = worldPos.xz * _RainReflectTilingOffset.xy+ _GlobalWindDir.xz * _RainReflectTilingOffset.zw* _Time.y;
+    // float2 noiseUV2 = worldPos.xz * _RainReflectTilingOffset.xy + float2(_GlobalWindDir.x * -_Time.x,0);
 }
 
 /**

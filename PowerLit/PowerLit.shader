@@ -73,6 +73,7 @@ Shader "URP/PowerLit"
 
         [GroupVectorSlider(,Intensity BaseIntensity,m0_10 m0_1)]
         _CloudShadowIntensityInfo("_CloudShadowIntensityInfo",vector) = (0.5,0.5,0,0)
+        _ChoudShadowColor("_ChoudShadowColor",color) = (0,0,0,0)
         // [GroupHeader(,ShadowMask)]
         // [GroupToggle(_,LIGHTMAP_SHADOW_MIXING)]_LightMapShadowMixing("_LightMapShadowMixing",int) = 0
 //================================================= Env

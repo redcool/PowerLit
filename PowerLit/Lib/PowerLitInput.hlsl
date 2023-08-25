@@ -154,7 +154,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half,_CloudShadowOn)
     UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowIntensityInfo)
     UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowTilingOffset)
-    UNITY_DEFINE_INSTANCED_PROP(half4,_ChoudShadowColor)
+    UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowColor)
     
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
@@ -305,7 +305,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CloudShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowOn)
     #define _CloudShadowTilingOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowTilingOffset)
     #define _CloudShadowIntensityInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowIntensityInfo)
-    #define _ChoudShadowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ChoudShadowColor)
+    #define _CloudShadowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowColor)
     
 /**
     Global Variables Emission Scanline

@@ -141,7 +141,7 @@ void ApplyCloudShadow(inout half3 color,float3 worldPos){
     if(_CloudShadowOn){
         float noise = CalcWorldNoise(worldPos,_CloudShadowTilingOffset,1) * _CloudShadowIntensityInfo;
         noise =  (1 - (noise) + _CloudShadowBaseIntensity) * 0.5;
-        color *= lerp(_ChoudShadowColor,1 ,noise);
+        color *= lerp(_CloudShadowColor,1 ,noise);
     }
 }
 

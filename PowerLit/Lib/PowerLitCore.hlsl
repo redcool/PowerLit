@@ -52,7 +52,7 @@ void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalA
     rate *= globalAtten;
     // half4 heightEmission = _EmissionHeightColor * rate;
     half3 heightEmission = lerp(emissionColor.xyz,_EmissionHeightColor.xyz,rate);
-    emissionColor = _EmissionHeightOn? heightEmission : emissionColor;
+    emissionColor = heightEmission ;
 }
 
 void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){

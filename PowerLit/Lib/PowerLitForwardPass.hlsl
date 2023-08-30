@@ -191,7 +191,11 @@ float4 frag(Varyings input
 
 //  world emission
     upFaceAtten = lerp(1,upFaceAtten,_EmissionHeightColorNormalAttenOn);
-    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
+    
+    branch_if(_EmissionHeightOn)
+    {
+        ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
+    }
 
     branch_if(_EmissionScanLineOn)
     {

@@ -23,7 +23,7 @@ struct Varyings{
     float4 tSpace0:TEXCOORD2;
     float4 tSpace1:TEXCOORD3;
     float4 tSpace2:TEXCOORD4;
-    float4 vertexLightAndFogFactor:TEXCOORD5;
+    float4 vertexLightAndUpFaceAtten:TEXCOORD5;
     float4 shadowCoord:TEXCOORD6;
     float4 viewDirTS_NV:TEXCOORD7;
     // motion vectors
@@ -74,9 +74,11 @@ Varyings vert(Attributes input){
 
     float4 clipPos = TransformWorldToHClip(worldPos);
 
-    // float fogFactor = ComputeFogFactor(clipPos.z);
+    half upFaceAtten = 1 - saturate(dot(worldNormal,half3(0,1,0)));
+    upFaceAtten = lerp(1,upFaceAtten,_EmissionHeightColorNormalAttenOn);
+
     float3 vertexLight = VertexLighting(worldPos,worldNormal);
-    output.vertexLightAndFogFactor = float4(vertexLight,0);
+    output.vertexLightAndUpFaceAtten = float4(vertexLight,upFaceAtten);
     output.pos = clipPos;
     output.shadowCoord = TransformWorldToShadowCoord(worldPos);
     output.color = attenParam;
@@ -122,8 +124,8 @@ void InitInputData(inout InputData data,float3 worldPos,Varyings input,SurfaceIn
     data.normalWS = normal;
     data.viewDirectionWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
     data.shadowCoord = TransformWorldToShadowCoord(worldPos,input.shadowCoord); // transform to shadow or use input.shadowCoord
-    // data.fogCoord = input.vertexLightAndFogFactor.w;
-    data.vertexLighting = input.vertexLightAndFogFactor.xyz;
+    // data.fogCoord = input.vertexLightAndUpFaceAtten.w;
+    data.vertexLighting = input.vertexLightAndUpFaceAtten.xyz;
     data.bakedGI = CalcLightmapAndSH(normal,input.uv.zw, (_LightmapSH + _LightmapSHAdditional),_LightmapSaturate + _LMSaturateAdditional,_LightmapIntensity+_LMIntensityAdditional);
     data.normalizedScreenSpaceUV = 0;
     data.shadowMask = SampleShadowMask(input.uv.zw);
@@ -187,10 +189,9 @@ float4 frag(Varyings input
         ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,input.viewDirTS_NV.w);
     }
     #endif
-    half upFaceAtten = 1 - saturate(dot(vertexNormal,half3(0,1,0)));
 
 //  world emission
-    upFaceAtten = lerp(1,upFaceAtten,_EmissionHeightColorNormalAttenOn);
+    half upFaceAtten = input.vertexLightAndUpFaceAtten.w;
     
     branch_if(_EmissionHeightOn)
     {
@@ -247,7 +248,7 @@ float4 frag(Varyings input
         );
         if(isBreak)
             return debugColor;
-    #endif 
+    #endif
     // output world normal
     outputNormal = data.inputData.normalWS.xyzx;
 
@@ -257,9 +258,6 @@ float4 frag(Varyings input
     half4 color = CalcPBR(data,mainLight,shadowMask);
 
     ApplyScreenShadow(color.xyz/**/,data.screenUV);
-
-    // float4 screenColor = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
-    // color.xyz += screenColor.x*5;
     ApplyCloudShadow(color.xyz/**/,worldPos);
     ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy,upFaceAtten);
     return color;

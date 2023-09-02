@@ -33,9 +33,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Smoothness)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Occlusion)
     UNITY_DEFINE_INSTANCED_PROP(half ,_InvertSmoothnessOn)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_MetallicChannel)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_SmoothnessChannel)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_OcclusionChannel)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_MetallicChannel)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_SmoothnessChannel)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_OcclusionChannel)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_ClipOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_ALPHATEST_ON)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Cutoff)
 //--------------------------------- Emission
@@ -47,7 +47,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionHeightColor)
     UNITY_DEFINE_INSTANCED_PROP(half, _EmissionHeightColorNormalAttenOn)
 
-    UNITY_DEFINE_INSTANCED_PROP(half, _EmissionScanLineOn)
+    // UNITY_DEFINE_INSTANCED_PROP(half, _EmissionScanLineOn)
     // UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineColor)
     // UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineMin)
     // UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineMax)
@@ -125,6 +125,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     
 
     UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceDepth)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_BelowColor)
 
     UNITY_DEFINE_INSTANCED_PROP(half ,_StoreyTilingOn)
@@ -277,6 +278,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _RainFlowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainFlowIntensity)
     
     #define _SurfaceDepth UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SurfaceDepth)
+    #define _SurfaceBelowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SurfaceBelowOn)
     #define _BelowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BelowColor)
 //--------------------------------- Storey
     #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTilingOn)

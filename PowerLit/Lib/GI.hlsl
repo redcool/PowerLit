@@ -94,7 +94,7 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
         reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
         rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
     }else
-        reflectDir = CalcReflectDir(worldPos,normal,viewDir,0,_BoxProjectionOn);
+        reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);
     
     // apply offset
     reflectDir+=_ReflectDirOffset.xyz + data.rainReflectDirOffset;

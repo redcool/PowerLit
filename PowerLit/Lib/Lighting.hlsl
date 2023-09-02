@@ -72,7 +72,7 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     // brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
 
     // #if defined(_ALPHA_PREMULTIPLY_ON)
-    branch_if(surfaceInputData.isAlphaPremultiply)
+    UNITY_BRANCH if(surfaceInputData.isAlphaPremultiply)
     {
         brdfData.diffuse *= alpha;
         alpha = alpha * oneMinusReflectivityMetallic + brdfData.reflectivity; //lerp(a,1,m)
@@ -138,10 +138,9 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
     float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data);
 
-    if(_GIApplyMainLightShadow)
-        color *= clamp(mainLight.shadowAttenuation,0.5,1);
+    color *= _GIApplyMainLightShadow ? clamp(mainLight.shadowAttenuation,0.5,1) : 1;
 
-    branch_if(mainLight.distanceAttenuation)
+    UNITY_BRANCH if(mainLight.distanceAttenuation)
     {
         OffsetLight(mainLight/**/,brdfData/**/);
         color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);

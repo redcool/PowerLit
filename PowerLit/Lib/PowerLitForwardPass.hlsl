@@ -193,15 +193,15 @@ float4 frag(Varyings input
 //  world emission
     half upFaceAtten = input.vertexLightAndUpFaceAtten.w;
     
-    branch_if(_EmissionHeightOn)
+    UNITY_BRANCH if(_EmissionHeightOn)
     {
         ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
     }
 
-    branch_if(_EmissionScanLineOn)
-    {
-        ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
-    }
+    // branch_if(_EmissionScanLineOn)
+    // {
+    //     ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
+    // }
 
 
     #if defined(_SNOW_ON)
@@ -224,7 +224,10 @@ float4 frag(Varyings input
     }
     #endif
 
-    ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
+    UNITY_BRANCH if(_SurfaceBelowOn)
+    {
+        ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
+    }
 
     #if defined(DEBUG_DISPLAY)
         half4 debugColor = half4(0,0,0,1);

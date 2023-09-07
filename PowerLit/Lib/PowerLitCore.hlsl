@@ -129,7 +129,7 @@ void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half glob
 }
 
 void ApplyScreenShadow(inout half3 color,float2 screenUV){
-    branch_if(_ScreenShadowOn)
+    UNITY_BRANCH if(_ScreenShadowOn)
     {
         color *= SAMPLE_TEXTURE2D(_ScreenSpaceShadowmapTexture,sampler_ScreenSpaceShadowmapTexture,screenUV).x;
     }
@@ -138,7 +138,7 @@ void ApplyScreenShadow(inout half3 color,float2 screenUV){
 void ApplyCloudShadow(inout half3 color,float3 worldPos){
     #define _CloudShadowIntensity _CloudShadowIntensityInfo.x
     #define _CloudShadowBaseIntensity _CloudShadowIntensityInfo.y
-    if(_CloudShadowOn){
+    UNITY_BRANCH if(_CloudShadowOn){
         float noise = CalcWorldNoise(worldPos,_CloudShadowTilingOffset,1) * _CloudShadowIntensityInfo;
         color = lerp(_CloudShadowColor,color ,saturate(noise) + _CloudShadowBaseIntensity);
     }
@@ -221,19 +221,19 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     // data.albedo = baseMap.xyz * _Color.xyz;
     CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,data.albedo/*out*/,data.alpha/*out*/);
 
-    float4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
+    half4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
     SplitPbrMaskTexture(
         data.metallic/**/,data.smoothness/**/,data.occlusion/**/,
         pbrMask,
-        int3(_MetallicChannel,_SmoothnessChannel,_OcclusionChannel),
-        float3(_Metallic,_Smoothness,_Occlusion),
+        // half3(_MetallicChannel,_SmoothnessChannel,_OcclusionChannel), // gen code use dot
+        half3(0,1,2),
+        half3(_Metallic,_Smoothness,_Occlusion),
         _InvertSmoothnessOn
     );
 
-
     data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
     data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz);
-    data.specular = (float3)0;
+    data.specular = 0;
     data.clearCoatMask = 0;
     data.clearCoatSmoothness =0;
 

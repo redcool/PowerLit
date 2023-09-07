@@ -7,5 +7,5 @@
 #include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
 
 #define branch_if UNITY_BRANCH if
-
+// #define UNITY_BRANCH
 #endif // POWER_LIT_COMMON_HLSL

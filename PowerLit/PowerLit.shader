@@ -9,6 +9,7 @@ Shader "URP/PowerLit"
         [GroupItem(Main)][gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
 
         [GroupHeader(Main,Surface Below)]
+        [GroupToggle(Main)]_SurfaceBelowOn("_SurfaceBelowOn",float) = 0
         [GroupItem(Main)]_SurfaceDepth("_SurfaceDepth",float) = -1
         [GroupItem(Main)]_BelowColor("_BelowColor",color) = (1,1,1,1)
 
@@ -24,11 +25,11 @@ Shader "URP/PowerLit"
 
         [GroupHeader(Main,PBR Slider Options)]
         [GroupToggle(Main)]_InvertSmoothnessOn("_InvertSmoothnessOn",int) = 0
-
-        [GroupHeader(Main,PBRMask Channel)]
-        [GroupEnum(Main,R 0 G 1 B 2)]_MetallicChannel("_MetallicChannel",int) = 0
-        [GroupEnum(Main,R 0 G 1 B 2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1
-        [GroupEnum(Main,R 0 G 1 B 2)]_OcclusionChannel("_OcclusionChannel",int) = 2
+//------- disable temporary
+        // [GroupHeader(Main,PBRMask Channel)]
+        // [GroupEnum(Main,R 0 G 1 B 2)]_MetallicChannel("_MetallicChannel",int) = 0
+        // [GroupEnum(Main,R 0 G 1 B 2)]_SmoothnessChannel("_SmoothnessChannel",int) = 1
+        // [GroupEnum(Main,R 0 G 1 B 2)]_OcclusionChannel("_OcclusionChannel",int) = 2
 //================================================= Parallax
         [Group(Parallax)]
         [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
@@ -47,12 +48,12 @@ Shader "URP/PowerLit"
 
         [Group(World Emission)]
         [GroupToggle(World Emission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
-        [GroupVectorSlider(World Emission,min maxOffset,0_1 0_1,field)]_EmissionHeight("_EmissionHeight",vector)  = (0,0,0,0)
+        [GroupVectorSlider(World Emission,min maxOffset,m100_100 m100_100,,float)]_EmissionHeight("_EmissionHeight",vector)  = (0,0,0,0)
         [GroupItem(World Emission)][hdr]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
         [GroupToggle(World Emission)]_EmissionHeightColorNormalAttenOn("_EmissionHeightColorNormalAttenOn",int) = 1
 
-        [Group(WorldScaneLine)]
-        [GroupToggle(WorldScaneLine)]_EmissionScanLineOn("_EmissionScanLineOn",int) = 0
+        // [Group(WorldScaneLine)]
+        // [GroupToggle(WorldScaneLine)]_EmissionScanLineOn("_EmissionScanLineOn",int) = 0
         // [GroupItem(WorldScaneLine)]_EmissionScanLineColor("_EmissionScanLineColor",color) = (1,1,1,1)
         // [GroupItem(WorldScaneLine)]_EmissionScanLineMin("_EmissionScanLineMin",vector) = (0,0,0,0)
         // [GroupItem(WorldScaneLine)]_EmissionScanLineMax("_EmissionScanLineMax",vector) = (100,0,0,0)
@@ -219,8 +220,8 @@ Shader "URP/PowerLit"
         [GroupItem(StoreyLine)][hdr]_StoreyLineColor("_StoreyLineColor",color) = (1,1,1,1)
 
 // ================================================== stencil settings
-		[Group(Stencil)]
-		[GroupEnum(Stencil,UnityEngine.Rendering.CompareFunction)]_StencilComp ("Stencil Comparison", Float) = 0
+        [Group(Stencil)]
+        [GroupEnum(Stencil,UnityEngine.Rendering.CompareFunction)]_StencilComp ("Stencil Comparison", Float) = 0
         [GroupItem(Stencil)]_Stencil ("Stencil ID", int) = 0
         [GroupEnum(Stencil,UnityEngine.Rendering.StencilOp)]_StencilOp ("Stencil Operation", Float) = 0
         _StencilWriteMask ("Stencil Write Mask", Float) = 255
@@ -298,7 +299,7 @@ detail map
             #pragma shader_feature_local _DETAIL_ON
             
             // urp keywords 
-            // #pragma multi_compile _ _REFLECTION_PROBE_BOX_PROJECTION // change to uniform vars
+        //     #pragma multi_compile _ _REFLECTION_PROBE_BOX_PROJECTION
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS

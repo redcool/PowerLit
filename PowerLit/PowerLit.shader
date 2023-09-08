@@ -9,7 +9,7 @@ Shader "URP/PowerLit"
         [GroupItem(Main)][gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
 
         [GroupHeader(Main,Surface Below)]
-        [GroupToggle(Main)]_SurfaceBelowOn("_SurfaceBelowOn",float) = 0
+        [GroupToggle(Main,_SURFACE_BELOW_ON)]_SurfaceBelowOn("_SurfaceBelowOn",float) = 0
         [GroupItem(Main)]_SurfaceDepth("_SurfaceDepth",float) = -1
         [GroupItem(Main)]_BelowColor("_BelowColor",color) = (1,1,1,1)
 
@@ -19,11 +19,10 @@ Shader "URP/PowerLit"
 
         [GroupHeader(Main,PBRMask)]
         [GroupItem(Main)]_MetallicMaskMap("_MetallicMaskMap(Metallic(R),Smoothness(G),Occlusion(B))",2d) = "white"{}
+        // only gui
         [GroupItem(Main)]_Metallic("_Metallic",range(0,1)) = 0.5
         [GroupItem(Main)]_Smoothness("_Smoothness",range(0,1)) = 0.5
         [GroupItem(Main)]_Occlusion("_Occlusion",range(0,1)) = 0.5
-
-        [GroupHeader(Main,PBR Slider Options)]
         [GroupToggle(Main)]_InvertSmoothnessOn("_InvertSmoothnessOn",int) = 0
 //------- disable temporary
         // [GroupHeader(Main,PBRMask Channel)]
@@ -47,7 +46,7 @@ Shader "URP/PowerLit"
         [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
 
         [Group(World Emission)]
-        [GroupToggle(World Emission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
+        [GroupToggle(World Emission,_EMISSION_HEIGHT_ON)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
         [GroupVectorSlider(World Emission,min maxOffset,m100_100 m100_100,,float)]_EmissionHeight("_EmissionHeight",vector)  = (0,0,0,0)
         [GroupItem(World Emission)][hdr]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
         [GroupToggle(World Emission)]_EmissionHeightColorNormalAttenOn("_EmissionHeightColorNormalAttenOn",int) = 1
@@ -68,7 +67,7 @@ Shader "URP/PowerLit"
         [GroupToggle]_ScreenShadowOn("_ScreenShadowOn",int) = 0
 
         [GroupHeader(CloudShadow)]
-        [GroupToggle]_CloudShadowOn("_CloudShadowOn",int) = 0
+        [GroupToggle(,_CLOUD_SHADOW_ON)]_CloudShadowOn("_CloudShadowOn",int) = 0
         // [GroupVectorSlider(,TilingX TilingZ OffsetX OffsetZ,m0.0001_10)]
         _CloudShadowTilingOffset("_CloudShadowTilingOffset",vector) = (0.1,0.1,0.1,0.1)
 
@@ -79,20 +78,20 @@ Shader "URP/PowerLit"
         // [GroupToggle(_,LIGHTMAP_SHADOW_MIXING)]_LightMapShadowMixing("_LightMapShadowMixing",int) = 0
 //================================================= Env
         [GroupHeader(,Custom IBL)]
-        [GroupToggle(_,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
+        [GroupToggle(,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
         [NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
 
         [GroupHeader(,IBL Params)]
         _EnvIntensity("_EnvIntensity",float) = 1
         [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
         [GroupVectorSlider(_,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
-        [GroupEnum(,Reflection InteriorMap,0 1)]_ReflectMode("_ReflectMode",int) = 0
+        [GroupToggle(,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
 
         [GroupHeader(,BoxProjection)]
-        [GroupToggle(_)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
+        [GroupToggle(,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [Header(Custom Light)]
-        [GroupToggle(_)]_CustomLightOn("_CustomLightOn",float) = 0
+        [GroupToggle(,_CUSTOM_LIGHT_ON)]_CustomLightOn("_CustomLightOn",float) = 0
         [LightInfo]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
         [hdr][LightInfo(Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
         [GroupEnum(_,LightColor 0 SpecularColor 1)]_CustomLightColorUsage("_CustomLightColorUsage",int) = 0
@@ -102,7 +101,7 @@ Shader "URP/PowerLit"
 
         [Header(PlanarReflection)]
         [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
-        [GroupToggle()]_PlanarReflectionReverseUVX("_PlanarReflectionReverseUVX",int) = 0
+        [GroupToggle()]_PlanarReflectionReverseUV("_PlanarReflectionReverseUV",int) = 0
         
         [Header(GI)] // Final GI = PowerLITFeature GI + Additional
         _LightmapSHAdditional("_LightmapSHAdditional",range(-1,1)) = 0
@@ -228,6 +227,22 @@ Shader "URP/PowerLit"
         _StencilReadMask ("Stencil Read Mask", Float) = 255
 //================================================= Debug display
         [GroupToggle(_,DEBUG_DISPLAY)]_DebugDisplay("_DebugDisplay",int) = 0
+//================================================= lights
+        // [GroupToggle(,_ADDITIONAL_LIGHTS)]_AddtionalLightsOn("_AddtionalLightsOn",int) = 0
+
+//================ vectors group
+        // actual data store in this
+        [VectorValues(_Metallic _Smoothness _Occlusion _InvertSmoothnessOn)]
+        _MSOInfo("_MSOInfo",vector) = (1,1,1,1)
+
+        [VectorValues(_NormalScale _Cutoff _AlphaPremultiply _GIApplyMainLightShadow)]
+        _NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow("_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow",vector) = (1,1,1,1)
+
+        [VectorValues(_FresnelIntensity _LightmapSHAdditional _LMSaturateAdditional _LMIntensityAdditional)]
+        _FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd("_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd",vector)=(0,0,0,0)
+
+        [VectorValues(_StoreyTilingOn _StoreyLightSwitchSpeed _StoreyHeight _StoreyLineOn)]
+        _StoreyTiling_LightSwitchSpeed_Height_Line("_StoreyTiling_LightSwitchSpeed_Height_Line",vector)=(0,0,0,0)
     }
     SubShader
     {
@@ -283,25 +298,38 @@ detail map
             // material keywords
             #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
-            #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _PLANAR_REFLECTION_ON
-            #pragma shader_feature_local _IBL_ON
-            // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
+            // #define _EMISSION
+            // #define _PLANAR_REFLECTION_ON
+            #pragma shader_feature_local_fragment _IBL_ON
             // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
             #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
-            #pragma shader_feature_local _SNOW_ON
-            #pragma shader_feature_local _WIND_ON
-            #pragma shader_feature_local _RAIN_ON
-            #pragma shader_feature_local _STOREY_ON
-            #pragma shader_feature_local _DETAIL_ON
+            #pragma shader_feature_local_fragment _SNOW_ON
+            #pragma shader_feature_local_vertex _WIND_ON
+            #pragma shader_feature_local_fragment _RAIN_ON
+            #pragma shader_feature_local_fragment _STOREY_ON
+            #pragma shader_feature_local_fragment _DETAIL_ON
+
+            // so ...
+            // #define _CUSTOM_LIGHT_ON
+            // #define _SURFACE_BELOW_ON
+            // #define _CLOUD_SHADOW_ON
+            // #define _EMISSION_HEIGHT_ON
+            // #define _INTERIOR_MAP_ON
+            #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
+            #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
+            #pragma shader_feature_local_fragment _CLOUD_SHADOW_ON
+            #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
+            #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
             
             // urp keywords 
-        //     #pragma multi_compile _ _REFLECTION_PROBE_BOX_PROJECTION
+            #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
-            #pragma multi_compile _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
 

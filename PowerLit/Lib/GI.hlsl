@@ -64,7 +64,6 @@ float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
 
     float3 iblColor = 0;
     
-    // branch_if(_IBLOn) 
     #if defined(_IBL_ON)
     {
         iblColor = CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,_IBLCube_HDR);
@@ -77,7 +76,7 @@ float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
     return lerp(1, iblColor,customIBLMask);
 }
 
-float4 CalcPlanerReflection(float2 suv){
+float4 SamplePlanarReflectionTex(float2 suv){
     return SAMPLE_TEXTURE2D(_ReflectionTexture,sampler_ReflectionTexture,suv);
 }
 
@@ -88,24 +87,32 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
 
     float3 reflectDir = 0;
     float rough = brdfData.perceptualRoughness;
-    float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
 
-    branch_if(_ReflectMode == REFLECT_MODE_INTERIROR_MAP){
-        reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
-        rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
-    }else
+    #if defined(_INTERIOR_MAP_ON)
+    {
+        UNITY_BRANCH if(_InteriorMapOn)
+        {
+            float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
+            reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
+            rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
+        }else{
+        reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);    
+        }
+    }
+    #else
         reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);
-    
+    #endif
+
     // apply offset
     reflectDir+=_ReflectDirOffset.xyz + data.rainReflectDirOffset;
 
     float3 indirectSpecular  = CalcIBL(reflectDir,rough,customIBLMask);
     // indirectSpecular = lerp(indirectSpecular,1,UVBorder(data.uv,float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w)));
 
-    // branch_if(_PlanarReflectionOn)
     #if defined(_PLANAR_REFLECTION_ON)
+    branch_if(_PlanarReflectionOn)
     {
-        float4 planarReflectColor = CalcPlanerReflection(data.screenUV+data.rainReflectDirOffset.xz);
+        float4 planarReflectColor = SamplePlanarReflectionTex(data.screenUV+data.rainReflectDirOffset.xz);
         indirectSpecular = lerp(indirectSpecular,planarReflectColor.xyz,planarReflectColor.w);
     }
     #endif

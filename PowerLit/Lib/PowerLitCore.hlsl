@@ -32,19 +32,23 @@ float3 CalcNormal(float2 uv,TEXTURE2D_PARAM(normalMap,sampler_normalMap),float s
     return n;
 }
 
-float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map),float3 emissionColor){
+float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map)){
     float4 emission = 0;
     #if defined(_EMISSION)
-    //branch_if(isEmissionOn)
+    // UNITY_BRANCH if(_EmissionOn)
     {
         emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
-        emission.xyz = emission.xyz * emissionColor * emission.w;
+        emission.xyz = emission.xyz * _EmissionColor * emission.w;
     }
     #endif
     return emission.xyz ;
 }
 
 void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalAtten){
+    #if defined(_EMISSION_HEIGHT_ON)
+    // UNITY_BRANCH if(_EmissionHeightOn)
+    {
+
     float maxHeight = length(float3(UNITY_MATRIX_M._12,UNITY_MATRIX_M._22,UNITY_MATRIX_M._32));
     maxHeight += _EmissionHeight.y; // apply height offset
 
@@ -53,13 +57,17 @@ void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalA
     // half4 heightEmission = _EmissionHeightColor * rate;
     half3 heightEmission = lerp(emissionColor.xyz,_EmissionHeightColor.xyz,rate);
     emissionColor = heightEmission ;
+    }
+    #endif
 }
 
 void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
+    #if _EMISSION_SCANLINE_ON
     half3 rate = (worldPos - _EmissionScanLineMin)/(_EmissionScanLineMax - _EmissionScanLineMin);
     rate = abs(rate - _EmissionScanLineRange_Rate.z);
     rate = 1-smoothstep(_EmissionScanLineRange_Rate.x,_EmissionScanLineRange_Rate.y,rate);
     emissionColor += rate[_ScanLineAxis] * _EmissionScanLineColor.xyz;
+    #endif
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
@@ -136,14 +144,18 @@ void ApplyScreenShadow(inout half3 color,float2 screenUV){
 }
 
 void ApplyCloudShadow(inout half3 color,float3 worldPos){
+    #if defined(_CLOUD_SHADOW_ON)
     #define _CloudShadowIntensity _CloudShadowIntensityInfo.x
     #define _CloudShadowBaseIntensity _CloudShadowIntensityInfo.y
-    UNITY_BRANCH if(_CloudShadowOn){
+    // UNITY_BRANCH if(_CloudShadowOn)
+    {
         float noise = CalcWorldNoise(worldPos,_CloudShadowTilingOffset,1) * _CloudShadowIntensityInfo;
         color = lerp(_CloudShadowColor,color ,saturate(noise) + _CloudShadowBaseIntensity);
     }
+    #endif
 }
 
+#if defined(_RAIN_ON)
 /** 
     rain atten mode
     
@@ -202,17 +214,35 @@ void ApplyRainPbr(inout SurfaceInputData data){
     data.surfaceData.smoothness = lerp(data.surfaceData.smoothness , _RainSmoothness , rainIntensity);
 }
 
+void InitSurfaceInputDataRain(inout SurfaceInputData data,float3 worldPos,float3 vertexNormal){
+    float rainAtten = GetRainAtten(worldPos,vertexNormal,data.surfaceData.smoothness,data.surfaceData.alpha);
+    float rainNoise = CalcRainNoise(worldPos);
+
+    data.rainAtten = rainAtten;
+    data.rainNoise = rainNoise;
+    data.envIntensity = _RainReflectIntensity;
+}
+
+#endif // _RAIN_ON
+
 void ApplySurfaceBelow(inout SurfaceData data,float3 worldPos){
+    #if defined(_SURFACE_BELOW_ON)
+    // UNITY_BRANCH if(_SurfaceBelowOn)
+    {
     float heightRate = saturate(worldPos.y -_SurfaceDepth);
     heightRate = smoothstep(0.02,0.1,heightRate);
     data.albedo *= lerp(_BelowColor.xyz,1,heightRate);
+    }
+    #endif
 }
 
 void ApplySnow(inout SurfaceData data,float3 worldNormal){
+    #if defined(_SNOW_ON)
     branch_if(! IsSnowOn())
         return;
     
     data.albedo = MixSnow(data.albedo,1,_SnowIntensity,worldNormal,_ApplyEdgeOn);
+    #endif
 }
 
 void InitSurfaceData(float2 uv,inout SurfaceData data){
@@ -232,7 +262,7 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     );
 
     data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
-    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap,_EmissionColor.xyz);
+    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap);
     data.specular = 0;
     data.clearCoatMask = 0;
     data.clearCoatSmoothness =0;
@@ -247,22 +277,14 @@ void InitSurfaceInputData(inout SurfaceInputData data,float2 uv,float4 clipPos,f
     data.uv = uv;
     data.viewDirTS = viewDirTS;
     #if defined(_PLANAR_REFLECTION_ON)
-    branch_if(_PlanarReflectionReverseUVX)
+    if(_PlanarReflectionReverseUV)
         data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
     #endif
     
     data.envIntensity = _EnvIntensity;
 }
 
-void InitSurfaceInputDataRain(inout SurfaceInputData data,float3 worldPos,float3 vertexNormal){
-    float rainAtten = GetRainAtten(worldPos,vertexNormal,data.surfaceData.smoothness,data.surfaceData.alpha);
-    float rainNoise = CalcRainNoise(worldPos);
-
-    data.rainAtten = rainAtten;
-    data.rainNoise = rainNoise;
-    data.envIntensity = _RainReflectIntensity;
-}
-
+#if defined(_STOREY_ON)
 float WorldHeightTilingUV(float3 worldPos){
     float v = floor(worldPos.y/_StoreyHeight);
     return v;
@@ -303,8 +325,11 @@ void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 s
     }
 }
 
+#endif //_STOREY_ON
+
 void ApplyDetails(inout float metallic,inout float smoothness,inout float occlusion,float2 uv,float3 positionWS,float3 normalWS)
 {
+    #if defined(_DETAIL_ON)
     float4 pbrMask = 0;
 
     branch_if(_DetailWorldPosTriplanar)
@@ -327,6 +352,7 @@ void ApplyDetails(inout float metallic,inout float smoothness,inout float occlus
     metallic = lerp(metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
     smoothness = lerp(smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);
     occlusion = lerp(occlusion,pbrMask.z,_DetailPbrMaskApplyOcclusion);
+    #endif 
 }
 
 

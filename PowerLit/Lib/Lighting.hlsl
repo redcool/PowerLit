@@ -42,8 +42,8 @@ Light GetMainLight(SurfaceInputData data,float4 shadowMask){
 }
 
 void OffsetLight(inout Light mainLight,inout BRDFData brdfData){
-    // #if defined(_CUSTOM_LIGHT_ON)
-    branch_if(_CustomLightOn)
+    #if defined(_CUSTOM_LIGHT_ON)
+    // branch_if(_CustomLightOn)
     {
         mainLight.direction = (_CustomLightDir.xyz);
 
@@ -52,7 +52,7 @@ void OffsetLight(inout Light mainLight,inout BRDFData brdfData){
             case 1 : brdfData.specular *= _CustomLightColor.xyz; break;
         }
     }
-    // #endif
+    #endif
 }
 
 void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFData brdfData){
@@ -72,7 +72,7 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     // brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
 
     // #if defined(_ALPHA_PREMULTIPLY_ON)
-    UNITY_BRANCH if(surfaceInputData.isAlphaPremultiply)
+    if(surfaceInputData.isAlphaPremultiply)
     {
         brdfData.diffuse *= alpha;
         alpha = alpha * oneMinusReflectivityMetallic + brdfData.reflectivity; //lerp(a,1,m)
@@ -90,7 +90,7 @@ float3 CalcDirectSpecularTerm(float r/*roughness*/,float r2,float3 lightDir,floa
     float lh = saturate(dot(lightDir,h));
 
     float d = nh * nh * (r2-1)+1;
-    float specTerm = r2/( d * d * max(0.1, lh * lh) * ( 4 * r + 2 ));
+    float specTerm = r2/( d * d * max(0.001, lh * lh) * ( 4 * r + 2 ));
 
     #if defined (SHADER_API_MOBILE) || defined (SHADER_API_SWITCH)
         specTerm = clamp(specTerm,0,100);
@@ -118,7 +118,7 @@ float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 sh
 
         // OffsetLight(light/**/);
 
-        branch_if(light.distanceAttenuation)
+        // branch_if(light.distanceAttenuation)
             c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
     }
     return c;
@@ -140,7 +140,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
 
     color *= _GIApplyMainLightShadow ? clamp(mainLight.shadowAttenuation,0.5,1) : 1;
 
-    UNITY_BRANCH if(mainLight.distanceAttenuation)
+    // UNITY_BRANCH if(mainLight.distanceAttenuation)
     {
         OffsetLight(mainLight/**/,brdfData/**/);
         color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
@@ -158,7 +158,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     // branch_if(IsAdditionalLightPixel())
     {
         brdfData.specular = lastSpecular;
-        color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
+        // color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
         // return CalcAdditionalPBRLighting(brdfData,inputData,shadowMask).xyzx;
     }
     #endif

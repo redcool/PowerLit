@@ -74,8 +74,11 @@ Varyings vert(Attributes input){
 
     float4 clipPos = TransformWorldToHClip(worldPos);
 
-    half upFaceAtten = 1 - saturate(dot(worldNormal,half3(0,1,0)));
+    half upFaceAtten = 1;
+    #if defined(_EMISION_HEIGHT_ON)
+    upFaceAtten = 1 - saturate(dot(worldNormal,half3(0,1,0)));
     upFaceAtten = lerp(1,upFaceAtten,_EmissionHeightColorNormalAttenOn);
+    #endif
 
     float3 vertexLight = VertexLighting(worldPos,worldNormal);
     output.vertexLightAndUpFaceAtten = float4(vertexLight,upFaceAtten);
@@ -86,9 +89,11 @@ Varyings vert(Attributes input){
     output.fogCoord.xy = CalcFogFactor(worldPos);
 
     // vertex noise
+    #if defined(_WIND_ON)
     float2 noiseUV = worldPos.xz*0.5 + _WindDir.xz * _Time.y * (_IsGlobalWindOn?_WindSpeed:0);
     // output.fogCoord.z = unity_gradientNoise(noiseUV);
     output.fogCoord.z = SampleWeatherNoiseLOD(noiseUV,0);
+    #endif
 
     // branch_if(_ParallaxOn)
     float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
@@ -148,6 +153,7 @@ float4 frag(Varyings input
     ,out float4 outputNormal:SV_TARGET1
     ,out float4 outputMotionVectors:SV_TARGET2
 ):SV_Target{
+
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
@@ -165,9 +171,7 @@ float4 frag(Varyings input
     InitSurfaceInputData(data/*inout*/,input.uv.xy,input.pos,input.viewDirTS_NV.xyz);
 
     // apply detail layers
-    #if defined(_DETAIL_ON)
-        ApplyDetails(data.surfaceData.metallic/**/,data.surfaceData.smoothness,data.surfaceData.occlusion,input.uv.xy,worldPos,vertexNormal);
-    #endif
+    ApplyDetails(data.surfaceData.metallic/**/,data.surfaceData.smoothness,data.surfaceData.occlusion,input.uv.xy,worldPos,vertexNormal);
 
     // blend rain normalTS
     #if defined(_RAIN_ON)
@@ -193,20 +197,14 @@ float4 frag(Varyings input
 //  world emission
     half upFaceAtten = input.vertexLightAndUpFaceAtten.w;
     
-    UNITY_BRANCH if(_EmissionHeightOn)
-    {
-        ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
-    }
+    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
 
     // branch_if(_EmissionScanLineOn)
     // {
     //     ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
     // }
 
-
-    #if defined(_SNOW_ON)
     ApplySnow(data.surfaceData/**/,data.inputData.normalWS);
-    #endif
     
     // data.surfaceData.albedo += vertexNoise;
     // return data.surfaceData.albedo.xyzx;
@@ -224,10 +222,7 @@ float4 frag(Varyings input
     }
     #endif
 
-    UNITY_BRANCH if(_SurfaceBelowOn)
-    {
-        ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
-    }
+    ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
 
     #if defined(DEBUG_DISPLAY)
         half4 debugColor = half4(0,0,0,1);
@@ -259,8 +254,7 @@ float4 frag(Varyings input
     outputMotionVectors = CALC_MOTION_VECTORS(input);
 
     half4 color = CalcPBR(data,mainLight,shadowMask);
-
-    ApplyScreenShadow(color.xyz/**/,data.screenUV);
+    // ApplyScreenShadow(color.xyz/**/,data.screenUV);
     ApplyCloudShadow(color.xyz/**/,worldPos);
     ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy,upFaceAtten);
     return color;

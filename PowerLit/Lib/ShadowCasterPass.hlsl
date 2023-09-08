@@ -29,9 +29,13 @@ float4 GetShadowPositionHClip(Attributes input)
     float3 normalWS = TransformObjectToWorldNormal(input.normal);
     
     float4 attenParam = input.color.x; // vertex color atten
+    
+    #if defined(_WIND_ON)
     branch_if(IsWindOn()){
         positionWS = WindAnimationVertex(positionWS,input.pos.xyz,normalWS,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
+    #endif
+
 #if defined(SHADOW_PASS)
     #if _CASTING_PUNCTUAL_LIGHT_SHADOW
         float3 lightDirectionWS = normalize(_LightPosition - positionWS);

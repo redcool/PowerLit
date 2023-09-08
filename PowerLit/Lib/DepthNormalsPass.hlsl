@@ -29,9 +29,11 @@ v2f vert(appdata i){
     float3 b = normalize(cross(n,t)) * sign;
 
     float4 attenParam = i.color.x; // vertex color atten
+    #if defined(_WIND_ON)
     branch_if(IsWindOn()){
         worldPos = WindAnimationVertex(worldPos,i.pos.xyz,n,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
+    #endif
 
     o.tSpace0 = float4(t.x,b.x,n.x,worldPos.x);
     o.tSpace1 = float4(t.y,b.y,n.y,worldPos.y);

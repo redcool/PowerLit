@@ -55,7 +55,7 @@ float4 TransformWorldToShadowCoord(float3 worldPos,float4 vertexShadowCoord){
 real SampleShadowmapRealtime(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData, float4 shadowParams, bool isPerspectiveProjection = true)
 {
     // Compiler will optimize this branch away as long as isPerspectiveProjection is known at compile time
-    branch_if (isPerspectiveProjection)
+    if (isPerspectiveProjection)
         shadowCoord.xyz /= shadowCoord.w;
 
     real attenuation;
@@ -95,7 +95,6 @@ float MainLightRealtimeShadow(float4 shadowCoord,bool isReceiveShadow){
 }
 
 float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isMixShadow){
-    UNITY_BRANCH 
     if(isMixShadow)
     {
         return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);

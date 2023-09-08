@@ -1,10 +1,20 @@
 // powerLit colors
 //_RippleTex=#00ff00
-_RippleOffsetAutoStop=#00ff00
-_RainIntensity=#00ff00
-_RainMaskFrom=#00ff00
-_RippleAlbedoIntensity=#00ff00
 
-_DetailPBRMetallic=#00ff00
-_DetailPBRSmoothness=#00ff00
-_DetailPBROcclusion=#00ff00
+_IBLOn=#ff8800
+_ParallaxOn=#ff8800
+_IsReceiveShadowOff=#ff8800
+_ClipOn=#ff8800
+_EmissionOn=#ff8800
+_PlanarReflectionOn=#ff8800
+
+_EmissionHeightOn=#ff8800
+_InteriorMapOn=#ff8800
+_BoxProjectionOn=#ff8800
+_DebugDisplay=#ff8800
+_StoreyTilingOn=#ff8800
+_FogNoiseOn=#ff8800
+_SnowOn=#ff8800
+_WindOn=#ff8800
+_RainOn=#ff8800
+_DetailOn=#ff8800

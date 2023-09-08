@@ -8,7 +8,7 @@
         {"array":["_ClipOn","_Cutoff","_AlphaPremultiply","_PresetBlendMode","_RenderQueue"]},
         {"array":["_ParallaxOn","_ParallaxIterate","_ParallaxInVSOn","_ParallaxMap","_ParallaxMapChannel","_ParallaxHeight"]},
         {"array":["_IsReceiveShadowOff","_GIApplyMainLightShadow","_ScreenShadowOn"]},
-        {"array":["_CustomLightOn","_CustomLightDir","_CustomLightColor","_CustomLightColorUsage","_IBLOn","_IBLCube","_EnvIntensity","_IBLMaskMainTexA","_ReflectDirOffset","_ReflectMode","_LightmapSHAdditional","_LMSaturateAdditional","_LMIntensityAdditional","_FresnelIntensity","_PlanarReflectionOn","_PlanarReflectionReverseUVX"]},
+        {"array":["_CustomLightOn","_CustomLightDir","_CustomLightColor","_CustomLightColorUsage","_IBLOn","_IBLCube","_EnvIntensity","_IBLMaskMainTexA","_ReflectDirOffset","_InteriorMapOn","_LightmapSHAdditional","_LMSaturateAdditional","_LMIntensityAdditional","_FresnelIntensity","_PlanarReflectionOn","_PlanarReflectionReverseUV"]},
         {"array":["_EmissionOn","_EmissionMap","_EmissionColor","_EmissionHeightOn","_EmissionHeight","_EmissionHeightColor","_EmissionScanLineOn","_EmissionScanLineColor","_EmissionScanLineMin","_EmissionScanLineMax","_EmissionScanLineRate"]},
         {"array":[ "_WindOn","_WindAnimParam","_WindDir","_WindSpeed"]},
         {"array":[ "_SnowOn","_ApplyEdgeOn","_SnowIntensity"]},

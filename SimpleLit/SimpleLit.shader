@@ -181,5 +181,21 @@ Shader "URP/SimpleLit"
 
             ENDHLSL
         }
+        Pass{
+            Name "Meta"
+            Tags{"LightMode" = "Meta"}
+            Cull Off
+            
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag 
+            #pragma shader_feature_fragment ALPHA_TEST
+            #pragma shader_feature_local_fragment _EMISSION
+
+            #include "Lib/PBRInput.hlsl"
+            #include "Lib/SimpleLitMetaPass.hlsl"
+
+            ENDHLSL
+        }
     }
 }

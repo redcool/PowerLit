@@ -39,7 +39,7 @@ v2f vert (appdata v)
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_TRANSFER_INSTANCE_ID(v,o);
 
-    o.vertex = UnityObjectToClipPos(v.vertex);
+    o.vertex = UnityObjectToClipPos(v.vertex.xyz);
     o.uv.xy = TRANSFORM_TEX(v.uv, _MainTex);
     o.uv.zw = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
 

@@ -62,7 +62,7 @@ void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalA
 }
 
 void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
-    #if _EMISSION_SCANLINE_ON
+    #if defined(_EMISSION_SCANLINE_ON)
     half3 rate = (worldPos - _EmissionScanLineMin)/(_EmissionScanLineMax - _EmissionScanLineMin);
     rate = abs(rate - _EmissionScanLineRange_Rate.z);
     rate = 1-smoothstep(_EmissionScanLineRange_Rate.x,_EmissionScanLineRange_Rate.y,rate);
@@ -70,6 +70,7 @@ void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
     #endif
 }
 
+#if defined(_PARALLAX)
 void ApplyParallax(inout float2 uv,float3 viewTS){
     float size = 1.0/_ParallaxIterate;
     // branch_if(_ParallaxOn)
@@ -87,6 +88,7 @@ void ApplyParallaxVertex(inout float2 uv,float3 viewTS){
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
 }
+#endif
 
 float3 ScreenToWorldPos(float2 screenUV){
     float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x;

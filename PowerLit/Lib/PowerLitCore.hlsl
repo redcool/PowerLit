@@ -62,7 +62,7 @@ void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalA
 }
 
 void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
-    #if _EMISSION_SCANLINE_ON
+    #if defined(_EMISSION_SCANLINE_ON)
     half3 rate = (worldPos - _EmissionScanLineMin)/(_EmissionScanLineMax - _EmissionScanLineMin);
     rate = abs(rate - _EmissionScanLineRange_Rate.z);
     rate = 1-smoothstep(_EmissionScanLineRange_Rate.x,_EmissionScanLineRange_Rate.y,rate);
@@ -70,6 +70,7 @@ void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
     #endif
 }
 
+#if defined(_PARALLAX)
 void ApplyParallax(inout float2 uv,float3 viewTS){
     float size = 1.0/_ParallaxIterate;
     // branch_if(_ParallaxOn)
@@ -87,6 +88,7 @@ void ApplyParallaxVertex(inout float2 uv,float3 viewTS){
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
 }
+#endif
 
 float3 ScreenToWorldPos(float2 screenUV){
     float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x;
@@ -332,16 +334,13 @@ void ApplyDetails(inout float metallic,inout float smoothness,inout float occlus
     #if defined(_DETAIL_ON)
     float4 pbrMask = 0;
 
-    branch_if(_DetailWorldPosTriplanar)
+    UNITY_BRANCH if(_DetailWorldPosTriplanar)
     {
         pbrMask = TriplanarSample(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,positionWS,normalWS,_DetailPBRMaskMap_ST);
     }else{
         // 1 plane sample
         float2 uvs[3] = {positionWS.xz,positionWS.xy,positionWS.yz};
-        branch_if(_DetailUVUseWorldPos)
-        {
-            uv = uvs[_DetailWorldPlaneMode];
-        }
+            uv = _DetailUVUseWorldPos ? uvs[_DetailWorldPlaneMode] : uv;
         uv = uv * _DetailPBRMaskMap_ST.xy + _DetailPBRMaskMap_ST.zw;
         pbrMask = SAMPLE_TEXTURE2D(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,uv);
     }
@@ -349,9 +348,13 @@ void ApplyDetails(inout float metallic,inout float smoothness,inout float occlus
     // remove high light flickers
     pbrMask.z = saturate(pbrMask.z);
 
-    metallic = lerp(metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
-    smoothness = lerp(smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);
-    occlusion = lerp(occlusion,pbrMask.z,_DetailPbrMaskApplyOcclusion);
+    half3 lerpValue = lerp(half3(metallic,smoothness,occlusion),pbrMask.xyz,half3(_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion));
+    metallic = lerpValue.x;
+    smoothness = lerpValue.y;
+    occlusion = lerpValue.z;
+    // metallic = lerp(metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
+    // smoothness = lerp(smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);
+    // occlusion = lerp(occlusion,pbrMask.z,_DetailPbrMaskApplyOcclusion);
     #endif 
 }
 

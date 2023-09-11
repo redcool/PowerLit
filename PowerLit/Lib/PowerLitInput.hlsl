@@ -28,11 +28,10 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_Color)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_NormalMap_ST)
 
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_Metallic)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_Smoothness)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_Occlusion)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_InvertSmoothnessOn)
-    UNITY_DEFINE_INSTANCED_PROP(half4 ,_MSOInfo)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_Metallic)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_Smoothness)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_Occlusion)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_InvertSmoothnessOn)
     
     // UNITY_DEFINE_INSTANCED_PROP(half ,_MetallicChannel)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SmoothnessChannel)
@@ -43,7 +42,6 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Cutoff)
     UNITY_DEFINE_INSTANCED_PROP(half ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
     UNITY_DEFINE_INSTANCED_PROP(half,_GIApplyMainLightShadow) 
-    // UNITY_DEFINE_INSTANCED_PROP(half4,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow)
 //--------------------------------- Emission
 #if defined(_EMISSION)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
@@ -78,13 +76,13 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_CustomLightColor)
     UNITY_DEFINE_INSTANCED_PROP(half,_CustomLightColorUsage)
 #endif    
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_FresnelIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_FresnelIntensity)
 //--------------------------------- lightmap
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_LightmapSHAdditional)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_LMSaturateAdditional)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_LMIntensityAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_LightmapSHAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_LMSaturateAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_LMIntensityAdditional)
 
-    UNITY_DEFINE_INSTANCED_PROP(half4 ,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd)
+    // UNITY_DEFINE_INSTANCED_PROP(half4 ,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd)
 //--------------------------------- Wind
 #if defined(_WIND_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
@@ -102,21 +100,23 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SnowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SnowIntensity)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ApplyEdgeOn)
-#endif    
+#endif
 //--------------------------------- Fog
     UNITY_DEFINE_INSTANCED_PROP(half ,_FogOn)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_FogNoiseOn)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_FogNoiseOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_DepthFogOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_HeightFogOn)
 //--------------------------------- Parallax
-    UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
+#if defined(_PARALLAX)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxIterate)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxInVSOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxHeight)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxMapChannel)
+#endif
 //--------------------------------- Rain
 #if defined(_RAIN_ON)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_RainOn)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_RainOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_RippleTex_ST)
     UNITY_DEFINE_INSTANCED_PROP(half,_RippleOffsetAutoStop)
     UNITY_DEFINE_INSTANCED_PROP(half,_RippleAlbedoIntensity)
@@ -147,12 +147,12 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 
 #if defined(_STOREY_ON)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_StoreyWindowInfo)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_StoreyTilingOn)
-    // UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLightSwitchSpeed)
-    // UNITY_DEFINE_INSTANCED_PROP(half,_StoreyHeight)
-    // UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLineOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_StoreyTilingOn)
+    UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLightSwitchSpeed)
+    UNITY_DEFINE_INSTANCED_PROP(half,_StoreyHeight)
+    UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLineOn)
 
-    UNITY_DEFINE_INSTANCED_PROP(half4 ,_StoreyTiling_LightSwitchSpeed_Height_Line)
+    // UNITY_DEFINE_INSTANCED_PROP(half4 ,_StoreyTiling_LightSwitchSpeed_Height_Line)
     
     UNITY_DEFINE_INSTANCED_PROP(half4,_StoreyLineColor)
     UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLightOpaque)
@@ -223,15 +223,15 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     // #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).z // _ALPHA_PREMULTIPLY_ON
     // #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).w
 
-    // #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Metallic)
-    // #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Smoothness)
-    // #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Occlusion)
-    // #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_InvertSmoothnessOn)
+    #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Metallic)
+    #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Smoothness)
+    #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Occlusion)
+    #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_InvertSmoothnessOn)
 
-    #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).x
-    #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).y
-    #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).z
-    #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).w
+    // #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).x
+    // #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).y
+    // #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).z
+    // #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).w
 
     #define _MetallicChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MetallicChannel)
     #define _SmoothnessChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SmoothnessChannel)
@@ -268,11 +268,11 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CustomLightDir UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightDir)
     #define _CustomLightColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColor)
     #define _CustomLightColorUsage UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColorUsage)
-    #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).x
+    #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity)
 //--------------------------------- lightmap
-    #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).y
-    #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).z
-    #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).w
+    #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LightmapSHAdditional)
+    #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMSaturateAdditional)
+    #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMIntensityAdditional)
 //--------------------------------- Wind
     #define _WindOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindOn)
     #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindAnimParam)
@@ -325,10 +325,10 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _BelowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BelowColor)
 //--------------------------------- Storey
     #define _StoreyWindowInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyWindowInfo)
-    #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).x
-    #define _StoreyLightSwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).y
-    #define _StoreyHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).z
-    #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).w
+    #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTilingOn)
+    #define _StoreyLightSwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightSwitchSpeed)
+    #define _StoreyHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyHeight)
+    #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineOn)
     #define _StoreyLineColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLineColor)
 
     #define _StoreyLightOpaque UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyLightOpaque)

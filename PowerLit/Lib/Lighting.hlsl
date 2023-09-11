@@ -158,7 +158,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     // branch_if(IsAdditionalLightPixel())
     {
         brdfData.specular = lastSpecular;
-        // color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
+        color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
         // return CalcAdditionalPBRLighting(brdfData,inputData,shadowMask).xyzx;
     }
     #endif

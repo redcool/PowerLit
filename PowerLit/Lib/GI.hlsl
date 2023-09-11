@@ -90,14 +90,9 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
 
     #if defined(_INTERIOR_MAP_ON)
     {
-        UNITY_BRANCH if(_InteriorMapOn)
-        {
-            float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
-            reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
-            rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
-        }else{
-        reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);    
-        }
+        float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
+        reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
+        rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
     }
     #else
         reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);
@@ -110,7 +105,7 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
     // indirectSpecular = lerp(indirectSpecular,1,UVBorder(data.uv,float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w)));
 
     #if defined(_PLANAR_REFLECTION_ON)
-    branch_if(_PlanarReflectionOn)
+    // branch_if(_PlanarReflectionOn)
     {
         float4 planarReflectColor = SamplePlanarReflectionTex(data.screenUV+data.rainReflectDirOffset.xz);
         indirectSpecular = lerp(indirectSpecular,planarReflectColor.xyz,planarReflectColor.w);

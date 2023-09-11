@@ -45,16 +45,16 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half,_GIApplyMainLightShadow) 
     // UNITY_DEFINE_INSTANCED_PROP(half4,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow)
 //--------------------------------- Emission
-    #if defined(_EMISSION)
+#if defined(_EMISSION)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionHeightOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_EmissionColor)
-    #endif
-    #if defined(_EMISSION_HEIGHT_ON)
+#endif
+#if defined(_EMISSION_HEIGHT_ON)
     UNITY_DEFINE_INSTANCED_PROP(half2, _EmissionHeight)
     UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionHeightColor)
     UNITY_DEFINE_INSTANCED_PROP(half, _EmissionHeightColorNormalAttenOn)
-    #endif
+#endif
 
     // UNITY_DEFINE_INSTANCED_PROP(half, _EmissionScanLineOn)
     // UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineColor)
@@ -87,14 +87,14 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd)
 //--------------------------------- Wind
 #if defined(_WIND_ON)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindAnimParam)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindDir)
     UNITY_DEFINE_INSTANCED_PROP(half ,_WindSpeed)
 #endif    
-#if _PLANAR_REFLECTION_ON
+#if defined(_PLANAR_REFLECTION_ON)
 //--------------------------------- Plannar Reflection
-    UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionOn)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionReverseUV)
 #endif
 //--------------------------------- snow
@@ -139,7 +139,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainFlowIntensity)
 #endif    
 
-#if _SURFACE_BELOW_ON
+#if defined(_SURFACE_BELOW_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_BelowColor)

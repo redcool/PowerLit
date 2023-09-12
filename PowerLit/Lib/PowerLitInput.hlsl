@@ -32,6 +32,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Smoothness)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Occlusion)
     UNITY_DEFINE_INSTANCED_PROP(half ,_InvertSmoothnessOn)
+
+    // UNITY_DEFINE_INSTANCED_PROP(half4 ,_MSOInfo)
     
     // UNITY_DEFINE_INSTANCED_PROP(half ,_MetallicChannel)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SmoothnessChannel)
@@ -41,18 +43,22 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_NormalScale)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Cutoff)
     UNITY_DEFINE_INSTANCED_PROP(half ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
-    UNITY_DEFINE_INSTANCED_PROP(half,_GIApplyMainLightShadow) 
+    UNITY_DEFINE_INSTANCED_PROP(half,_GIApplyMainLightShadow)
+
+    // UNITY_DEFINE_INSTANCED_PROP(half4,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow) 
+    
 //--------------------------------- Emission
-#if defined(_EMISSION)
+//#if defined(_EMISSION)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionHeightOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_EmissionColor)
-#endif
-#if defined(_EMISSION_HEIGHT_ON)
-    UNITY_DEFINE_INSTANCED_PROP(half2, _EmissionHeight)
+//#endif
+//#if defined(_EMISSION_HEIGHT_ON)
     UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionHeightColor)
+    UNITY_DEFINE_INSTANCED_PROP(half2, _EmissionHeight)
     UNITY_DEFINE_INSTANCED_PROP(half, _EmissionHeightColorNormalAttenOn)
-#endif
+    // UNITY_DEFINE_INSTANCED_PROP(half3, _EmissionHeight_EmissionHeightColorNormalAttenOn)
+//#endif
 
     // UNITY_DEFINE_INSTANCED_PROP(half, _EmissionScanLineOn)
     // UNITY_DEFINE_INSTANCED_PROP(half4, _EmissionScanLineColor)
@@ -70,50 +76,50 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     // UNITY_DEFINE_INSTANCED_PROP(half,_InteriorMapOn)
     
 //--------------------------------- Custom Light
-#if defined(_CUSTOM_LIGHT_ON)
+//#if defined(_CUSTOM_LIGHT_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_CustomLightDir)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_CustomLightColor)
     UNITY_DEFINE_INSTANCED_PROP(half,_CustomLightColorUsage)
-#endif    
+//#endif    
     UNITY_DEFINE_INSTANCED_PROP(half ,_FresnelIntensity)
-//--------------------------------- lightmap
+// //--------------------------------- lightmap
     UNITY_DEFINE_INSTANCED_PROP(half ,_LightmapSHAdditional)
     UNITY_DEFINE_INSTANCED_PROP(half ,_LMSaturateAdditional)
     UNITY_DEFINE_INSTANCED_PROP(half ,_LMIntensityAdditional)
 
     // UNITY_DEFINE_INSTANCED_PROP(half4 ,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd)
 //--------------------------------- Wind
-#if defined(_WIND_ON)
+//#if defined(_WIND_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindAnimParam)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindDir)
     UNITY_DEFINE_INSTANCED_PROP(half ,_WindSpeed)
-#endif    
-#if defined(_PLANAR_REFLECTION_ON)
+//#endif    
+//#if defined(_PLANAR_REFLECTION_ON)
 //--------------------------------- Plannar Reflection
     // UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionReverseUV)
-#endif
+//#endif
 //--------------------------------- snow
-#if defined(_SNOW_ON)
+//#if defined(_SNOW_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SnowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SnowIntensity)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ApplyEdgeOn)
-#endif
+//#endif
 //--------------------------------- Fog
     UNITY_DEFINE_INSTANCED_PROP(half ,_FogOn)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_FogNoiseOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_DepthFogOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_HeightFogOn)
 //--------------------------------- Parallax
-#if defined(_PARALLAX)
+//#if defined(_PARALLAX)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxIterate)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxInVSOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxHeight)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxMapChannel)
-#endif
+//#endif
 //--------------------------------- Rain
 #if defined(_RAIN_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_RainOn)
@@ -139,13 +145,13 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainFlowIntensity)
 #endif    
 
-#if defined(_SURFACE_BELOW_ON)
+// #if defined(_SURFACE_BELOW_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_BelowColor)
-#endif
+// #endif
 
-#if defined(_STOREY_ON)
+// #if defined(_STOREY_ON)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_StoreyWindowInfo)
     UNITY_DEFINE_INSTANCED_PROP(half ,_StoreyTilingOn)
     UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLightSwitchSpeed)
@@ -156,36 +162,35 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     
     UNITY_DEFINE_INSTANCED_PROP(half4,_StoreyLineColor)
     UNITY_DEFINE_INSTANCED_PROP(half,_StoreyLightOpaque)
-#endif    
+// #endif    
 // detail
-#if defined(_DETAIL_ON)
-    UNITY_DEFINE_INSTANCED_PROP(half,_DetailUVUseWorldPos)
-    UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPlaneMode)
-    UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPosTriplanar)
-    
+// #if defined(_DETAIL_ON)
     UNITY_DEFINE_INSTANCED_PROP(half4,_DetailPBRMaskMap_ST)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBRMetallic)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBRSmoothness)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBROcclusion)
+
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailUVUseWorldPos)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPlaneMode)
+    UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPosTriplanar)
     
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPbrMaskApplyMetallic)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPbrMaskApplySmoothness)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPbrMaskApplyOcclusion)
-#endif
+// #endif
 
     UNITY_DEFINE_INSTANCED_PROP(half4,_IBLCube_HDR)
 
     // UNITY_DEFINE_INSTANCED_PROP(half,_BoxProjectionOn)
 
-#if defined(_CLOUD_SHADOW_ON)
+// #if defined(_CLOUD_SHADOW_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half,_CloudShadowOn)
     UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowIntensityInfo)
     UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowTilingOffset)
     UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowColor)
-#endif    
+// #endif
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
-
 
 /**
     Weather vars
@@ -211,27 +216,16 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BaseMap_ST)
     #define _Color UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Color)
     #define _NormalMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalMap_ST)
-    
 
     #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale)
     #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Cutoff)
     #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
     #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_GIApplyMainLightShadow)
 
-    // #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).x
-    // #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).y
-    // #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).z // _ALPHA_PREMULTIPLY_ON
-    // #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).w
-
     #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Metallic)
     #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Smoothness)
     #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Occlusion)
     #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_InvertSmoothnessOn)
-
-    // #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).x
-    // #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).y
-    // #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).z
-    // #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).w
 
     #define _MetallicChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MetallicChannel)
     #define _SmoothnessChannel UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SmoothnessChannel)
@@ -242,8 +236,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _EmissionColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionColor)
 
     #define _EmissionHeightOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeightOn)
-    #define _EmissionHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight)
     #define _EmissionHeightColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeightColor)
+    #define _EmissionHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight)
     #define _EmissionHeightColorNormalAttenOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeightColorNormalAttenOn)
 
     #define _EmissionScanLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineOn)
@@ -251,8 +245,6 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     // #define _EmissionScanLineMin UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineMin)
     // #define _EmissionScanLineMax UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineMax)
     // #define _EmissionScanLineRate UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionScanLineRate)
-
-
 
     #define _IsReceiveShadowOff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IsReceiveShadowOff) // to keyword _RECEIVE_SHADOWS_OFF
     #define _ScreenShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ScreenShadowOn) 
@@ -351,7 +343,50 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CloudShadowTilingOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowTilingOffset)
     #define _CloudShadowIntensityInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowIntensityInfo)
     #define _CloudShadowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowColor)
+
+/**
+    #undef _Metallic
+    #undef _Smoothness
+    #undef _Occlusion
+    #undef _InvertSmoothnessOn
+    #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).x
+    #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).y
+    #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).z
+    #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).w
     
+    #undef _NormalScale
+    #undef _Cutoff
+    #undef _AlphaPremultiply
+    #undef _GIApplyMainLightShadow
+    #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).x
+    #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).y
+    #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).z // _ALPHA_PREMULTIPLY_ON
+    #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).w
+
+    #undef _FresnelIntensity
+    #undef _LightmapSHAdditional
+    #undef _LMSaturateAdditional
+    #undef _LMIntensityAdditional
+    #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).x
+    #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).y
+    #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).z
+    #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).w
+
+    #undef _StoreyTilingOn
+    #undef _StoreyLightSwitchSpeed
+    #undef _StoreyHeight
+    #undef _StoreyLineOn    
+    #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).x
+    #define _StoreyLightSwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).y
+    #define _StoreyHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).z
+    #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).w
+
+    #undef _EmissionHeight
+    #undef _EmissionHeightColorNormalAttenOn    
+    #define _EmissionHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight_EmissionHeightColorNormalAttenOn).xy
+    #define _EmissionHeightColorNormalAttenOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight_EmissionHeightColorNormalAttenOn).z
+    */
+
 /**
     Global Variables Emission Scanline
 */    
@@ -361,4 +396,5 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     // half3 _EmissionScanLineMax;
     // half4 _EmissionScanLineRange_Rate;
     // half _ScanLineAxis;
+
 #endif //POWER_LIT_INPUT_HLSL

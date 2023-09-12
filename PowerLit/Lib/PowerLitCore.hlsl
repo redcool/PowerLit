@@ -279,8 +279,7 @@ void InitSurfaceInputData(inout SurfaceInputData data,float2 uv,float4 clipPos,f
     data.uv = uv;
     data.viewDirTS = viewDirTS;
     #if defined(_PLANAR_REFLECTION_ON)
-    if(_PlanarReflectionReverseUV)
-        data.screenUV.x = 1- data.screenUV.x; // for planar reflection camera
+        data.screenUV.x = _PlanarReflectionReverseUV ? 1- data.screenUV.x : data.screenUV.x; // for planar reflection camera
     #endif
     
     data.envIntensity = _EnvIntensity;

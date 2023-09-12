@@ -231,8 +231,7 @@ Shader "URP/PowerLit"
         [Group(AdditionalLights)]
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_ON)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
-//================ vectors group
-        // actual data store in this
+//================ vectors group actual data store in this
         [VectorValues(_Metallic _Smoothness _Occlusion _InvertSmoothnessOn)]
         _MSOInfo("_MSOInfo",vector) = (1,1,1,1)
 
@@ -311,7 +310,7 @@ detail map
             #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
             #pragma shader_feature_local_fragment _SNOW_ON
             #pragma shader_feature_local_vertex _WIND_ON
-            #pragma shader_feature_local_fragment _RAIN_ON
+        //     #pragma shader_feature_local_fragment _RAIN_ON
             #pragma shader_feature_local_fragment _STOREY_ON
             #pragma shader_feature_local_fragment _DETAIL_ON
 

@@ -50,6 +50,7 @@ Shader "URP/SimpleLit"
         [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
         [GroupItem(Emission)]_EmissionMap("_EmissionMap",2d)=""{}
         [GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (1,1,1,1)
+        [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
 
         [Group(Aniso)]
         [GroupToggle(Aniso)]_CalcTangent("_CalcTangent",int) = 0
@@ -194,7 +195,8 @@ Shader "URP/SimpleLit"
             #pragma shader_feature_local_fragment _EMISSION
 
             #include "Lib/PBRInput.hlsl"
-            #include "Lib/SimpleLitMetaPass.hlsl"
+            // #include "Lib/SimpleLitMetaPass.hlsl"
+            #include "../../PowerShaderLib/URPLib/PBR1_MetaPass.hlsl"
 
             ENDHLSL
         }

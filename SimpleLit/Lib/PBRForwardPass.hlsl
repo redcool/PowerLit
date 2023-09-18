@@ -121,17 +121,17 @@ float4 frag (v2f i) : SV_Target
             float bh = dot(b,h);
             float anisoRough = _AnisoRough + 0.5;
             specTerm = D_GGXAnisoNoPI(th,bh,nh,anisoRough,1 - anisoRough);
+            specTerm = clamp(specTerm,0,100);
         #elif defined(_PBRMODE_CHARLIE)
         // }else if(_PbrMode == 2){
             specTerm = CharlieD(nh, roughness);
+            specTerm = clamp(specTerm,0,100);
         // }
         #endif
         // will show strange color, exceed range
-        specTerm = min(100,specTerm);
     }
 
     float3 specColor = lerp(0.04,albedo,metallic);
-
     // if(_TFOn)
     // {
     //     float3 thinFilm = ThinFilm(1- nv,_TFScale,_TFOffset,_TFSaturate,_TFBrightness);

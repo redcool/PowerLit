@@ -2,6 +2,9 @@
 #define PBR_INPUT_HLSL
 #include "../../PowerShaderLib/Lib/UnityLib.hlsl"
 
+//for compatible PowerLit
+#define _PbrMask _MetallicMaskMap
+
 sampler2D _MainTex;
 sampler2D _NormalMap;
 sampler2D _PbrMask;

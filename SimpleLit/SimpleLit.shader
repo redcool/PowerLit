@@ -21,7 +21,7 @@ Shader "URP/SimpleLit"
         [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
 
         [Group(PBR Mask)]
-        [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
+        [GroupItem(PBR Mask)]_MetallicMaskMap("_PbrMask",2d)="white"{}
 
         [GroupItem(PBR Mask)]_Metallic("_Metallic",range(0,1)) = 0.5
         [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
@@ -38,8 +38,8 @@ Shader "URP/SimpleLit"
         [GroupItem(Shadow)]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
 
         [GroupHeader(Shadow,custom bias)]
-        [GroupSlider(Shadow)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0.5
-        [GroupSlider(Shadow)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0.5
+        [GroupSlider(Shadow)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
+        [GroupSlider(Shadow)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0
 
         [Group(AdditionalLights)]
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS_ON)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
@@ -134,6 +134,7 @@ Shader "URP/SimpleLit"
             #pragma shader_feature_fragment ALPHA_TEST
             #pragma shader_feature_fragment _EMISSION
 
+            #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"
             
             ENDHLSL

@@ -1,6 +1,6 @@
 #if !defined(PBR_FORWARD_PASS_HLSL)
 #define PBR_FORWARD_PASS_HLSL
-#include "PBRInput.hlsl"
+
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BSDF.hlsl"
 #include "../../PowerShaderLib/Lib/Colors.hlsl"

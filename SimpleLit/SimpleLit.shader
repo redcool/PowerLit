@@ -57,6 +57,9 @@ Shader "URP/SimpleLit"
         [GroupItem(Aniso)]_AnisoRough("_AnisoRough",range(-0.5,0.5)) = 0
         [GroupItem(Aniso)]_AnisoShift("_AnisoShift",range(-1,1)) = 0
 
+        [Group(Charlie)]
+        [GroupVectorSlider(Charlie,Min Max,0_1 0_1)]_ClothRange("_ClothRange",vector) =(0,1,0,0)
+
         // [Group(Thin Film)]
         // [GroupToggle(Thin Film)]_TFOn("_TFOn",int) = 0
         // [GroupItem(Thin Film)]_TFScale("_TFScale",float) = 1

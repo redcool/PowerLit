@@ -125,7 +125,9 @@ float4 frag (v2f i) : SV_Target
         #elif defined(_PBRMODE_CHARLIE)
         // }else if(_PbrMode == 2){
             specTerm = CharlieD(nh, roughness);
+            specTerm = smoothstep(_ClothRange.x,_ClothRange.y,specTerm);
             specTerm = clamp(specTerm,0,100);
+            // return specTerm* albedo.xyzx;
         // }
         #endif
         // will show strange color, exceed range

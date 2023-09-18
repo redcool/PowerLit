@@ -41,6 +41,7 @@ half _AlphaPremultiply;
 half _Cutoff;
 
 half4 _EmissionColor;
+half2 _ClothRange;
 
 CBUFFER_END
 

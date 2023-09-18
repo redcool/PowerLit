@@ -129,6 +129,9 @@ float4 frag (v2f i) : SV_Target
             specTerm = clamp(specTerm,0,100);
             // return specTerm* albedo.xyzx;
         // }
+        #elif defined(_PBRMODE_GGX)
+            specTerm = D_GGXTerm(nh,a2);
+            specTerm = clamp(specTerm,0,100);
         #endif
         // will show strange color, exceed range
     }

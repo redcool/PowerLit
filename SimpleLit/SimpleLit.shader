@@ -30,7 +30,7 @@ Shader "URP/SimpleLit"
         [Group(LightMode)]   
         [GroupToggle(LightMode)]_SpecularOn("_SpecularOn",int) = 1
         // [Enum(PBR,0,Aniso,1,Charlie,2)]_PbrMode("_PbrMode",int) = 0
-        [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE,true)]_PbrMode("_PbrMode",int) = 0
+        [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE _PBRMODE_GGX,true)]_PbrMode("_PbrMode",int) = 0
         
         [Group(Shadow)]
         //[LineHeader(Shadows)]
@@ -132,7 +132,7 @@ Shader "URP/SimpleLit"
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile_fragment _ LIGHTMAP_ON
 
-            #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE
+            #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE _PBRMODE_GGX
             #pragma shader_feature_fragment _DEPTH_FOG_NOISE_ON
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST

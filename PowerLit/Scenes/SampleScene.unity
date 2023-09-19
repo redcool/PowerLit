@@ -2094,7 +2094,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1346358271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2483,6 +2483,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1525822613}
+  - component: {fileID: 1525822614}
   m_Layer: 0
   m_Name: Max
   m_TagString: Untagged
@@ -2505,6 +2506,89 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1525822614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525822612}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9de35a0ec44bb4e9115b1e7664e575, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphs: []
+  graphSharedMaterialList: []
+  graphCachedMaterialList: []
+  renderers: []
+  isFirstMaterialReaded: 0
+  _Color: {r: 1, g: 1, b: 1, a: 1}
+  _MainTex_TO: {x: 1, y: 1, z: 0, w: 0}
+  _MainTex_SpeedU: 0
+  _MainTex_SpeedV: 0
+  _U_Mirror: 0
+  _V_Mirror: 0
+  _MainTexAngle: 0
+  _Alpha: 1
+  _BlurOffset: 0
+  _AlphaBlur: 0
+  _BlurBlend: 0
+  _RadialBlurOffset: 0.0045
+  _BlurCenter_x: 0.5
+  _BlurCenter_y: 0.5
+  _CausticsBlurOffset: 5
+  _CausticsBlurAngle: 0.0045
+  _Dintensity: 1
+  _RadialBlurSampleCount: 2
+  _Brightness: 1
+  _Saturation: 0
+  _Contrast: 1
+  _DetailColor: {r: 1, g: 1, b: 1, a: 1}
+  _DetailTex: {fileID: 0}
+  _DetailTex_TO: {x: 1, y: 1, z: 0, w: 0}
+  _DetailTex_SpeedU: 0
+  _DetailTex_SpeedV: 0
+  _DetailBlendMode: 0
+  _DetailTexAngle: 0
+  _MaskTex: {fileID: 0}
+  _MaskTex_TO: {x: 1, y: 1, z: 0, w: 0}
+  _MaskTex_SpeedU: 0
+  _MaskTex_SpeedV: 0
+  _MaskRGBA: {x: 1, y: 0, z: 0, w: 0}
+  _MaskTexAngle: 0
+  _DistortTex: {fileID: 0}
+  _DistortTex_TO: {x: 1, y: 1, z: 0, w: 0}
+  _DisturTexAngle: 0
+  _DistSpeed_U: 0
+  _DistSpeed_V: 0
+  _DistForceU: 0
+  _DistForceV: 0
+  _DistortTexSec: {fileID: 0}
+  _DistortBoundsTex: {fileID: 0}
+  _DistortBoundsTex_TO: {x: 1, y: 1, z: 0, w: 0}
+  _DisBoundsTexAngle: 0
+  _DistortTexThird: {fileID: 0}
+  _DissipateColor: {r: 1, g: 1, b: 0, a: 1}
+  _DissipateTexture: {fileID: 0}
+  _DissipateTexture_TO: {x: 1, y: 1, z: 0, w: 0}
+  _DissipateRGBA: {x: 1, y: 0, z: 0, w: 0}
+  _DisspateTexAngle: 0
+  _DissipateSliderWidth: 0.05
+  _DissipateAmount: 0
+  _DissipateDetailTex: {fileID: 0}
+  _DissipateTextureDetail_TO: {x: 1, y: 1, z: 0, w: 0}
+  _DisspateDetailTexAngle: 0
+  _DissipateTextureSec: {fileID: 0}
+  _DissipatetBoundsTex: {fileID: 0}
+  _DissipateBoundsTex_TO: {x: 1, y: 1, z: 0, w: 0}
+  _DisspateBoundsTexAngle: 0
+  _DissipateDetailTexSec: {fileID: 0}
+  _DissipateTextureThird: {fileID: 0}
+  _DissipateU_Mirror: 0
+  _DissipateV_Mirror: 0
+  _DissipateUV_Swap: 0
+  _DissipateDetailTexThird: {fileID: 0}
 --- !u!1 &1642614552
 GameObject:
   m_ObjectHideFlags: 0
@@ -2835,7 +2919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1804ceb816c251744beb928cd49eff2d, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3.0506
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1804ceb816c251744beb928cd49eff2d, type: 3}
       propertyPath: m_LocalScale.y
@@ -2843,7 +2927,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1804ceb816c251744beb928cd49eff2d, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3.0506
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1804ceb816c251744beb928cd49eff2d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2851,7 +2935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1804ceb816c251744beb928cd49eff2d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 18.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1804ceb816c251744beb928cd49eff2d, type: 3}
       propertyPath: m_LocalPosition.z

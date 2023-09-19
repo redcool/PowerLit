@@ -33,7 +33,7 @@ Material:
     - _CloudIntensity: 1
     - _CloudOn: 1
     - _Exposure: 0.74
-    - _FogOn: 1
+    - _FogOn: 0
     - _Scale: 1
     - _Speed: 1
     - _SunDisk: 2

@@ -59,6 +59,7 @@ float4 frag (v2f i) : SV_Target
 
     float2 mainUV = i.uv.xy;
     float2 lightmapUV = i.uv.zw;
+    float2 screenUV = i.vertex.xy/_ScaledScreenParams.xy;
 
     float4 pbrMask = tex2D(_PbrMask,mainUV);
     float metallic = 0;
@@ -147,9 +148,15 @@ float4 frag (v2f i) : SV_Target
     float3 directColor = (diffColor + specColor * specTerm) * radiance;
 // return directColor.xyzx;
 //------- gi
+    float4 planarReflectTex = 0;
+    #if defined(_PLANAR_REFLECTION_ON)
+        planarReflectTex = tex2D(_ReflectionTexture,screenUV);
+    #endif
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
-    float3 giSpec = CalcGISpec(unity_SpecCube0,samplerunity_SpecCube0,unity_SpecCube0_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/,nv,roughness,a2,smoothness,metallic);
+    float3 giSpec = CalcGISpec(unity_SpecCube0,samplerunity_SpecCube0,unity_SpecCube0_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
+    ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex);
+
     giColor = (giDiff + giSpec) * occlusion;
 // return giColor.xyzx;
 

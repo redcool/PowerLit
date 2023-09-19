@@ -9,6 +9,7 @@ sampler2D _MainTex;
 sampler2D _NormalMap;
 sampler2D _PbrMask;
 sampler2D _EmissionMap;
+sampler2D _ReflectionTexture;
 
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;

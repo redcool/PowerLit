@@ -1,4 +1,4 @@
-Shader "URP/SimpleLit"
+Shader "URP/FastLit"
 {
     /*
     lighting(pbr,charlie,aniso)
@@ -90,6 +90,9 @@ Shader "URP/SimpleLit"
         [GroupToggle(Alpha,ALPHA_TEST)]_AlphaTestOn("_AlphaTestOn",int) = 0
         [GroupSlider(Alpha)]_Cutoff("_Cutoff",range(0,1)) = 0.5
 
+        [Group(PlanarReflection)]
+        [GroupToggle(PlanarReflection,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
+
         [Group(Settings)]
         [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 		[GroupToggle(Settings)]_ZWriteMode("ZWriteMode",int) = 1
@@ -137,6 +140,7 @@ Shader "URP/SimpleLit"
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
             #pragma shader_feature_fragment _EMISSION
+            #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"
@@ -198,7 +202,7 @@ Shader "URP/SimpleLit"
             #pragma shader_feature_local_fragment _EMISSION
 
             #include "Lib/PBRInput.hlsl"
-            // #include "Lib/SimpleLitMetaPass.hlsl"
+            // #include "Lib/FastLitMetaPass.hlsl"
             #include "../../PowerShaderLib/URPLib/PBR1_MetaPass.hlsl"
 
             ENDHLSL

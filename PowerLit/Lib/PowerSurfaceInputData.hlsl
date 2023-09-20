@@ -12,7 +12,7 @@ struct SurfaceInputData{
     float2 screenUV;
     float2 uv;
     float3 viewDirTS;
-
+    float nv;
     float envIntensity;
 
     // rain's info

@@ -160,8 +160,10 @@ float4 frag(Varyings input
     float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
     float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
     float vertexNoise = input.fogCoord.z;
+    float nv = input.viewDirTS_NV.w;
 
     SurfaceInputData data = (SurfaceInputData)0;
+    data.nv = nv;
 
     #if defined(_PARALLAX)
         branch_if(! _ParallaxInVSOn)
@@ -190,7 +192,7 @@ float4 frag(Varyings input
     // if(_StoreyTilingOn)
     {
         ApplyStoreyEmission(data.surfaceData.emission/**/,data.surfaceData.alpha/**/,worldPos,input.uv.xy);
-        ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,input.viewDirTS_NV.w);
+        ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,nv);
     }
     #endif
 

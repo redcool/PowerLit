@@ -38,8 +38,8 @@ float3 CalcLightmapAndSH(float3 normal,float2 lightmapUV,float lightmapOrSH,floa
 
 
 
-float3 CalcFresnel(BRDFData brdfData,float3 normal,float3 viewDir){
-    float nv = saturate(dot(normal,viewDir));
+float3 CalcFresnel(BRDFData brdfData,float nv){
+    // float nv = saturate(dot(normal,viewDir));
     float fresnelTerm = Pow4(1-nv);
     float surfaceReduction = 1/(brdfData.roughness2 +1); //roughness[0,1] -> [1,0.5]
     float3 fresnel = surfaceReduction * lerp(brdfData.specular,brdfData.grazingTerm,fresnelTerm);
@@ -93,6 +93,7 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
         float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
         reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
         rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
+        // reflectDir.z*=-1;
     }
     #else
         reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);
@@ -112,7 +113,7 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
     }
     #endif
 
-    float3 fresnel = CalcFresnel(brdfData,normal,viewDir);
+    float3 fresnel = CalcFresnel(brdfData,data.nv);
     float3 color = indirectDiffuse + indirectSpecular * fresnel * data.envIntensity ;
     color *= occlusion;
     return color;

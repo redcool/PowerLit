@@ -21,10 +21,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: URP_FastLit
-  m_Shader: {fileID: 4800000, guid: e7554e4022b5ce7418d917687dd6d380, type: 3}
+  m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
   m_ValidKeywords:
-  - _PLANAR_REFLECTION_ON
-  m_InvalidKeywords: []
+  - _IBL_ON
+  - _INTERIOR_MAP_ON
+  m_InvalidKeywords:
+  - ENV_REFRACTION_ON
+  - ENV_REFRACT_ON
+  - InteriorMap
+  - Refract
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -58,15 +63,39 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DissolveTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionMaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionNoiseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 2800000, guid: 83136185c54466940a186204d814ca80, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EnvMap:
+        m_Texture: {fileID: 8900000, guid: 905a3358b66fdbf42ba2d59668145b22, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _IBLCube:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8900000, guid: ee4462592778b4a49b63428c6861d04d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MatCapTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -86,8 +115,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
+    - _OffsetMaskTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OffsetTex:
+        m_Texture: {fileID: 2800000, guid: b285c59b859cb934b9a8c7a795c3a91d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 2800000, guid: abfce24a1a47424478877a9989ef479f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PbrMask:
@@ -106,6 +143,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _VertexWaveAtten_MaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -120,13 +161,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AdditionalLightOn: 0
+    - _AdditionalLightShadowsOn: 0
+    - _AdditionalLightShadowsSoftOn: 0
+    - _AdditionalLightSoftShadowScale: 1
     - _AlphaClip: 0
+    - _AlphaMax: 1
+    - _AlphaMin: 0
     - _AlphaPremultiply: 0
+    - _AlphaScale: 1
     - _AlphaTestOn: 0
     - _AnisoRough: 0
     - _AnisoShift: 0
     - _ApplyEdgeOn: 1
+    - _BackFaceOn: 0
     - _Blend: 0
+    - _BlendScreenColor: 0
     - _BoxProjectionOn: 0
     - _BumpScale: 1
     - _CalcAdditionalLights: 0
@@ -135,15 +185,21 @@ Material:
     - _ClearCoatSmoothness: 0
     - _ClipOn: 0
     - _CloudShadowOn: 0
+    - _ColorDriftIntensity: 0.1
+    - _ColorDriftSpeed: 1
     - _ColorMask: 15
+    - _ColorScale: 1
     - _Cull: 2
-    - _CullMode: 2
+    - _CullMode: 0
     - _CustomLightColorUsage: 0
     - _CustomLightOn: 0
     - _CustomShadowDepthBias: 0
     - _CustomShadowNormalBias: 0
     - _Cutoff: 0.5
     - _DebugDisplay: 0
+    - _DepthFadingMax: 1
+    - _DepthFadingOn: 0
+    - _DepthFadingWidth: 0.33
     - _DepthFogOn: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -157,45 +213,132 @@ Material:
     - _DetailUVUseWorldPos: 1
     - _DetailWorldPlaneMode: 0
     - _DetailWorldPosTriplanar: 0
+    - _DissolveByVertexColor: 0
+    - _DissolveClipOn: 0
+    - _DissolveCustomData: 2
+    - _DissolveCustomDataOn: 0
+    - _DissolveEdgeOn: 0
+    - _DissolveEdgeWidthCustomData: 3
+    - _DissolveEdgeWidthCustomDataOn: 0
+    - _DissolveFadingMax: 0.2
+    - _DissolveFadingMin: 0
+    - _DissolveMaskChannel: 3
+    - _DissolveMaskFromTexOn: 0
+    - _DissolveOn: 0
+    - _DissolveTexChannel: 0
+    - _DissolveTexOffsetStop: 0
+    - _DistortionApplyToDissolve: 0
+    - _DistortionApplyToMainTexMask: 0
+    - _DistortionApplyToOffset: 0
+    - _DistortionCustomData: 5
+    - _DistortionCustomDataOn: 0
+    - _DistortionIntensity: 0.5
+    - _DistortionMaskChannel: 0
+    - _DistortionOn: 0
+    - _DistortionRadialRot: 0
+    - _DistortionRadialUVOffset: 0
+    - _DistortionRadialUVOn: 0
+    - _DoubleEffectOn: 0
     - _DstBlend: 0
     - _DstMode: 0
+    - _EdgeWidth: 0.1
     - _EmissionGI: 0
     - _EmissionHeightColorNormalAttenOn: 1
     - _EmissionHeightOn: 0
     - _EmissionOn: 0
     - _EnvIntensity: 1
+    - _EnvMapMaskChannel: 0
+    - _EnvMaskUseMainTexMask: 3
+    - _EnvReflectOn: 0
+    - _EnvRefractRotateAutoStop: 0
+    - _EnvRefractionIOR: 1
+    - _EnvRefractionOn: 1
+    - _EnvRotateAutoStop: 0
     - _EnvironmentReflections: 1
     - _FogNoiseOn: 0
-    - _FogOn: 1
+    - _FogOn: 0
+    - _FresnelColorMode: 0
     - _FresnelIntensity: 1
+    - _FresnelOn: 0
+    - _FresnelPowerMax: 0.5
+    - _FresnelPowerMin: 0.4
+    - _FullScreenMode: 0
     - _GIApplyMainLightShadow: 0
+    - _GlitchOn: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _HeightFogOn: 1
+    - _HorizontalIntensity: 0.2
+    - _HorizontalShake: 0.1
     - _IBLMaskMainTexA: 0
-    - _IBLOn: 0
-    - _InteriorMapOn: 0
+    - _IBLOn: 1
+    - _InteriorMapOn: 1
     - _InvertSmoothnessOn: 0
     - _IsReceiveShadowOff: 0
     - _LMIntensityAdditional: 1
     - _LMSaturateAdditional: 0
     - _LightmapSHAdditional: 0
     - _MainLightShadowSoftScale: 0
-    - _Metallic: 0.562
+    - _MainLightSoftShadowScale: 0
+    - _MainTexChannel: 0
+    - _MainTexMaskChannel: 0
+    - _MainTexMaskOffsetCustomDataOn: 0
+    - _MainTexMaskOffsetCustomDataX: 6
+    - _MainTexMaskOffsetCustomDataY: 7
+    - _MainTexMaskOffsetStop: 0
+    - _MainTexMultiAlpha: 0
+    - _MainTexOffsetStop: 0
+    - _MainTexOffset_CustomData_On: 0
+    - _MainTexOffset_CustomData_X: 0
+    - _MainTexOffset_CustomData_Y: 1
+    - _MainTexSaturate: 1
+    - _MainTexSheetAnimBlendOn: 0
+    - _MainTexSheetAnimSpeed: 1
+    - _MainTexSingleChannelOn: 0
+    - _MainTexUseScreenColor: 0
+    - _MainTexUseScreenUV: 0
+    - _MainUVAngle: 0
+    - _MatCapAngle: 0
+    - _MatCapIntensity: 1
+    - _MatCapOn: 0
+    - _MatCapRotateOn: 0
+    - _Metallic: 1
+    - _NoiseUseAttenMaskMap: 0
+    - _NormalMapScale: 1
     - _NormalScale: 0
     - _Occlusion: 0
     - _OcclusionStrength: 1
+    - _OffsetBlendIntensity: 1.53
+    - _OffsetBlendMode: 1
+    - _OffsetBlendReplaceMode: 1
+    - _OffsetBlendReplaceMode_Channel: 0
+    - _OffsetCustomDataOn: 0
+    - _OffsetLayer1_CustomData_X: 0
+    - _OffsetLayer1_CustomData_Y: 1
+    - _OffsetMaskChannel: 0
+    - _OffsetMaskPanStop: 0
+    - _OffsetOn: 0
+    - _OffsetRadialRot: 0
+    - _OffsetRadialUVOffset: 0
+    - _OffsetRadialUVOn: 0
     - _Parallax: 0.005
-    - _ParallaxHeight: 0.01
+    - _ParallaxEffectOffsetOn: 1
+    - _ParallaxHeight: 0.22182502
     - _ParallaxInVSOn: 0
-    - _ParallaxIterate: 1
-    - _ParallaxMapChannel: 3
+    - _ParallaxIterate: 3
+    - _ParallaxMapChannel: 0
     - _ParallaxOn: 0
+    - _ParallaxWeightOffset: 0.57
+    - _PbrLightOn: 0
     - _PbrMode: 3
-    - _PlanarReflectionOn: 1
+    - _PerChannelColorOn: 0
+    - _PixelDissolveOn: 0
+    - _PixelWidth: 10
+    - _PlanarReflectionOn: 0
     - _PlanarReflectionReverseUV: 0
+    - _PremultiVertexColor: 1
     - _PresetBlendMode: 0
     - _QueueOffset: 0
     - _RainFlowIntensity: 0.5
@@ -209,17 +352,21 @@ Material:
     - _RainSmoothness: 0.1
     - _ReceiveAdditionalLightShadow: 0
     - _ReceiveShadowOff: 0
+    - _ReceiveShadowOn: 0
     - _ReceiveShadows: 1
+    - _RefractMode: 1
     - _RippleAlbedoIntensity: 0.1
     - _RippleBlendNormalOn: 0
     - _RippleIntensity: 1
     - _RippleOffsetAutoStop: 0
     - _RippleSpeed: 10
     - _ScreenShadowOn: 0
+    - _ShadowsSoft: 0
     - _Shininess: 0
     - _Smoothness: 1
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
+    - _SnowFlakeIntensity: 0.1
     - _SnowIntensity: 0
     - _SnowOn: 0
     - _SpecSource: 0
@@ -232,6 +379,7 @@ Material:
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
+    - _StopAutoOffset: 0
     - _StoreyHeight: 1
     - _StoreyLightOpaque: 1
     - _StoreyLightSwitchSpeed: 0
@@ -245,6 +393,24 @@ Material:
     - _TFOn: 0
     - _TFSaturate: 0.448
     - _TFScale: 1
+    - _VertexColorChannel: 0
+    - _VertexColorChannelOn: 0
+    - _VertexWaveAttenMaskOffsetCustomData: 4
+    - _VertexWaveAttenMaskOffsetCustomDataOn: 0
+    - _VertexWaveAtten_MaskMapChannel: 0
+    - _VertexWaveAtten_MaskMapOffsetStopOn: 0
+    - _VertexWaveAtten_MaskMapOn: 0
+    - _VertexWaveAtten_NormalAttenOn: 0
+    - _VertexWaveAtten_VertexColor: 0
+    - _VertexWaveDirAlongNormalOn: 0
+    - _VertexWaveDirAtten_LocalSpaceOn: 0
+    - _VertexWaveIntensity: 1
+    - _VertexWaveIntensityCustomData: 7
+    - _VertexWaveIntensityCustomDataOn: 0
+    - _VertexWaveOn: 0
+    - _VertexWaveSpeed: 1
+    - _VertexWaveSpeedManual: 0
+    - _VerticalJumpIntensity: 0.1
     - _WindOn: 0
     - _WindSpeed: 0.3
     - _WorkflowMode: 1
@@ -253,30 +419,55 @@ Material:
     - _ZWrite: 1
     - _ZWriteMode: 1
     m_Colors:
+    - _BackFaceColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _BaseColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
     - _BelowColor: {r: 1, g: 1, b: 1, a: 1}
     - _ClothRange: {r: 0.418, g: 0.529, b: 0, a: 0}
     - _CloudShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _CloudShadowIntensityInfo: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _CloudShadowTilingOffset: {r: 0.1, g: 0.1, b: 0.1, a: 0.1}
-    - _Color: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorX: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorY: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorZ: {r: 1, g: 1, b: 1, a: 1}
     - _CustomLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _CustomLightDir: {r: 0, g: 1, b: 0, a: 0}
+    - _DistortDir: {r: 0, g: 1, b: 0, a: -1}
+    - _DistortTile: {r: 1, g: 1, b: 1, a: 1}
+    - _DistortionRadialCenter_Scale: {r: 0.5, g: 0.5, b: 1, a: 1}
+    - _EdgeColor: {r: 1, g: 0, b: 0, a: 1}
+    - _EdgeColor2: {r: 0, g: 1, b: 0, a: 1}
     - _EmissionColor: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionHeight: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionHeightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd: {r: 0, g: 0, b: 0, a: 0}
+    - _EnvOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _EnvReflectionColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _EnvRefractRotateInfo: {r: 0, g: 1, b: 0, a: 0}
+    - _EnvRefractionColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _EnvRotateInfo: {r: 0, g: 1, b: 0, a: 0}
+    - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelColor2: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd: {r: 1, g: 0, b: 0, a: 1}
+    - _JitterInfo: {r: 0.1, g: 0.1, b: 1, a: 0}
     - _MSOInfo: {r: 1, g: 1, b: 0, a: 0}
+    - _MainTexSheet: {r: 1, g: 1, b: 1, a: 1}
+    - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _Metallic_Smoothness_Occlusion_NormalScale: {r: 0.562, g: 1, b: 0, a: 0}
     - _NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow: {r: 0, g: 0.5, b: 0, a: 0}
+    - _OffsetDir: {r: 1, g: 1, b: 0, a: 0}
+    - _OffsetRadialCenter_Scale: {r: 0.5, g: 0.5, b: 1, a: 1}
+    - _OffsetTexColorTint: {r: 1, g: 1, b: 1, a: 1}
+    - _OffsetTexColorTint2: {r: 1, g: 1, b: 1, a: 1}
+    - _OffsetTile: {r: 1, g: 1, b: 1, a: 1}
     - _RainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _RainReflectTilingOffset: {r: 50, g: 50, b: 10, a: 10}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _StoreyLineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StoreyTiling_LightSwitchSpeed_Height_Line: {r: 0, g: 0, b: 0, a: 0}
+    - _StoreyTiling_LightSwitchSpeed_Height_Line: {r: 0, g: 0, b: 1, a: 0}
     - _StoreyWindowInfo: {r: 5, g: 2, b: 0.5, a: 0.8}
+    - _VertexWaveDirAtten: {r: 1, g: 1, b: 1, a: 1}
     - _WindAnimParam: {r: 1, g: 1, b: 0.1, a: 0.3}
     - _WindDir: {r: 1, g: 0.1, b: 0, a: 0.5}
   m_BuildTextureStacks: []

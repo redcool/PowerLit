@@ -4,6 +4,8 @@
 
 //for compatible PowerLit
 #define _PbrMask _MetallicMaskMap
+#define _MainTex _BaseMap
+#define _MainTex_ST _BaseMap_ST
 
 sampler2D _MainTex;
 sampler2D _NormalMap;

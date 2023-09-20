@@ -15,7 +15,7 @@ Shader "URP/FastLit"
     {
         [GroupHeader(v0.0.5)]
         [Group(Main)]
-        [GroupItem(Main)]_MainTex ("Texture", 2D) = "white" {}
+        [GroupItem(Main)]_BaseMap ("Texture", 2D) = "white" {}
         [GroupItem(Main)]_Color ("_Color", color) = (1,1,1,1)
         [GroupItem(Main)]_NormalMap("_NormalMap",2d)="bump"{}
         [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
@@ -104,6 +104,9 @@ Shader "URP/FastLit"
         //===================== actual values
         [VectorValues(_Metallic _Smoothness _Occlusion _NormalScale)]
         _Metallic_Smoothness_Occlusion_NormalScale("_Metallic_Smoothness_Occlusion_NormalScale",vector)=(1,1,1,1)
+
+        [TextureValue(_BaseMap)]
+        _MainTex("_MainTex",2d)=""{}
     }
 
     SubShader

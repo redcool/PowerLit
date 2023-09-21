@@ -126,7 +126,7 @@ Shader "URP/PowerLit"
         [GroupToggle(_)]_AlphaPremultiply("_AlphaPremultiply",int) = 0 //_ALPHA_PREMULTIPLY_ON
 //================================================= settings
         [Header(Depth)]
-        [GroupToggle]_ZWrite("_ZWrite",int) = 1
+        [GroupToggle]_ZWriteMode("_ZWriteMode",int) = 1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("_ZTest",int) = 4
 
         [Header(Cull)]
@@ -272,7 +272,7 @@ detail map
         Pass
         {
             blend [_SrcMode][_DstMode]
-            zwrite[_ZWrite]
+            zwrite[_ZWriteMode]
             ztest[_ZTest]
             cull [_CullMode]
             ColorMask[_ColorMask]

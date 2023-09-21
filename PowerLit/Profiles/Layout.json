@@ -2,7 +2,7 @@
 {
     "tabNames":["Settings"," Main","Details","Alpha","Parallax","Shadow","Env","Emission","Wind","Snow","Fog","Rain","Storey"],
     "contents":[
-        {"array":["_ZWrite","_ZTest","_CullMode","_RenderQueue","_ColorMask","_BakedEmission","_StencilComp","_Stencil","_StencilOp"]},
+        {"array":["_ZWriteMode","_ZTest","_CullMode","_RenderQueue","_ColorMask","_BakedEmission","_StencilComp","_Stencil","_StencilOp"]},
         {"array":[ "_BaseMap","_Color","_SurfaceDepth","_BelowColor","_NormalMap","_NormalScale","_MetallicMaskMap","_Metallic","_Smoothness","_Occlusion","_InvertSmoothnessOn","_MetallicChannel","_SmoothnessChannel","_OcclusionChannel"]},
         {"array":[ "_DetailOn","_DetailPBRMaskMap","_DetailPBRMetallic","_DetailPBRSmoothness","_DetailPBROcclusion","_DetailUVUseWorldPos","_DetailWorldPlaneMode","_DetailWorldPosTriplanar","_DetailPbrMaskApplyMetallic","_DetailPbrMaskApplySmoothness","_DetailPbrMaskApplyOcclusion"]},
         {"array":["_ClipOn","_Cutoff","_AlphaPremultiply","_PresetBlendMode","_RenderQueue"]},

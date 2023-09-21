@@ -16,7 +16,8 @@ sampler2D _ReflectionTexture;
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;
 half4 _MainTex_ST;
-half4 _Metallic_Smoothness_Occlusion_NormalScale;
+// half4 _Metallic_Smoothness_Occlusion_NormalScale;
+half _Metallic,_Smoothness,_Occlusion,_NormalScale;
 
 half _SpecularOn;
 half _AnisoRough;
@@ -48,8 +49,8 @@ half2 _ClothRange;
 
 CBUFFER_END
 
-#define _Metallic _Metallic_Smoothness_Occlusion_NormalScale.x
-#define _Smoothness _Metallic_Smoothness_Occlusion_NormalScale.y 
-#define _Occlusion _Metallic_Smoothness_Occlusion_NormalScale.z
-#define _NormalScale _Metallic_Smoothness_Occlusion_NormalScale.w
+// #define _Metallic _Metallic_Smoothness_Occlusion_NormalScale.x
+// #define _Smoothness _Metallic_Smoothness_Occlusion_NormalScale.y 
+// #define _Occlusion _Metallic_Smoothness_Occlusion_NormalScale.z
+// #define _NormalScale _Metallic_Smoothness_Occlusion_NormalScale.w
 #endif //PBR_INPUT_HLSL

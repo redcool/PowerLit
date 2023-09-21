@@ -102,8 +102,8 @@ Shader "URP/FastLit"
 		[GroupEnum(Settings,UnityEngine.Rendering.CompareFunction)]_ZTestMode("_ZTestMode",float) = 4
 
         //===================== actual values
-        [VectorValues(_Metallic _Smoothness _Occlusion _NormalScale)]
-        _Metallic_Smoothness_Occlusion_NormalScale("_Metallic_Smoothness_Occlusion_NormalScale",vector)=(1,1,1,1)
+        // [VectorValues(_Metallic _Smoothness _Occlusion _NormalScale)]
+        // _Metallic_Smoothness_Occlusion_NormalScale("_Metallic_Smoothness_Occlusion_NormalScale",vector)=(1,1,1,1)
 
         [TextureValue(_BaseMap)]
         _MainTex("_MainTex",2d)=""{}

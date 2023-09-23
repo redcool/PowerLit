@@ -134,7 +134,9 @@ Shader "URP/FastLit"
             #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
 
-            #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #define SHADOWS_FULL_MIX
+            // #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile_fragment _ LIGHTMAP_ON
 

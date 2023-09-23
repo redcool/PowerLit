@@ -170,7 +170,7 @@ float AdditionalLightShadow1(int lightIndex, float3 positionWS, float3 lightDire
 #else
     float shadowFade = float(1.0);
 #endif
-    return MixShadow(realtimeShadow, bakedShadow, shadowFade);
+    return MixShadow(realtimeShadow, bakedShadow, shadowFade,_Shadows_ShadowMaskOn);
 }
 
 Light GetAdditionalLight1(uint i, float3 positionWS, float4 shadowMask)

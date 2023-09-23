@@ -228,9 +228,9 @@ Shader "URP/PowerLit"
 //================================================= Debug display
         [GroupToggle(_,DEBUG_DISPLAY)]_DebugDisplay("_DebugDisplay",int) = 0
 //================================================= lights
-        [Group(AdditionalLights)]
+        // [Group(AdditionalLights)]
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
-        [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_ON)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
+        // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
 //================ vectors group actual data store in this
         [VectorValues(_Metallic _Smoothness _Occlusion _InvertSmoothnessOn)]
         _MSOInfo("_MSOInfo",vector) = (1,1,1,1)
@@ -330,12 +330,12 @@ detail map
             #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
-            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
 
             // unity keywords
             // #pragma multi_compile_fog
-            // #pragma shader_feature_local_fragment LIGHTMAP_SHADOW_MIXING // use _Shadows_ShadowMaskOn
+        //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING // use _Shadows_ShadowMaskOn
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature

@@ -95,6 +95,9 @@ float MainLightRealtimeShadow(float4 shadowCoord,bool isReceiveShadow){
 }
 
 float MixShadow(float realtimeShadow,float bakedShadow,float shadowFade,bool isMixShadow){
+    #if defined(SHADOWS_FULL_MIX)
+        return min(lerp(realtimeShadow, bakedShadow, shadowFade),bakedShadow);
+    #endif
     if(isMixShadow)
     {
         return min(lerp(realtimeShadow,1,shadowFade),bakedShadow);

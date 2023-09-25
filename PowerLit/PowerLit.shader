@@ -335,6 +335,7 @@ detail map
 
             // unity keywords
             // #pragma multi_compile_fog
+            #define SHADOWS_FULL_MIX // realtime + shadowMask
         //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING // use _Shadows_ShadowMaskOn
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON

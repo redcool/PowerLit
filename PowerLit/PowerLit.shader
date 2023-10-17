@@ -310,7 +310,7 @@ detail map
             #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
             #pragma shader_feature_local_fragment _SNOW_ON
             #pragma shader_feature_local_vertex _WIND_ON
-        //     #pragma shader_feature_local_fragment _RAIN_ON
+            #pragma shader_feature_local_fragment _RAIN_ON
             #pragma shader_feature_local_fragment _STOREY_ON
             #pragma shader_feature_local_fragment _DETAIL_ON
 

@@ -26,6 +26,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Main
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_BaseMap_ST)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_Color)
+    UNITY_DEFINE_INSTANCED_PROP(half,_AlbedoMulVertexColor)
+    
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_NormalMap_ST)
 
     UNITY_DEFINE_INSTANCED_PROP(half ,_Metallic)
@@ -215,6 +217,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 //--------------------------------- Main
     #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BaseMap_ST)
     #define _Color UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Color)
+    #define _AlbedoMulVertexColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlbedoMulVertexColor)
     #define _NormalMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalMap_ST)
 
     #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale)

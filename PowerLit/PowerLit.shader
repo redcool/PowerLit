@@ -7,6 +7,7 @@ Shader "URP/PowerLit"
         [GroupHeader(Main,MainTexture)]
         [GroupItem(Main)][MainTexture]_BaseMap("_BaseMap",2d) = "white"{}
         [GroupItem(Main)][gamma][MainColor][hdr]_Color("_Color",color) = (1,1,1,1)
+        [GroupToggle(Main)] _AlbedoMulVertexColor("_AlbedoMulVertexColor",float) = 0
 
         [GroupHeader(Main,Surface Below)]
         [GroupToggle(Main,_SURFACE_BELOW_ON)]_SurfaceBelowOn("_SurfaceBelowOn",float) = 0

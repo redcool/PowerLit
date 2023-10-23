@@ -271,8 +271,10 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
 
 }
 
-void InitSurfaceInputData(inout SurfaceInputData data,float2 uv,float4 clipPos,float3 viewDirTS=0){
+void InitSurfaceInputData(inout SurfaceInputData data,float2 uv,float4 clipPos,float3 viewDirTS=0,float4 vertexColor=1){
     InitSurfaceData(uv,data.surfaceData /*inout*/);
+    data.surfaceData.albedo *= _AlbedoMulVertexColor? vertexColor : 1;
+
     data.isAlphaPremultiply = _AlphaPremultiply;
     // data.isReceiveShadow = _IsReceiveShadowOff && _MainLightShadowOn;
     data.screenUV = clipPos.xy/_ScaledScreenParams.xy;

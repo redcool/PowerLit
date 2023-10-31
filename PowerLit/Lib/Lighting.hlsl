@@ -63,7 +63,7 @@ void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFDa
     // brdfData.albedo = surfaceData.albedo;
     brdfData.reflectivity = 1 - oneMinusReflectivityMetallic;
     brdfData.diffuse = surfaceData.albedo * oneMinusReflectivityMetallic;
-    brdfData.specular = lerp(kDieletricSpec.rgb,surfaceData.albedo,surfaceData.metallic);
+    brdfData.specular = lerp(0.04,surfaceData.albedo,surfaceData.metallic);
     brdfData.perceptualRoughness = 1 - surfaceData.smoothness;
     brdfData.roughness = max(HALF_MIN_SQRT,brdfData.perceptualRoughness * brdfData.perceptualRoughness);
     brdfData.roughness2 = max(brdfData.roughness * brdfData.roughness,HALF_MIN);

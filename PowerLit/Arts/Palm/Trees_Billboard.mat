@@ -191,7 +191,7 @@ Material:
     - _ReceiveAdditionalLightShadow: 1
     - _ReceiveShadows: 1
     - _RippleAlbedoIntensity: 0.1
-    - _RippleBlendNormalOn: 0
+    - _RippleBlendNormal: 0
     - _RippleIntensity: 1
     - _RippleOffsetAutoStop: 0
     - _RippleSpeed: 10

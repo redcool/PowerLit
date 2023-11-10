@@ -14,13 +14,13 @@
 #include "../../PowerShaderLib/Lib/ReflectionLib.hlsl"
 #include "../../PowerShaderLib/Lib/SDF.hlsl"
 #include "../../PowerShaderLib/Lib/MathLib.hlsl"
+#include "../../PowerShaderLib/Lib/WeatherNoiseTexture.hlsl"
 
 void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;
     albedo = c.rgb;
     alpha = c.a;
 
-    // branch_if(isClipOn)
     #if defined(_ALPHATEST_ON)
         clip(alpha - cutoff);
     #endif
@@ -70,7 +70,6 @@ void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
     #endif
 }
 
-#if defined(_PARALLAX)
 void ApplyParallax(inout float2 uv,float3 viewTS){
     float size = 1.0/_ParallaxIterate;
     // branch_if(_ParallaxOn)
@@ -88,24 +87,10 @@ void ApplyParallaxVertex(inout float2 uv,float3 viewTS){
         uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height);
     }
 }
-#endif
 
 float3 ScreenToWorldPos(float2 screenUV){
     float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).x;
     return ScreenToWorldPos(screenUV,depth,unity_MatrixInvVP);
-}
-
-
-float SampleWeatherNoise(float2 uv,half4 ratio=half4(.5,.25,.0125,.063)){
-    float4 n = SAMPLE_TEXTURE2D(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1);
-    n.x = dot(n,ratio);
-    n.x = n.x*2-1;
-    return n.x;
-}
-
-float SampleWeatherNoiseLOD(float2 uv,half lod){
-    float4 n = SAMPLE_TEXTURE2D_LOD(_WeatherNoiseTexture,sampler_WeatherNoiseTexture,uv*0.1,lod);
-    return dot(n,half4(0.5,0.25,0.125,0.06).wzyx);
 }
 
 float CalcWorldNoise(float3 worldPos,float4 tilingOffset,float3 windDir){
@@ -119,10 +104,13 @@ float CalcWorldNoise(float3 worldPos,float4 tilingOffset,float3 windDir){
     // noise += unity_gradientNoise(noiseUV2) + 0.5;
 
     // texture version
-    noise += SampleWeatherNoise(noiseUV,half4(0.05,0.15,0.3,0.5))+0.5;
-    noise += SampleWeatherNoise(noiseUV2,half4(0.05,0.15,0.3,0.5))+0.5;
-    noise *= 0.5;
-    return noise;  
+    noise += SampleWeatherNoise(noiseUV,half4(0.05,0.15,0.3,0.5));
+    return noise;
+
+    // full version
+    // noise += SampleWeatherNoise(noiseUV2,half4(0.05,0.15,0.3,0.5));
+    // noise = noise * 0.5+0.5;
+    // return noise;  
 }
 
 
@@ -159,20 +147,33 @@ void ApplyCloudShadow(inout half3 color,float3 worldPos){
 
 #if defined(_RAIN_ON)
 /** 
-    rain atten mode
+    rain flow atten
+*/
+float GetRainFlowAtten(float3 worldPos,float3 vertexNormal){
+    float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
+    atten *= saturate(_RainHeight - worldPos.y);
+    atten *= _GlobalRainIntensity * _RainIntensity;
+    return atten;
+}
+
+
+/**
+    rain pixel atten mode
     
     #define RAIN_MASK_PBR_SMOOTHNESS 1
     #define RAIN_MASK_MAIN_TEX_ALPHA 2
 */
-
-float GetRainAtten(float3 worldPos,float3 vertexNormal,float smoothness,float mainTexAlpha){
+float GetRainRippleAtten(float smoothness,float mainTexAlpha){
     float attenMaskMode[3] = {1,smoothness,mainTexAlpha};
+    return attenMaskMode[_RainMaskFrom];
+}
 
-    float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
-    atten *= saturate(_RainHeight - worldPos.y);
-    atten *= _GlobalRainIntensity * _RainIntensity;
-    atten *= attenMaskMode[_RainMaskFrom];
-    return atten;
+float2 GetRainFlowUVOffset(inout SurfaceInputData data,float3 worldPos,float3 vertexNormal){
+    branch_if(!_RainFlowIntensity)
+        return 0;
+    // flow
+    data.rainNoise = CalcWorldNoise(worldPos,_RainReflectTilingOffset,_GlobalWindDir);
+    return data.rainNoise*0.02 * data.rainAtten * _RainFlowIntensity;
 }
 
 float3 GetRainRipple(float3 worldPos){
@@ -182,14 +183,6 @@ float3 GetRainRipple(float3 worldPos){
     return ripple;
 }
 
-
-float CalcRainNoise(float3 worldPos){
-    return CalcWorldNoise(worldPos,_RainReflectTilingOffset,_GlobalWindDir);
-    // cross noise
-    // float2 noiseUV = worldPos.xz * _RainReflectTilingOffset.xy+ _GlobalWindDir.xz * _RainReflectTilingOffset.zw* _Time.y;
-    // float2 noiseUV2 = worldPos.xz * _RainReflectTilingOffset.xy + float2(_GlobalWindDir.x * -_Time.x,0);
-}
-
 /**
     ApplyRainRipple
 
@@ -197,33 +190,27 @@ float CalcRainNoise(float3 worldPos){
     change normalTS
 */
 void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
-    float3 ripple = GetRainRipple(worldPos + data.rainNoise * 0.002) * data.rainAtten  * _RippleIntensity;
+    branch_if(!_RippleIntensity)
+        return;
 
+    float3 ripple = GetRainRipple(worldPos + data.rainNoise * 0.2) * data.rainAtten  * _RippleIntensity;
     // apply ripple color 
     data.surfaceData.albedo += ripple.x * _RippleAlbedoIntensity;
-    data.surfaceData.albedo += data.rainNoise *data.rainAtten * _RainFlowIntensity;
 
     // apply ripple blend normal
-    branch_if(_RippleBlendNormalOn)
-        data.surfaceData.normalTS = BlendNormal(data.surfaceData.normalTS,(data.surfaceData.normalTS+ ripple));
+    data.surfaceData.normalTS += ripple * _RippleBlendNormal;
+    // full version
+    //data.surfaceData.normalTS = BlendNormal(data.surfaceData.normalTS,(data.surfaceData.normalTS+ ripple));
 }
 
 void ApplyRainPbr(inout SurfaceInputData data){
     // float3 worldPos = ScreenToWorldPos(screenUV);
-    half rainIntensity = _RainIntensity * _GlobalRainIntensity;
+    half rainIntensity = saturate(_RainIntensity * _GlobalRainIntensity);
     data.surfaceData.albedo *= lerp(1,_RainColor.xyz,rainIntensity);
     data.surfaceData.metallic = lerp(data.surfaceData.metallic , _RainMetallic, rainIntensity);
     data.surfaceData.smoothness = lerp(data.surfaceData.smoothness , _RainSmoothness , rainIntensity);
 }
 
-void InitSurfaceInputDataRain(inout SurfaceInputData data,float3 worldPos,float3 vertexNormal){
-    float rainAtten = GetRainAtten(worldPos,vertexNormal,data.surfaceData.smoothness,data.surfaceData.alpha);
-    float rainNoise = CalcRainNoise(worldPos);
-
-    data.rainAtten = rainAtten;
-    data.rainNoise = rainNoise;
-    data.envIntensity = _RainReflectIntensity;
-}
 
 #endif // _RAIN_ON
 

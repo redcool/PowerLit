@@ -174,19 +174,32 @@ float4 frag(Varyings input
         // input.uv.xy += ParallaxOcclusionOffset(_ParallaxHeight,input.viewDirTS_NV.xyz,sampleRatio,input.uv.xy,_ParallaxMap,sampler_ParallaxMap,1,100);
 
     #endif
-    
+
+    //========  rain 1 input.uv apply rain flow
+    #if defined(_RAIN_ON)
+    branch_if(IsRainOn())
+    {
+        // flow atten
+        data.rainAtten = GetRainFlowAtten(worldPos,vertexNormal);
+
+
+        input.uv.xy += GetRainFlowUVOffset(data/**/,worldPos,vertexNormal);
+    }
+    #endif
+
     InitSurfaceInputData(data/*inout*/,input.uv.xy,input.pos,input.viewDirTS_NV.xyz,input.color);
 
     // apply detail layers
     ApplyDetails(data.surfaceData.metallic/**/,data.surfaceData.smoothness,data.surfaceData.occlusion,input.uv.xy,worldPos,vertexNormal);
 
-    // blend rain normalTS
+    //========  rain 2, (albedo , normalTS) apply rain ripple, 
     #if defined(_RAIN_ON)
     branch_if(IsRainOn())
     {
-        InitSurfaceInputDataRain(data/**/,worldPos,vertexNormal);
+        data.envIntensity = _RainReflectIntensity;
+        // ripple atten
+        data.rainAtten *= GetRainRippleAtten(data.surfaceData.smoothness,data.surfaceData.alpha);
         ApplyRainRipple(data/**/,worldPos);
-        // return data.rainAtten;
     }
     #endif
 
@@ -219,6 +232,7 @@ float4 frag(Varyings input
     float4 shadowMask = CalcShadowMask(data.inputData);
     Light mainLight = GetMainLight(data,shadowMask);
 
+    //========  rain 3, apply rain pbr params
     #if defined(_RAIN_ON)
     branch_if(IsRainOn())
     {

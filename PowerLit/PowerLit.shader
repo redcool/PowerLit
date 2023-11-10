@@ -162,7 +162,9 @@ Shader "URP/PowerLit"
         [GroupToggle]_RippleOffsetAutoStop("_RippleOffsetAutoStop",int)=0
         _RippleSpeed("_RippleSpeed",float) = 10
         _RippleIntensity("_RippleIntensity",range(0,10)) = 1
-        [GroupToggle]_RippleBlendNormalOn("_RippleBlendNormalOn",int) = 0
+
+        [GroupHeader(Intensity)]
+        _RippleBlendNormal("_RippleBlendNormal",range(0,1)) = 1
         _RippleAlbedoIntensity("_RippleAlbedoIntensity",range(0,1)) = 0.1
 
         [GroupHeader(Rain Env)]

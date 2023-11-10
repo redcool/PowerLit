@@ -20,7 +20,7 @@ TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
 // TEXTURECUBE(_RainCube);SAMPLER(sampler_RainCube);
 TEXTURE2D(_StoreyLineNoiseMap);SAMPLER(sampler_StoreyLineNoiseMap);
 TEXTURE2D(_DetailPBRMaskMap);SAMPLER(sampler_DetailPBRMaskMap);
-TEXTURE2D(_WeatherNoiseTexture);SAMPLER(sampler_WeatherNoiseTexture);
+
 
 UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Main
@@ -130,7 +130,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half,_RippleAlbedoIntensity)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RippleSpeed)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RippleIntensity)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_RippleBlendNormalOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_RippleBlendNormal)
 
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_RainColor)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainSmoothness)
@@ -302,7 +302,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _RainMaskFrom UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainMaskFrom)
     
     #define _RippleIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleIntensity)
-    #define _RippleBlendNormalOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleBlendNormalOn)
+    #define _RippleBlendNormal UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RippleBlendNormal)
 //--------------------------------- Rain reflection
     #define _RainColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainColor)
     #define _RainSmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_RainSmoothness)

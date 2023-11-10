@@ -13,7 +13,7 @@
         {"array":[ "_WindOn","_WindAnimParam","_WindDir","_WindSpeed"]},
         {"array":[ "_SnowOn","_ApplyEdgeOn","_SnowIntensity"]},
         {"array":[ "_FogOn","_FogNoiseOn","_DepthFogOn","_HeightFogOn"]},
-        {"array":[ "_RainOn","_RippleTex","_RippleOffsetAutoStop","_RippleSpeed","_RippleIntensity","_RippleBlendNormalOn","_RippleAlbedoIntensity","_RainColor","_RainMetallic","_RainSmoothness","_RainIntensity","_RainSlopeAtten","_RainHeight","_RainMaskFrom","_RainReflectDirOffset","_RainReflectTilingOffset","_RainReflectIntensity","_RainFlowIntensity"]},
+        {"array":[ "_RainOn","_RippleTex","_RippleOffsetAutoStop","_RippleSpeed","_RippleIntensity","_RippleBlendNormal","_RippleAlbedoIntensity","_RainColor","_RainMetallic","_RainSmoothness","_RainIntensity","_RainSlopeAtten","_RainHeight","_RainMaskFrom","_RainReflectDirOffset","_RainReflectTilingOffset","_RainReflectIntensity","_RainFlowIntensity"]},
         {"array":[ "_StoreyTilingOn","_StoreyHeight","_StoreyWindowInfo","_StoreyLightSwitchSpeed","_StoreyLightOpaque","_StoreyLineOn","_StoreyLineNoiseMap","_StoreyLineColor"]}
     ]
 }

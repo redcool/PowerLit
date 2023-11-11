@@ -182,10 +182,10 @@ Shader "URP/PowerLit"
         // [GroupToggle]_RainReflectOn("_RainReflectOn",int) = 0
 		// _RainCube("_RainCube",cube)=""{}
         _RainReflectDirOffset("_RainReflectDirOffset",vector) = (0,0,0,0)
-        _RainReflectTilingOffset("_RainReflectTilingOffset",vector) = (50,50,10,10)
         _RainReflectIntensity("_RainReflectIntensity",range(0,1))=0.5
 
         [GroupHeader(Flow)]
+        _RainFlowTilingOffset("_RainFlowTilingOffset",vector) = (10,10,10,10)
         _RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
 
 //================================================= Details

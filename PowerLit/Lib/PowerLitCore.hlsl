@@ -14,6 +14,7 @@
 #include "../../PowerShaderLib/Lib/ReflectionLib.hlsl"
 #include "../../PowerShaderLib/Lib/SDF.hlsl"
 #include "../../PowerShaderLib/Lib/MathLib.hlsl"
+// #define SIMPLE_NOISE_TEX
 #include "../../PowerShaderLib/Lib/WeatherNoiseTexture.hlsl"
 
 void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
@@ -96,7 +97,6 @@ float3 ScreenToWorldPos(float2 screenUV){
 float CalcWorldNoise(float3 worldPos,float4 tilingOffset,float3 windDir){
     // cross noise
     float2 noiseUV = worldPos.xz * tilingOffset.xy+ windDir.xz * tilingOffset.zw* _Time.y;
-    float2 noiseUV2 = worldPos.xz * tilingOffset.xy + float2(windDir.x * -_Time.x,0);
 
     float noise =0;
     // noise version
@@ -108,6 +108,7 @@ float CalcWorldNoise(float3 worldPos,float4 tilingOffset,float3 windDir){
     return noise;
 
     // full version
+    // float2 noiseUV2 = worldPos.xz * tilingOffset.xy + float2(windDir.x * -_Time.x,0);
     // noise += SampleWeatherNoise(noiseUV2,half4(0.05,0.15,0.3,0.5));
     // noise = noise * 0.5+0.5;
     // return noise;  
@@ -172,7 +173,7 @@ float2 GetRainFlowUVOffset(inout SurfaceInputData data,float3 worldPos,float3 ve
     branch_if(!_RainFlowIntensity)
         return 0;
     // flow
-    data.rainNoise = CalcWorldNoise(worldPos,_RainReflectTilingOffset,_GlobalWindDir);
+    data.rainNoise = CalcWorldNoise(worldPos,_RainFlowTilingOffset,_GlobalWindDir);
     return data.rainNoise*0.02 * data.rainAtten * _RainFlowIntensity;
 }
 

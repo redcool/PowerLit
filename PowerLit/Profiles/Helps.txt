@@ -8,7 +8,7 @@ _DetailPbrMaskApplySmoothness = 影响smoothness
 _DetailPbrMaskApplyOcclusion = 影响occlusion
 
 //rain
-_RainReflectTilingOffset = (xy)Tiling,(zw)Offset speed
+_RainFlowTilingOffset = (xy)Tiling,(zw)Offset speed
 
 //------------Storey
 

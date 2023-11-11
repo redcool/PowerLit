@@ -181,8 +181,6 @@ float4 frag(Varyings input
     {
         // flow atten
         data.rainAtten = GetRainFlowAtten(worldPos,vertexNormal);
-
-
         input.uv.xy += GetRainFlowUVOffset(data/**/,worldPos,vertexNormal);
     }
     #endif
@@ -237,7 +235,7 @@ float4 frag(Varyings input
     branch_if(IsRainOn())
     {
         data.rainAtten *= (vertexNoise+0.5) ;//* (mainLight.shadowAttenuation+0.25);
-        data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
+        // data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
         // apply rain pbr 
         ApplyRainPbr(data/**/);
     }

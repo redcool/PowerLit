@@ -18,12 +18,13 @@ half4 _Color;
 half4 _MainTex_ST;
 // half4 _Metallic_Smoothness_Occlusion_NormalScale;
 half _Metallic,_Smoothness,_Occlusion,_NormalScale;
+half _AlbedoMulVertexColor;
 
 half _SpecularOn;
 half _AnisoRough;
 half _AnisoShift;
 
-int _PbrMode;
+half _PbrMode;
 half _CalcTangent;
 
 // custom shadow 

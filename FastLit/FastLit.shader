@@ -19,7 +19,8 @@ Shader "URP/FastLit"
         [GroupItem(Main)]_Color ("_Color", color) = (1,1,1,1)
         [GroupItem(Main)]_NormalMap("_NormalMap",2d)="bump"{}
         [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
-
+        [GroupToggle(Main)] _AlbedoMulVertexColor("_AlbedoMulVertexColor",float) = 0
+        
         [Group(PBR Mask)]
         [GroupItem(PBR Mask)]_MetallicMaskMap("_PbrMask",2d)="white"{}
 

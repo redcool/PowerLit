@@ -16,6 +16,7 @@ struct appdata
     // float2 uv2:TEXCOORD2;
     float3 normal:NORMAL;
     float4 tangent:TANGENT;
+    float4 color:COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -29,6 +30,7 @@ struct v2f
     float4 tSpace2:TEXCOORD3;
     // float4 shadowCoord:TEXCOORD4;
     float4 fogCoord:TEXCOORD5;
+    float4 color:COLOR;
     
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -47,7 +49,7 @@ v2f vert (appdata v)
     // o.shadowCoord = TransformWorldToShadowCoord(worldPos);
     o.fogCoord.xy = CalcFogFactor(p.xyz);
 
-
+    o.color = v.color;
     return o;
 }
 
@@ -96,6 +98,8 @@ float4 frag (v2f i) : SV_Target
 //--------- lighting
     float4 mainTex = tex2D(_MainTex, mainUV) * _Color;
     float3 albedo = mainTex.xyz;
+    albedo *= _AlbedoMulVertexColor ? i.color : 1;
+    
     float alpha = mainTex.w;
 
     #if defined(ALPHA_TEST)

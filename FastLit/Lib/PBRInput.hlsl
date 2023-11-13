@@ -13,6 +13,8 @@ sampler2D _PbrMask;
 sampler2D _EmissionMap;
 sampler2D _ReflectionTexture;
 
+TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
+
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;
 half4 _MainTex_ST;
@@ -36,12 +38,40 @@ half _CustomShadowDepthBias,_CustomShadowNormalBias;
 //thin film
 // half _TFOn,_TFScale,_TFOffset,_TFSaturate,_TFBrightness;
 half _ReceiveShadowOff;
-
+//----------------------------------------
 half _FogOn;
 half _FogNoiseOn;
 half _DepthFogOn;
 half _HeightFogOn;
 
+half4 _WindAnimParam;
+half4 _WindDir;
+half _WindSpeed;
+
+half _SnowIntensity;
+half _ApplyEdgeOn;
+
+half4 _RippleTex_ST;
+half _RippleOffsetAutoStop;
+half _RippleAlbedoIntensity;
+half _RippleSpeed;
+half _RippleIntensity;
+half _RippleBlendNormal;
+
+half4 _RainColor;
+half _RainSmoothness;
+half _RainMetallic;
+half _RainIntensity;
+half _RainHeight;
+half _RainSlopeAtten;
+half _RainMaskFrom;
+
+half3 _RainReflectDirOffset;
+half4 _RainFlowTilingOffset;
+half _RainReflectIntensity;
+half _RainFlowIntensity;
+
+//----------------------------------------
 half _AlphaPremultiply;
 half _Cutoff;
 

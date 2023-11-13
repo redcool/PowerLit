@@ -67,13 +67,57 @@ Shader "URP/FastLit"
         // [GroupItem(Thin Film)]_TFOffset("_TFOffset",float) = 0
         // [GroupItem(Thin Film)]_TFSaturate("_TFSaturate",range(0,1)) = 1
         // [GroupItem(Thin Film)]_TFBrightness("_TFBrightness",range(0,1)) = 1
-
+//=================================================  weather
         [Group(Fog)]
         [GroupToggle(Fog)]_FogOn("_FogOn",int) = 1
         [GroupToggle(Fog,_DEPTH_FOG_NOISE_ON)]_FogNoiseOn("_FogNoiseOn",int) = 0
         [GroupToggle(Fog)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(Fog)]_HeightFogOn("_HeightFogOn",int) = 1
 
+        [Group(Wind)]
+        [GroupToggle(Wind,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
+        [GroupVectorSlider(Wind,branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
+        [GroupVectorSlider(Wind,WindVector Intensity,0_1)]_WindDir("_WindDir,dir:(xyz),Intensity:(w)",vector) = (1,0.1,0,0.5)
+        [GroupItem(Wind)]_WindSpeed("_WindSpeed",range(0,1)) = 0.3
+  
+        [Group(Snow)]
+        [GroupToggle(Snow,_SNOW_ON)]_SnowOn("_SnowOn",int) = 0
+        [GroupToggle(Snow)]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
+        [GroupItem(Snow)]_SnowIntensity("_SnowIntensity",range(0,1)) = 0
+
+        [Group(Rain)]
+        [GroupToggle(Rain,_RAIN_ON)]_RainOn("_RainOn",int) = 0
+
+        [GroupHeader(Rain,Ripple)]
+        [GroupItem(Rain)]_RippleTex("_RippleTex",2d)=""{}
+        [GroupToggle(Rain)]_RippleOffsetAutoStop("_RippleOffsetAutoStop",int)=0
+        [GroupItem(Rain)]_RippleSpeed("_RippleSpeed",float) = 10
+        [GroupItem(Rain)]_RippleIntensity("_RippleIntensity",range(0,10)) = 1
+
+        [GroupHeader(Rain,Intensity)]
+        [GroupItem(Rain)]_RippleBlendNormal("_RippleBlendNormal",range(0,1)) = 1
+        [GroupItem(Rain)]_RippleAlbedoIntensity("_RippleAlbedoIntensity",range(0,1)) = 0.1
+
+        [GroupHeader(Rain, Env)]
+        [GroupItem(Rain)]_RainColor("_RainColor",color) = (.5,.5,.5,1)
+        [GroupItem(Rain)]_RainMetallic("_RainMetallic",range(0,1)) = 0.1
+        [GroupItem(Rain)]_RainSmoothness("_RainSmoothness",range(0,1)) = 0.1
+
+        [GroupHeader(Rain, Atten)]
+        [GroupItem(Rain)]_RainIntensity("_RainIntensity",range(0,1)) = 1
+        [GroupItem(Rain)]_RainSlopeAtten("_RainSlopeAtten",range(0,1)) = 0.5
+        [GroupItem(Rain)]_RainHeight("_RainHeight",float) = 5
+        [GroupEnum(Rain,None DetailPbrSmoothness MainTexAlpha,0 1 2)]_RainMaskFrom("_RainMaskFrom",int) = 0
+
+        [GroupHeader(Rain,Reflect)]
+        // [GroupToggle]_RainReflectOn("_RainReflectOn",int) = 0
+		// _RainCube("_RainCube",cube)=""{}
+        [GroupItem(Rain)]_RainReflectDirOffset("_RainReflectDirOffset",vector) = (0,0,0,0)
+        [GroupItem(Rain)]_RainReflectIntensity("_RainReflectIntensity",range(0,1))=0.5
+
+        [GroupHeader(Rain,Flow)]
+        [GroupItem(Rain)]_RainFlowTilingOffset("_RainFlowTilingOffset",vector) = (10,10,10,10)
+        [GroupItem(Rain)]_RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
 
         // [Group(Lightmap)]
         // [GroupToggle(Lightmap,LIGHTMAP_ON)]_LightmapOn("_LightmapOn",int) = 0
@@ -146,6 +190,10 @@ Shader "URP/FastLit"
             #pragma shader_feature_fragment _EMISSION
             #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
+            #pragma shader_feature_local_fragment _SNOW_ON
+            #pragma shader_feature_local_vertex _WIND_ON
+            #pragma shader_feature_local_fragment _RAIN_ON
+
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"
             
@@ -184,7 +232,8 @@ Shader "URP/FastLit"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #pragma shader_feature_fragment ALPHA_TEST
-            
+            #pragma shader_feature_local_vertex _WIND_ON
+
             #define SHADOW_PASS 
             #define USE_SAMPLER2D
             #define _MainTexChannel 3

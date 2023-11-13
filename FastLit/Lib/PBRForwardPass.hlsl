@@ -8,6 +8,9 @@
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/URPLib/Lighting.hlsl"
 
+#include "../../PowerShaderLib/Lib/NatureLib.hlsl"
+#include "../../PowerShaderLib/Lib/WeatherNoiseTexture.hlsl"
+
 struct appdata
 {
     float4 vertex : POSITION;
@@ -41,11 +44,23 @@ v2f vert (appdata v)
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_TRANSFER_INSTANCE_ID(v,o);
 
-    o.vertex = UnityObjectToClipPos(v.vertex.xyz);
+    float3 worldPos = TransformObjectToWorld(v.vertex.xyz);
+    float3 worldNormal = TransformObjectToWorldNormal(v.normal);
+    float3 worldTangent = TransformObjectToWorldDir(v.tangent.xyz);
+
+    float4 attenParam = v.color.x; // vertex color atten
+    #if defined(_WIND_ON)
+    branch_if(IsWindOn())
+    {
+        worldPos = WindAnimationVertex(worldPos,v.vertex.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
+    }
+    #endif
+
+    o.vertex = UnityWorldToClipPos(worldPos);
     o.uv.xy = TRANSFORM_TEX(v.uv, _MainTex);
     o.uv.zw = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
 
-    TANGENT_SPACE_COMBINE(v.vertex,v.normal,v.tangent,o/**/);
+    TANGENT_SPACE_COMBINE_WORLD(worldPos,worldNormal,float4(worldTangent,v.tangent.w),o/**/);
     // o.shadowCoord = TransformWorldToShadowCoord(worldPos);
     o.fogCoord.xy = CalcFogFactor(p.xyz);
 
@@ -62,19 +77,59 @@ float4 frag (v2f i) : SV_Target
     float2 mainUV = i.uv.xy;
     float2 lightmapUV = i.uv.zw;
     float2 screenUV = i.vertex.xy/_ScaledScreenParams.xy;
+//---------- rain
 
+    //========  rain 1 input.uv apply rain flow
+    #if defined(_RAIN_ON)
+    float rainIntensity = _GlobalRainIntensity * _RainIntensity;
+    float rainNoise = 0;
+    float rainAtten = 0;
+    branch_if(IsRainOn())
+    {
+        // flow atten
+        rainAtten = GetRainFlowAtten(worldPos,normal,rainIntensity,_RainSlopeAtten,_RainHeight);
+        mainUV += GetRainFlowUVOffset(rainNoise/**/,rainAtten,worldPos,_RainFlowTilingOffset,_RainFlowIntensity);
+    }
+    #endif
+//-------- albedo
+    float4 mainTex = tex2D(_MainTex, mainUV) * _Color;
+    float3 albedo = mainTex.xyz;
+    albedo *= _AlbedoMulVertexColor ? i.color.xyz : 1;
+    float alpha = mainTex.w;
+
+//---------- pbrMask
     float4 pbrMask = tex2D(_PbrMask,mainUV);
     float metallic = 0;
     float smoothness =0;
     float occlusion =0;
     SplitPbrMaskTexture(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,int3(0,1,2),float3(_Metallic,_Smoothness,_Occlusion),false);
 
+//---------- roughness
     float roughness = 0;
     float a = 0;
     float a2 = 0;
     CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
 
     float3 tn = UnpackNormalScale(tex2D(_NormalMap,mainUV),_NormalScale);
+//-------- rain ripple 
+    #if defined(_RAIN_ON)
+    branch_if(IsRainOn() && _RippleIntensity)
+    {
+        rainAtten *= GetRainRippleAtten(smoothness,alpha,_RainMaskFrom);
+        float2 rippleUV = CalcRippleUV(worldPos,_RippleTex_ST,_RippleOffsetAutoStop);
+        float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
+        ripple *= rainAtten;
+        // apply ripple color 
+        albedo += ripple.x * _RippleAlbedoIntensity;
+
+        // apply ripple blend normal
+        tn += ripple * _RippleBlendNormal;
+        // change pbr mask
+        ApplyRainPbr(albedo,metallic,smoothness,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
+    }
+    #endif
+
+//-------- lighting prepare 
     float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
 
     float3 l = (_MainLightPosition.xyz);
@@ -95,17 +150,21 @@ float4 frag (v2f i) : SV_Target
     float distanceAtten = unity_LightData.z;
     float3 radiance = _MainLightColor.xyz * (nl * shadowAtten * distanceAtten);
 
-//--------- lighting
-    float4 mainTex = tex2D(_MainTex, mainUV) * _Color;
-    float3 albedo = mainTex.xyz;
-    albedo *= _AlbedoMulVertexColor ? i.color : 1;
-    
-    float alpha = mainTex.w;
 
+//-------- snow
+    #if defined(_SNOW_ON)
+    branch_if(IsSnowOn())
+    {
+        albedo = MixSnow(albedo,1,_SnowIntensity,normal,_ApplyEdgeOn);
+    }
+    #endif
+
+//-------- clip
     #if defined(ALPHA_TEST)
         clip(alpha - _Cutoff);
     #endif
     
+//--------- lighting
     float specTerm = 0;
 
     if(_SpecularOn){

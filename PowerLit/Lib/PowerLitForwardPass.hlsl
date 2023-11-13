@@ -160,8 +160,6 @@ float4 frag(Varyings input
     float vertexNoise = input.fogCoord.z;
     float nv = input.viewDirTS_NV.w;
 
-    float rainIntensity = _GlobalRainIntensity * _RainIntensity;
-
     SurfaceInputData data = (SurfaceInputData)0;
     data.nv = nv;
 
@@ -177,15 +175,12 @@ float4 frag(Varyings input
 
     //========  rain 1 input.uv apply rain flow
     #if defined(_RAIN_ON)
+    float rainIntensity = _GlobalRainIntensity * _RainIntensity;
     branch_if(IsRainOn())
     {
         // flow atten
-        data.rainAtten = GetRainFlowAtten(worldPos,vertexNormal,rainIntensity);
-        input.uv.xy += GetRainFlowUVOffset(data/**/,worldPos,vertexNormal);
-        // return vertexNoise;
-        // ripple atten
-        data.rainAtten *= GetRainRippleAtten(data.surfaceData.smoothness,data.surfaceData.alpha);
-        ApplyRainRipple(data/**/,worldPos);
+        data.rainAtten = GetRainFlowAtten(worldPos,vertexNormal,rainIntensity,_RainSlopeAtten,_RainHeight);
+        input.uv.xy += GetRainFlowUVOffset(data.rainNoise/**/,data.rainAtten,worldPos,_RainFlowTilingOffset,_RainFlowIntensity);
     }
     #endif
 
@@ -223,14 +218,19 @@ float4 frag(Varyings input
     float4 shadowMask = CalcShadowMask(data.inputData);
     Light mainLight = GetMainLight(data,shadowMask);
 
-    //======== apply rain pbr params
+    //======== 2 apply rain pbr params
     #if defined(_RAIN_ON)
     branch_if(IsRainOn())
     {
+        // ripple atten
+        data.rainAtten *= GetRainRippleAtten(data.surfaceData.smoothness,data.surfaceData.alpha,_RainMaskFrom);
+        ApplyRainRipple(data/**/,worldPos);
+
         data.envIntensity = _RainReflectIntensity;
         // data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
         // apply rain pbr 
-        ApplyRainPbr(data/**/,rainIntensity);
+        ApplyRainPbr(data.albedo/**/,data.surfaceData.metallic,data.surfaceData.smoothness,
+        _RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
     }
     #endif
 

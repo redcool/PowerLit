@@ -90,7 +90,8 @@ float4 frag (v2f i) : SV_Target
     // return shadowMask;
     float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
     float shadowAtten = CalcShadow(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
-    float3 radiance = _MainLightColor.xyz * nl * shadowAtten;
+    float distanceAtten = unity_LightData.z;
+    float3 radiance = _MainLightColor.xyz * (nl * shadowAtten * distanceAtten);
 
 //--------- lighting
     float4 mainTex = tex2D(_MainTex, mainUV) * _Color;

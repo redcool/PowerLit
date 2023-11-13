@@ -38,8 +38,8 @@ Shader "URP/FastLit"
         [GroupItem(Shadow)]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
 
         [GroupHeader(Shadow,custom bias)]
-        [GroupSlider(Shadow)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
-        [GroupSlider(Shadow)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0
+        [GroupSlider(Shadow,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
+        [GroupSlider(Shadow,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0
 
         [Group(AdditionalLights)]
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS_ON)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0

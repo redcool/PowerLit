@@ -150,10 +150,10 @@ void ApplyCloudShadow(inout half3 color,float3 worldPos){
 /** 
     rain flow atten
 */
-float GetRainFlowAtten(float3 worldPos,float3 vertexNormal){
+float GetRainFlowAtten(float3 worldPos,float3 vertexNormal,float rainIntensity){
     float atten = saturate(dot(vertexNormal,float3(0,1,0))  - _RainSlopeAtten);
     atten *= saturate(_RainHeight - worldPos.y);
-    atten *= _GlobalRainIntensity * _RainIntensity;
+    atten *= rainIntensity;
     return atten;
 }
 
@@ -204,9 +204,8 @@ void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
     //data.surfaceData.normalTS = BlendNormal(data.surfaceData.normalTS,(data.surfaceData.normalTS+ ripple));
 }
 
-void ApplyRainPbr(inout SurfaceInputData data){
+void ApplyRainPbr(inout SurfaceInputData data,float rainIntensity){
     // float3 worldPos = ScreenToWorldPos(screenUV);
-    half rainIntensity = saturate(_RainIntensity * _GlobalRainIntensity);
     data.surfaceData.albedo *= lerp(1,_RainColor.xyz,rainIntensity);
     data.surfaceData.metallic = lerp(data.surfaceData.metallic , _RainMetallic, rainIntensity);
     data.surfaceData.smoothness = lerp(data.surfaceData.smoothness , _RainSmoothness , rainIntensity);
@@ -239,7 +238,9 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
     // float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
     // data.alpha = CalcAlpha(baseMap.w,_Color.a,_Cutoff,_ClipOn);
     // data.albedo = baseMap.xyz * _Color.xyz;
-    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,data.albedo/*out*/,data.alpha/*out*/);
+    float3 albedo = 0;
+    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,albedo/*out*/,data.alpha/*out*/);
+    data.albedo += albedo;
 
     half4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
     SplitPbrMaskTexture(
@@ -251,7 +252,8 @@ void InitSurfaceData(float2 uv,inout SurfaceData data){
         _InvertSmoothnessOn
     );
 
-    data.normalTS = CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
+    data.normalTS += CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
+    
     data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap);
     data.specular = 0;
     data.clearCoatMask = 0;

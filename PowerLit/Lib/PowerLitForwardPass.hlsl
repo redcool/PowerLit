@@ -89,11 +89,11 @@ Varyings vert(Attributes input){
     output.fogCoord.xy = CalcFogFactor(worldPos);
 
     // vertex noise
-    #if defined(_WIND_ON)
+    // #if defined(_WIND_ON)
     float2 noiseUV = worldPos.xz*0.5 + _WindDir.xz * _Time.y * (_IsGlobalWindOn?_WindSpeed:0);
     // output.fogCoord.z = unity_gradientNoise(noiseUV);
     output.fogCoord.z = SampleWeatherNoiseLOD(noiseUV,0);
-    #endif
+    // #endif
 
     // branch_if(_ParallaxOn)
     float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
@@ -112,7 +112,6 @@ Varyings vert(Attributes input){
     #endif
 
     CALC_MOTION_POSITIONS(input,output,clipPos);
-
     return output;
 }
 
@@ -153,7 +152,6 @@ float4 frag(Varyings input
     ,out float4 outputNormal:SV_TARGET1
     ,out float4 outputMotionVectors:SV_TARGET2
 ):SV_Target{
-
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
@@ -161,6 +159,8 @@ float4 frag(Varyings input
     float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
     float vertexNoise = input.fogCoord.z;
     float nv = input.viewDirTS_NV.w;
+
+    float rainIntensity = _GlobalRainIntensity * _RainIntensity;
 
     SurfaceInputData data = (SurfaceInputData)0;
     data.nv = nv;
@@ -180,8 +180,12 @@ float4 frag(Varyings input
     branch_if(IsRainOn())
     {
         // flow atten
-        data.rainAtten = GetRainFlowAtten(worldPos,vertexNormal);
+        data.rainAtten = GetRainFlowAtten(worldPos,vertexNormal,rainIntensity);
         input.uv.xy += GetRainFlowUVOffset(data/**/,worldPos,vertexNormal);
+        // return vertexNoise;
+        // ripple atten
+        data.rainAtten *= GetRainRippleAtten(data.surfaceData.smoothness,data.surfaceData.alpha);
+        ApplyRainRipple(data/**/,worldPos);
     }
     #endif
 
@@ -189,17 +193,6 @@ float4 frag(Varyings input
 
     // apply detail layers
     ApplyDetails(data.surfaceData.metallic/**/,data.surfaceData.smoothness,data.surfaceData.occlusion,input.uv.xy,worldPos,vertexNormal);
-
-    //========  rain 2, (albedo , normalTS) apply rain ripple, 
-    #if defined(_RAIN_ON)
-    branch_if(IsRainOn())
-    {
-        data.envIntensity = _RainReflectIntensity;
-        // ripple atten
-        data.rainAtten *= GetRainRippleAtten(data.surfaceData.smoothness,data.surfaceData.alpha);
-        ApplyRainRipple(data/**/,worldPos);
-    }
-    #endif
 
     InitInputData(data.inputData/*inout*/,worldPos,input,data);
 // return fragTest(input,data);
@@ -230,14 +223,14 @@ float4 frag(Varyings input
     float4 shadowMask = CalcShadowMask(data.inputData);
     Light mainLight = GetMainLight(data,shadowMask);
 
-    //========  rain 3, apply rain pbr params
+    //======== apply rain pbr params
     #if defined(_RAIN_ON)
     branch_if(IsRainOn())
     {
-        data.rainAtten *= (vertexNoise+0.5) ;//* (mainLight.shadowAttenuation+0.25);
+        data.envIntensity = _RainReflectIntensity;
         // data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
         // apply rain pbr 
-        ApplyRainPbr(data/**/);
+        ApplyRainPbr(data/**/,rainIntensity);
     }
     #endif
 

@@ -123,7 +123,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxMapChannel)
 //#endif
 //--------------------------------- Rain
-#if defined(_RAIN_ON)
+// #if defined(_RAIN_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_RainOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_RippleTex_ST)
     UNITY_DEFINE_INSTANCED_PROP(half,_RippleOffsetAutoStop)
@@ -145,7 +145,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_RainFlowTilingOffset)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainReflectIntensity)
     UNITY_DEFINE_INSTANCED_PROP(half ,_RainFlowIntensity)
-#endif    
+// #endif
 
 // #if defined(_SURFACE_BELOW_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)

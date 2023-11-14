@@ -148,6 +148,8 @@ float4 fragTest(Varyings input,SurfaceInputData data){
     return 0;
 }
 
+
+
 float4 frag(Varyings input
     ,out float4 outputNormal:SV_TARGET1
     ,out float4 outputMotionVectors:SV_TARGET2
@@ -160,9 +162,6 @@ float4 frag(Varyings input
     float vertexNoise = input.fogCoord.z;
     float nv = input.viewDirTS_NV.w;
 
-    SurfaceInputData data = (SurfaceInputData)0;
-    data.nv = nv;
-
     #if defined(_PARALLAX)
         branch_if(! _ParallaxInVSOn)
             ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
@@ -170,88 +169,112 @@ float4 frag(Varyings input
         // float3 viewDir = normalize(_WorldSpaceCameraPos - worldPos);
         // float sampleRatio = 0.5;// dot(viewDir,vertexNormal);
         // input.uv.xy += ParallaxOcclusionOffset(_ParallaxHeight,input.viewDirTS_NV.xyz,sampleRatio,input.uv.xy,_ParallaxMap,sampler_ParallaxMap,1,100);
-
     #endif
 
     //========  rain 1 input.uv apply rain flow
     #if defined(_RAIN_ON)
     float rainIntensity = _GlobalRainIntensity * _RainIntensity;
+    float rainAtten = 0;
+    float rainNoise = 0;
     branch_if(IsRainOn())
     {
         // flow atten
-        data.rainAtten = GetRainFlowAtten(worldPos,vertexNormal,rainIntensity,_RainSlopeAtten,_RainHeight);
-        input.uv.xy += GetRainFlowUVOffset(data.rainNoise/**/,data.rainAtten,worldPos,_RainFlowTilingOffset,_RainFlowIntensity);
+        rainAtten = GetRainFlowAtten(worldPos,vertexNormal,rainIntensity,_RainSlopeAtten,_RainHeight);
+        input.uv.xy += GetRainFlowUVOffset(rainNoise/**/,rainAtten,worldPos,_RainFlowTilingOffset,_RainFlowIntensity);
     }
     #endif
 
-    InitSurfaceInputData(data/*inout*/,input.uv.xy,input.pos,input.viewDirTS_NV.xyz,input.color);
+//------------ uv
+    float2 mainUV = input.uv.xy;
+    float2 lightmapUV = input.uv.zw;
+    float2 screenUV = input.pos.xy/_ScaledScreenParams.xy;
 
+//------------ albedo
+    float3 albedo = 0;
+    float alpha = 1;
+    CalcAlbedo(_BaseMap,sampler_BaseMap,mainUV,_Color,_Cutoff,0,albedo/*out*/,alpha/*out*/);
+
+    half4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,mainUV);
+    float metallic = 0;
+    float smoothness =0;
+    float occlusion =0;
+
+//---------- pbrMask    
+    SplitPbrMaskTexture(
+        metallic/**/,smoothness/**/,occlusion/**/,
+        pbrMask,
+        // half3(_MetallicChannel,_SmoothnessChannel,_OcclusionChannel), // gen code use dot
+        half3(0,1,2),
+        half3(_Metallic,_Smoothness,_Occlusion),
+        _InvertSmoothnessOn
+    );
     // apply detail layers
-    ApplyDetails(data.surfaceData.metallic/**/,data.surfaceData.smoothness,data.surfaceData.occlusion,input.uv.xy,worldPos,vertexNormal);
+    ApplyDetails(metallic/**/,smoothness,occlusion,mainUV,worldPos,vertexNormal);
+//---------- roughness
+    float roughness = 0;
+    float a = 0;
+    float a2 = 0;
+    CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
+    
+    float4 shadowMask = SampleShadowMask(lightmapUV);
+    float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
+    Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,1);
 
-    InitInputData(data.inputData/*inout*/,worldPos,input,data);
-// return fragTest(input,data);
+    float3 tn = UnpackNormalScale(SAMPLE_TEXTURE2D(_NormalMap,sampler_NormalMap,mainUV),_NormalScale);
+//-------- lighting prepare 
+    float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
 
+    float3 l = (mainLight.direction.xyz);
+    float3 v = normalize(GetWorldSpaceViewDir(worldPos));
+    float3 h = normalize(l+v);
+    
+    float lh = saturate(dot(l,h));
+    float nh = saturate(dot(n,h));
+    float nl = saturate(dot(n,l));
+    nv = saturate(dot(n,v));
+
+    // return shadowMask;
+    float3 radiance = mainLight.color * (nl * mainLight.distanceAttenuation * mainLight.shadowAttenuation);
+
+
+    float3 emission = CalcEmission(mainUV,_EmissionMap,sampler_EmissionMap);
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)
     {
-        ApplyStoreyEmission(data.surfaceData.emission/**/,data.surfaceData.alpha/**/,worldPos,input.uv.xy);
-        ApplyStoreyLineEmission(data.surfaceData.emission/**/,worldPos,input.uv.xy,input.color,nv);
+        ApplyStoreyEmission(emission/**/,alpha/**/,worldPos,input.uv.xy);
+        ApplyStoreyLineEmission(emission/**/,worldPos,input.uv.xy,input.color,nv);
     }
     #endif
 
 //  world emission
     half upFaceAtten = input.vertexLightAndUpFaceAtten.w;
-    
-    ApplyWorldEmission(data.surfaceData.emission/**/,worldPos,upFaceAtten);
+    ApplyWorldEmission(emission/**/,worldPos,upFaceAtten);
 
     // branch_if(_EmissionScanLineOn)
     // {
-    //     ApplyWorldEmissionScanLine(data.surfaceData.emission/**/,worldPos);
+    //     ApplyWorldEmissionScanLine(emission/**/,worldPos);
     // }
 
-    ApplySnow(data.surfaceData/**/,data.inputData.normalWS);
-    
-    // data.surfaceData.albedo += vertexNoise;
-    // return data.surfaceData.albedo.xyzx;
+    ApplySnow(albedo/**/,n);
 
-    float4 shadowMask = CalcShadowMask(data.inputData);
-    Light mainLight = GetMainLight(data,shadowMask);
-
-    //======== 2 apply rain pbr params
-    #if defined(_RAIN_ON)
-    branch_if(IsRainOn())
-    {
-        // ripple atten
-        data.rainAtten *= GetRainRippleAtten(data.surfaceData.smoothness,data.surfaceData.alpha,_RainMaskFrom);
-        ApplyRainRipple(data/**/,worldPos);
-
-        data.envIntensity = _RainReflectIntensity;
-        // data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
-        // apply rain pbr 
-        ApplyRainPbr(data.surfaceData.albedo/**/,data.surfaceData.metallic,data.surfaceData.smoothness,
-        _RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
-    }
-    #endif
-
-    ApplySurfaceBelow(data.surfaceData/**/,data.inputData.positionWS);
+    ApplySurfaceBelow(albedo/**/,worldPos);
 
     #if defined(DEBUG_DISPLAY)
         half4 debugColor = half4(0,0,0,1);
         bool isBreak=0;
         debugColor.xyz = CalcDebugColor(
             isBreak/**/,
-            data.surfaceData.albedo/**/,
-            data.surfaceData.specular/**/,
-            data.surfaceData.alpha,
-            data.surfaceData.metallic/**/,
-            data.surfaceData.smoothness/**/,
-            data.surfaceData.occlusion/**/,
-            data.surfaceData.emission/**/,
-            data.inputData.normalWS/**/,
-            data.surfaceData.normalTS/**/,
-            data.screenUV,
-            data.inputData.positionWS,
+            albedo/**/,
+            specular/**/,
+            alpha,
+            metallic/**/,
+            smoothness/**/,
+            occlusion/**/,
+            emission/**/,
+            n/**/,
+            normalTS/**/,
+            screenUV,
+            worldPos,
             input.tSpace0,
             input.tSpace1,
             input.tSpace2
@@ -260,16 +283,41 @@ float4 frag(Varyings input
             return debugColor;
     #endif
     // output world normal
-    outputNormal = data.inputData.normalWS.xyzx;
+    outputNormal = n.xyzx;
 
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(input);
 
-    half4 color = CalcPBR(data,mainLight,shadowMask);
+    half4 color = 0;
+    float specTerm = MinimalistCookTorrance(nh,lh,a,a2);
+    float3 specColor = lerp(0.04,albedo,metallic);
+    float3 diffColor = albedo * (1 - metallic);
+    float3 directColor = (diffColor + specColor * specTerm) * radiance;
+
+    //------- gi
+    float4 planarReflectTex = 0;
+    #if defined(_PLANAR_REFLECTION_ON)
+        planarReflectTex = tex2D(_ReflectionTexture,screenUV);
+    #endif
+    float3 giColor = 0;
+    float3 giDiff = CalcGIDiff(n,diffColor,lightmapUV);
+    float3 giSpec = CalcGISpec(unity_SpecCube0,samplerunity_SpecCube0,unity_SpecCube0_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
+    ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex);
+
+    giColor = (giDiff + giSpec) * occlusion;
+    float4 col = 0;
+    col.rgb = directColor + giColor;
+    col.a = alpha;
+
+    #if defined(_ADDITIONAL_LIGHTS)
+        col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask);
+    #endif
+    col.rgb += emission;
+
     // ApplyScreenShadow(color.xyz/**/,data.screenUV);
-    ApplyCloudShadow(color.xyz/**/,worldPos);
-    ApplyFog(color/**/,data.inputData.positionWS,input.fogCoord.xy,upFaceAtten);
-    return color;
+    // ApplyCloudShadow(color.xyz/**/,worldPos);
+    ApplyFog(col/**/,worldPos,input.fogCoord.xy,upFaceAtten);
+    return col;
 }
 
 #endif //POWER_LIT_FORWARD_PASS_HLSL

@@ -156,8 +156,6 @@ float MainLightShadow1(float4 shadowCoord,float3 worldPos,float4 shadowMask,floa
 }
 
 
-
-
 float AdditionalLightShadow1(int lightIndex, float3 positionWS, float3 lightDirection, float4 shadowMask, float4 occlusionProbeChannels)
 {
     float realtimeShadow = AdditionalLightRealtimeShadow(lightIndex, positionWS, lightDirection);
@@ -175,32 +173,6 @@ float AdditionalLightShadow1(int lightIndex, float3 positionWS, float3 lightDire
 #endif
     return MixShadow(realtimeShadow, bakedShadow, shadowFade,_Shadows_ShadowMaskOn);
 }
-
-Light GetAdditionalLight1(uint i, float3 positionWS, float4 shadowMask)
-{
-#if USE_CLUSTERED_LIGHTING
-    int lightIndex = i;
-#else
-    int lightIndex = GetPerObjectLightIndex(i);
-#endif
-    Light light = GetAdditionalPerObjectLight(lightIndex, positionWS);
-
-#if USE_STRUCTURED_BUFFER_FOR_LIGHT_DATA
-    float4 occlusionProbeChannels = _AdditionalLightsBuffer[lightIndex].occlusionProbeChannels;
-#else
-    float4 occlusionProbeChannels = _AdditionalLightsOcclusionProbes[lightIndex];
-#endif
-    light.shadowAttenuation = AdditionalLightShadow1(lightIndex, positionWS, light.direction, shadowMask, occlusionProbeChannels);
-#if defined(_LIGHT_COOKIES)
-    real3 cookieColor = SampleAdditionalLightCookie(lightIndex, positionWS);
-    light.color *= cookieColor;
-#endif
-
-    return light;
-}
-
-
-
 
 float4 SampleShadowMask(float2 shadowMaskUV){
     /**

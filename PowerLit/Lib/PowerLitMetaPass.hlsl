@@ -78,17 +78,42 @@ Varyings vert(Atributes input){
 }
 
 float4 frag(Varyings input):SV_Target{
-    SurfaceInputData surfaceInputData = (SurfaceInputData)0;
-    InitSurfaceInputData(surfaceInputData/**/,input.uv,input.pos);
+//------------ uv
+    float2 mainUV = input.uv.xy;
+    float2 screenUV = input.pos.xy/_ScaledScreenParams.xy;
 
-    BRDFData brdfData = (BRDFData)0;
-    SurfaceData surfaceData = surfaceInputData.surfaceData;
-    InitBRDFData(surfaceInputData,surfaceData.alpha/**/,brdfData);
+//------------ albedo
+    float3 albedo = 0;
+    float alpha = 1;
+    CalcAlbedo(_BaseMap,sampler_BaseMap,mainUV,_Color,_Cutoff,0,albedo/*out*/,alpha/*out*/);
+
+    half4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,mainUV);
+    float metallic = 0;
+    float smoothness =0;
+    float occlusion =0;
+
+//---------- pbrMask    
+    SplitPbrMaskTexture(
+        metallic/**/,smoothness/**/,occlusion/**/,
+        pbrMask,
+        // half3(_MetallicChannel,_SmoothnessChannel,_OcclusionChannel), // gen code use dot
+        half3(0,1,2),
+        half3(_Metallic,_Smoothness,_Occlusion),
+        _InvertSmoothnessOn
+    );
+
+
+    float roughness = 1 - smoothness;
+    float a = roughness * roughness;
+
+    float3 diffuse = albedo * (1-metallic);
+    float3 specular = lerp(0.04,albedo,metallic);
+    float3 emission = CalcEmission(mainUV,_EmissionMap,sampler_EmissionMap);
 
     MetaInput metaInput = (MetaInput)0;
-    metaInput.albedo = brdfData.diffuse + brdfData.specular * brdfData.roughness * 0.5;
-    metaInput.specularColor = surfaceData.specular;
-    metaInput.emission = surfaceData.emission;
+    metaInput.albedo = diffuse + specular * a * 0.5;
+    metaInput.specularColor = specular;
+    metaInput.emission = emission;
 
     return CalcMetaFragment(metaInput);
 }

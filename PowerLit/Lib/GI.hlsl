@@ -36,8 +36,6 @@ float3 CalcLightmapAndSH(float3 normal,float2 lightmapUV,float lightmapOrSH,floa
     // return lerp(lmap,sh,lightmapOrSH);
 }
 
-
-
 float3 CalcFresnel(BRDFData brdfData,float nv){
     // float nv = saturate(dot(normal,viewDir));
     float fresnelTerm = Pow4(1-nv);
@@ -154,4 +152,15 @@ half3 CalcGISpec(TEXTURECUBE_PARAM(cube,sampler_cube),float4 cubeHDR,float3 spec
     float3 giSpec = CalcGISpec(a2,smoothness,metallic,fresnelTerm,specColor,iblColor,grazingTermColor);
     return giSpec;
 }
+
+float3 CalcGIDiff(float3 normal,float3 diffColor,float2 lightmapUV=0){
+    float3 giDiff = 0;
+    #if defined(LIGHTMAP_ON)
+        giDiff = SampleLightmap(lightmapUV) * diffColor;
+    #else
+        giDiff = SampleSH(normal) * diffColor;
+    #endif
+    return giDiff;
+}
+
 #endif // GI_HLSL

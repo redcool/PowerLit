@@ -15,6 +15,8 @@
 #include "../../PowerShaderLib/Lib/ReflectionLib.hlsl"
 #include "../../PowerShaderLib/Lib/SDF.hlsl"
 #include "../../PowerShaderLib/Lib/MathLib.hlsl"
+#include "../../PowerShaderLib/Lib/TangentLib.hlsl"
+
 // #define SIMPLE_NOISE_TEX
 
 void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
@@ -151,23 +153,23 @@ void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
 
 #endif // _RAIN_ON
 
-void ApplySurfaceBelow(inout SurfaceData data,float3 worldPos){
+void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
     #if defined(_SURFACE_BELOW_ON)
     // UNITY_BRANCH if(_SurfaceBelowOn)
     {
     float heightRate = saturate(worldPos.y -_SurfaceDepth);
     heightRate = smoothstep(0.02,0.1,heightRate);
-    data.albedo *= lerp(_BelowColor.xyz,1,heightRate);
+    albedo *= lerp(_BelowColor.xyz,1,heightRate);
     }
     #endif
 }
 
-void ApplySnow(inout SurfaceData data,float3 worldNormal){
+void ApplySnow(inout float3 albedo,float3 worldNormal){
     #if defined(_SNOW_ON)
     branch_if(! IsSnowOn())
         return;
     
-    data.albedo = MixSnow(data.albedo,1,_SnowIntensity,worldNormal,_ApplyEdgeOn);
+    albedo = MixSnow(albedo,1,_SnowIntensity,worldNormal,_ApplyEdgeOn);
     #endif
 }
 

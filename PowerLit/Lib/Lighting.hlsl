@@ -6,6 +6,18 @@
 #include "Shadows.hlsl"
 #include "GI.hlsl"
 
+float MinimalistCookTorrance(float nh,float lh,float rough,float rough2){
+    float d = nh * nh * (rough2-1) + 1.00001f;
+    float lh2 = lh * lh;
+    float spec = rough2/((d*d) * max(0.1,lh2) * (rough*4+2)); // approach sqrt(rough2)
+    
+    #if defined (SHADER_API_MOBILE) || defined (SHADER_API_SWITCH)
+        spec = clamp(spec,0,100);
+    #endif
+    return spec;
+}
+
+
 float3 VertexLighting(float3 worldPos,float3 normal,bool isLightOn=false){
     float3 c = (float3)0;
     #if defined(_ADDITIONAL_LIGHTS_VERTEX)

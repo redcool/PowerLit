@@ -124,7 +124,7 @@ float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 sh
 }
 
 
-float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
+float4 _CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     SurfaceData surfaceData = data.surfaceData;
     InputData inputData = data.inputData;
 
@@ -165,7 +165,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     return float4(color,surfaceData.alpha);
 }
 
-float4 _CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
+float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     SurfaceData surfaceData = data.surfaceData;
     InputData inputData = data.inputData;
     BRDFData brdfData;

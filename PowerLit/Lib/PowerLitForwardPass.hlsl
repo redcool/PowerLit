@@ -111,7 +111,7 @@ Varyings vert(Attributes input){
     }
     #endif
 
-    CALC_MOTION_POSITIONS(input,output,clipPos);
+    CALC_MOTION_POSITIONS(input.prevPos,input.pos,output,clipPos);
     return output;
 }
 

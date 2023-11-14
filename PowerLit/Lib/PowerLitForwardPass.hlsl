@@ -229,7 +229,7 @@ float4 frag(Varyings input
         data.envIntensity = _RainReflectIntensity;
         // data.rainReflectDirOffset = (data.rainNoise + _RainReflectDirOffset) * data.rainAtten * _RainReflectIntensity;
         // apply rain pbr 
-        ApplyRainPbr(data.albedo/**/,data.surfaceData.metallic,data.surfaceData.smoothness,
+        ApplyRainPbr(data.surfaceData.albedo/**/,data.surfaceData.metallic,data.surfaceData.smoothness,
         _RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
     }
     #endif

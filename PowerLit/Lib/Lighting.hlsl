@@ -98,10 +98,9 @@ float3 CalcDirectSpecularTerm(float r/*roughness*/,float r2,float3 lightDir,floa
     return specTerm;
 }
 
-float3 CalcPBRLighting(BRDFData brdfData,float3 lightColor,float3 lightDir,float3 lightAtten,
-    float3 normal,float3 viewDir){
+float3 CalcPBRLighting(BRDFData brdfData,float3 lightColor,float3 lightDir,float lightAtten,float3 normal,float3 viewDir){
     float nl = saturate(dot(normal,lightDir));
-    float3 radiance = lightColor * lightAtten * nl; // light's color
+    float3 radiance = lightColor * (lightAtten * nl); // light's color
 
     float3 brdf = brdfData.diffuse;
     brdf += brdfData.specular * CalcDirectSpecularTerm(brdfData.roughness,brdfData.roughness2,lightDir,viewDir,normal);
@@ -138,7 +137,7 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
     float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data);
 
-    color *= _GIApplyMainLightShadow ? clamp(mainLight.shadowAttenuation,0.5,1) : 1;
+    // color *= _GIApplyMainLightShadow ? clamp(mainLight.shadowAttenuation,0.5,1) : 1;
 
     // UNITY_BRANCH if(mainLight.distanceAttenuation)
     {
@@ -164,6 +163,62 @@ float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
     #endif
 
     return float4(color,surfaceData.alpha);
+}
+
+float4 _CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
+    SurfaceData surfaceData = data.surfaceData;
+    InputData inputData = data.inputData;
+    BRDFData brdfData;
+    InitBRDFData(data,surfaceData.alpha/*inout*/,brdfData/*out*/);
+
+    float3 worldPos = inputData.positionWS;
+    float3 n = inputData.normalWS;
+    float3 l = (mainLight.direction);
+    float3 v = inputData.viewDirectionWS;
+    float3 h = normalize(l+v);
+
+    float lh = saturate(dot(l,h));
+    float nh = saturate(dot(n,h));
+    float nl = saturate(dot(n,l));
+    float nv = saturate(dot(n,v));
+
+    float roughness = brdfData.perceptualRoughness;
+    float a = brdfData.roughness;
+    float a2 =  brdfData.roughness2;
+
+    float metallic = surfaceData.metallic;
+    float smoothness = surfaceData.smoothness;
+    float occlusion = surfaceData.occlusion;
+    float3 albedo = surfaceData.albedo;
+    float alpha = surfaceData.alpha;
+
+    float2 screenUV = data.screenUV;
+
+    float specTerm = 0;
+    specTerm = MinimalistCookTorrance(nh,lh,a,a2);
+
+    float3 radiance = _MainLightColor.xyz * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
+
+    float3 specColor = lerp(0.04,albedo,metallic);
+    float3 diffColor = albedo.xyz * (1- metallic);
+    float3 directColor = (diffColor + specColor * specTerm) * radiance;
+// return float4(directColor.xyz,1);
+// ------- gi
+    float4 planarReflectTex = 0;
+    #if defined(_PLANAR_REFLECTION_ON)
+        planarReflectTex = SAMPLE_TEXTURE2D(_ReflectionTexture,sampler_ReflectionTexture,screenUV);
+    #endif
+    float3 giColor = 0;
+    float3 giDiff = inputData.bakedGI * diffColor;
+    float3 giSpec = CalcGISpec(unity_SpecCube0,samplerunity_SpecCube0,unity_SpecCube0_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
+    ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex);
+
+    giColor = (giDiff + giSpec) * occlusion;
+// return giColor.xyzx;
+    float4 col = 0;
+    col.xyz = directColor + giColor;
+    col.w = alpha;
+    return col;
 }
 
 #endif //LIGHTING_HLSL

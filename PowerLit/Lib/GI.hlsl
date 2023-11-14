@@ -119,5 +119,39 @@ float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,flo
     return color;
 }
 
+float CalcFresnelTerm(float nv,half2 fresnelRange=half2(0,1)){
+    float fresnelTerm = Pow4(1 - nv);
+    fresnelTerm = smoothstep(fresnelRange.x,fresnelRange.y,fresnelTerm);
+    return fresnelTerm;
+}
 
+half3 CalcGISpec(float a2,float smoothness,float metallic,float fresnelTerm,half3 specColor,half3 iblColor,half3 grazingTermColor=1){
+    float surfaceReduction = 1/(a2+1);
+    float grazingTerm = saturate(smoothness+metallic);
+    float3 giSpec = iblColor * surfaceReduction * lerp(specColor,grazingTermColor * grazingTerm,fresnelTerm);
+    return giSpec;
+}
+
+/**
+    _PLANAR_REFLECTION_ON, if use planar reflection
+*/
+
+half3 CalcGISpec(TEXTURECUBE_PARAM(cube,sampler_cube),float4 cubeHDR,float3 specColor,
+    float3 worldPos,float3 normal,float3 viewDir,float3 reflectDirOffset,float reflectIntensity,
+    float nv,float roughness,float a2,float smoothness,float metallic,half2 fresnelRange=half2(0,1),half3 grazingTermColor=1,
+    // planar reflection tex,(xyz:color,w: ratio)
+    half4 planarReflectTex=0)
+{
+    float3 reflectDir = CalcReflectDir(worldPos,normal,viewDir,reflectDirOffset);
+    float3 iblColor = CalcIBL(reflectDir,cube,sampler_cube,roughness,cubeHDR) * reflectIntensity;
+
+    #if defined(_PLANAR_REFLECTION_ON)
+        // blend planar reflection texture
+        iblColor = lerp(iblColor,planarReflectTex.xyz,planarReflectTex.w);
+    #endif
+    
+    float fresnelTerm = CalcFresnelTerm(nv,fresnelRange);
+    float3 giSpec = CalcGISpec(a2,smoothness,metallic,fresnelTerm,specColor,iblColor,grazingTermColor);
+    return giSpec;
+}
 #endif // GI_HLSL

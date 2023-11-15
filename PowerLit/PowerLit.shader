@@ -44,7 +44,7 @@ Shader "URP/PowerLit"
         [Header(Emission)]
         [GroupToggle(,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
         [noscaleoffset]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d) = "white"{}
-        [hdr]_EmissionColor("_EmissionColor",Color) = (1,1,1,1)
+        [hdr]_EmissionColor("_EmissionColor",Color) = (0,0,0,0)
 
         [Group(World Emission)]
         [GroupToggle(World Emission,_EMISSION_HEIGHT_ON)]_EmissionHeightOn("_EmissionHeightOn",int) = 0

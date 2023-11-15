@@ -264,7 +264,7 @@ void ApplyDetails(inout float metallic,inout float smoothness,inout float occlus
     #if defined(_DETAIL_ON)
     float4 pbrMask = 0;
 
-    UNITY_BRANCH if(_DetailWorldPosTriplanar)
+    branch_if(_DetailWorldPosTriplanar)
     {
         pbrMask = TriplanarSample(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,positionWS,normalWS,_DetailPBRMaskMap_ST);
     }else{

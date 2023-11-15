@@ -79,16 +79,16 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     
 //--------------------------------- Custom Light
 //#if defined(_CUSTOM_LIGHT_ON)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_CustomLightOn) //,_CUSTOM_LIGHT_ON)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_CustomLightDir)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_CustomLightColor)
     UNITY_DEFINE_INSTANCED_PROP(half,_CustomLightColorUsage)
 //#endif    
     UNITY_DEFINE_INSTANCED_PROP(half ,_FresnelIntensity)
 // //--------------------------------- lightmap
-    UNITY_DEFINE_INSTANCED_PROP(half ,_LightmapSHAdditional)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_LMSaturateAdditional)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_LMIntensityAdditional)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_LightmapSHAdditional)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_LMSaturateAdditional)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_LMIntensityAdditional)
 
     // UNITY_DEFINE_INSTANCED_PROP(half4 ,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd)
 //--------------------------------- Wind
@@ -118,7 +118,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //#if defined(_PARALLAX)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxIterate)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxInVSOn)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxInVSOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxHeight)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxMapChannel)
 //#endif
@@ -265,9 +265,9 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CustomLightColorUsage UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColorUsage)
     #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity)
 //--------------------------------- lightmap
-    #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LightmapSHAdditional)
-    #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMSaturateAdditional)
-    #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMIntensityAdditional)
+    // #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LightmapSHAdditional)
+    // #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMSaturateAdditional)
+    // #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMIntensityAdditional)
 //--------------------------------- Wind
     #define _WindOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindOn)
     #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindAnimParam)

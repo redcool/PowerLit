@@ -55,112 +55,16 @@ Light GetMainLight(SurfaceInputData data,float4 shadowMask){
     return mainLight;
 }
 
-void OffsetLight(inout Light mainLight,inout BRDFData brdfData){
-    #if defined(_CUSTOM_LIGHT_ON)
-    // branch_if(_CustomLightOn)
+void OffsetLight(inout Light mainLight,inout float3 specularColor){
+    // #if defined(_CUSTOM_LIGHT_ON)
+    branch_if(_CustomLightOn)
     {
         mainLight.direction = (_CustomLightDir.xyz);
-
-        switch(_CustomLightColorUsage){
-            case 0 : mainLight.color = _CustomLightColor.xyz; break;
-            case 1 : brdfData.specular *= _CustomLightColor.xyz; break;
-        }
+        mainLight.color = _CustomLightColorUsage == 0 ? _CustomLightColor : mainLight.color;
+        specularColor *= _CustomLightColorUsage== 1? _CustomLightColor : 1;
     }
-    #endif
+    // #endif
 }
-
-// void InitBRDFData(SurfaceInputData surfaceInputData,inout float alpha,out BRDFData brdfData){
-//     SurfaceData surfaceData = surfaceInputData.surfaceData;
-//     float oneMinusReflectivityMetallic = OneMinusReflectivityMetallic(surfaceData.metallic);
-    
-//     brdfData = (BRDFData)0;
-//     // brdfData.albedo = surfaceData.albedo;
-//     brdfData.reflectivity = 1 - oneMinusReflectivityMetallic;
-//     brdfData.diffuse = surfaceData.albedo * oneMinusReflectivityMetallic;
-//     brdfData.specular = lerp(0.04,surfaceData.albedo,surfaceData.metallic);
-//     brdfData.perceptualRoughness = 1 - surfaceData.smoothness;
-//     brdfData.roughness = max(HALF_MIN_SQRT,brdfData.perceptualRoughness * brdfData.perceptualRoughness);
-//     brdfData.roughness2 = max(brdfData.roughness * brdfData.roughness,HALF_MIN);
-//     brdfData.grazingTerm = saturate( (surfaceData.smoothness + brdfData.reflectivity)) * _FresnelIntensity; // (smoothness + metallic)
-//     // brdfData.normalizationTerm = brdfData.roughness * 4 + 2; // mct factor
-//     // brdfData.roughness2MinusOne = brdfData.roughness2 - 1; // mct factor
-
-//     // #if defined(_ALPHA_PREMULTIPLY_ON)
-//     if(surfaceInputData.isAlphaPremultiply)
-//     {
-//         brdfData.diffuse *= alpha;
-//         alpha = alpha * oneMinusReflectivityMetallic + brdfData.reflectivity; //lerp(a,1,m)
-//     }
-//     // #endif
-// }
-
-// float3 CalcPBRLighting(BRDFData brdfData,float3 lightColor,float3 lightDir,float lightAtten,float3 normal,float3 viewDir){
-//     float nl = saturate(dot(normal,lightDir));
-//     float3 radiance = lightColor * (lightAtten * nl); // light's color
-
-//     float3 brdf = brdfData.diffuse;
-//     brdf += brdfData.specular * CalcDirectSpecularTerm(brdfData.roughness,brdfData.roughness2,lightDir,viewDir,normal);
-//     return brdf * radiance;
-// }
-
-// float3 CalcAdditionalPBRLighting(BRDFData brdfData,InputData inputData,float4 shadowMask){
-//     uint lightCount = GetAdditionalLightsCount();
-//     float3 c = (float3)0;
-//     for(uint i=0;i<lightCount;i++)
-//     {
-//         Light light = GetAdditionalLight1(i,inputData.positionWS,shadowMask);
-//         // float3 attenColor = max(light.shadowAttenuation,inputData.bakedGI);
-
-//         // OffsetLight(light/**/);
-
-//         // branch_if(light.distanceAttenuation)
-//             c+= CalcPBRLighting(brdfData,light.color,light.direction,light.distanceAttenuation * light.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
-//     }
-//     return c;
-// }
-
-
-// float4 CalcPBR(SurfaceInputData data,Light mainLight,float4 shadowMask){
-//     SurfaceData surfaceData = data.surfaceData;
-//     InputData inputData = data.inputData;
-
-//     BRDFData brdfData;
-//     InitBRDFData(data,surfaceData.alpha/*inout*/,brdfData/*out*/);
-    
-//     half3 lastSpecular = brdfData.specular;
-//     // MixRealtimeAndBakedGI(mainLight,inputData.normalWS,inputData.bakedGI);
-// // return (brdfData.diffuse + inputData.bakedGI*0.2).xyzx+shadowMask*0.1;
-//     float customIBLMask = _IBLMaskMainTexA ? surfaceData.alpha : 1;
-//     float3 color = CalcGI(brdfData,inputData.bakedGI,surfaceData.occlusion,inputData.normalWS,inputData.viewDirectionWS,customIBLMask,inputData.positionWS,data);
-
-//     // color *= _GIApplyMainLightShadow ? clamp(mainLight.shadowAttenuation,0.5,1) : 1;
-
-//     // UNITY_BRANCH if(mainLight.distanceAttenuation)
-//     {
-//         OffsetLight(mainLight/**/,brdfData/**/);
-//         color += CalcPBRLighting(brdfData,mainLight.color,mainLight.direction,mainLight.distanceAttenuation * mainLight.shadowAttenuation,inputData.normalWS,inputData.viewDirectionWS);
-//     }
-//     color += surfaceData.emission;
-
-//     #if defined(_ADDITIONAL_LIGHTS_VERTEX)
-//     // branch_if(IsAdditionalLightVertex())
-//     {
-//         color += inputData.vertexLighting * brdfData.diffuse;
-//     }
-//     #endif
-
-//     #if defined(_ADDITIONAL_LIGHTS)
-//     // branch_if(IsAdditionalLightPixel())
-//     {
-//         brdfData.specular = lastSpecular;
-//         color += CalcAdditionalPBRLighting(brdfData,inputData,shadowMask);
-//         // return CalcAdditionalPBRLighting(brdfData,inputData,shadowMask).xyzx;
-//     }
-//     #endif
-
-//     return float4(color,surfaceData.alpha);
-// }
-
 
 #define GetAdditionalLight GetAdditionalLight1
 Light GetAdditionalLight1(uint i, float3 positionWS, float4 shadowMask,float softScale=1)

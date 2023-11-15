@@ -104,51 +104,9 @@ Varyings vert(Attributes input){
         dot(worldNormal,viewDirWS)
     ));
 
-    #if defined(_PARALLAX)
-    {
-        branch_if(_ParallaxInVSOn)
-            ApplyParallaxVertex(output.uv.xy/**/,output.viewDirTS_NV.xyz);
-    }
-    #endif
-
     CALC_MOTION_POSITIONS(input.prevPos,input.pos,output,clipPos);
     return output;
 }
-
-void InitInputData(inout InputData data,float3 worldPos,Varyings input,SurfaceInputData siData){
-    float3 normalTS = siData.surfaceData.normalTS;
-    
-    float3 normal = normalize(float3(
-        dot(normalTS,input.tSpace0.xyz),
-        dot(normalTS,input.tSpace1.xyz),
-        dot(normalTS,input.tSpace2.xyz)
-    ));
-
-    data.positionWS = worldPos;
-    data.normalWS = normal;
-    data.viewDirectionWS = SafeNormalize(_WorldSpaceCameraPos - worldPos);
-    data.shadowCoord = TransformWorldToShadowCoord(worldPos,input.shadowCoord); // transform to shadow or use input.shadowCoord
-    // data.fogCoord = input.vertexLightAndUpFaceAtten.w;
-    data.vertexLighting = input.vertexLightAndUpFaceAtten.xyz;
-    data.bakedGI = CalcLightmapAndSH(normal,input.uv.zw, (_LightmapSH + _LightmapSHAdditional),_LightmapSaturate + _LMSaturateAdditional,_LightmapIntensity+_LMIntensityAdditional);
-    data.normalizedScreenSpaceUV = 0;
-    data.shadowMask = SampleShadowMask(input.uv.zw);
-}
-
-float4 fragTest(Varyings input,SurfaceInputData data){
-    InputData inputData = data.inputData;
-    // return input.uv.y;
-    // return SampleLightmap(input.uv.zw).xyzx;
-    // return MainLightRealtimeShadow(data.inputData.shadowCoord,true);
-    // return MainLightShadow(inputData.shadowCoord,inputData.positionWS,inputData.shadowMask,_MainLightOcclusionProbes);
-    // return SampleSH(float4(data.inputData.normalWS,1)).xyzx;
-    // return data.inputData.shadowMask.xyzx;
-    // return dot(CalcCascadeId(data.inputData.positionWS),0.25); // show cascade id
-    // return data.inputData.vertexLighting.xyzx;
-    return 0;
-}
-
-
 
 float4 frag(Varyings input
     ,out float4 outputNormal:SV_TARGET1
@@ -163,8 +121,8 @@ float4 frag(Varyings input
     float nv = input.viewDirTS_NV.w;
 
     #if defined(_PARALLAX)
-        branch_if(! _ParallaxInVSOn)
-            ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
+        // branch_if(! _ParallaxInVSOn)
+        ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
 
         // float3 viewDir = normalize(_WorldSpaceCameraPos - worldPos);
         // float sampleRatio = 0.5;// dot(viewDir,vertexNormal);
@@ -210,18 +168,44 @@ float4 frag(Varyings input
     );
     // apply detail layers
     ApplyDetails(metallic/**/,smoothness,occlusion,mainUV,worldPos,vertexNormal);
+    
+//-------- tn
+    float3 tn = UnpackNormalScale(SAMPLE_TEXTURE2D(_NormalMap,sampler_NormalMap,mainUV),_NormalScale);
+//-------- rain ripple 
+    #if defined(_RAIN_ON)
+    branch_if(IsRainOn() && _RippleIntensity)
+    {
+        rainAtten *= GetRainRippleAtten(smoothness,alpha,_RainMaskFrom);
+        float2 rippleUV = CalcRippleUV(worldPos,_RippleTex_ST,_RippleOffsetAutoStop);
+        float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
+        ripple *= rainAtten;
+        // apply ripple color 
+        albedo += ripple.x * _RippleAlbedoIntensity;
+
+        // apply ripple blend normal
+        tn += ripple * _RippleBlendNormal;
+        // change pbr mask
+        ApplyRainPbr(albedo,metallic,smoothness,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
+    }
+    #endif
+//---------- surface color
+    float3 specColor = lerp(0.04,albedo,metallic);
+    float3 diffColor = albedo * (1 - metallic);    
 //---------- roughness
     float roughness = 0;
     float a = 0;
     float a2 = 0;
     CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
-    
+
+//-------- main light
     float4 shadowMask = SampleShadowMask(lightmapUV);
     float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,1);
+    OffsetLight(mainLight/**/,specColor/**/);
 
-    float3 tn = UnpackNormalScale(SAMPLE_TEXTURE2D(_NormalMap,sampler_NormalMap,mainUV),_NormalScale);
 //-------- lighting prepare 
+
+
     float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
 
     float3 l = (mainLight.direction.xyz);
@@ -233,10 +217,9 @@ float4 frag(Varyings input
     float nl = saturate(dot(n,l));
     nv = saturate(dot(n,v));
 
-    // return shadowMask;
     float3 radiance = mainLight.color * (nl * mainLight.distanceAttenuation * mainLight.shadowAttenuation);
 
-
+//-------- emission
     float3 emission = CalcEmission(mainUV,_EmissionMap,sampler_EmissionMap);
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)
@@ -282,19 +265,18 @@ float4 frag(Varyings input
         if(isBreak)
             return debugColor;
     #endif
+//------- mrt output    
     // output world normal
     outputNormal = n.xyzx;
-
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(input);
 
-    half4 color = 0;
+//------- lighting
     float specTerm = MinimalistCookTorrance(nh,lh,a,a2);
-    float3 specColor = lerp(0.04,albedo,metallic);
-    float3 diffColor = albedo * (1 - metallic);
+
     float3 directColor = (diffColor + specColor * specTerm) * radiance;
 
-    //------- gi
+//------- gi
     float4 planarReflectTex = 0;
     #if defined(_PLANAR_REFLECTION_ON)
         planarReflectTex = tex2D(_ReflectionTexture,screenUV);

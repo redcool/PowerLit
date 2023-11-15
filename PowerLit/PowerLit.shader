@@ -34,7 +34,7 @@ Shader "URP/PowerLit"
         [Group(Parallax)]
         [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
         [GroupSlider(Parallax,iterate count,int)]_ParallaxIterate("_ParallaxIterate",range(1,10)) = 1
-        [GroupToggle(Parallax,run in vertex shader)]_ParallaxInVSOn("_ParallaxInVSOn",int) = 0
+        // [GroupToggle(Parallax,run in vertex shader)]_ParallaxInVSOn("_ParallaxInVSOn",int) = 0
         
         [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
         [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
@@ -92,22 +92,22 @@ Shader "URP/PowerLit"
         [GroupToggle(,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [Header(Custom Light)]
-        [GroupToggle(,_CUSTOM_LIGHT_ON)]_CustomLightOn("_CustomLightOn",float) = 0
+        [GroupToggle()]_CustomLightOn("_CustomLightOn",float) = 0
         [LightInfo]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
         [hdr][LightInfo(Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
         [GroupEnum(_,LightColor 0 SpecularColor 1)]_CustomLightColorUsage("_CustomLightColorUsage",int) = 0
 
-        [Header(Specular)]
+        [Header(Fresnel)]
         _FresnelIntensity("_FresnelIntensity",float) = 1
 
         [Header(PlanarReflection)]
         [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
         [GroupToggle()]_PlanarReflectionReverseUV("_PlanarReflectionReverseUV",int) = 0
         
-        [Header(GI)] // Final GI = PowerLITFeature GI + Additional
-        _LightmapSHAdditional("_LightmapSHAdditional",range(-1,1)) = 0
-        _LMSaturateAdditional("_LMSaturateAdditional",range(-1,1)) = 0
-        _LMIntensityAdditional("_LMIntensityAdditional",range(0,1)) = 1
+        // [Header(GI)] // Final GI = PowerLITFeature GI + Additional
+        // _LightmapSHAdditional("_LightmapSHAdditional",range(-1,1)) = 0
+        // _LMSaturateAdditional("_LMSaturateAdditional",range(-1,1)) = 0
+        // _LMIntensityAdditional("_LMIntensityAdditional",range(0,1)) = 1
 //================================================= Alpha
         [Header(Clip)]
         [GroupToggle(,_ALPHATEST_ON)]_ClipOn("_ClipOn",float) = 0
@@ -234,41 +234,9 @@ Shader "URP/PowerLit"
         // [Group(AdditionalLights)]
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
-//================ vectors group actual data store in this
-        [VectorValues(_Metallic _Smoothness _Occlusion _InvertSmoothnessOn)]
-        _MSOInfo("_MSOInfo",vector) = (1,1,1,1)
-
-        [VectorValues(_NormalScale _Cutoff _AlphaPremultiply _GIApplyMainLightShadow)]
-        _NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow("_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow",vector) = (1,1,1,1)
-
-        [VectorValues(_FresnelIntensity _LightmapSHAdditional _LMSaturateAdditional _LMIntensityAdditional)]
-        _FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd("_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd",vector)=(0,0,0,0)
-
-        [VectorValues(_StoreyTilingOn _StoreyLightSwitchSpeed _StoreyHeight _StoreyLineOn)]
-        _StoreyTiling_LightSwitchSpeed_Height_Line("_StoreyTiling_LightSwitchSpeed_Height_Line",vector)=(0,0,0,0)
     }
     SubShader
     {
-/*
-no dir lightmap
-1 GI计算与Lit保持一致
-2 shadowcaster
-3 clip,blend,depth,cullMode暴露出来
-4 shadow receiver
-5 lightmap
-6 shadow cascade 
-7 multi lights(vertex,fragment)
-8 shadowMask 
-wind
-snow
-rain
-sphere fog
-box projection unity 2021
-
-Todo:
-multi lights shadows
-detail map
-*/
         Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
         LOD 100
 
@@ -323,7 +291,7 @@ detail map
             // #define _CLOUD_SHADOW_ON
             // #define _EMISSION_HEIGHT_ON
             // #define _INTERIOR_MAP_ON
-            #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
+        //     #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
             #pragma shader_feature_local_fragment _CLOUD_SHADOW_ON
             #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON

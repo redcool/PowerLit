@@ -78,6 +78,8 @@ half _Cutoff;
 half4 _EmissionColor;
 half2 _ClothRange;
 
+half _FresnelIntensity;
+
 CBUFFER_END
 
 // #define _Metallic _Metallic_Smoothness_Occlusion_NormalScale.x

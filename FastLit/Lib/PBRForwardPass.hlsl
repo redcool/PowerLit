@@ -228,10 +228,9 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
     float3 giSpec = CalcGISpec(unity_SpecCube0,samplerunity_SpecCube0,unity_SpecCube0_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
-    ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex);
+    ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex);
 
     giColor = (giDiff + giSpec) * occlusion;
-// return giColor.xyzx;
 
     float4 col = 0;
     col.rgb = directColor + giColor;

@@ -81,6 +81,8 @@ Shader "URP/FastLit"
         [GroupItem(Env)][LightInfo(Env,direction)]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
         [GroupItem(Env)][hdr][LightInfo(Env,Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
         [GroupEnum(Env,LightColor 0 SpecularColor 1)]_CustomLightColorUsage("_CustomLightColorUsage",int) = 0
+        [GroupHeader(Env,Fresnel)]
+        [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
         // [Group(Thin Film)]
         // [GroupToggle(Thin Film)]_TFOn("_TFOn",int) = 0
         // [GroupItem(Thin Film)]_TFScale("_TFScale",float) = 1

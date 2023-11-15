@@ -61,8 +61,26 @@ Shader "URP/FastLit"
         [Group(Charlie)]
         [GroupVectorSlider(Charlie,Min Max,0_1 0_1)]_ClothRange("_ClothRange",vector) =(0,1,0,0)
 
+//================================================= Env
         [Group(Env)]
-        [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
+        [GroupHeader(Env,Custom IBL)]
+        [GroupToggle(Env,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
+        [GroupItem(Env)][NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
+
+        [GroupHeader(Env,IBL Params)]
+        [GroupItem(Env)]_EnvIntensity("_EnvIntensity",float) = 1
+        // [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
+        [GroupVectorSlider(Env,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
+        // [GroupToggle(Env,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
+
+        [GroupHeader(Env,BoxProjection)]
+        [GroupToggle(Env,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
+
+        [GroupHeader(Env,Custom Light)]
+        [GroupToggle(Env)]_CustomLightOn("_CustomLightOn",float) = 0
+        [GroupItem(Env)][LightInfo(Env,direction)]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
+        [GroupItem(Env)][hdr][LightInfo(Env,Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
+        [GroupEnum(Env,LightColor 0 SpecularColor 1)]_CustomLightColorUsage("_CustomLightColorUsage",int) = 0
         // [Group(Thin Film)]
         // [GroupToggle(Thin Film)]_TFOn("_TFOn",int) = 0
         // [GroupItem(Thin Film)]_TFScale("_TFScale",float) = 1
@@ -195,6 +213,10 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _SNOW_ON
             #pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
+
+            #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
+            
 
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"

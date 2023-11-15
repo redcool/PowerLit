@@ -14,6 +14,7 @@ sampler2D _EmissionMap;
 sampler2D _ReflectionTexture;
 
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
+TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;
@@ -43,7 +44,14 @@ half _FogOn;
 half _FogNoiseOn;
 half _DepthFogOn;
 half _HeightFogOn;
+//----------------------------------------
+half _AlphaPremultiply;
+half _Cutoff;
 
+half4 _EmissionColor;
+half2 _ClothRange;
+
+//----------------------------------------
 half4 _WindAnimParam;
 half4 _WindDir;
 half _WindSpeed;
@@ -72,13 +80,16 @@ half _RainReflectIntensity;
 half _RainFlowIntensity;
 
 //----------------------------------------
-half _AlphaPremultiply;
-half _Cutoff;
-
-half4 _EmissionColor;
-half2 _ClothRange;
+half _CustomLightOn;
+half4 _CustomLightDir;
+half4 _CustomLightColor;
+half _CustomLightColorUsage;
 
 half _FresnelIntensity;
+
+half _EnvIntensity;
+half4 _ReflectDirOffset;
+half4 _IBLCube_HDR;
 
 CBUFFER_END
 

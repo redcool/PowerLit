@@ -114,7 +114,15 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float a = 0;
     float a2 = 0;
     CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
-
+//---------- surface color 
+    float3 specColor = lerp(0.04,albedo,metallic);
+    // if(_TFOn)
+    // {
+    //     float3 thinFilm = ThinFilm(1- nv,_TFScale,_TFOffset,_TFSaturate,_TFBrightness);
+    //     specColor = (specColor+1) * thinFilm;
+    // }
+    float3 diffColor = albedo.xyz * (1- metallic);
+//---------- normal
     float3 tn = UnpackNormalScale(tex2D(_NormalMap,mainUV),_NormalScale);
 //-------- rain ripple 
     #if defined(_RAIN_ON)
@@ -135,26 +143,28 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #endif
 
 //-------- lighting prepare 
-    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
+    float4 shadowMask = SampleShadowMask(i.uv.zw);
+    float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
+    Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
 
-    float3 l = (_MainLightPosition.xyz);
+    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
+    branch_if(_CustomLightOn)
+    {
+        OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir,_CustomLightColor);    
+    }
+
+    float3 l = mainLight.direction;
     float3 v = normalize(UnityWorldSpaceViewDir(worldPos));
     float3 h = normalize(l+v);
     
     float lh = saturate(dot(l,h));
     float nh = saturate(dot(n,h));
     float nl = saturate(dot(n,l));
-
     float nv = saturate(dot(n,v));
-// return v.xyzx;
 
-    float4 shadowMask = SampleShadowMask(i.uv.zw);
-    // return shadowMask;
-    float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
-    float shadowAtten = CalcShadow(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
-    float distanceAtten = unity_LightData.z;
-    float3 radiance = _MainLightColor.xyz * (nl * shadowAtten * distanceAtten);
+    float3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
+//-------- output mrt
     // output world normal
     outputNormal = n.xyzx;
     // output motion
@@ -210,24 +220,28 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
         // will show strange color, exceed range
     }
 
-    float3 specColor = lerp(0.04,albedo,metallic);
-    // if(_TFOn)
-    // {
-    //     float3 thinFilm = ThinFilm(1- nv,_TFScale,_TFOffset,_TFSaturate,_TFBrightness);
-    //     specColor = (specColor+1) * thinFilm;
-    // }
-    
-    float3 diffColor = albedo.xyz * (1- metallic);
+
     float3 directColor = (diffColor + specColor * specTerm) * radiance;
 // return directColor.xyzx;
 //------- gi
+    //--- custom ibl
+    #if defined(_IBL_ON)
+        #define IBL_CUBE _IBLCube
+        #define IBL_CUBE_SAMPLER sampler_IBLCube
+        #define IBL_HDR _IBLCube_HDR    
+    #else
+        #define IBL_CUBE unity_SpecCube0
+        #define IBL_CUBE_SAMPLER samplerunity_SpecCube0
+        #define IBL_HDR unity_SpecCube0_HDR
+    #endif
+
     float4 planarReflectTex = 0;
     #if defined(_PLANAR_REFLECTION_ON)
         planarReflectTex = tex2D(_ReflectionTexture,screenUV);
     #endif
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
-    float3 giSpec = CalcGISpec(unity_SpecCube0,samplerunity_SpecCube0,unity_SpecCube0_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
+    float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
     ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex);
 
     giColor = (giDiff + giSpec) * occlusion;

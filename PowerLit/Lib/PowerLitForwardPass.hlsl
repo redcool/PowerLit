@@ -168,7 +168,7 @@ float4 frag(Varyings input
     );
     // apply detail layers
     ApplyDetails(metallic/**/,smoothness,occlusion,mainUV,worldPos,vertexNormal);
-    
+
 //-------- tn
     float3 tn = UnpackNormalScale(SAMPLE_TEXTURE2D(_NormalMap,sampler_NormalMap,mainUV),_NormalScale);
 //-------- rain ripple 
@@ -279,7 +279,7 @@ float4 frag(Varyings input
 //------- gi
     float4 planarReflectTex = 0;
     #if defined(_PLANAR_REFLECTION_ON)
-        planarReflectTex = tex2D(_ReflectionTexture,screenUV);
+        planarReflectTex = SamplePlanarReflectionTex(screenUV);
     #endif
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(n,diffColor,lightmapUV);

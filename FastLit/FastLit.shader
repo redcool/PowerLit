@@ -16,7 +16,7 @@ Shader "URP/FastLit"
         [GroupHeader(v0.0.5)]
         [Group(Main)]
         [GroupItem(Main)] [MainTexture] _BaseMap ("Texture", 2D) = "white" {}
-        [GroupItem(Main)]_Color ("_Color", color) = (1,1,1,1)
+        [GroupItem(Main)]  [hdr] _Color ("_Color", color) = (1,1,1,1)
         [GroupItem(Main)]_NormalMap("_NormalMap",2d)="bump"{}
         [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
         [GroupToggle(Main)] _AlbedoMulVertexColor("_AlbedoMulVertexColor",float) = 0

@@ -58,65 +58,39 @@ float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perc
 }
 
 
-float3 CalcIBL(float3 reflectDir,float perceptualRoughness,float customIBLMask){
+// float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask,float3 worldPos,SurfaceInputData data){
+//     float3 indirectDiffuse = bakedGI  * brdfData.diffuse;
 
-    float3 iblColor = 0;
-    
-    #if defined(_IBL_ON)
-    {
-        iblColor = CalcIBL(reflectDir,_IBLCube,sampler_IBLCube,perceptualRoughness,_IBLCube_HDR);
-    }
-    #else
-    {
-        iblColor =  CalcIBL(reflectDir,unity_SpecCube0,samplerunity_SpecCube0,perceptualRoughness,unity_SpecCube0_HDR);
-    }
-    #endif
-    return lerp(1, iblColor,customIBLMask);
-}
+//     float3 reflectDir = 0;
+//     float rough = brdfData.perceptualRoughness;
+
+//     #if defined(_INTERIOR_MAP_ON)
+//     {
+//         float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
+//         reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
+//         rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
+//         // reflectDir.z*=-1;
+//     }
+//     #else
+//         reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);
+//     #endif
+
+//     // apply offset
+//     reflectDir+=_ReflectDirOffset.xyz + data.rainReflectDirOffset;
+
+//     float3 indirectSpecular  = CalcIBL(reflectDir,rough,customIBLMask);
+//     // indirectSpecular = lerp(indirectSpecular,1,UVBorder(data.uv,float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w)));
+
+//     float3 fresnel = CalcFresnel(brdfData,data.nv);
+//     float3 color = indirectDiffuse + indirectSpecular * fresnel * data.envIntensity ;
+//     color *= occlusion;
+//     return color;
+// }
 
 float4 SamplePlanarReflectionTex(float2 suv){
     return SAMPLE_TEXTURE2D(_ReflectionTexture,sampler_ReflectionTexture,suv);
 }
-
-#define REFLECT_MODE_INTERIROR_MAP 1
-
-float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask,float3 worldPos,SurfaceInputData data){
-    float3 indirectDiffuse = bakedGI  * brdfData.diffuse;
-
-    float3 reflectDir = 0;
-    float rough = brdfData.perceptualRoughness;
-
-    #if defined(_INTERIOR_MAP_ON)
-    {
-        float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
-        reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
-        rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
-        // reflectDir.z*=-1;
-    }
-    #else
-        reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);
-    #endif
-
-    // apply offset
-    reflectDir+=_ReflectDirOffset.xyz + data.rainReflectDirOffset;
-
-    float3 indirectSpecular  = CalcIBL(reflectDir,rough,customIBLMask);
-    // indirectSpecular = lerp(indirectSpecular,1,UVBorder(data.uv,float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w)));
-
-    #if defined(_PLANAR_REFLECTION_ON)
-    // branch_if(_PlanarReflectionOn)
-    {
-        float4 planarReflectColor = SamplePlanarReflectionTex(data.screenUV+data.rainReflectDirOffset.xz);
-        indirectSpecular = lerp(indirectSpecular,planarReflectColor.xyz,planarReflectColor.w);
-    }
-    #endif
-
-    float3 fresnel = CalcFresnel(brdfData,data.nv);
-    float3 color = indirectDiffuse + indirectSpecular * fresnel * data.envIntensity ;
-    color *= occlusion;
-    return color;
-}
-
+//========================== URP_GI.hlsl
 float CalcFresnelTerm(float nv,half2 fresnelRange=half2(0,1)){
     float fresnelTerm = Pow4(1 - nv);
     fresnelTerm = smoothstep(fresnelRange.x,fresnelRange.y,fresnelTerm);
@@ -138,9 +112,17 @@ half3 CalcGISpec(TEXTURECUBE_PARAM(cube,sampler_cube),float4 cubeHDR,float3 spec
     float3 worldPos,float3 normal,float3 viewDir,float3 reflectDirOffset,float reflectIntensity,
     float nv,float roughness,float a2,float smoothness,float metallic,half2 fresnelRange=half2(0,1),half3 grazingTermColor=1,
     // planar reflection tex,(xyz:color,w: ratio)
-    half4 planarReflectTex=0)
+    half4 planarReflectTex=0,half3 viewDirTS=0,half2 uv=0)
 {
-    float3 reflectDir = CalcReflectDir(worldPos,normal,viewDir,reflectDirOffset);
+    #if defined(_INTERIOR_MAP_ON)
+        float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
+        float3 reflectDir = CalcInteriorMapReflectDir(viewDirTS,uv,uvRange);
+        roughness = lerp(0.5,roughness,UVBorder(uv,uvRange));
+        // reflectDir.z*=-1;
+    #else
+        float3 reflectDir = CalcReflectDir(worldPos,normal,viewDir,reflectDirOffset);
+    #endif
+
     float3 iblColor = CalcIBL(reflectDir,cube,sampler_cube,roughness,cubeHDR) * reflectIntensity;
 
     #if defined(_PLANAR_REFLECTION_ON)

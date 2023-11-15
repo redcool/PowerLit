@@ -118,7 +118,9 @@ float4 frag(Varyings input
     float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
     float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
     float vertexNoise = input.fogCoord.z;
-    float nv = input.viewDirTS_NV.w;
+
+    float3 viewDirTS = input.viewDirTS_NV.xyz;
+    float vertexNV = input.viewDirTS_NV.w;
 
     #if defined(_PARALLAX)
         // branch_if(! _ParallaxInVSOn)
@@ -168,8 +170,12 @@ float4 frag(Varyings input
     );
     // apply detail layers
     ApplyDetails(metallic/**/,smoothness,occlusion,mainUV,worldPos,vertexNormal);
-
-//-------- tn
+//---------- roughness
+    float roughness = 0;
+    float a = 0;
+    float a2 = 0;
+    CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
+//-------- normal
     float3 tn = UnpackNormalScale(SAMPLE_TEXTURE2D(_NormalMap,sampler_NormalMap,mainUV),_NormalScale);
 //-------- rain ripple 
     #if defined(_RAIN_ON)
@@ -188,59 +194,23 @@ float4 frag(Varyings input
         ApplyRainPbr(albedo,metallic,smoothness,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
     }
     #endif
+    float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
+
+//---------- snow    
+    ApplySnow(albedo/**/,n);
+    
+//---------- surface bedow    
+    ApplySurfaceBelow(albedo/**/,worldPos);
+
 //---------- surface color
     float3 specColor = lerp(0.04,albedo,metallic);
     float3 diffColor = albedo * (1 - metallic);    
-//---------- roughness
-    float roughness = 0;
-    float a = 0;
-    float a2 = 0;
-    CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
 
 //-------- main light
     float4 shadowMask = SampleShadowMask(lightmapUV);
     float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,1);
     OffsetLight(mainLight/**/,specColor/**/);
-
-//-------- lighting prepare 
-
-
-    float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
-
-    float3 l = (mainLight.direction.xyz);
-    float3 v = normalize(GetWorldSpaceViewDir(worldPos));
-    float3 h = normalize(l+v);
-    
-    float lh = saturate(dot(l,h));
-    float nh = saturate(dot(n,h));
-    float nl = saturate(dot(n,l));
-    nv = saturate(dot(n,v));
-
-    float3 radiance = mainLight.color * (nl * mainLight.distanceAttenuation * mainLight.shadowAttenuation);
-
-//-------- emission
-    float3 emission = CalcEmission(mainUV,_EmissionMap,sampler_EmissionMap);
-    #if defined(_STOREY_ON)
-    // if(_StoreyTilingOn)
-    {
-        ApplyStoreyEmission(emission/**/,alpha/**/,worldPos,input.uv.xy);
-        ApplyStoreyLineEmission(emission/**/,worldPos,input.uv.xy,input.color,nv);
-    }
-    #endif
-
-//  world emission
-    half upFaceAtten = input.vertexLightAndUpFaceAtten.w;
-    ApplyWorldEmission(emission/**/,worldPos,upFaceAtten);
-
-    // branch_if(_EmissionScanLineOn)
-    // {
-    //     ApplyWorldEmissionScanLine(emission/**/,worldPos);
-    // }
-
-    ApplySnow(albedo/**/,n);
-
-    ApplySurfaceBelow(albedo/**/,worldPos);
 
     #if defined(DEBUG_DISPLAY)
         half4 debugColor = half4(0,0,0,1);
@@ -271,22 +241,48 @@ float4 frag(Varyings input
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(input);
 
-//------- lighting
+//-------- lighting 
+    float3 l = (mainLight.direction.xyz);
+    float3 v = normalize(GetWorldSpaceViewDir(worldPos));
+    float3 h = normalize(l+v);
+    
+    float lh = saturate(dot(l,h));
+    float nh = saturate(dot(n,h));
+    float nl = saturate(dot(n,l));
+    float nv = saturate(dot(n,v));
+
+    float3 radiance = mainLight.color * (nl * mainLight.distanceAttenuation * mainLight.shadowAttenuation);
     float specTerm = MinimalistCookTorrance(nh,lh,a,a2);
 
     float3 directColor = (diffColor + specColor * specTerm) * radiance;
 
 //------- gi
+    //--- custom ibl
+    #if defined(_IBL_ON)
+        #define IBL_CUBE _IBLCube
+        #define IBL_CUBE_SAMPLER sampler_IBLCube
+        #define IBL_HDR _IBLCube_HDR    
+    #else
+        #define IBL_CUBE unity_SpecCube0
+        #define IBL_CUBE_SAMPLER samplerunity_SpecCube0
+        #define IBL_HDR unity_SpecCube0_HDR
+    #endif
     float4 planarReflectTex = 0;
     #if defined(_PLANAR_REFLECTION_ON)
         planarReflectTex = SamplePlanarReflectionTex(screenUV);
     #endif
+
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(n,diffColor,lightmapUV);
-    float3 giSpec = CalcGISpec(unity_SpecCube0,samplerunity_SpecCube0,unity_SpecCube0_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
-    ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex);
+    float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
+    ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex,viewDirTS,mainUV);
+    // tint gi specular
+    giSpec *= _EnvIntensity;
+    // giSpec = lerp(1,giSpec,alpha * _IBLMaskMainTexA);
 
     giColor = (giDiff + giSpec) * occlusion;
+
+//------- finalColor
     float4 col = 0;
     col.rgb = directColor + giColor;
     col.a = alpha;
@@ -294,6 +290,25 @@ float4 frag(Varyings input
     #if defined(_ADDITIONAL_LIGHTS)
         col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask);
     #endif
+
+//-------- emission
+    float3 emission = CalcEmission(mainUV,_EmissionMap,sampler_EmissionMap);
+    #if defined(_STOREY_ON)
+    // if(_StoreyTilingOn)
+    {
+        ApplyStoreyEmission(emission/**/,alpha/**/,worldPos,input.uv.xy);
+        ApplyStoreyLineEmission(emission/**/,worldPos,input.uv.xy,input.color,nv);
+    }
+    #endif
+
+//  world emission
+    half upFaceAtten = input.vertexLightAndUpFaceAtten.w;
+    ApplyWorldEmission(emission/**/,worldPos,upFaceAtten);
+
+    // branch_if(_EmissionScanLineOn)
+    // {
+    //     ApplyWorldEmissionScanLine(emission/**/,worldPos);
+    // }
     col.rgb += emission;
 
     // ApplyScreenShadow(color.xyz/**/,data.screenUV);

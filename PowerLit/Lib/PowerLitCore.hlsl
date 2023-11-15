@@ -154,14 +154,14 @@ void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
 #endif // _RAIN_ON
 
 void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
-    #if defined(_SURFACE_BELOW_ON)
-    // UNITY_BRANCH if(_SurfaceBelowOn)
+    // #if defined(_SURFACE_BELOW_ON)
+    branch_if(_SurfaceBelowOn)
     {
     float heightRate = saturate(worldPos.y -_SurfaceDepth);
     heightRate = smoothstep(0.02,0.1,heightRate);
     albedo *= lerp(_BelowColor.xyz,1,heightRate);
     }
-    #endif
+    // #endif
 }
 
 void ApplySnow(inout float3 albedo,float3 worldNormal){
@@ -216,7 +216,7 @@ void InitSurfaceInputData(inout SurfaceInputData data,float2 uv,float4 clipPos,f
     data.envIntensity = _EnvIntensity;
 }
 
-#if defined(_STOREY_ON)
+
 float WorldHeightTilingUV(float3 worldPos){
     float v = floor(worldPos.y/_StoreyHeight);
     return v;
@@ -257,7 +257,6 @@ void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 s
     }
 }
 
-#endif //_STOREY_ON
 
 void ApplyDetails(inout float metallic,inout float smoothness,inout float occlusion,float2 uv,float3 positionWS,float3 normalWS)
 {

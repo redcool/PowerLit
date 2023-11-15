@@ -73,7 +73,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- IBL
     // UNITY_DEFINE_INSTANCED_PROP(half ,_IBLOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_EnvIntensity)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_IBLMaskMainTexA)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_IBLMaskMainTexA)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_ReflectDirOffset)
     // UNITY_DEFINE_INSTANCED_PROP(half,_InteriorMapOn)
     
@@ -148,7 +148,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 // #endif
 
 // #if defined(_SURFACE_BELOW_ON)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_BelowColor)
 // #endif

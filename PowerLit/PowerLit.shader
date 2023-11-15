@@ -10,7 +10,7 @@ Shader "URP/PowerLit"
         [GroupToggle(Main)] _AlbedoMulVertexColor("_AlbedoMulVertexColor",float) = 0
 
         [GroupHeader(Main,Surface Below)]
-        [GroupToggle(Main,_SURFACE_BELOW_ON)]_SurfaceBelowOn("_SurfaceBelowOn",float) = 0
+        [GroupToggle(Main)]_SurfaceBelowOn("_SurfaceBelowOn",float) = 0
         [GroupItem(Main)]_SurfaceDepth("_SurfaceDepth",float) = -1
         [GroupItem(Main)]_BelowColor("_BelowColor",color) = (1,1,1,1)
 
@@ -84,7 +84,7 @@ Shader "URP/PowerLit"
 
         [GroupHeader(,IBL Params)]
         _EnvIntensity("_EnvIntensity",float) = 1
-        [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
+        // [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
         [GroupVectorSlider(_,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
         [GroupToggle(,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
 
@@ -292,7 +292,7 @@ Shader "URP/PowerLit"
             // #define _EMISSION_HEIGHT_ON
             // #define _INTERIOR_MAP_ON
         //     #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
-            #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
+            // #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
             #pragma shader_feature_local_fragment _CLOUD_SHADOW_ON
             #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
             #pragma shader_feature_local_fragment _INTERIOR_MAP_ON

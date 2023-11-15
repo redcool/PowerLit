@@ -16,7 +16,7 @@ Shader "URP/FastLit"
         [GroupHeader(v0.0.5)]
         [Group(Main)]
         [GroupItem(Main)] [MainTexture] _BaseMap ("Texture", 2D) = "white" {}
-        [GroupItem(Main)][hdr]_Color ("_Color", color) = (1,1,1,1)
+        [GroupItem(Main)][hdr][gamma]_Color ("_Color", color) = (1,1,1,1)
         [GroupItem(Main)]_NormalMap("_NormalMap",2d)="bump"{}
         [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
         [GroupToggle(Main)] _AlbedoMulVertexColor("_AlbedoMulVertexColor",float) = 0
@@ -73,8 +73,8 @@ Shader "URP/FastLit"
         [GroupVectorSlider(Env,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
         // [GroupToggle(Env,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
 
-        [GroupHeader(Env,BoxProjection)]
-        [GroupToggle(Env,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
+        // [GroupHeader(Env,BoxProjection)]
+        // [GroupToggle(Env,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [GroupHeader(Env,Custom Light)]
         [GroupToggle(Env)]_CustomLightOn("_CustomLightOn",float) = 0
@@ -217,7 +217,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
+            // #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
             
 
             #include "Lib/PBRInput.hlsl"

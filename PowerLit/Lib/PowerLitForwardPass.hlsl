@@ -170,28 +170,28 @@ float4 frag(Varyings input
     );
     // apply detail layers
     ApplyDetails(metallic/**/,smoothness,occlusion,mainUV,worldPos,vertexNormal);
-//---------- roughness
-    float roughness = 0;
-    float a = 0;
-    float a2 = 0;
-    CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
+
 //-------- normal
     float3 tn = UnpackNormalScale(SAMPLE_TEXTURE2D(_NormalMap,sampler_NormalMap,mainUV),_NormalScale);
 //-------- rain ripple 
     #if defined(_RAIN_ON)
-    branch_if(IsRainOn() && _RippleIntensity)
+    branch_if(IsRainOn())
     {
-        rainAtten *= GetRainRippleAtten(smoothness,alpha,_RainMaskFrom);
-        float2 rippleUV = CalcRippleUV(worldPos,_RippleTex_ST,_RippleOffsetAutoStop);
-        float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
-        ripple *= rainAtten;
-        // apply ripple color 
-        albedo += ripple.x * _RippleAlbedoIntensity;
+        branch_if(_RippleIntensity)
+        {
+            rainAtten *= GetRainRippleAtten(smoothness,alpha,_RainMaskFrom);
+            float2 rippleUV = CalcRippleUV(worldPos,_RippleTex_ST,_RippleOffsetAutoStop);
+            float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
+            ripple *= rainAtten;
+            // apply ripple color 
+            albedo += ripple.x * _RippleAlbedoIntensity;
 
-        // apply ripple blend normal
-        tn += ripple * _RippleBlendNormal;
+            // apply ripple blend normal
+            tn += ripple * _RippleBlendNormal;
+        }
+
         // change pbr mask
-        ApplyRainPbr(albedo,metallic,smoothness,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
+        ApplyRainPbr(albedo/**/,metallic/**/,smoothness/**/,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
     }
     #endif
     float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
@@ -240,7 +240,12 @@ float4 frag(Varyings input
     outputNormal = n.xyzx;
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(input);
-
+    
+//---------- roughness
+    float roughness = 0;
+    float a = 0;
+    float a2 = 0;
+    CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
 //-------- lighting 
     float3 l = (mainLight.direction.xyz);
     float3 v = normalize(GetWorldSpaceViewDir(worldPos));
@@ -274,10 +279,9 @@ float4 frag(Varyings input
 
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(n,diffColor,lightmapUV);
-    float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,1/*reflectIntensity*/
+    float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
     ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex,viewDirTS,mainUV);
     // tint gi specular
-    giSpec *= _EnvIntensity;
     // giSpec = lerp(1,giSpec,alpha * _IBLMaskMainTexA);
 
     giColor = (giDiff + giSpec) * occlusion;

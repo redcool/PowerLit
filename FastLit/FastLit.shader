@@ -50,7 +50,7 @@ Shader "URP/FastLit"
         [Group(Emission)]
         [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
         [GroupItem(Emission)]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d)=""{}
-        [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (1,1,1,1)
+        [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
         [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
 
         [Group(Aniso)]

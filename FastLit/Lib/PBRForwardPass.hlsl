@@ -34,7 +34,7 @@ struct v2f
     float4 tSpace1:TEXCOORD2;
     float4 tSpace2:TEXCOORD3;
     // float4 shadowCoord:TEXCOORD4;
-    float4 fogCoord:TEXCOORD5;
+    float4 fogCoord:TEXCOORD5;//fogCoord{x,y}, z:heightColorAtten
     // motion vectors
     DECLARE_MOTION_VS_OUTPUT(6,7);
     float4 color:COLOR;
@@ -67,6 +67,17 @@ v2f vert (appdata v)
     // o.shadowCoord = TransformWorldToShadowCoord(worldPos);
     o.fogCoord.xy = CalcFogFactor(p.xyz);
 
+    half upFaceAtten = 1;
+    // #if defined(_EMISION_HEIGHT_ON)
+    branch_if(_EmissionHeightOn)
+    {
+    upFaceAtten = 1 - saturate(dot(worldNormal,half3(0,1,0)));
+    upFaceAtten = lerp(1,upFaceAtten,_EmissionHeightColorNormalAttenOn);
+    }
+    // #endif
+
+    o.fogCoord.z = upFaceAtten;
+
     o.color = v.color;
 
     CALC_MOTION_POSITIONS(v.prevPos,v.vertex,o,o.vertex);
@@ -82,13 +93,13 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float2 mainUV = i.uv.xy;
     float2 lightmapUV = i.uv.zw;
     float2 screenUV = i.vertex.xy/_ScaledScreenParams.xy;
-//---------- rain
 
+//---------- rain
     //========  rain 1 input.uv apply rain flow
     #if defined(_RAIN_ON)
-    float rainIntensity = _GlobalRainIntensity * _RainIntensity;
-    float rainNoise = 0;
-    float rainAtten = 0;
+    half rainIntensity = _GlobalRainIntensity * _RainIntensity;
+    half rainNoise = 0;
+    half rainAtten = 0;
     branch_if(IsRainOn())
     {
         // flow atten
@@ -253,9 +264,15 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
         col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask);
     #endif
 //------ emission
+    half3 emissionColor = 0;
     #if defined(_EMISSION)
-        col.rgb += CalcEmission(tex2D(_EmissionMap,mainUV),_EmissionColor.xyz,_EmissionColor.w);
+        emissionColor += CalcEmission(tex2D(_EmissionMap,mainUV),_EmissionColor.xyz,_EmissionColor.w);
     #endif
+    branch_if(_EmissionHeightOn)
+    {
+        ApplyHeightEmission(emissionColor/**/,worldPos,i.fogCoord.z/*upFaceAtten*/,_EmissionHeight.xy,_EmissionHeightColor);
+    }
+    col.rgb += emissionColor;
 //------ fog
     // col.rgb = MixFog(col.xyz,i.fogFactor.x);
     BlendFogSphereKeyword(col.rgb/**/,worldPos,i.fogCoord.xy,_HeightFogOn,_FogNoiseOn,_DepthFogOn); // 2fps

@@ -170,7 +170,7 @@ Material:
     - _AlphaMin: 0
     - _AlphaPremultiply: 0
     - _AlphaScale: 1
-    - _AlphaTestOn: 0
+    - _ClipOn: 0
     - _AnisoRough: 0
     - _AnisoShift: 0
     - _ApplyEdgeOn: 1

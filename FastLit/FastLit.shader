@@ -46,13 +46,19 @@ Shader "URP/FastLit"
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS_ON)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_ON)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_SOFT)]_AdditionalIghtSoftShadow("_AdditionalIghtSoftShadow",int) = 0
-
+//================================================= emission
         [Group(Emission)]
         [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
         [GroupItem(Emission)]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d)=""{}
         [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
         [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
 
+        [Group(World Emission)]
+        [GroupToggle(World Emission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
+        [GroupVectorSlider(World Emission,min maxOffset,m100_100 m100_100,,float)]_EmissionHeight("_EmissionHeight",vector)  = (0,0,0,0)
+        [GroupItem(World Emission)][hdr]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
+        [GroupToggle(World Emission)]_EmissionHeightColorNormalAttenOn("_EmissionHeightColorNormalAttenOn",int) = 1
+//================================================= Speculars     
         [Group(Aniso)]
         [GroupToggle(Aniso)]_CalcTangent("_CalcTangent",int) = 0
         [GroupItem(Aniso)]_AnisoRough("_AnisoRough",range(-0.5,0.5)) = 0
@@ -154,7 +160,7 @@ Shader "URP/FastLit"
         [GroupToggle(Alpha)]_AlphaPremultiply("_AlphaPremultiply",int) = 0
 
         [GroupHeader(Alpha,AlphaTest)]
-        [GroupToggle(Alpha,ALPHA_TEST)]_AlphaTestOn("_AlphaTestOn",int) = 0
+        [GroupToggle(Alpha,ALPHA_TEST)]_ClipOn("_AlphaTestOn",int) = 0
         [GroupSlider(Alpha)]_Cutoff("_Cutoff",range(0,1)) = 0.5
 
         [Group(PlanarReflection)]

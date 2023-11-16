@@ -52,7 +52,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //--------------------------------- Emission
 //#if defined(_EMISSION)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_EMISSION)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionHeightOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_EmissionHeightOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_EmissionColor)
 //#endif
 //#if defined(_EMISSION_HEIGHT_ON)
@@ -111,7 +111,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //#endif
 //--------------------------------- Fog
     UNITY_DEFINE_INSTANCED_PROP(half ,_FogOn)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_FogNoiseOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_FogNoiseOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_DepthFogOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_HeightFogOn)
 //--------------------------------- Parallax
@@ -148,7 +148,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 // #endif
 
 // #if defined(_SURFACE_BELOW_ON)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
+    // UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_BelowColor)
 // #endif

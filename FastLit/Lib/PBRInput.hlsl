@@ -91,6 +91,12 @@ half _EnvIntensity;
 half4 _ReflectDirOffset;
 half4 _IBLCube_HDR;
 
+//---------------------------------------- world emission
+half _EmissionHeightOn;
+half4 _EmissionHeight;
+half4 _EmissionHeightColor;
+half _EmissionHeightColorNormalAttenOn;
+
 CBUFFER_END
 
 // #define _Metallic _Metallic_Smoothness_Occlusion_NormalScale.x

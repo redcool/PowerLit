@@ -41,27 +41,27 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map)){
     // UNITY_BRANCH if(_EmissionOn)
     {
         emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
-        emission.xyz = emission.xyz * _EmissionColor * emission.w;
+        emission.xyz = CalcEmission(emission,_EmissionColor,_EmissionColor.w);
     }
     #endif
     return emission.xyz ;
 }
 
 void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalAtten){
-    #if defined(_EMISSION_HEIGHT_ON)
-    // UNITY_BRANCH if(_EmissionHeightOn)
+    // #if defined(_EMISSION_HEIGHT_ON)
+    branch_if(_EmissionHeightOn)
     {
+        ApplyHeightEmission(emissionColor/**/,worldPos,globalAtten,_EmissionHeight.xy,_EmissionHeightColor);
+    // float maxHeight = length(float3(UNITY_MATRIX_M._12,UNITY_MATRIX_M._22,UNITY_MATRIX_M._32));
+    // maxHeight += _EmissionHeight.y; // apply height offset
 
-    float maxHeight = length(float3(UNITY_MATRIX_M._12,UNITY_MATRIX_M._22,UNITY_MATRIX_M._32));
-    maxHeight += _EmissionHeight.y; // apply height offset
-
-    float rate = 1 - saturate((worldPos.y - _EmissionHeight.x)/ (maxHeight - _EmissionHeight.x +0.0001));
-    rate *= globalAtten;
-    // half4 heightEmission = _EmissionHeightColor * rate;
-    half3 heightEmission = lerp(emissionColor.xyz,_EmissionHeightColor.xyz,rate);
-    emissionColor = heightEmission ;
+    // float rate = 1 - saturate((worldPos.y - _EmissionHeight.x)/ (maxHeight - _EmissionHeight.x +0.0001));
+    // rate *= globalAtten;
+    // // half4 heightEmission = _EmissionHeightColor * rate;
+    // half3 heightEmission = lerp(emissionColor.xyz,_EmissionHeightColor.xyz,rate);
+    // emissionColor = heightEmission ;
     }
-    #endif
+    // #endif
 }
 
 void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
@@ -98,13 +98,13 @@ float3 ScreenToWorldPos(float2 screenUV){
 
 void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half globalAtten){
     float fogNoise = 0;
-    #if defined(_DEPTH_FOG_NOISE_ON)
-    // if(_FogNoiseOn)
+    // #if defined(_DEPTH_FOG_NOISE_ON)
+    branch_if(_FogNoiseOn)
     {
         float2 fogNoiseUV = (worldPos.xz+worldPos.yz) * _FogDirTiling.w+ _FogDirTiling.xz * _Time.y;
         fogNoise = SampleWeatherNoise(fogNoiseUV);
     }
-    #endif
+    // #endif
     BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,_HeightFogOn,fogNoise,_DepthFogOn,globalAtten);
 }
 
@@ -154,14 +154,14 @@ void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
 #endif // _RAIN_ON
 
 void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
-    // #if defined(_SURFACE_BELOW_ON)
-    branch_if(_SurfaceBelowOn)
+    #if defined(_SURFACE_BELOW_ON)
+    // branch_if(_SurfaceBelowOn)
     {
     float heightRate = saturate(worldPos.y -_SurfaceDepth);
     heightRate = smoothstep(0.02,0.1,heightRate);
     albedo *= lerp(_BelowColor.xyz,1,heightRate);
     }
-    // #endif
+    #endif
 }
 
 void ApplySnow(inout float3 albedo,float3 worldNormal){

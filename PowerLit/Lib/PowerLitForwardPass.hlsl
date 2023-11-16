@@ -75,10 +75,13 @@ Varyings vert(Attributes input){
     float4 clipPos = TransformWorldToHClip(worldPos);
 
     half upFaceAtten = 1;
-    #if defined(_EMISION_HEIGHT_ON)
+    // #if defined(_EMISION_HEIGHT_ON)
+    branch_if(_EmissionHeightOn)
+    {
     upFaceAtten = 1 - saturate(dot(worldNormal,half3(0,1,0)));
     upFaceAtten = lerp(1,upFaceAtten,_EmissionHeightColorNormalAttenOn);
-    #endif
+    }
+    // #endif
 
     float3 vertexLight = VertexLighting(worldPos,worldNormal);
     output.vertexLightAndUpFaceAtten = float4(vertexLight,upFaceAtten);

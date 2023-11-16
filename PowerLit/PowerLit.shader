@@ -47,7 +47,7 @@ Shader "URP/PowerLit"
         [hdr]_EmissionColor("_EmissionColor",Color) = (0,0,0,0)
 
         [Group(World Emission)]
-        [GroupToggle(World Emission,_EMISSION_HEIGHT_ON)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
+        [GroupToggle(World Emission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
         [GroupVectorSlider(World Emission,min maxOffset,m100_100 m100_100,,float)]_EmissionHeight("_EmissionHeight",vector)  = (0,0,0,0)
         [GroupItem(World Emission)][hdr]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
         [GroupToggle(World Emission)]_EmissionHeightColorNormalAttenOn("_EmissionHeightColorNormalAttenOn",int) = 1
@@ -151,7 +151,7 @@ Shader "URP/PowerLit"
 
         [Header(Fog)]
         [GroupToggle()]_FogOn("_FogOn",int) = 1
-        [GroupToggle(_,_DEPTH_FOG_NOISE_ON)]_FogNoiseOn("_FogNoiseOn",int) = 0
+        [GroupToggle(_,)]_FogNoiseOn("_FogNoiseOn",int) = 0 //_DEPTH_FOG_NOISE_ON
         [GroupToggle(_)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(_)]_HeightFogOn("_HeightFogOn",int) = 1
 
@@ -278,7 +278,7 @@ Shader "URP/PowerLit"
             // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
-            #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
+            // #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
             #pragma shader_feature_local_fragment _SNOW_ON
             #pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
@@ -294,7 +294,7 @@ Shader "URP/PowerLit"
         //     #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             // #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
             #pragma shader_feature_local_fragment _CLOUD_SHADOW_ON
-            #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
+            // #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
             #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
             
             // urp keywords 

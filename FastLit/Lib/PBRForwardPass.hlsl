@@ -62,6 +62,12 @@ v2f vert (appdata v)
     o.vertex = UnityWorldToClipPos(worldPos);
     o.uv.xy = TRANSFORM_TEX(v.uv, _MainTex);
     o.uv.zw = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+    #if defined(_STOREY_ON)
+    // if(_StoreyTilingOn)
+    {
+        o.uv.y = WorldHeightTilingUV(worldPos,_StoreyHeight);
+    }
+    #endif
 
     TANGENT_SPACE_COMBINE_WORLD(worldPos,worldNormal,float4(worldTangent,v.tangent.w),o/**/);
     // o.shadowCoord = TransformWorldToShadowCoord(worldPos);
@@ -267,6 +273,13 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     half3 emissionColor = 0;
     #if defined(_EMISSION)
         emissionColor += CalcEmission(tex2D(_EmissionMap,mainUV),_EmissionColor.xyz,_EmissionColor.w);
+    #endif
+    #if defined(_STOREY_ON)
+    // if(_StoreyTilingOn)
+    {
+        ApplyStoreyEmission(emissionColor/**/,alpha/**/,worldPos,mainUV,_StoreyLightSwitchSpeed,_StoreyWindowInfo,_StoreyLightOpaque);
+        // ApplyStoreyLineEmission(emission/**/,worldPos,input.uv.xy,input.color,nv);
+    }
     #endif
     branch_if(_EmissionHeightOn)
     {

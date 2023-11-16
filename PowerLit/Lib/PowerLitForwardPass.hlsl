@@ -62,10 +62,10 @@ Varyings vert(Attributes input){
 
     output.uv.xy = TRANSFORM_TEX(input.uv.xy,_BaseMap);
     
-    // if(_StoreyTilingOn)
     #if defined(_STOREY_ON)
+    // if(_StoreyTilingOn)
     {
-        output.uv.y = WorldHeightTilingUV(worldPos);
+        output.uv.y = WorldHeightTilingUV(worldPos,_StoreyHeight);
     }
     #endif
 
@@ -292,7 +292,6 @@ float4 frag(Varyings input
 //------- finalColor
     float4 col = 0;
     col.rgb = directColor + giColor;
-    col.a = alpha;
 
     #if defined(_ADDITIONAL_LIGHTS)
         col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask);
@@ -303,7 +302,7 @@ float4 frag(Varyings input
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)
     {
-        ApplyStoreyEmission(emission/**/,alpha/**/,worldPos,input.uv.xy);
+        ApplyStoreyEmission(emission/**/,alpha/**/,worldPos,input.uv.xy,_StoreyLightSwitchSpeed,_StoreyWindowInfo,_StoreyLightOpaque);
         ApplyStoreyLineEmission(emission/**/,worldPos,input.uv.xy,input.color,nv);
     }
     #endif
@@ -316,8 +315,9 @@ float4 frag(Varyings input
     // {
     //     ApplyWorldEmissionScanLine(emission/**/,worldPos);
     // }
-    col.rgb += emission;
 
+    col.rgb += emission;
+    col.a = alpha;
     // ApplyScreenShadow(color.xyz/**/,data.screenUV);
     // ApplyCloudShadow(color.xyz/**/,worldPos);
     ApplyFog(col/**/,worldPos,input.fogCoord.xy,upFaceAtten);

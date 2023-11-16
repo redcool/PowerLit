@@ -207,12 +207,11 @@ Shader "URP/PowerLit"
         [GroupItem(Details)]_DetailPbrMaskApplyMetallic("_DetailPbrMaskApplyMetallic",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplySmoothness("_DetailPbrMaskApplySmoothness",range(0,1)) = 1
         [GroupItem(Details)]_DetailPbrMaskApplyOcclusion("_DetailPbrMaskApplyOcclusion",range(0,1)) = 1
-//=================================================  storey
 
+//=================================================  storey
         [GroupToggle(_,_STOREY_ON)]_StoreyTilingOn("_StoreyTilingOn",int) = 0
-        _StoreyHeight("_StoreyHeight",float) = 1
-        [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,float)]
-        _StoreyWindowInfo("_StoreyWindowInfo",vector) = (5,2,0.5,0.8)
+        [GroupItem]_StoreyHeight("_StoreyHeight",float) = 1
+        [GroupVectorSlider(_,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,float)] _StoreyWindowInfo("_StoreyWindowInfo",vector) = (5,2,0.5,0.8)
         [GroupItem(,light auto switching speed)]_StoreyLightSwitchSpeed("_StoreyLightSwitchSpeed",float) = 0
         [GroupToggle(_,,no alpha when light on)]_StoreyLightOpaque("_StoreyLightOpaque",int) = 1
 

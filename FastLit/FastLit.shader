@@ -52,12 +52,26 @@ Shader "URP/FastLit"
         [GroupItem(Emission)]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d)=""{}
         [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
         [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
+//=================================================  world emission
+        [Group(WorldEmission)]
+        [GroupToggle(WorldEmission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
+        [GroupVectorSlider(WorldEmission,min maxOffset,m100_100 m100_100,,float)]_EmissionHeight("_EmissionHeight",vector)  = (0,0,0,0)
+        [GroupItem(WorldEmission)][hdr]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
+        [GroupToggle(WorldEmission)]_EmissionHeightColorNormalAttenOn("_EmissionHeightColorNormalAttenOn",int) = 1
 
-        [Group(World Emission)]
-        [GroupToggle(World Emission)]_EmissionHeightOn("_EmissionHeightOn",int) = 0
-        [GroupVectorSlider(World Emission,min maxOffset,m100_100 m100_100,,float)]_EmissionHeight("_EmissionHeight",vector)  = (0,0,0,0)
-        [GroupItem(World Emission)][hdr]_EmissionHeightColor("_EmissionHeightColor",color)  = (1,1,1,1)
-        [GroupToggle(World Emission)]_EmissionHeightColorNormalAttenOn("_EmissionHeightColorNormalAttenOn",int) = 1
+//=================================================  storey emission
+        [Group(StoreyEmission)]
+        [GroupToggle(StoreyEmission,_STOREY_ON)]_StoreyTilingOn("_StoreyTilingOn",int) = 0
+        [GroupItem(StoreyEmission)]_StoreyHeight("_StoreyHeight",float) = 1
+        [GroupVectorSlider(StoreyEmission,WindowCountX WindowCountY LightOffPercent LightSwitchPercent,0_10 0_10 0_1 0_1,Window count info,float)] _StoreyWindowInfo("_StoreyWindowInfo",vector) = (5,2,0.5,0.8)
+
+        [GroupItem(StoreyEmission,light auto switching speed)]_StoreyLightSwitchSpeed("_StoreyLightSwitchSpeed",float) = 0
+        [GroupToggle(StoreyEmission,,no alpha when light on)]_StoreyLightOpaque("_StoreyLightOpaque",int) = 1
+
+        // [Group(StoreyLine)]
+        // [GroupToggle(StoreyLine)]_StoreyLineOn("_StoreyLineOn",int) = 0
+        // [GroupItem(StoreyLine)][noscaleoffset]_StoreyLineNoiseMap("_StoreyLineNoiseMap",2d) = "bump"{}
+        // [GroupItem(StoreyLine)][hdr]_StoreyLineColor("_StoreyLineColor",color) = (1,1,1,1)        
 //================================================= Speculars     
         [Group(Aniso)]
         [GroupToggle(Aniso)]_CalcTangent("_CalcTangent",int) = 0
@@ -204,8 +218,6 @@ Shader "URP/FastLit"
             #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
             #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
-
-            #define SHADOWS_FULL_MIX
             // #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             
             #pragma multi_compile _ SHADOWS_SHADOWMASK
@@ -223,9 +235,11 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local_fragment _STOREY_ON
             // #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
             
 
+            #define SHADOWS_FULL_MIX
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"
             

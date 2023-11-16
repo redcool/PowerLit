@@ -52,14 +52,6 @@ void ApplyWorldEmission(inout float3 emissionColor,float3 worldPos,float globalA
     branch_if(_EmissionHeightOn)
     {
         ApplyHeightEmission(emissionColor/**/,worldPos,globalAtten,_EmissionHeight.xy,_EmissionHeightColor);
-    // float maxHeight = length(float3(UNITY_MATRIX_M._12,UNITY_MATRIX_M._22,UNITY_MATRIX_M._32));
-    // maxHeight += _EmissionHeight.y; // apply height offset
-
-    // float rate = 1 - saturate((worldPos.y - _EmissionHeight.x)/ (maxHeight - _EmissionHeight.x +0.0001));
-    // rate *= globalAtten;
-    // // half4 heightEmission = _EmissionHeightColor * rate;
-    // half3 heightEmission = lerp(emissionColor.xyz,_EmissionHeightColor.xyz,rate);
-    // emissionColor = heightEmission ;
     }
     // #endif
 }
@@ -173,87 +165,12 @@ void ApplySnow(inout float3 albedo,float3 worldNormal){
     #endif
 }
 
-void InitSurfaceData(float2 uv,inout SurfaceData data){
-    // float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv);
-    // data.alpha = CalcAlpha(baseMap.w,_Color.a,_Cutoff,_ClipOn);
-    // data.albedo = baseMap.xyz * _Color.xyz;
-    float3 albedo = 0;
-    CalcAlbedo(_BaseMap,sampler_BaseMap,uv,_Color,_Cutoff,0,albedo/*out*/,data.alpha/*out*/);
-    data.albedo += albedo;
-
-    half4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,uv);
-    SplitPbrMaskTexture(
-        data.metallic/**/,data.smoothness/**/,data.occlusion/**/,
-        pbrMask,
-        // half3(_MetallicChannel,_SmoothnessChannel,_OcclusionChannel), // gen code use dot
-        half3(0,1,2),
-        half3(_Metallic,_Smoothness,_Occlusion),
-        _InvertSmoothnessOn
-    );
-
-    data.normalTS += CalcNormal( TRANSFORM_TEX(uv,_NormalMap),_NormalMap,sampler_NormalMap,_NormalScale);
-    
-    data.emission = CalcEmission(uv,_EmissionMap,sampler_EmissionMap);
-    data.specular = 0;
-    data.clearCoatMask = 0;
-    data.clearCoatSmoothness =0;
-
-}
-
-void InitSurfaceInputData(inout SurfaceInputData data,float2 uv,float4 clipPos,float3 viewDirTS=0,float4 vertexColor=1){
-    InitSurfaceData(uv,data.surfaceData /*inout*/);
-    data.surfaceData.albedo *= _AlbedoMulVertexColor? vertexColor : 1;
-
-    data.isAlphaPremultiply = _AlphaPremultiply;
-    // data.isReceiveShadow = _IsReceiveShadowOff && _MainLightShadowOn;
-    data.screenUV = clipPos.xy/_ScaledScreenParams.xy;
-    data.uv = uv;
-    data.viewDirTS = viewDirTS;
-    #if defined(_PLANAR_REFLECTION_ON)
-        data.screenUV.x = _PlanarReflectionReverseUV ? 1- data.screenUV.x : data.screenUV.x; // for planar reflection camera
-    #endif
-    
-    data.envIntensity = _EnvIntensity;
-}
-
-
-float WorldHeightTilingUV(float3 worldPos){
-    float v = floor(worldPos.y/_StoreyHeight);
-    return v;
-}
-
-float NoiseSwitchLight(float2 quantifyNum,float lightOffIntensity){
-    float n = N21(quantifyNum);
-    return frac(smoothstep(lightOffIntensity,1,n));
-}
-
-void ApplyStoreyEmission(inout float3 emissionColor,inout float alpha,float3 worldPos,float2 uv){
-
-    // float tn = N21(floor(_Time.x * _StoreyWindowInfo.x));
-    // tn = smoothstep(_StoreyWindowInfo.w,1,tn);
-
-    // float n = N21(floor(uv.xy*float2(5,2)) + tn);
-    // n = smoothstep(_StoreyWindowInfo.z,1,n);
-
-    // auto light swidth
-    float tn = NoiseSwitchLight(round(_Time.x * _StoreyLightSwitchSpeed) , _StoreyWindowInfo.w);
-    float n = NoiseSwitchLight(floor(uv.xy*_StoreyWindowInfo.xy) + tn,_StoreyWindowInfo.z);
-    emissionColor *= n;
-
-    branch_if(_StoreyLightOpaque)
-        alpha = Luminance(emissionColor) > 0.1? 1 : alpha;
-}
 void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 screenUV,float4 vertexColor,float nv){
     branch_if(_StoreyLineOn)
     {
         // storey line color
         half4 lineNoise = SAMPLE_TEXTURE2D(_StoreyLineNoiseMap,sampler_StoreyLineNoiseMap,screenUV);
-        // half lineNoise = InterleavedGradientNoise(screenUV);
-        half atten = vertexColor.x * lineNoise.x * saturate(pow(1-nv,2));
-        half3 lineColor = _StoreyLineColor.xyz * saturate(atten) ;
-
-        emissionColor = lerp(emissionColor,lineColor,vertexColor.x>0.1);
-        // emissionColor = vertexColor.x;// lineNoise.x ;
+        ApplyStoreyLineEmission(emissionColor/**/,lineNoise,worldPos,vertexColor,nv,_StoreyLineColor);
     }
 }
 

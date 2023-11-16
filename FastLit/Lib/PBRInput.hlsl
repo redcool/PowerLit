@@ -97,6 +97,15 @@ half4 _EmissionHeight;
 half4 _EmissionHeightColor;
 half _EmissionHeightColorNormalAttenOn;
 
+//---------------------------------------- storey
+// half _StoreyTilingOn;
+half4 _StoreyWindowInfo;
+half _StoreyLightSwitchSpeed;
+half _StoreyHeight;
+half _StoreyLineOn;
+half4 _StoreyLineColor;
+half _StoreyLightOpaque;
+
 CBUFFER_END
 
 // #define _Metallic _Metallic_Smoothness_Occlusion_NormalScale.x

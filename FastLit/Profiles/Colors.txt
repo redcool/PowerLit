@@ -1,0 +1,21 @@
+// powerLit colors
+//_RippleTex=#00ff00
+
+_IBLOn=#ff8800
+_ParallaxOn=#ff8800
+_IsReceiveShadowOff=#ff8800
+_ClipOn=#ff8800
+_EmissionOn=#ff8800
+_PlanarReflectionOn=#ff8800
+
+_EmissionHeightOn=#ff8800
+_InteriorMapOn=#ff8800
+_BoxProjectionOn=#ff8800
+_DebugDisplay=#ff8800
+_StoreyTilingOn=#ff8800
+_FogNoiseOn=#ff8800
+_SnowOn=#ff8800
+_WindOn=#ff8800
+_RainOn=#ff8800
+_DetailOn=#ff8800
+_SurfaceBelowOn=#ff8800

@@ -6,9 +6,9 @@ Shader "URP/FastLit"
         [Group(Main)]
         [GroupItem(Main)] [MainTexture] _BaseMap ("Texture", 2D) = "white" {}
         [GroupItem(Main)][hdr][gamma]_Color ("_Color", color) = (1,1,1,1)
+        [GroupToggle(Main)] _AlbedoMulVertexColor("_AlbedoMulVertexColor",float) = 0
         [GroupItem(Main)]_NormalMap("_NormalMap",2d)="bump"{}
         [GroupItem(Main)]_NormalScale("_NormalScale",range(0,5)) = 1
-        [GroupToggle(Main)] _AlbedoMulVertexColor("_AlbedoMulVertexColor",float) = 0
         
         [Group(PBR Mask)]
         [GroupItem(PBR Mask)]_MetallicMaskMap("_PbrMask",2d)="white"{}
@@ -90,6 +90,12 @@ Shader "URP/FastLit"
 
 //================================================= Env
         [Group(Env)]
+        [GroupHeader(Env,Custom Light)]
+        [GroupToggle(Env)]_CustomLightOn("_CustomLightOn",float) = 0
+        [GroupItem(Env)][LightInfo(Env,direction)]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
+        [GroupItem(Env)][hdr][LightInfo(Env,Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
+        [GroupEnum(Env,LightColor 0 SpecularColor 1)]_CustomLightColorUsage("_CustomLightColorUsage",int) = 0
+
         [GroupHeader(Env,Custom IBL)]
         [GroupToggle(Env,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
         [GroupItem(Env)][NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
@@ -103,11 +109,6 @@ Shader "URP/FastLit"
         // [GroupHeader(Env,BoxProjection)]
         // [GroupToggle(Env,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
-        [GroupHeader(Env,Custom Light)]
-        [GroupToggle(Env)]_CustomLightOn("_CustomLightOn",float) = 0
-        [GroupItem(Env)][LightInfo(Env,direction)]_CustomLightDir("_CustomLightDir",vector) = (0,1,0,0)
-        [GroupItem(Env)][hdr][LightInfo(Env,Color)]_CustomLightColor("_CustomLightColor",color) = (0,0,0,0)
-        [GroupEnum(Env,LightColor 0 SpecularColor 1)]_CustomLightColorUsage("_CustomLightColorUsage",int) = 0
         [GroupHeader(Env,Fresnel)]
         [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
         // [Group(Thin Film)]
@@ -188,12 +189,12 @@ Shader "URP/FastLit"
         [GroupToggle(PlanarReflection,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
 
         [Group(Settings)]
-        [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 		[GroupToggle(Settings)]_ZWriteMode("ZWriteMode",int) = 1
 		/*
 		Disabled,Never,Less,Equal,LessEqual,Greater,NotEqual,GreaterEqual,Always
 		*/
 		[GroupEnum(Settings,UnityEngine.Rendering.CompareFunction)]_ZTestMode("_ZTestMode",float) = 4
+        [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
         //===================== actual values
         // [VectorValues(_Metallic _Smoothness _Occlusion _NormalScale)]
@@ -316,4 +317,6 @@ Shader "URP/FastLit"
             ENDHLSL
         }
     }
+
+    CustomEditor "PowerUtilities.FastLitShaderGUI"
 }

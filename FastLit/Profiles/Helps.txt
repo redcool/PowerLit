@@ -1,0 +1,24 @@
+// powerLit helps
+//details
+_DetailOn = 使用细节模式
+_DetailPBRMaskMap = r:metallic,g:smoothness,b:occlusion
+_DetailUVUseWorldPos = uv使用世界坐标
+_DetailPbrMaskApplyMetallic = 影响metallic
+_DetailPbrMaskApplySmoothness = 影响smoothness
+_DetailPbrMaskApplyOcclusion = 影响occlusion
+
+//rain
+_RainFlowTilingOffset = (xy)Tiling,(zw)Offset speed
+
+//------------Storey
+
+_StoreyTilingOn = enalbe storey tiling mode
+_StoreyHeight = height of storey (m)
+
+_StoreyWindowInfo = WindowCountXY(x:number of windows in x or y),ratio of LightOffPercent,ratio of Light switch
+_StoreyLightSwitchSpeed = _StoreyLightSwitchSpeed
+_StoreyLightOpaque = no alpha when surface emission 
+_StoreyLineOn = use vertex color(R) control 
+
+//shadow
+_ScreenShadowOn=sample _ScreenSpaceShadowmapTexture,apply final ps color

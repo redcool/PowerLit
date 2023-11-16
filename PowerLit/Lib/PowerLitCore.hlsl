@@ -185,22 +185,13 @@ void ApplyDetails(inout float metallic,inout float smoothness,inout float occlus
         pbrMask = TriplanarSample(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,positionWS,normalWS,_DetailPBRMaskMap_ST);
     }else{
         // 1 plane sample
-        float2 uvs[3] = {positionWS.xz,positionWS.xy,positionWS.yz};
-            uv = _DetailUVUseWorldPos ? uvs[_DetailWorldPlaneMode] : uv;
-        uv = uv * _DetailPBRMaskMap_ST.xy + _DetailPBRMaskMap_ST.zw;
+        uv = CalcWorldUV(positionWS,_DetailWorldPlaneMode,_DetailPBRMaskMap_ST);
         pbrMask = SAMPLE_TEXTURE2D(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,uv);
     }
-    SplitPbrMaskTexture(pbrMask.x/**/,pbrMask.y/**/,pbrMask.z/**/,pbrMask,int3(0,1,2),float3(_DetailPBRMetallic,_DetailPBRSmoothness,_DetailPBROcclusion));
-    // remove high light flickers
-    pbrMask.z = saturate(pbrMask.z);
+    half3 pbrMaskScale = half3(_DetailPBRMetallic,_DetailPBRSmoothness,_DetailPBROcclusion);
+    half3 detailPbrMaskApplyRate = half3(_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion);
 
-    half3 lerpValue = lerp(half3(metallic,smoothness,occlusion),pbrMask.xyz,half3(_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion));
-    metallic = lerpValue.x;
-    smoothness = lerpValue.y;
-    occlusion = lerpValue.z;
-    // metallic = lerp(metallic,pbrMask.x,_DetailPbrMaskApplyMetallic);
-    // smoothness = lerp(smoothness,pbrMask.y,_DetailPbrMaskApplySmoothness);
-    // occlusion = lerp(occlusion,pbrMask.z,_DetailPbrMaskApplyOcclusion);
+    ApplyDetailPbrMask(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,pbrMaskScale,detailPbrMaskApplyRate);
     #endif 
 }
 

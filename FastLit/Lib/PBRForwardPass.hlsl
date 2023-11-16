@@ -60,7 +60,7 @@ v2f vert (appdata v)
     #endif
 
     o.vertex = UnityWorldToClipPos(worldPos);
-    o.uv.xy = TRANSFORM_TEX(v.uv, _MainTex);
+    o.uv.xy = v.uv;
     o.uv.zw = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)
@@ -96,7 +96,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 
     TANGENT_SPACE_SPLIT(i);
 
-    float2 mainUV = i.uv.xy;
+    float2 mainUV = TRANSFORM_TEX(i.uv.xy, _MainTex);
     float2 lightmapUV = i.uv.zw;
     float2 screenUV = i.vertex.xy/_ScaledScreenParams.xy;
 
@@ -125,6 +125,23 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float smoothness =0;
     float occlusion =0;
     SplitPbrMaskTexture(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,int3(0,1,2),float3(_Metallic,_Smoothness,_Occlusion),false);
+
+//---------- pbrMask details
+    #if defined(_DETAIL_ON)
+        // branch_if(_DetailWorldPosTriplanar)
+        // {
+        //     pbrMask = TriplanarSample(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,worldPos,normalWS,_DetailPBRMaskMap_ST);
+        // }else
+        {
+            // 1 plane sample
+            float2 uv = CalcWorldUV(worldPos,_DetailWorldPlaneMode,_DetailPBRMaskMap_ST);
+            pbrMask = SAMPLE_TEXTURE2D(_DetailPBRMaskMap,sampler_DetailPBRMaskMap,uv);
+        }
+        half3 pbrMaskScale = half3(_DetailPBRMetallic,_DetailPBRSmoothness,_DetailPBROcclusion);
+        half3 detailPbrMaskApplyRate = half3(_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion);
+
+        ApplyDetailPbrMask(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,pbrMaskScale,detailPbrMaskApplyRate);
+    #endif
 
 //---------- roughness
     float roughness = 0;
@@ -160,7 +177,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #endif
 
 //-------- lighting prepare 
-    float4 shadowMask = SampleShadowMask(i.uv.zw);
+    float4 shadowMask = SampleShadowMask(lightmapUV);
     float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
 

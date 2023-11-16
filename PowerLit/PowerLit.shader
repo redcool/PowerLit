@@ -197,8 +197,7 @@ Shader "URP/PowerLit"
         [GroupItem(Details)]_DetailPBRSmoothness("_DetailPBRSmoothness",range(0,1)) = 1
         [GroupItem(Details)]_DetailPBROcclusion("_DetailPBROcclusion",range(0,1)) = 1
 
-        [GroupHeader(Details,Detail UV)]
-        [GroupToggle(Details)]_DetailUVUseWorldPos("_DetailUVUseWorldPos",int) = 1
+        [GroupHeader(Details,PlaneMode)]
         [GroupEnum(Details,XZ 0 XY 1 YZ 2)] _DetailWorldPlaneMode("_DetailWorldPlaneMode",int) = 0
         [GroupHeader(Details,Detail UV 3 plane)]
         [GroupToggle(Details)]_DetailWorldPosTriplanar("_DetailWorldPosTriplanar",int) = 0

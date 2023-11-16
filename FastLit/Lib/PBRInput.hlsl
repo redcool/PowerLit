@@ -15,6 +15,7 @@ sampler2D _ReflectionTexture;
 
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
+TEXTURE2D(_DetailPBRMaskMap);SAMPLER(sampler_DetailPBRMaskMap);
 
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;
@@ -106,10 +107,19 @@ half _StoreyLineOn;
 half4 _StoreyLineColor;
 half _StoreyLightOpaque;
 
+//---------------------------------------- pbr details
+half4 _DetailPBRMaskMap_ST;
+half _DetailPBRMetallic;
+half _DetailPBRSmoothness;
+half _DetailPBROcclusion;
+
+half _DetailWorldPlaneMode;
+// half _DetailWorldPosTriplanar;
+
+half _DetailPbrMaskApplyMetallic;
+half _DetailPbrMaskApplySmoothness;
+half _DetailPbrMaskApplyOcclusion;
+
 CBUFFER_END
 
-// #define _Metallic _Metallic_Smoothness_Occlusion_NormalScale.x
-// #define _Smoothness _Metallic_Smoothness_Occlusion_NormalScale.y 
-// #define _Occlusion _Metallic_Smoothness_Occlusion_NormalScale.z
-// #define _NormalScale _Metallic_Smoothness_Occlusion_NormalScale.w
 #endif //PBR_INPUT_HLSL

@@ -1,16 +1,5 @@
 Shader "URP/FastLit"
 {
-    /*
-    lighting(pbr,charlie,aniso)
-    shadow(main light)
-    fog
-    srp batched 
-
-    instanced
-    detail()
-    alpha
-
-    */
     Properties
     {
         [GroupHeader(v0.0.5)]
@@ -46,6 +35,24 @@ Shader "URP/FastLit"
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS_ON)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_ON)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_SOFT)]_AdditionalIghtSoftShadow("_AdditionalIghtSoftShadow",int) = 0
+
+//================================================= Details
+        [Group(Details)]
+        [GroupToggle(Details,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0
+        [GroupItem(Details)]_DetailPBRMaskMap("_DetailPBRMaskMap",2d) = ""{}
+        [GroupItem(Details)]_DetailPBRMetallic("_DetailPBRMetallic",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPBRSmoothness("_DetailPBRSmoothness",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPBROcclusion("_DetailPBROcclusion",range(0,1)) = 1
+
+        [GroupHeader(Details,PlaneMode)]
+        [GroupEnum(Details,XZ 0 XY 1 YZ 2)] _DetailWorldPlaneMode("_DetailWorldPlaneMode",int) = 0
+        // [GroupHeader(Details,Detail UV 3 plane)]
+        // [GroupToggle(Details)]_DetailWorldPosTriplanar("_DetailWorldPosTriplanar",int) = 0
+
+        [GroupHeader(Details,PBR Mask Override)]
+        [GroupItem(Details)]_DetailPbrMaskApplyMetallic("_DetailPbrMaskApplyMetallic",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPbrMaskApplySmoothness("_DetailPbrMaskApplySmoothness",range(0,1)) = 1
+        [GroupItem(Details)]_DetailPbrMaskApplyOcclusion("_DetailPbrMaskApplyOcclusion",range(0,1)) = 1
 //================================================= emission
         [Group(Emission)]
         [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
@@ -235,7 +242,8 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
-            #pragma shader_feature_local_fragment _STOREY_ON
+            #pragma shader_feature_local _STOREY_ON
+            #pragma shader_feature_local _DETAIL_ON
             // #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
             
 

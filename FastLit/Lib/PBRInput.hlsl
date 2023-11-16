@@ -103,8 +103,8 @@ half _EmissionHeightColorNormalAttenOn;
 half4 _StoreyWindowInfo;
 half _StoreyLightSwitchSpeed;
 half _StoreyHeight;
-half _StoreyLineOn;
-half4 _StoreyLineColor;
+// half _StoreyLineOn;
+// half4 _StoreyLineColor;
 half _StoreyLightOpaque;
 
 //---------------------------------------- pbr details

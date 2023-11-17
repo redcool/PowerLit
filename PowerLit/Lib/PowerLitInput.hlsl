@@ -172,7 +172,6 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBRSmoothness)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailPBROcclusion)
 
-    UNITY_DEFINE_INSTANCED_PROP(half,_DetailUVUseWorldPos)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPlaneMode)
     UNITY_DEFINE_INSTANCED_PROP(half,_DetailWorldPosTriplanar)
     

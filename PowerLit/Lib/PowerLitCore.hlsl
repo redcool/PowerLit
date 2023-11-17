@@ -171,7 +171,7 @@ void ApplyStoreyLineEmission(inout float3 emissionColor,float3 worldPos,float2 s
     {
         // storey line color
         half4 lineNoise = SAMPLE_TEXTURE2D(_StoreyLineNoiseMap,sampler_StoreyLineNoiseMap,screenUV);
-        ApplyStoreyLineEmission(emissionColor/**/,lineNoise,worldPos,vertexColor,nv,_StoreyLineColor);
+        ApplyStoreyLineEmission(emissionColor/**/,lineNoise,worldPos,vertexColor,nv,_StoreyLineColor.xyz);
     }
 }
 

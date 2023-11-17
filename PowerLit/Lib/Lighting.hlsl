@@ -60,8 +60,8 @@ void OffsetLight(inout Light mainLight,inout float3 specularColor){
     branch_if(_CustomLightOn)
     {
         mainLight.direction = (_CustomLightDir.xyz);
-        mainLight.color = _CustomLightColorUsage == 0 ? _CustomLightColor : mainLight.color;
-        specularColor *= _CustomLightColorUsage== 1? _CustomLightColor : 1;
+        mainLight.color = _CustomLightColorUsage == 0 ? _CustomLightColor.xyz : mainLight.color;
+        specularColor *= _CustomLightColorUsage== 1? _CustomLightColor.xyz : 1;
     }
     // #endif
 }

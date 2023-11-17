@@ -6,7 +6,7 @@
 #include "PowerSurfaceInputData.hlsl"
 #include "../../PowerShaderLib/Lib/NatureLib.hlsl"
 
-#include "../../PowerShaderLib/Lib/ParallaxMapping.hlsl"
+#include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/Lib/NoiseLib.hlsl"
@@ -66,13 +66,14 @@ void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
 }
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
-    float size = 1.0/_ParallaxIterate;
-    // branch_if(_ParallaxOn)
-    UNITY_LOOP for(int i=0;i<_ParallaxIterate;i++)
-    {
-        float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
-        uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height) * height * size;
-    }
+    ApplyParallax(uv/**/,viewTS,_ParallaxHeight,_ParallaxMapChannel,_ParallaxIterate);
+    // float size = 1.0/_ParallaxIterate;
+    // // branch_if(_ParallaxOn)
+    // UNITY_LOOP for(int i=0;i<_ParallaxIterate;i++)
+    // {
+    //     float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
+    //     uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height) * height * size;
+    // }
 }
 
 void ApplyParallaxVertex(inout float2 uv,float3 viewTS){

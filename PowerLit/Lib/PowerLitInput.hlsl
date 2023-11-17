@@ -12,7 +12,7 @@ TEXTURE2D(_EmissionMap); SAMPLER(sampler_EmissionMap);
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 
 TEXTURE2D(_ReflectionTexture);SAMPLER(sampler_ReflectionTexture); // planer reflection camera, use screenUV
-TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
+// TEXTURE2D(_ParallaxMap);SAMPLER(sampler_ParallaxMap);
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);

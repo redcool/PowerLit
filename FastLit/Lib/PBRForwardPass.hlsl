@@ -184,7 +184,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
     branch_if(_CustomLightOn)
     {
-        OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir,_CustomLightColor);    
+        OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);    
     }
 
     float3 l = mainLight.direction;
@@ -275,7 +275,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #endif
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
-    float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
+    float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset.xyz/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
     ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex);
 
     giColor = (giDiff + giSpec) * occlusion;

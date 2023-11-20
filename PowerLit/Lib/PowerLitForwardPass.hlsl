@@ -283,7 +283,7 @@ float4 frag(Varyings input
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(n,diffColor,lightmapUV);
     float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset.xyz/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
-    ,nv,roughness,a2,smoothness,metallic,half2(0,1),1,planarReflectTex,viewDirTS,mainUV);
+    ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex,viewDirTS,mainUV);
     // tint gi specular
     // giSpec = lerp(1,giSpec,alpha * _IBLMaskMainTexA);
 

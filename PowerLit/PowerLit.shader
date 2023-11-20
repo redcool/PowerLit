@@ -86,7 +86,7 @@ Shader "URP/PowerLit"
         _EnvIntensity("_EnvIntensity",float) = 1
         // [GroupToggle]_IBLMaskMainTexA("_IBLMaskMainTexA",float) = 0
         [GroupVectorSlider(_,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
-        [GroupToggle(,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
+        // [GroupToggle(,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
 
         [GroupHeader(,BoxProjection)]
         [GroupToggle(,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
@@ -262,7 +262,8 @@ Shader "URP/PowerLit"
             #pragma vertex vert
             #pragma fragment frag
 
-            #pragma multi_compile_instancing
+            // off temp 
+            // #pragma multi_compile_instancing
         //     #pragma instancing_options forcemaxcount:70
             
             // material keywords
@@ -290,11 +291,14 @@ Shader "URP/PowerLit"
             // #define _CLOUD_SHADOW_ON
             // #define _EMISSION_HEIGHT_ON
             // #define _INTERIOR_MAP_ON
-        //     #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
+            // use uniform if
+            // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             // #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
-            #pragma shader_feature_local_fragment _CLOUD_SHADOW_ON
             // #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
-            #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
+
+            // off temp
+            // #pragma shader_feature_local_fragment _CLOUD_SHADOW_ON
+            // #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
             
             // urp keywords 
             #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION

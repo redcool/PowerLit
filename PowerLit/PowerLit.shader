@@ -332,12 +332,8 @@ Shader "URP/PowerLit"
 
             #include "Lib/PowerLitCore.hlsl"
 
-            #define SHADOW_PASS 
-            #define USE_SAMPLER2D
-            #define _MainTexChannel 3
-            #define _CustomShadowNormalBias _CustomShadowNormalBias
-            #define _CustomShadowDepthBias _CustomShadowDepthBias
-            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+            #define SHADOW_PASS
+            #include "Lib/ShadowCasterPass.hlsl"
 
             ENDHLSL
         }
@@ -357,13 +353,7 @@ Shader "URP/PowerLit"
             #pragma shader_feature_local_vertex _WIND_ON
 
             #include "Lib/PowerLitCore.hlsl"
-
-            #define SHADOW_PASS 
-            #define USE_SAMPLER2D
-            #define _MainTexChannel 3
-            #define _CustomShadowNormalBias _CustomShadowNormalBias
-            #define _CustomShadowDepthBias _CustomShadowDepthBias
-            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+            #include "Lib/ShadowCasterPass.hlsl"
             ENDHLSL
         }
 

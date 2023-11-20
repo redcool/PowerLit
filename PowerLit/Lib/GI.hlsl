@@ -93,7 +93,9 @@ float4 SamplePlanarReflectionTex(float2 suv){
 //========================== URP_GI.hlsl
 float CalcFresnelTerm(float nv,half2 fresnelRange=half2(0,1)){
     float fresnelTerm = Pow4(1 - nv);
-    fresnelTerm = smoothstep(fresnelRange.x,fresnelRange.y,fresnelTerm);
+    #if defined(SMOOTH_FRESNEL)
+        fresnelTerm = smoothstep(fresnelRange.x,fresnelRange.y,fresnelTerm);
+    #endif
     return fresnelTerm;
 }
 

@@ -31,10 +31,10 @@ public class PowerLitFogControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        UpdateParams();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
 #if UNITY_EDITOR
         UpdateParams();
@@ -66,5 +66,8 @@ public class PowerLitFogControl : MonoBehaviour
         RenderSettings.fogColor = _FogFarColor * (isFogColorApplyAlpha ? _FogFarColor.a : 1);
         RenderSettings.fogStartDistance = _FogMin;
         RenderSettings.fogEndDistance = _FogMax;
+
+        //RenderSettings.fog = _IsGlobalFogOn;
+        Shader.SetGlobalVector("_FogParams", new Vector4(0, 0, -1 / (_FogMax - _FogMin), _FogMax / (_FogMax - _FogMin)));
     }
 }

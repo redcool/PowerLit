@@ -89,7 +89,7 @@ Varyings vert(Attributes input){
     output.shadowCoord = TransformWorldToShadowCoord(worldPos);
     output.color = attenParam;
 
-    output.fogCoord.xy = CalcFogFactor(worldPos);
+    output.fogCoord.xy = CalcFogFactor(worldPos,clipPos.z,_HeightFogOn,_DepthFogOn);
 
     // vertex noise
     // #if defined(_WIND_ON)

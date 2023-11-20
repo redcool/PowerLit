@@ -71,7 +71,7 @@ v2f vert (appdata v)
 
     TANGENT_SPACE_COMBINE_WORLD(worldPos,worldNormal,float4(worldTangent,v.tangent.w),o/**/);
     // o.shadowCoord = TransformWorldToShadowCoord(worldPos);
-    o.fogCoord.xy = CalcFogFactor(p.xyz);
+    o.fogCoord.xy = CalcFogFactor(p.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
 
     half upFaceAtten = 1;
     // #if defined(_EMISION_HEIGHT_ON)

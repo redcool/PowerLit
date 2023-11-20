@@ -151,6 +151,7 @@ Shader "URP/PowerLit"
 
         [Header(Fog)]
         [GroupToggle()]_FogOn("_FogOn",int) = 1
+        [GroupToggle(_,SIMPLE_FOG,use simple linear depth height fog)]_SimpleFog("_SimpleFog",int) = 0
         [GroupToggle(_,)]_FogNoiseOn("_FogNoiseOn",int) = 0 //_DEPTH_FOG_NOISE_ON
         [GroupToggle(_)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(_)]_HeightFogOn("_HeightFogOn",int) = 1
@@ -276,7 +277,7 @@ Shader "URP/PowerLit"
             // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
             // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
-            // #pragma shader_feature_local_fragment _DEPTH_FOG_NOISE_ON
+            #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_local_fragment _SNOW_ON
             #pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON

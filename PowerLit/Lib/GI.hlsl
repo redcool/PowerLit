@@ -57,36 +57,6 @@ float3 CalcIBL(float3 reflectDir,TEXTURECUBE_PARAM(cube,sampler_Cube),float perc
     // return _GlossyEnvironmentColor.rgb;
 }
 
-
-// float3 CalcGI(BRDFData brdfData,float3 bakedGI,float occlusion,float3 normal,float3 viewDir,float customIBLMask,float3 worldPos,SurfaceInputData data){
-//     float3 indirectDiffuse = bakedGI  * brdfData.diffuse;
-
-//     float3 reflectDir = 0;
-//     float rough = brdfData.perceptualRoughness;
-
-//     #if defined(_INTERIOR_MAP_ON)
-//     {
-//         float2 uvRange = float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w);
-//         reflectDir = CalcInteriorMapReflectDir(data.viewDirTS,data.uv,uvRange);
-//         rough = lerp(0.5,rough,UVBorder(data.uv,uvRange));
-//         // reflectDir.z*=-1;
-//     }
-//     #else
-//         reflectDir = CalcReflectDir(worldPos,normal,viewDir,0);
-//     #endif
-
-//     // apply offset
-//     reflectDir+=_ReflectDirOffset.xyz + data.rainReflectDirOffset;
-
-//     float3 indirectSpecular  = CalcIBL(reflectDir,rough,customIBLMask);
-//     // indirectSpecular = lerp(indirectSpecular,1,UVBorder(data.uv,float2(_ReflectDirOffset.w,1 - _ReflectDirOffset.w)));
-
-//     float3 fresnel = CalcFresnel(brdfData,data.nv);
-//     float3 color = indirectDiffuse + indirectSpecular * fresnel * data.envIntensity ;
-//     color *= occlusion;
-//     return color;
-// }
-
 float4 SamplePlanarReflectionTex(float2 suv){
     return SAMPLE_TEXTURE2D(_ReflectionTexture,sampler_ReflectionTexture,suv);
 }

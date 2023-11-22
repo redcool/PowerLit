@@ -101,7 +101,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //#if defined(_PLANAR_REFLECTION_ON)
 //--------------------------------- Plannar Reflection
     // UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionOn)
-    UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionReverseUV)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionReverseU)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_PlanarReflectionReverseV)
 //#endif
 //--------------------------------- snow
 //#if defined(_SNOW_ON)
@@ -274,7 +275,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _WindSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindSpeed)
 //--------------------------------- Plannar Reflection
     #define _PlanarReflectionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionOn) // _PLANAR_REFLECTION_ON
-    #define _PlanarReflectionReverseUV UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionReverseUV)
+    #define _PlanarReflectionReverseU UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionReverseU)
+    #define _PlanarReflectionReverseV UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_PlanarReflectionReverseV)
 //--------------------------------- Snow
     #define _SnowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowOn)
     #define _SnowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensity)

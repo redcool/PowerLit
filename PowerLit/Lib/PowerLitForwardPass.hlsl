@@ -277,6 +277,8 @@ float4 frag(Varyings input
     #endif
     float4 planarReflectTex = 0;
     #if defined(_PLANAR_REFLECTION_ON)
+        screenUV.x = _PlanarReflectionReverseU ? 1 - screenUV.x: screenUV.x;
+        screenUV.y = _PlanarReflectionReverseV ? 1 - screenUV.y : screenUV.y;
         planarReflectTex = SamplePlanarReflectionTex(screenUV);
     #endif
 

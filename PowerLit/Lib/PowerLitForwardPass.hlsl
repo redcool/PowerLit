@@ -23,7 +23,7 @@ struct Varyings{
     float4 tSpace0:TEXCOORD2;
     float4 tSpace1:TEXCOORD3;
     float4 tSpace2:TEXCOORD4;
-    float4 vertexLightAndUpFaceAtten:TEXCOORD5;
+    float4 bigShadowCoord_UpFaceAtten:TEXCOORD5;
     float4 shadowCoord:TEXCOORD6;
     float4 viewDirTS_NV:TEXCOORD7;
     // motion vectors
@@ -83,8 +83,9 @@ Varyings vert(Attributes input){
     }
     // #endif
 
-    float3 vertexLight = VertexLighting(worldPos,worldNormal);
-    output.vertexLightAndUpFaceAtten = float4(vertexLight,upFaceAtten);
+    // float3 vertexLight = VertexLighting(worldPos,worldNormal);
+    float3 bigShadowCoord = TransformWorldToBigShadow(worldPos);
+    output.bigShadowCoord_UpFaceAtten = float4(bigShadowCoord,upFaceAtten);
     output.pos = clipPos;
     output.shadowCoord = TransformWorldToShadowCoord(worldPos);
     output.color = attenParam;
@@ -215,6 +216,11 @@ float4 frag(Varyings input
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,1);
     OffsetLight(mainLight/**/,specColor/**/);
 
+// float3 shadowPos = TransformWorldToBigShadow(worldPos);
+float atten = CalcBigShadowAtten(input.bigShadowCoord_UpFaceAtten.xyz,1);
+mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
+
+// return atten;
     #if defined(DEBUG_DISPLAY)
         half4 debugColor = half4(0,0,0,1);
         bool isBreak=0;
@@ -310,7 +316,7 @@ float4 frag(Varyings input
     #endif
 
 //  world emission
-    half upFaceAtten = input.vertexLightAndUpFaceAtten.w;
+    half upFaceAtten = input.bigShadowCoord_UpFaceAtten.w;
     ApplyWorldEmission(emission/**/,worldPos,upFaceAtten);
 
     // branch_if(_EmissionScanLineOn)

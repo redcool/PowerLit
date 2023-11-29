@@ -254,7 +254,7 @@ namespace PowerUtilities
                 transform.rotation * Quaternion.LookRotation(Vector3.forward),
                 3, EventType.Repaint);
 
-            if(showSceneBound)
+            if(showSceneBound && sceneMaxTr && sceneMinTr)
             {
                 var maxPos = sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax;
                 var minPos = sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin;

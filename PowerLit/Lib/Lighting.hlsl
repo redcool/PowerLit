@@ -1,12 +1,7 @@
 #if !defined(LIGHTING_HLSL)
 #define LIGHTING_HLSL
-
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceData.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Shadows.hlsl"
 #include "GI.hlsl"
- 
-
 
 float MinimalistCookTorrance(float nh,float lh,float rough,float rough2){
     float d = nh * nh * (rough2-1) + 1.00001f;

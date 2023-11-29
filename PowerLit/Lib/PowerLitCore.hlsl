@@ -16,6 +16,7 @@
 #include "../../PowerShaderLib/Lib/SDF.hlsl"
 #include "../../PowerShaderLib/Lib/MathLib.hlsl"
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
+#include "../../PowerShaderLib/Lib/BigShadows.hlsl"
 
 // #define SIMPLE_NOISE_TEX
 

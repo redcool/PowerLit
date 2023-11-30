@@ -67,6 +67,10 @@ Shader "URP/PowerLit"
         [GroupHeader(,ScreenShadow)]
         [GroupToggle]_ScreenShadowOn("_ScreenShadowOn",int) = 0
 
+        [GroupHeader(,_BigShadowOff)]
+        [GroupToggle]_BigShadowOff("_BigShadowOff",int) = 0
+        
+
         [GroupHeader(CloudShadow)]
         [GroupToggle(,_CLOUD_SHADOW_ON)]_CloudShadowOn("_CloudShadowOn",int) = 0
         // [GroupVectorSlider(,TilingX TilingZ OffsetX OffsetZ,m0.0001_10)]

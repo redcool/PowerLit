@@ -218,9 +218,12 @@ float4 frag(Varyings input
         OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);
 
 // float3 shadowPos = TransformWorldToBigShadow(worldPos);
-float atten = CalcBigShadowAtten(input.bigShadowCoord_UpFaceAtten.xyz,1);
-mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
-// return atten;
+    branch_if(!_BigShadowOff)
+    {
+        float atten = CalcBigShadowAtten(input.bigShadowCoord_UpFaceAtten.xyz,1);
+        mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
+        // return atten;
+    }
 
 //------- mrt output    
     // output world normal

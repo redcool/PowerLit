@@ -48,8 +48,8 @@ v2f vert (appdata v)
     UNITY_TRANSFER_INSTANCE_ID(v,o);
 
     float3 worldPos = TransformObjectToWorld(v.vertex.xyz);
-    float3 worldNormal = TransformObjectToWorldNormal(v.normal);
-    float3 worldTangent = TransformObjectToWorldDir(v.tangent.xyz);
+    float3 worldNormal = normalize(TransformObjectToWorldNormal(v.normal));
+    float3 worldTangent = normalize(TransformObjectToWorldDir(v.tangent.xyz));
 
     float4 attenParam = v.color.x; // vertex color atten
     #if defined(_WIND_ON)

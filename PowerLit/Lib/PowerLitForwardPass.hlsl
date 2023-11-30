@@ -43,7 +43,7 @@ Varyings vert(Attributes input){
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     float3 worldPos = TransformObjectToWorld(input.pos.xyz);
-    float3 worldNormal = TransformObjectToWorldNormal(input.normal);
+    float3 worldNormal = normalize(TransformObjectToWorldNormal(input.normal));
 
     float4 attenParam = input.color.x; // vertex color atten
     #if defined(_WIND_ON)
@@ -54,8 +54,8 @@ Varyings vert(Attributes input){
     #endif
 
     float sign = input.tangent.w * unity_WorldTransformParams.w;
-    float3 worldTangent = TransformObjectToWorldDir(input.tangent.xyz);
-    float3 worldBinormal = cross(worldNormal,worldTangent)  * sign;
+    float3 worldTangent = normalize(TransformObjectToWorldDir(input.tangent.xyz));
+    float3 worldBinormal = normalize(cross(worldNormal,worldTangent)) * sign;
     output.tSpace0 = float4(worldTangent.x,worldBinormal.x,worldNormal.x,worldPos.x);
     output.tSpace1 = float4(worldTangent.y,worldBinormal.y,worldNormal.y,worldPos.y);
     output.tSpace2 = float4(worldTangent.z,worldBinormal.z,worldNormal.z,worldPos.z);

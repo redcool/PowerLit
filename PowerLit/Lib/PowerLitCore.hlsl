@@ -68,13 +68,6 @@ void ApplyWorldEmissionScanLine(inout float3 emissionColor,float3 worldPos){
 
 void ApplyParallax(inout float2 uv,float3 viewTS){
     ApplyParallax(uv/**/,viewTS,_ParallaxHeight,_ParallaxMapChannel,_ParallaxIterate);
-    // float size = 1.0/_ParallaxIterate;
-    // // branch_if(_ParallaxOn)
-    // UNITY_LOOP for(int i=0;i<_ParallaxIterate;i++)
-    // {
-    //     float height = SAMPLE_TEXTURE2D(_ParallaxMap,sampler_ParallaxMap,uv)[_ParallaxMapChannel];
-    //     uv += ParallaxMapOffset(_ParallaxHeight,viewTS,height) * height * size;
-    // }
 }
 
 void ApplyParallaxVertex(inout float2 uv,float3 viewTS){
@@ -120,32 +113,6 @@ void ApplyCloudShadow(inout half3 color,float3 worldPos){
     }
     #endif
 }
-
-#if defined(_RAIN_ON)
-
-/**
-    ApplyRainRipple
-
-    change albedox
-    change normalTS
-*/
-void ApplyRainRipple(inout SurfaceInputData data,float3 worldPos){
-    branch_if(!_RippleIntensity)
-        return;
-
-    float2 rippleUV = CalcRippleUV(worldPos,_RippleTex_ST,_RippleOffsetAutoStop);
-    float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
-    ripple *= data.rainAtten;
-    // apply ripple color 
-    data.surfaceData.albedo += ripple.x * _RippleAlbedoIntensity;
-
-    // apply ripple blend normal
-    data.surfaceData.normalTS += ripple * _RippleBlendNormal;
-    // full version
-    //data.surfaceData.normalTS = BlendNormal(data.surfaceData.normalTS,(data.surfaceData.normalTS+ ripple));
-}
-
-#endif // _RAIN_ON
 
 void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
     #if defined(_SURFACE_BELOW_ON)

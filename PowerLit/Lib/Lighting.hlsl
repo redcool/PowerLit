@@ -45,11 +45,6 @@ Light GetMainLight(float4 shadowCoord,float3 worldPos,float4 shadowMask,bool isR
 }
 
 
-Light GetMainLight(SurfaceInputData data,float4 shadowMask){
-    Light mainLight = GetMainLight(data.inputData.shadowCoord,data.inputData.positionWS,shadowMask,true);
-    return mainLight;
-}
-
 void OffsetLight(inout Light mainLight,inout float3 specularColor){
     // #if defined(_CUSTOM_LIGHT_ON)
     branch_if(_CustomLightOn)

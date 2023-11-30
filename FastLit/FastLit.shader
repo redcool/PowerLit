@@ -20,7 +20,7 @@ Shader "URP/FastLit"
         [Group(LightMode)]   
         [GroupToggle(LightMode)]_SpecularOn("_SpecularOn",int) = 1
         // [Enum(PBR,0,Aniso,1,Charlie,2)]_PbrMode("_PbrMode",int) = 0
-        [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE _PBRMODE_GGX,true)]_PbrMode("_PbrMode",int) = 0
+        [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE,true)]_PbrMode("_PbrMode",int) = 0
         
         [Group(Shadow)]
         //[LineHeader(Shadows)]
@@ -106,8 +106,8 @@ Shader "URP/FastLit"
         [GroupVectorSlider(Env,DirOffset UVBorder, 0_0.5,DirOffset used for Reflection UVBorder used for InteriorMap )]_ReflectDirOffset("_ReflectDirOffset",vector) = (0,0,0,0)
         // [GroupToggle(Env,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
 
-        // [GroupHeader(Env,BoxProjection)]
-        // [GroupToggle(Env,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
+        [GroupHeader(Env,BoxProjection)]
+        [GroupToggle(Env,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [GroupHeader(Env,Fresnel)]
         [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
@@ -197,10 +197,25 @@ Shader "URP/FastLit"
 		[GroupEnum(Settings,UnityEngine.Rendering.CompareFunction)]_ZTestMode("_ZTestMode",float) = 4
         [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
-        //===================== actual values
-        // [VectorValues(_Metallic _Smoothness _Occlusion _NormalScale)]
-        // _Metallic_Smoothness_Occlusion_NormalScale("_Metallic_Smoothness_Occlusion_NormalScale",vector)=(1,1,1,1)
-
+//================================================= future function variables,dont use these when dont know
+        [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve2("_Reserve2",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve3("_Reserve3",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve4("_Reserve4",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve5("_Reserve5",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve6("_Reserve6",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve7("_Reserve7",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve8("_Reserve8",vector)=(0,0,0,0)
+        [HideInInpector]_Reserve9("_Reserve9",vector)=(0,0,0,0)
+        [HideInInpector]_ReserveTex0("_ReserveTex0",2d)="white"{}
+        [HideInInpector]_ReserveTex1("_ReserveTex1",2d)="white"{}
+        [HideInInpector]_ReserveTex2("_ReserveTex2",2d)="white"{}
+        [HideInInpector]_ReserveTex4("_ReserveTex3",2d)="white"{}
+        [HideInInpector]_ReserveTex5("_ReserveTex4",2d)="white"{}
+        [HideInInpector]_ReserveTex6("_ReserveTex5",2d)="white"{}
+        [HideInInpector]_ReserveTex7("_ReserveTex6",2d)="white"{}
+        [HideInInpector]_ReserveTex8("_ReserveTex7",2d)="white"{}
     }
 
     SubShader
@@ -232,7 +247,7 @@ Shader "URP/FastLit"
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile_fragment _ LIGHTMAP_ON
 
-            #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE _PBRMODE_GGX
+            #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
@@ -246,7 +261,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
-            // #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
+            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
             
 
             #define SHADOWS_FULL_MIX

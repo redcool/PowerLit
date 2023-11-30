@@ -174,38 +174,4 @@ float AdditionalLightShadow1(int lightIndex, float3 positionWS, float3 lightDire
     return MixShadow(realtimeShadow, bakedShadow, shadowFade,_Shadows_ShadowMaskOn);
 }
 
-float4 SampleShadowMask(float2 shadowMaskUV){
-    /**
-     unity_ShadowMask,samplerunity_ShadowMask,shadowMaskuv [], unity_LightmapIndex.x]
-     */
-    float4 mask = 1;
-    // branch_if(IsLightmapOn() && IsShadowMaskOn())
-    #if defined(LIGHTMAP_ON) && defined(SHADOWS_SHADOWMASK)
-    // if(IsShadowMaskOn())
-    {
-        mask = SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME,SHADOWMASK_SAMPLER_NAME,shadowMaskUV SHADOWMASK_SAMPLE_EXTRA_ARGS);
-    }
-    #endif
-    return mask;
-}
-
-float4 CalcShadowMask(InputData inputData){
-    #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
-        float4 shadowMask = inputData.shadowMask;
-    #elif !defined (LIGHTMAP_ON)
-        float4 shadowMask = unity_ProbesOcclusion;
-    #else
-        float4 shadowMask = float4(1, 1, 1, 1);
-    #endif
-
-    // -------- only LINGHTMAP_ON 
-    // #if defined(LIGHTMAP_ON)
-    // float4 shadowMask = lerp(1,inputData.shadowMask, isShadowMaskOn);
-    // #else
-    // float4 shadowMask = unity_ProbesOcclusion;
-    // #endif
-    
-    return shadowMask;
-}
-
 #endif //SHADOWS_HLSL

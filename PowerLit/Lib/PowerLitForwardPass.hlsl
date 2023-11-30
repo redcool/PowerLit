@@ -221,29 +221,7 @@ float4 frag(Varyings input
 float atten = CalcBigShadowAtten(input.bigShadowCoord_UpFaceAtten.xyz,1);
 mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
 // return atten;
-    #if defined(DEBUG_DISPLAY)
-        half4 debugColor = half4(0,0,0,1);
-        bool isBreak=0;
-        debugColor.xyz = CalcDebugColor(
-            isBreak/**/,
-            albedo/**/,
-            specular/**/,
-            alpha,
-            metallic/**/,
-            smoothness/**/,
-            occlusion/**/,
-            emission/**/,
-            n/**/,
-            normalTS/**/,
-            screenUV,
-            worldPos,
-            input.tSpace0,
-            input.tSpace1,
-            input.tSpace2
-        );
-        if(isBreak)
-            return debugColor;
-    #endif
+
 //------- mrt output    
     // output world normal
     outputNormal = n.xyzx;
@@ -323,6 +301,29 @@ mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
     // {
     //     ApplyWorldEmissionScanLine(emission/**/,worldPos);
     // }
+    #if defined(DEBUG_DISPLAY)
+        half4 debugColor = half4(0,0,0,1);
+        bool isBreak=0;
+        debugColor.xyz = CalcDebugColor(
+            isBreak/**/,
+            albedo/**/,
+            specColor/**/,
+            alpha,
+            metallic/**/,
+            smoothness/**/,
+            occlusion/**/,
+            emission/**/,
+            n/**/,
+            tn/**/,
+            screenUV,
+            worldPos,
+            input.tSpace0,
+            input.tSpace1,
+            input.tSpace2
+        );
+        if(isBreak)
+            return debugColor;
+    #endif    
 
     col.rgb += emission;
     col.a = alpha;

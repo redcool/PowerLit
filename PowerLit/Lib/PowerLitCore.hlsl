@@ -7,7 +7,6 @@
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/Lib/NoiseLib.hlsl"
-#include "../../PowerShaderLib/URPLib/URPDebugDisplay.hlsl"
 #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
 #include "../../PowerShaderLib/URPLib/Lighting.hlsl"
 
@@ -17,6 +16,7 @@
 #include "../../PowerShaderLib/Lib/MathLib.hlsl"
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BigShadows.hlsl"
+#include "../../PowerShaderLib/URPLib/URP_DebugDisplay.hlsl"
 
 // #define SIMPLE_NOISE_TEX
 

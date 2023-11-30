@@ -334,5 +334,5 @@ Shader "URP/FastLit"
         }
     }
 
-    CustomEditor "PowerUtilities.FastLitShaderGUI"
+    CustomEditor "PowerUtilities.PowerShaderInspector"
 }

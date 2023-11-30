@@ -1,8 +1,10 @@
 #if !defined(POWER_LIT_COMMON_HLSL)
 #define POWER_LIT_COMMON_HLSL
-#define USE_URP
+// #define USE_URP
 #include "../../PowerShaderLib/Lib/UnityLib.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+
+// for d3d error
+// #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
 #include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
 

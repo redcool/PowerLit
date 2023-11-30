@@ -22,7 +22,7 @@ struct v2f{
 
 v2f vert(appdata i){
     v2f o= (v2f)0;
-    float sign = i.tangent.w * GetOddNegativeScale();
+    float sign = i.tangent.w * unity_WorldTransformParams.w;
     float3 worldPos = TransformObjectToWorld(i.pos.xyz);
     float3 n = TransformObjectToWorldNormal(i.normal);
     float3 t = TransformObjectToWorldDir(i.tangent.xyz);

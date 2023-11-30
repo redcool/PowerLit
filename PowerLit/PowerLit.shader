@@ -133,9 +133,9 @@ Shader "URP/PowerLit"
         [Header(Cull)]
         [Enum(UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
-		[Header(Color Mask)]
-		[GroupEnum(_,RGBA 16 RGB 15 RG 12 GB 6 RB 10 R 8 G 4 B 2 A 1 None 0)]
-		_ColorMask("_ColorMask",int) = 15
+        [Header(Color Mask)]
+        [GroupEnum(_,RGBA 16 RGB 15 RG 12 GB 6 RB 10 R 8 G 4 B 2 A 1 None 0)]
+        _ColorMask("_ColorMask",int) = 15
 
 //=================================================  weather
         [Header(Wind)]
@@ -358,10 +358,14 @@ Shader "URP/PowerLit"
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_vertex _WIND_ON
 
-            #include "Lib/PowerLitCore.hlsl"
-
-            #define SHADOW_PASS
-            #include "Lib/ShadowCasterPass.hlsl"
+            #define SHADOW_PASS 
+        //     #define USE_SAMPLER2D
+            #define _MainTexChannel 3
+            #define _CustomShadowNormalBias 0
+            #define _CustomShadowDepthBias 0
+            #define USE_BASEMAP
+            #include "Lib/PowerLitInput.hlsl"
+            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
         }
@@ -380,8 +384,14 @@ Shader "URP/PowerLit"
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_vertex _WIND_ON
 
-            #include "Lib/PowerLitCore.hlsl"
-            #include "Lib/ShadowCasterPass.hlsl"
+            // #define SHADOW_PASS 
+        //     #define USE_SAMPLER2D
+            #define _MainTexChannel 3
+            #define _CustomShadowNormalBias 0
+            #define _CustomShadowDepthBias 0
+            #define USE_BASEMAP
+            #include "Lib/PowerLitInput.hlsl"
+            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
             ENDHLSL
         }
 
@@ -397,7 +407,7 @@ Shader "URP/PowerLit"
             // #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature_local_fragment _ALPHATEST_ON
 
-            #include "Lib/PowerLitCore.hlsl"
+            #include "Lib/PowerLitInput.hlsl"
             #include "Lib/DepthNormalsPass.hlsl"
             ENDHLSL
         }
@@ -414,8 +424,15 @@ Shader "URP/PowerLit"
             // #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature_local_fragment _EMISSION
 
+            #define USE_TEXTURE2D
+            #define _PbrMask _MetallicMaskMap
+            #define sampler_PbrMask sampler_MetallicMaskMap
+            #define USE_BASEMAP
+            // #define _MainTex _BaseMap 
+            // #define _MainTex_ST _BaseMap_ST
+            // #define sampler_MainTex sampler_BaseMap
             #include "Lib/PowerLitCore.hlsl"
-            #include "Lib/PowerLitMetaPass.hlsl"
+            #include "../../PowerShaderLib/URPLib/PBR1_MetaPass.hlsl"
             ENDHLSL
         }
 

@@ -2,16 +2,16 @@
 #define POWER_LIT_CORE_HLSL
 
 #include "PowerLitInput.hlsl"
-
-#include "PowerSurfaceInputData.hlsl"
 #include "../../PowerShaderLib/Lib/NatureLib.hlsl"
-
 #include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/Lib/NoiseLib.hlsl"
 #include "../../PowerShaderLib/URPLib/URPDebugDisplay.hlsl"
 #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
+#include "../../PowerShaderLib/URPLib/Lighting.hlsl"
+
+#include "../../PowerShaderLib/Lib/BSDF.hlsl"
 #include "../../PowerShaderLib/Lib/ReflectionLib.hlsl"
 #include "../../PowerShaderLib/Lib/SDF.hlsl"
 #include "../../PowerShaderLib/Lib/MathLib.hlsl"
@@ -42,7 +42,7 @@ float3 CalcEmission(float2 uv,TEXTURE2D_PARAM(map,sampler_map)){
     // UNITY_BRANCH if(_EmissionOn)
     {
         emission = SAMPLE_TEXTURE2D(map,sampler_map,uv);
-        emission.xyz = CalcEmission(emission,_EmissionColor,_EmissionColor.w);
+        emission.xyz = CalcEmission(emission,_EmissionColor.xyz,_EmissionColor.w);
     }
     #endif
     return emission.xyz ;

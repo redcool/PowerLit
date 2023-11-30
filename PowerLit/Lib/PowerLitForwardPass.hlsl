@@ -2,7 +2,7 @@
 #define POWER_LIT_FORWARD_PASS_HLSL
 
 #include "PowerLitCore.hlsl"
-#include "Lighting.hlsl"
+#include "GI.hlsl"
 
 struct Attributes{
     float4 pos:POSITION;
@@ -53,7 +53,7 @@ Varyings vert(Attributes input){
     }
     #endif
 
-    float sign = input.tangent.w * GetOddNegativeScale();
+    float sign = input.tangent.w * unity_WorldTransformParams.w;
     float3 worldTangent = TransformObjectToWorldDir(input.tangent.xyz);
     float3 worldBinormal = cross(worldNormal,worldTangent)  * sign;
     output.tSpace0 = float4(worldTangent.x,worldBinormal.x,worldNormal.x,worldPos.x);
@@ -214,12 +214,12 @@ float4 frag(Varyings input
     float4 shadowMask = SampleShadowMask(lightmapUV);
     float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,1);
-    OffsetLight(mainLight/**/,specColor/**/);
+    branch_if(_CustomLightOn)
+        OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);
 
 // float3 shadowPos = TransformWorldToBigShadow(worldPos);
 float atten = CalcBigShadowAtten(input.bigShadowCoord_UpFaceAtten.xyz,1);
 mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
-
 // return atten;
     #if defined(DEBUG_DISPLAY)
         half4 debugColor = half4(0,0,0,1);

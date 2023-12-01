@@ -143,6 +143,32 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
         ApplyDetailPbrMask(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,pbrMaskScale,detailPbrMaskApplyRate);
     #endif
 
+
+//---------- normal
+    float3 tn = UnpackNormalScale(tex2D(_NormalMap,mainUV),_NormalScale);
+//-------- rain ripple 
+    #if defined(_RAIN_ON)
+    branch_if(IsRainOn())
+    {
+        branch_if(_RippleIntensity)
+        {
+            rainAtten *= GetRainRippleAtten(smoothness,alpha,_RainMaskFrom);
+            float2 rippleUV = CalcRippleUV(worldPos,_RippleTex_ST,_RippleOffsetAutoStop);
+            float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
+            ripple *= rainAtten;
+            // apply ripple color 
+            albedo += ripple.x * _RippleAlbedoIntensity;
+
+            // apply ripple blend normal
+            tn += ripple * _RippleBlendNormal;
+            // change pbr mask
+        }
+
+        // change pbr mask
+        ApplyRainPbr(albedo/**/,metallic/**/,smoothness/**/,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
+    }
+    #endif
+    
 //---------- roughness
     float roughness = 0;
     float a = 0;
@@ -156,25 +182,6 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     //     specColor = (specColor+1) * thinFilm;
     // }
     float3 diffColor = albedo.xyz * (1- metallic);
-//---------- normal
-    float3 tn = UnpackNormalScale(tex2D(_NormalMap,mainUV),_NormalScale);
-//-------- rain ripple 
-    #if defined(_RAIN_ON)
-    branch_if(IsRainOn() && _RippleIntensity)
-    {
-        rainAtten *= GetRainRippleAtten(smoothness,alpha,_RainMaskFrom);
-        float2 rippleUV = CalcRippleUV(worldPos,_RippleTex_ST,_RippleOffsetAutoStop);
-        float3 ripple = CalcRipple(_RippleTex,sampler_RippleTex,rippleUV,_RippleSpeed,_RippleIntensity);
-        ripple *= rainAtten;
-        // apply ripple color 
-        albedo += ripple.x * _RippleAlbedoIntensity;
-
-        // apply ripple blend normal
-        tn += ripple * _RippleBlendNormal;
-        // change pbr mask
-        ApplyRainPbr(albedo,metallic,smoothness,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
-    }
-    #endif
 
 //-------- lighting prepare 
     float4 shadowMask = SampleShadowMask(lightmapUV);

@@ -120,6 +120,8 @@ half _DetailPbrMaskApplyMetallic;
 half _DetailPbrMaskApplySmoothness;
 half _DetailPbrMaskApplyOcclusion;
 
+half _PlanarReflectionReverseU,_PlanarReflectionReverseV;
+
 CBUFFER_END
 
 #endif //PBR_INPUT_HLSL

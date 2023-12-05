@@ -278,6 +278,8 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 
     float4 planarReflectTex = 0;
     #if defined(_PLANAR_REFLECTION_ON)
+        screenUV.x = _PlanarReflectionReverseU ? 1 - screenUV.x: screenUV.x;
+        screenUV.y = _PlanarReflectionReverseV ? 1 - screenUV.y : screenUV.y;
         planarReflectTex = tex2D(_ReflectionTexture,screenUV);
     #endif
     float3 giColor = 0;

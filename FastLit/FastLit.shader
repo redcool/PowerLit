@@ -188,6 +188,8 @@ Shader "URP/FastLit"
 
         [Group(PlanarReflection)]
         [GroupToggle(PlanarReflection,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
+        [GroupToggle(PlanarReflection)]_PlanarReflectionReverseU("_PlanarReflectionReverseU",int) = 0
+        [GroupToggle(PlanarReflection)]_PlanarReflectionReverseV("_PlanarReflectionReverseV",int) = 0
 
         [Group(Settings)]
 		[GroupToggle(Settings)]_ZWriteMode("ZWriteMode",int) = 1

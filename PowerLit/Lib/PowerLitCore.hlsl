@@ -116,7 +116,7 @@ void ApplyCloudShadow(inout half3 color,float3 worldPos){
 
 void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
     #if defined(_SURFACE_BELOW_ON)
-    // branch_if(_SurfaceBelowOn)
+    branch_if(_SurfaceBelowOn)
     {
     float heightRate = saturate(worldPos.y -_SurfaceDepth);
     heightRate = smoothstep(0.02,0.1,heightRate);

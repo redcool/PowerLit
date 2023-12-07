@@ -313,13 +313,12 @@ Shader "URP/PowerLit"
             #pragma shader_feature_local_fragment _STOREY_ON
             #pragma shader_feature_local_fragment _DETAIL_ON
 
-            // so ...
+            // use uniform if
             // #define _CUSTOM_LIGHT_ON
-            // #define _SURFACE_BELOW_ON
+            #define _SURFACE_BELOW_ON
             // #define _CLOUD_SHADOW_ON
             // #define _EMISSION_HEIGHT_ON
             // #define _INTERIOR_MAP_ON
-            // use uniform if
             // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
             // #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
             // #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
@@ -341,7 +340,7 @@ Shader "URP/PowerLit"
         //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING // use _Shadows_ShadowMaskOn
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
-            #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature
+        //     #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"

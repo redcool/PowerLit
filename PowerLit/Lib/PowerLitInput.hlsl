@@ -149,7 +149,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 // #endif
 
 // #if defined(_SURFACE_BELOW_ON)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceBelowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SurfaceDepth)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_BelowColor)
 // #endif

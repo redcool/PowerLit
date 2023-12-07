@@ -266,7 +266,8 @@ float4 frag(Varyings input
     #if defined(_PLANAR_REFLECTION_ON)
         screenUV.x = _PlanarReflectionReverseU ? 1 - screenUV.x: screenUV.x;
         screenUV.y = _PlanarReflectionReverseV ? 1 - screenUV.y : screenUV.y;
-        planarReflectTex = SamplePlanarReflectionTex(screenUV);
+        half mip = CalcLOD(roughness);
+        planarReflectTex = SamplePlanarReflectionTex(screenUV,mip);
     #endif
 
     float3 giColor = 0;

@@ -114,8 +114,8 @@ Varyings vert(Attributes input){
 /**
     sv_target0 , xyz : albedo+giColor, w: emission.z
     sv_target1 , xy:normal.xy,zw:emission.xy
-    sv_target2 , xy(16) : motion vector.xy
-    sv_target3 , xyz:pbrMask,w:mainLightShadow
+    sv_target2 , xyz:pbrMask,w:mainLightShadow
+    sv_target3 , xy(16) : motion vector.xy
 */
 float4 frag(Varyings input
     ,out float4 outputNormal_Emission:SV_TARGET1 //normal:xy,emission:zw, emission.b -> sv_target.w

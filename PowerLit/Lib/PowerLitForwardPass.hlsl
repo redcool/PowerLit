@@ -51,6 +51,8 @@ Varyings vert(Attributes input){
     {
         worldPos = WindAnimationVertex(worldPos,input.pos.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
+    // zero motions
+    ZERO_MOTION_POSITIONS(input.prevPos,input.pos,output,clipPos);
     #endif
 
     float sign = input.tangent.w * unity_WorldTransformParams.w;
@@ -108,7 +110,10 @@ Varyings vert(Attributes input){
         dot(worldNormal,viewDirWS)
     ));
 
+    #if !defined(_WIND_ON)
     CALC_MOTION_POSITIONS(input.prevPos,input.pos,output,clipPos);
+    #endif
+
     return output;
 }
 
@@ -129,10 +134,6 @@ float4 frag(Varyings input
     #if defined(_PARALLAX)
         // branch_if(! _ParallaxInVSOn)
         ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
-
-        // float3 viewDir = normalize(_WorldSpaceCameraPos - worldPos);
-        // float sampleRatio = 0.5;// dot(viewDir,vertexNormal);
-        // input.uv.xy += ParallaxOcclusionOffset(_ParallaxHeight,input.viewDirTS_NV.xyz,sampleRatio,input.uv.xy,_ParallaxMap,sampler_ParallaxMap,1,100);
     #endif
 
     //========  rain 1 input.uv apply rain flow

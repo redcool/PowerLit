@@ -65,22 +65,20 @@ Shader "URP/PowerLit"
         [GroupToggle()]_GIApplyMainLightShadow("_GIApplyMainLightShadow",int) = 0
 
         [GroupHeader(,ScreenShadow)]
-        [GroupToggle]_ScreenShadowOn("_ScreenShadowOn",int) = 0
+        [GroupToggle()]_ScreenShadowOn("_ScreenShadowOn",int) = 0
 
         [GroupHeader(,_BigShadowOff)]
         [GroupToggle]_BigShadowOff("_BigShadowOff",int) = 0
         
 
-        [GroupHeader(CloudShadow)]
-        [GroupToggle(,_CLOUD_SHADOW_ON)]_CloudShadowOn("_CloudShadowOn",int) = 0
-        // [GroupVectorSlider(,TilingX TilingZ OffsetX OffsetZ,m0.0001_10)]
-        _CloudShadowTilingOffset("_CloudShadowTilingOffset",vector) = (0.1,0.1,0.1,0.1)
+        // [GroupHeader(CloudShadow)]
+        // [GroupToggle(,_CLOUD_SHADOW_ON)]_CloudShadowOn("_CloudShadowOn",int) = 0
+        // // [GroupVectorSlider(,TilingX TilingZ OffsetX OffsetZ,m0.0001_10)]
+        // _CloudShadowTilingOffset("_CloudShadowTilingOffset",vector) = (0.1,0.1,0.1,0.1)
 
-        [GroupVectorSlider(,Intensity BaseIntensity,m0_10 m0_1)]
-        _CloudShadowIntensityInfo("_CloudShadowIntensityInfo",vector) = (0.5,0.5,0,0)
-        _CloudShadowColor("_CloudShadowColor",color) = (0,0,0,0)
-        // [GroupHeader(,ShadowMask)]
-        // [GroupToggle(_,LIGHTMAP_SHADOW_MIXING)]_LightMapShadowMixing("_LightMapShadowMixing",int) = 0
+        // [GroupVectorSlider(,Intensity BaseIntensity,m0_10 m0_1)]
+        // _CloudShadowIntensityInfo("_CloudShadowIntensityInfo",vector) = (0.5,0.5,0,0)
+        // _CloudShadowColor("_CloudShadowColor",color) = (0,0,0,0)
 //================================================= Env
         [GroupHeader(,Custom IBL)]
         [GroupToggle(,_IBL_ON)]_IBLOn("_IBLOn",float) = 0

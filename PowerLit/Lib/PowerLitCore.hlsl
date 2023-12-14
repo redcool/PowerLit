@@ -109,7 +109,7 @@ void ApplyCloudShadow(inout half3 color,float3 worldPos){
     #define _CloudShadowBaseIntensity _CloudShadowIntensityInfo.y
     // UNITY_BRANCH if(_CloudShadowOn)
     {
-        float noise = CalcWorldNoise(worldPos,_CloudShadowTilingOffset,1) * _CloudShadowIntensityInfo;
+        float noise = CalcWorldNoise(worldPos,_CloudShadowTilingOffset,1) * _CloudShadowIntensity;
         color = lerp(_CloudShadowColor,color ,saturate(noise) + _CloudShadowBaseIntensity);
     }
     #endif

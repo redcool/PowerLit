@@ -185,15 +185,12 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 
     // UNITY_DEFINE_INSTANCED_PROP(half,_BoxProjectionOn)
 
-// #if defined(_CLOUD_SHADOW_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half,_CloudShadowOn)
-    UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowIntensityInfo)
-    UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowTilingOffset)
-    UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowColor)
+    // UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowIntensityInfo)
+    // UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowTilingOffset)
+    // UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowColor)
 
     UNITY_DEFINE_INSTANCED_PROP(half,_BigShadowOff)
-    
-// #endif
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 

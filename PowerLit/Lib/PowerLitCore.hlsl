@@ -103,18 +103,6 @@ void ApplyScreenShadow(inout half3 color,float2 screenUV){
     }
 }
 
-void ApplyCloudShadow(inout half3 color,float3 worldPos){
-    #if defined(_CLOUD_SHADOW_ON)
-    #define _CloudShadowIntensity _CloudShadowIntensityInfo.x
-    #define _CloudShadowBaseIntensity _CloudShadowIntensityInfo.y
-    // UNITY_BRANCH if(_CloudShadowOn)
-    {
-        float noise = CalcWorldNoise(worldPos,_CloudShadowTilingOffset,1) * _CloudShadowIntensity;
-        color = lerp(_CloudShadowColor,color ,saturate(noise) + _CloudShadowBaseIntensity);
-    }
-    #endif
-}
-
 void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
     #if defined(_SURFACE_BELOW_ON)
     branch_if(_SurfaceBelowOn)

@@ -335,7 +335,15 @@ float4 frag(Varyings input
     col.rgb += emission;
     col.a = alpha;
     // ApplyScreenShadow(color.xyz/**/,data.screenUV);
-    // ApplyCloudShadow(color.xyz/**/,worldPos);
+
+    #if defined(_CLOUD_SHADOW_ON)
+    branch_if(_CloudShadowOn)
+    {
+        col.xyz *= CalcCloudShadow(TEXTURE2D_ARGS(_WeatherNoiseTexture,sampler_WeatherNoiseTexture),worldPos,_CloudNoiseTilingOffset,_CloudNoiseOffsetStop,
+        _CloudNoiseRangeMin,_CloudNoiseRangeMax,_CloudShadowColor,_CloudShadowIntensity,_CloudBaseShadowIntensity);
+    }
+    #endif
+
     ApplyFog(col/**/,worldPos,input.fogCoord.xy,upFaceAtten);
     return col;
 }

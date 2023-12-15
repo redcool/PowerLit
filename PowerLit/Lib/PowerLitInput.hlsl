@@ -185,11 +185,6 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 
     // UNITY_DEFINE_INSTANCED_PROP(half,_BoxProjectionOn)
 
-    // UNITY_DEFINE_INSTANCED_PROP(half,_CloudShadowOn)
-    // UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowIntensityInfo)
-    // UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowTilingOffset)
-    // UNITY_DEFINE_INSTANCED_PROP(half4,_CloudShadowColor)
-
     UNITY_DEFINE_INSTANCED_PROP(half,_BigShadowOff)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
@@ -203,16 +198,6 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 #define IsRainOn() (_IsGlobalRainOn)
 #define IsSnowOn() (_IsGlobalSnowOn)
 #define IsWindOn() (_IsGlobalWindOn)
-
-// #if (SHADER_LIBRARY_VERSION_MAJOR < 12)
-// this block must define in UnityPerDraw cbuffer, change UnityInput.hlsl
-// half4 unity_SpecCube0_BoxMax;          // w contains the blend distance
-// half4 unity_SpecCube0_BoxMin;          // w contains the lerp value
-// half4 unity_SpecCube0_ProbePosition;   // w is set to 1 for box projection
-// half4 unity_SpecCube1_BoxMax;          // w contains the blend distance
-// half4 unity_SpecCube1_BoxMin;          // w contains the sign of (SpecCube0.importance - SpecCube1.importance)
-// half4 unity_SpecCube1_ProbePosition;   // w is set to 1 for box projection
-// #endif
 
 //--------------------------------- Main
     #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BaseMap_ST)
@@ -343,62 +328,27 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _DetailPbrMaskApplyOcclusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DetailPbrMaskApplyOcclusion)
     #define _IBLCube_HDR UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_IBLCube_HDR)
     #define _BoxProjectionOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BoxProjectionOn)
-    #define _CloudShadowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowOn)
-    #define _CloudShadowTilingOffset UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowTilingOffset)
-    #define _CloudShadowIntensityInfo UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowIntensityInfo)
-    #define _CloudShadowColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CloudShadowColor)
+
+
     #define _BigShadowOff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BigShadowOff) 
-/**
-    #undef _Metallic
-    #undef _Smoothness
-    #undef _Occlusion
-    #undef _InvertSmoothnessOn
-    #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).x
-    #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).y
-    #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).z
-    #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MSOInfo).w
-    
-    #undef _NormalScale
-    #undef _Cutoff
-    #undef _AlphaPremultiply
-    #undef _GIApplyMainLightShadow
-    #define _NormalScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).x
-    #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).y
-    #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).z // _ALPHA_PREMULTIPLY_ON
-    #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow).w
-
-    #undef _FresnelIntensity
-    #undef _LightmapSHAdditional
-    #undef _LMSaturateAdditional
-    #undef _LMIntensityAdditional
-    #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).x
-    #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).y
-    #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).z
-    #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd).w
-
-    #undef _StoreyTilingOn
-    #undef _StoreyLightSwitchSpeed
-    #undef _StoreyHeight
-    #undef _StoreyLineOn    
-    #define _StoreyTilingOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).x
-    #define _StoreyLightSwitchSpeed UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).y
-    #define _StoreyHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).z
-    #define _StoreyLineOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_StoreyTiling_LightSwitchSpeed_Height_Line).w
-
-    #undef _EmissionHeight
-    #undef _EmissionHeightColorNormalAttenOn    
-    #define _EmissionHeight UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight_EmissionHeightColorNormalAttenOn).xy
-    #define _EmissionHeightColorNormalAttenOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_EmissionHeight_EmissionHeightColorNormalAttenOn).z
-    */
 
 /**
     Global Variables Emission Scanline
 */    
-
     // half4 _EmissionScanLineColor;
     // half3 _EmissionScanLineMin;
     // half3 _EmissionScanLineMax;
     // half4 _EmissionScanLineRange_Rate;
     // half _ScanLineAxis;
 
+    //---------Cloud shadows
+    half _CloudShadowOn;
+    half4 _CloudNoiseTilingOffset;
+    half _CloudNoiseRangeMin;
+    half _CloudNoiseRangeMax;
+    half _CloudNoiseOffsetStop;
+
+    half4 _CloudShadowColor;
+    half _CloudBaseShadowIntensity;
+    half _CloudShadowIntensity;
 #endif //POWER_LIT_INPUT_HLSL

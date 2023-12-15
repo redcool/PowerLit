@@ -93,22 +93,32 @@ namespace PowerUtilities
         [EditorGroupLayout("Particles follow camera")] public float followSpeed = 1;
 
         // world scanline
-        [EditorGroupLayout("World ScanLine", true)]
-        public bool showSceneBound=true;
+        //[EditorGroupLayout("World ScanLine", true)]
+        //public bool showSceneBound=true;
 
-        [EditorGroupLayout("World ScanLine")]
-        [ColorUsage(false,true)]
-        public Color _EmissionScanLineColor = Color.white;
-        [Space(10)]
-        [EditorGroupLayout("World ScanLine")] public Transform sceneMinTr;
-        [EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;
-        [EditorGroupLayout("World ScanLine")] public Transform sceneMaxTr;
-        [EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMax = new Vector3(100,0,0);
-        [Space(10)]
-        [EditorGroupLayout("World ScanLine")][Range(0,1)] public float _EmissionScanLineRate = 0;
-        [EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMin = 0.1f;
-        [EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMax = 0.2f;
-        [EditorGroupLayout("World ScanLine")] public ScanLineAxis _ScanLineAxis;
+        //[EditorGroupLayout("World ScanLine")]
+        //[ColorUsage(false,true)]
+        //public Color _EmissionScanLineColor = Color.white;
+        //[Space(10)]
+        //[EditorGroupLayout("World ScanLine")] public Transform sceneMinTr;
+        //[EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;
+        //[EditorGroupLayout("World ScanLine")] public Transform sceneMaxTr;
+        //[EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMax = new Vector3(100,0,0);
+        //[Space(10)]
+        //[EditorGroupLayout("World ScanLine")][Range(0,1)] public float _EmissionScanLineRate = 0;
+        //[EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMin = 0.1f;
+        //[EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMax = 0.2f;
+        //[EditorGroupLayout("World ScanLine")] public ScanLineAxis _ScanLineAxis;
+
+        // clouds
+        [EditorGroupLayout("Clouds", true)] public bool _CloudShadowOn;
+        [EditorGroupLayout("Clouds")] public Vector4 _CloudNoiseTilingOffset = new Vector4(.1f, .1f, 0, 0);
+        [EditorGroupLayout("Clouds")] public bool _CloudNoiseOffsetStop;
+        [EditorGroupLayout("Clouds")] [Range(0,1)] public float _CloudNoiseRangeMin = 0;
+        [EditorGroupLayout("Clouds")] [Range(0,1)] public float _CloudNoiseRangeMax = 1;
+        [EditorGroupLayout("Clouds")] public Color _CloudShadowColor = Color.black;
+        [EditorGroupLayout("Clouds")] public float _CloudBaseShadowIntensity = 0;
+        [EditorGroupLayout("Clouds")] public float _CloudShadowIntensity = 1;
 
         #region Shader Params
         int 
@@ -171,11 +181,26 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(_GlobalSkyExposure, isGlobalSkyOn ? Mathf.Max(0.02f,skyExposure) : 1);
 
             // world scan line
-            Shader.SetGlobalVector(_EmissionScanLineRange_Rate, new Vector4(_ScanLineRangeMin*0.01f, _ScanLineRangeMax*0.01f, _EmissionScanLineRate));
-            Shader.SetGlobalVector(nameof(_EmissionScanLineMin), sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin);
-            Shader.SetGlobalVector(nameof(_EmissionScanLineMax), sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax);
-            Shader.SetGlobalColor(nameof(_EmissionScanLineColor), _EmissionScanLineColor);
-            Shader.SetGlobalInt(nameof(_ScanLineAxis), (int)_ScanLineAxis);
+            //Shader.SetGlobalVector(_EmissionScanLineRange_Rate, new Vector4(_ScanLineRangeMin*0.01f, _ScanLineRangeMax*0.01f, _EmissionScanLineRate));
+            //Shader.SetGlobalVector(nameof(_EmissionScanLineMin), sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin);
+            //Shader.SetGlobalVector(nameof(_EmissionScanLineMax), sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax);
+            //Shader.SetGlobalColor(nameof(_EmissionScanLineColor), _EmissionScanLineColor);
+            //Shader.SetGlobalInt(nameof(_ScanLineAxis), (int)_ScanLineAxis);
+
+            UpdateCloudShadow();
+        }
+
+
+        private void UpdateCloudShadow()
+        {
+            Shader.SetGlobalFloat(nameof(_CloudShadowOn), _CloudShadowOn ? 1 : 0);
+            Shader.SetGlobalVector(nameof(_CloudNoiseTilingOffset), _CloudNoiseTilingOffset);
+            Shader.SetGlobalFloat(nameof(_CloudNoiseOffsetStop), _CloudNoiseOffsetStop ? 1 : 0);
+            Shader.SetGlobalFloat(nameof(_CloudNoiseRangeMax), _CloudNoiseRangeMax);
+            Shader.SetGlobalFloat(nameof(_CloudNoiseRangeMin), _CloudNoiseRangeMin);
+            Shader.SetGlobalColor(nameof(_CloudShadowColor), _CloudShadowColor);
+            Shader.SetGlobalFloat(nameof(_CloudBaseShadowIntensity), _CloudBaseShadowIntensity);
+            Shader.SetGlobalFloat(nameof(_CloudShadowIntensity), _CloudShadowIntensity);
         }
 
         void UpdateThunder()
@@ -254,15 +279,15 @@ namespace PowerUtilities
                 transform.rotation * Quaternion.LookRotation(Vector3.forward),
                 3, EventType.Repaint);
 
-            if(showSceneBound && sceneMaxTr && sceneMinTr)
-            {
-                var maxPos = sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax;
-                var minPos = sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin;
+            //if(showSceneBound && sceneMaxTr && sceneMinTr)
+            //{
+            //    var maxPos = sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax;
+            //    var minPos = sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin;
 
-                var size = maxPos - minPos;
-                var halfSize = size * 0.5f;
-                Handles.DrawWireCube(minPos+ halfSize, size);
-            }
+            //    var size = maxPos - minPos;
+            //    var halfSize = size * 0.5f;
+            //    Handles.DrawWireCube(minPos+ halfSize, size);
+            //}
         }
 #endif
     }

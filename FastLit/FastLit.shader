@@ -264,8 +264,8 @@ Shader "URP/FastLit"
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
             #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
-            
 
+            #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"

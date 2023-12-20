@@ -314,7 +314,7 @@ Shader "URP/PowerLit"
             // use uniform if
             // #define _CUSTOM_LIGHT_ON
             #define _SURFACE_BELOW_ON
-            #define _CLOUD_SHADOW_ON
+            // #define _CLOUD_SHADOW_ON
             // #define _EMISSION_HEIGHT_ON
             // #define _INTERIOR_MAP_ON
             // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON

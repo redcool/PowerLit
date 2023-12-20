@@ -112,6 +112,9 @@ namespace PowerUtilities
 
         // clouds
         [EditorGroupLayout("Clouds", true)] public bool _CloudShadowOn;
+        [EditorGroupLayout("Clouds")] public GameObject cloudShadowBox;
+        [EditorGroupLayout("Clouds")] public Texture cloudShadowNoiseTex;
+
         [EditorGroupLayout("Clouds")] public Vector4 _CloudNoiseTilingOffset = new Vector4(.1f, .1f, 0, 0);
         [EditorGroupLayout("Clouds")] public bool _CloudNoiseOffsetStop;
         [EditorGroupLayout("Clouds")] [Range(0,1)] public float _CloudNoiseRangeMin = 0;
@@ -119,6 +122,8 @@ namespace PowerUtilities
         [EditorGroupLayout("Clouds")] public Color _CloudShadowColor = Color.black;
         [EditorGroupLayout("Clouds")] public float _CloudBaseShadowIntensity = 0;
         [EditorGroupLayout("Clouds")] public float _CloudShadowIntensity = 1;
+
+        Material cloudShadowBoxMat;
 
         #region Shader Params
         int 
@@ -143,6 +148,7 @@ namespace PowerUtilities
 
             UpdateVFX(rainVFX, _GlobalRainIntensity, _IsGlobalRainOn,true);
             UpdateVFX(snowVFX, _GlobalSnowIntensity, _IsGlobalSnowOn,true);
+
         }
             
         IEnumerator WaitForUpdate()
@@ -161,6 +167,7 @@ namespace PowerUtilities
             UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
             UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
         }
+
         public void UpdateParams()
         {
             Shader.SetGlobalFloat(nameof(_GlobalFogIntensity), _GlobalFogIntensity);
@@ -190,17 +197,62 @@ namespace PowerUtilities
             UpdateCloudShadow();
         }
 
+        GameObject GetCloudShadowBox()
+        {
+            var mainCam = Camera.main;
+            if (!mainCam)
+                return null;
+
+            var box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            box.transform.SetParent(mainCam.transform);
+            box.transform.localPosition = Vector3.forward;
+            box.name = "CloudShdowBox";
+            box.GetComponent<MeshRenderer>().sharedMaterial = GetCloudShadowMat();
+            box.DestroyComponent<Collider>();
+            return box;
+        }
+
+        Material GetCloudShadowMat()
+        {
+            if(!cloudShadowBoxMat)
+                cloudShadowBoxMat = new Material(Shader.Find("FX/Others/BoxCloudShadow"));
+            return cloudShadowBoxMat;
+        }
 
         private void UpdateCloudShadow()
         {
-            Shader.SetGlobalFloat(nameof(_CloudShadowOn), _CloudShadowOn ? 1 : 0);
-            Shader.SetGlobalVector(nameof(_CloudNoiseTilingOffset), _CloudNoiseTilingOffset);
-            Shader.SetGlobalFloat(nameof(_CloudNoiseOffsetStop), _CloudNoiseOffsetStop ? 1 : 0);
-            Shader.SetGlobalFloat(nameof(_CloudNoiseRangeMax), _CloudNoiseRangeMax);
-            Shader.SetGlobalFloat(nameof(_CloudNoiseRangeMin), _CloudNoiseRangeMin);
-            Shader.SetGlobalColor(nameof(_CloudShadowColor), _CloudShadowColor);
-            Shader.SetGlobalFloat(nameof(_CloudBaseShadowIntensity), _CloudBaseShadowIntensity);
-            Shader.SetGlobalFloat(nameof(_CloudShadowIntensity), _CloudShadowIntensity);
+            if (_CloudShadowOn && !cloudShadowBox)
+            {
+                cloudShadowBox = GetCloudShadowBox();
+            }
+            if (cloudShadowBox)
+                cloudShadowBox.SetActive(_CloudShadowOn);
+
+            UpdateCloudShadowMat();
+
+            void UpdateCloudShadowMat()
+            {
+                cloudShadowBoxMat.SetTexture("_NoiseTex", cloudShadowNoiseTex);
+                cloudShadowBoxMat.SetVector("_NoiseTex_ST", _CloudNoiseTilingOffset);
+                cloudShadowBoxMat.SetFloat("_NoiseTexOffsetStop", _CloudNoiseOffsetStop ? 1 : 0);
+                cloudShadowBoxMat.SetFloat("_NoiseRangeMax", _CloudNoiseRangeMax);
+                cloudShadowBoxMat.SetFloat("_NoiseRangeMin", _CloudNoiseRangeMin);
+                cloudShadowBoxMat.SetColor("_ShadowColor", _CloudShadowColor);
+                cloudShadowBoxMat.SetFloat("_BaseShadowIntensity", _CloudBaseShadowIntensity);
+                cloudShadowBoxMat.SetFloat("_ShadowIntensity", _CloudShadowIntensity);
+            }
+
+            void UpdateCloudShadowGlobal()
+            {
+                Shader.SetGlobalFloat(nameof(_CloudShadowOn), _CloudShadowOn ? 1 : 0);
+                Shader.SetGlobalVector(nameof(_CloudNoiseTilingOffset), _CloudNoiseTilingOffset);
+                Shader.SetGlobalFloat(nameof(_CloudNoiseOffsetStop), _CloudNoiseOffsetStop ? 1 : 0);
+                Shader.SetGlobalFloat(nameof(_CloudNoiseRangeMax), _CloudNoiseRangeMax);
+                Shader.SetGlobalFloat(nameof(_CloudNoiseRangeMin), _CloudNoiseRangeMin);
+                Shader.SetGlobalColor(nameof(_CloudShadowColor), _CloudShadowColor);
+                Shader.SetGlobalFloat(nameof(_CloudBaseShadowIntensity), _CloudBaseShadowIntensity);
+                Shader.SetGlobalFloat(nameof(_CloudShadowIntensity), _CloudShadowIntensity);
+            }
         }
 
         void UpdateThunder()

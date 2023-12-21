@@ -199,6 +199,8 @@ namespace PowerUtilities
 
         GameObject GetCloudShadowBox()
         {
+            SetupCloudShadowMat();
+
             var mainCam = Camera.main;
             if (!mainCam)
                 return null;
@@ -207,16 +209,15 @@ namespace PowerUtilities
             box.transform.SetParent(mainCam.transform);
             box.transform.localPosition = Vector3.forward;
             box.name = "CloudShdowBox";
-            box.GetComponent<MeshRenderer>().sharedMaterial = GetCloudShadowMat();
+            box.GetComponent<MeshRenderer>().sharedMaterial = cloudShadowBoxMat;
             box.DestroyComponent<Collider>();
             return box;
         }
 
-        Material GetCloudShadowMat()
+        void SetupCloudShadowMat()
         {
             if(!cloudShadowBoxMat)
                 cloudShadowBoxMat = new Material(Shader.Find("FX/Others/BoxCloudShadow"));
-            return cloudShadowBoxMat;
         }
 
         private void UpdateCloudShadow()
@@ -232,6 +233,9 @@ namespace PowerUtilities
 
             void UpdateCloudShadowMat()
             {
+                if (!cloudShadowBoxMat)
+                    return;
+
                 cloudShadowBoxMat.SetTexture("_NoiseTex", cloudShadowNoiseTex);
                 cloudShadowBoxMat.SetVector("_NoiseTex_ST", _CloudNoiseTilingOffset);
                 cloudShadowBoxMat.SetFloat("_NoiseTexOffsetStop", _CloudNoiseOffsetStop ? 1 : 0);

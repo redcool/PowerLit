@@ -17,10 +17,10 @@ Shader "URP/FastLit"
         [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
         [GroupItem(PBR Mask)]_Occlusion("_Occlusion",range(0,1)) = 0
 
-        [Group(LightMode)]   
+        [Group(LightMode)]
         [GroupToggle(LightMode)]_SpecularOn("_SpecularOn",int) = 1
         // [Enum(PBR,0,Aniso,1,Charlie,2)]_PbrMode("_PbrMode",int) = 0
-        [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE,true)]_PbrMode("_PbrMode",int) = 0
+        // [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE,true)]_PbrMode("_PbrMode",int) = 0
         
         [Group(Shadow)]
         //[LineHeader(Shadows)]
@@ -239,8 +239,8 @@ Shader "URP/FastLit"
             #pragma fragment frag
             #pragma target 3.0
             // #pragma multi_compile_fog
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
-            #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            // #pragma multi_compile _ _SHADOWS_SOFT
             #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
             #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
@@ -249,7 +249,9 @@ Shader "URP/FastLit"
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile_fragment _ LIGHTMAP_ON
 
-            #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
+            #define _PBRMODE_PBR
+            // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
+            
             #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST

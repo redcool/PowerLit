@@ -249,6 +249,7 @@ Shader "URP/FastLit"
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile_fragment _ LIGHTMAP_ON
 
+            // only use pbr
             #define _PBRMODE_PBR
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
@@ -267,11 +268,19 @@ Shader "URP/FastLit"
             #pragma shader_feature_local _DETAIL_ON
             #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
 
+            #pragma multi_compile _ _MIN_VERSION
+
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
+
+            #if defined(_MIN_VERSION)
+            #include "Lib/PBRInputMin.hlsl"
+            #include "Lib/PBRForwardPassMin.hlsl"
+            #else
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"
-            
+            #endif
+
             ENDHLSL
         }
 

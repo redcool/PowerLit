@@ -106,10 +106,10 @@ Shader "URP/PowerLit"
         [GroupToggle(,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
         [GroupToggle()]_PlanarReflectionReverseU("_PlanarReflectionReverseU",int) = 0
         [GroupToggle()]_PlanarReflectionReverseV("_PlanarReflectionReverseV",int) = 0
-        // [Header(GI)] // Final GI = PowerLITFeature GI + Additional
-        // _LightmapSHAdditional("_LightmapSHAdditional",range(-1,1)) = 0
-        // _LMSaturateAdditional("_LMSaturateAdditional",range(-1,1)) = 0
-        // _LMIntensityAdditional("_LMIntensityAdditional",range(0,1)) = 1
+
+        [Group(Lightmap)]
+        // [GroupToggle(Lightmap,LIGHTMAP_ON)]_LightmapOn("_LightmapOn",int) = 0
+        [GroupItem(Lightmap)][hdr] _LightmapColor("_LightmapColor",color) = (1,1,1,1)
 //================================================= Alpha
         [Header(Clip)]
         [GroupToggle(,_ALPHATEST_ON)]_ClipOn("_ClipOn",float) = 0
@@ -314,7 +314,6 @@ Shader "URP/PowerLit"
             // use uniform if
             // #define _CUSTOM_LIGHT_ON
             #define _SURFACE_BELOW_ON
-            // #define _CLOUD_SHADOW_ON
             // #define _EMISSION_HEIGHT_ON
             // #define _INTERIOR_MAP_ON
             // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON

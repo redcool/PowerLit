@@ -86,11 +86,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //#endif    
     UNITY_DEFINE_INSTANCED_PROP(half ,_FresnelIntensity)
 // //--------------------------------- lightmap
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_LightmapSHAdditional)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_LMSaturateAdditional)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_LMIntensityAdditional)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_LightmapColor)
 
-    // UNITY_DEFINE_INSTANCED_PROP(half4 ,_FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd)
 //--------------------------------- Wind
 //#if defined(_WIND_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
@@ -250,9 +247,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CustomLightColorUsage UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomLightColorUsage)
     #define _FresnelIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FresnelIntensity)
 //--------------------------------- lightmap
-    // #define _LightmapSHAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LightmapSHAdditional)
-    // #define _LMSaturateAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMSaturateAdditional)
-    // #define _LMIntensityAdditional UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LMIntensityAdditional)
+    #define _LightmapColor UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_LightmapColor)
 //--------------------------------- Wind
     #define _WindOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindOn)
     #define _WindAnimParam UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_WindAnimParam)

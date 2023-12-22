@@ -280,7 +280,7 @@ float4 frag(Varyings input
     // tint gi specular
     // giSpec = lerp(1,giSpec,alpha * _IBLMaskMainTexA);
 
-    giColor = (giDiff + giSpec) * occlusion;
+    giColor = (giDiff * _LightmapColor.xyz + giSpec) * occlusion;
 
 //------- finalColor
     float4 col = 0;

@@ -314,13 +314,13 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     }
     col.rgb += emissionColor;
 
-    #if defined(_CLOUD_SHADOW_ON)
-    branch_if(_CloudShadowOn)
-    {
-        col.xyz *= CalcCloudShadow(TEXTURE2D_ARGS(_WeatherNoiseTexture,sampler_WeatherNoiseTexture),worldPos,_CloudNoiseTilingOffset,_CloudNoiseOffsetStop,
-        _CloudNoiseRangeMin,_CloudNoiseRangeMax,_CloudShadowColor,_CloudShadowIntensity,_CloudBaseShadowIntensity);
-    }
-    #endif
+    // #if defined(_CLOUD_SHADOW_ON)
+    // branch_if(_CloudShadowOn)
+    // {
+    //     col.xyz *= CalcCloudShadow(TEXTURE2D_ARGS(_WeatherNoiseTexture,sampler_WeatherNoiseTexture),worldPos,_CloudNoiseTilingOffset,_CloudNoiseOffsetStop,
+    //     _CloudNoiseRangeMin,_CloudNoiseRangeMax,_CloudShadowColor,_CloudShadowIntensity,_CloudBaseShadowIntensity);
+    // }
+    // #endif
 
 //------ fog
     // col.rgb = MixFog(col.xyz,i.fogFactor.x);

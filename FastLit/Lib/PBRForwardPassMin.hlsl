@@ -1,6 +1,7 @@
 #if !defined(PBR_FORWARD_PASS_MIN)
 #define PBR_FORWARD_PASS_MIN
 
+/// disable keywords
 #undef _ADDITIONAL_LIGHT_SHADOWS_ON
 #undef _PLANAR_REFLECTION_ON
 #undef _SNOW_ON
@@ -10,6 +11,7 @@
 #undef _STOREY_ON
 #undef _DETAIL_ON
 #undef _REFLECTION_PROBE_BOX_PROJECTION
+#undef _EMISSION
 
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BSDF.hlsl"
@@ -246,29 +248,29 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 // return directColor.xyzx;
 //------- gi
     //--- custom ibl
-    // #if defined(_IBL_ON)
-    //     #define IBL_CUBE _IBLCube
-    //     #define IBL_CUBE_SAMPLER sampler_IBLCube
-    //     #define IBL_HDR _IBLCube_HDR    
-    // #else
-    //     #define IBL_CUBE unity_SpecCube0
-    //     #define IBL_CUBE_SAMPLER samplerunity_SpecCube0
-    //     #define IBL_HDR unity_SpecCube0_HDR
-    // #endif
+    #if defined(_IBL_ON)
+        #define IBL_CUBE _IBLCube
+        #define IBL_CUBE_SAMPLER sampler_IBLCube
+        #define IBL_HDR _IBLCube_HDR    
+    #else
+        #define IBL_CUBE unity_SpecCube0
+        #define IBL_CUBE_SAMPLER samplerunity_SpecCube0
+        #define IBL_HDR unity_SpecCube0_HDR
+    #endif
 
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
 
-    float3 giSpec = _GlossyEnvironmentColor.xyz;
-    // float4 planarReflectTex = 0;
-    // #if defined(_PLANAR_REFLECTION_ON)
-    //     screenUV.x = _PlanarReflectionReverseU ? 1 - screenUV.x: screenUV.x;
-    //     screenUV.y = _PlanarReflectionReverseV ? 1 - screenUV.y : screenUV.y;
-    //     half lod = CalcLOD(roughness);
-    //     planarReflectTex = tex2Dlod(_ReflectionTexture,half4(screenUV,0,lod));
-    // #endif
-    // float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset.xyz/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
-    // ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex);
+    float3 giSpec = _GlossyEnvironmentColor.xyz*0.1f;
+    float4 planarReflectTex = 0;
+    #if defined(_PLANAR_REFLECTION_ON)
+        screenUV.x = _PlanarReflectionReverseU ? 1 - screenUV.x: screenUV.x;
+        screenUV.y = _PlanarReflectionReverseV ? 1 - screenUV.y : screenUV.y;
+        half lod = CalcLOD(roughness);
+        planarReflectTex = tex2Dlod(_ReflectionTexture,half4(screenUV,0,lod));
+    #endif
+    // float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,0/*reflectDirOffset*/,0/*reflectIntensity*/
+    // ,nv,roughness,a2,smoothness,metallic,half2(0,1),0,0);
     
 
     giColor = (giDiff + giSpec) * occlusion;
@@ -309,6 +311,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     // col.rgb = MixFog(col.xyz,i.fogFactor.x);
     BlendFogSphereKeyword(col.rgb/**/,worldPos,i.fogCoord.xy,_HeightFogOn,_FogNoiseOn,_DepthFogOn); // 2fps
     col.a = alpha;
+
     return col;
 }
 

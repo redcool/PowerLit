@@ -1,6 +1,16 @@
 #if !defined(PBR_FORWARD_PASS_MIN)
 #define PBR_FORWARD_PASS_MIN
 
+#undef _ADDITIONAL_LIGHT_SHADOWS_ON
+#undef _PLANAR_REFLECTION_ON
+#undef _SNOW_ON
+#undef _WIND_ON
+#undef _RAIN_ON
+#undef _IBL_ON
+#undef _STOREY_ON
+#undef _DETAIL_ON
+#undef _REFLECTION_PROBE_BOX_PROJECTION
+
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BSDF.hlsl"
 #include "../../PowerShaderLib/Lib/Colors.hlsl"

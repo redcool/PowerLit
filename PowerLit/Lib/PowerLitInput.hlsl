@@ -342,13 +342,13 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     // half _ScanLineAxis;
 
     //---------Cloud shadows
-    half _CloudShadowOn;
-    half4 _CloudNoiseTilingOffset;
-    half _CloudNoiseRangeMin;
-    half _CloudNoiseRangeMax;
-    half _CloudNoiseOffsetStop;
+    // half _CloudShadowOn;
+    // half4 _CloudNoiseTilingOffset;
+    // half _CloudNoiseRangeMin;
+    // half _CloudNoiseRangeMax;
+    // half _CloudNoiseOffsetStop;
 
-    half4 _CloudShadowColor;
-    half _CloudBaseShadowIntensity;
-    half _CloudShadowIntensity;
+    // half4 _CloudShadowColor;
+    // half _CloudBaseShadowIntensity;
+    // half _CloudShadowIntensity;
 #endif //POWER_LIT_INPUT_HLSL

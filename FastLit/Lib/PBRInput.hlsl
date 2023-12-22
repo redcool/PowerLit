@@ -122,17 +122,20 @@ half _DetailPbrMaskApplyOcclusion;
 
 half _PlanarReflectionReverseU,_PlanarReflectionReverseV;
 
+//---------------------------------------- pbr details
+half4 _LightmapColor;
+
 CBUFFER_END
 
-    //---------Cloud shadows
-    half _CloudShadowOn;
-    half4 _CloudNoiseTilingOffset;
-    half _CloudNoiseRangeMin;
-    half _CloudNoiseRangeMax;
-    half _CloudNoiseOffsetStop;
+    // //---------Cloud shadows
+    // half _CloudShadowOn;
+    // half4 _CloudNoiseTilingOffset;
+    // half _CloudNoiseRangeMin;
+    // half _CloudNoiseRangeMax;
+    // half _CloudNoiseOffsetStop;
 
-    half4 _CloudShadowColor;
-    half _CloudBaseShadowIntensity;
-    half _CloudShadowIntensity;
+    // half4 _CloudShadowColor;
+    // half _CloudBaseShadowIntensity;
+    // half _CloudShadowIntensity;
 
 #endif //PBR_INPUT_HLSL

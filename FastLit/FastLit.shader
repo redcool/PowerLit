@@ -170,8 +170,9 @@ Shader "URP/FastLit"
         [GroupItem(Rain)]_RainFlowTilingOffset("_RainFlowTilingOffset",vector) = (10,10,10,10)
         [GroupItem(Rain)]_RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
 
-        // [Group(Lightmap)]
+        [Group(Lightmap)]
         // [GroupToggle(Lightmap,LIGHTMAP_ON)]_LightmapOn("_LightmapOn",int) = 0
+        [GroupItem(Lightmap)][hdr] _LightmapColor("_LightmapColor",color) = (1,1,1,1)
         [Group(Alpha)]
         [GroupHeader(Alpha,BlendMode)]
         [GroupPresetBlendMode(Alpha,,_SrcMode,_DstMode)]_PresetBlendMode("_PresetBlendMode",int)=0

@@ -111,6 +111,10 @@ Shader "URP/FastLit"
 
         [GroupHeader(Env,Fresnel)]
         [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
+        
+        [Group(Lightmap)]
+        // [GroupToggle(Lightmap,LIGHTMAP_ON)]_LightmapOn("_LightmapOn",int) = 0
+        [GroupItem(Lightmap)][hdr] _LightmapColor("_LightmapColor",color) = (1,1,1,1)
         // [Group(Thin Film)]
         // [GroupToggle(Thin Film)]_TFOn("_TFOn",int) = 0
         // [GroupItem(Thin Film)]_TFScale("_TFScale",float) = 1
@@ -170,9 +174,7 @@ Shader "URP/FastLit"
         [GroupItem(Rain)]_RainFlowTilingOffset("_RainFlowTilingOffset",vector) = (10,10,10,10)
         [GroupItem(Rain)]_RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
 
-        [Group(Lightmap)]
-        // [GroupToggle(Lightmap,LIGHTMAP_ON)]_LightmapOn("_LightmapOn",int) = 0
-        [GroupItem(Lightmap)][hdr] _LightmapColor("_LightmapColor",color) = (1,1,1,1)
+
         [Group(Alpha)]
         [GroupHeader(Alpha,BlendMode)]
         [GroupPresetBlendMode(Alpha,,_SrcMode,_DstMode)]_PresetBlendMode("_PresetBlendMode",int)=0
@@ -225,7 +227,7 @@ Shader "URP/FastLit"
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
-
+		name "Forward"
         Pass
         {
 			ZWrite[_ZWriteMode]
@@ -274,11 +276,11 @@ Shader "URP/FastLit"
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
 
+            #include "Lib/PBRInput.hlsl"
             #if defined(_MIN_VERSION)
-            #include "Lib/PBRInputMin.hlsl"
+            // #include "Lib/PBRInputMin.hlsl"
             #include "Lib/PBRForwardPassMin.hlsl"
             #else
-            #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRForwardPass.hlsl"
             #endif
 

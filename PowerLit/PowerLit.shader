@@ -321,20 +321,19 @@ Shader "URP/PowerLit"
             // #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
 
             // off temp
-            // #pragma shader_feature_local_fragment _CLOUD_SHADOW_ON
             // #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
             
             // urp keywords 
             #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            // #pragma multi_compile_fragment _ _SHADOWS_SOFT
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
-            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+            // #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
 
             // unity keywords
             // #pragma multi_compile_fog
             #define SHADOWS_FULL_MIX // realtime + shadowMask
-        //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING // use _Shadows_ShadowMaskOn
+        //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
         //     #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature

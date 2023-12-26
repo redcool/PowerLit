@@ -11,7 +11,7 @@
 #undef _STOREY_ON
 #undef _DETAIL_ON
 #undef _REFLECTION_PROBE_BOX_PROJECTION
-// #undef _EMISSION
+#undef _EMISSION
 
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BSDF.hlsl"
@@ -261,7 +261,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
 
-    float3 giSpec = _GlossyEnvironmentColor.xyz*0.1f;
+    float3 giSpec = 0;//_GlossyEnvironmentColor.xyz*0.1f;
     float4 planarReflectTex = 0;
     #if defined(_PLANAR_REFLECTION_ON)
         screenUV.x = _PlanarReflectionReverseU ? 1 - screenUV.x: screenUV.x;

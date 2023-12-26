@@ -11,7 +11,7 @@
 #undef _STOREY_ON
 #undef _DETAIL_ON
 #undef _REFLECTION_PROBE_BOX_PROJECTION
-#undef _EMISSION
+// #undef _EMISSION
 
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BSDF.hlsl"

@@ -11,6 +11,7 @@
 #include "../../PowerShaderLib/Lib/NatureLib.hlsl"
 #include "../../PowerShaderLib/Lib/WeatherNoiseTexture.hlsl"
 #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
+#include "../../PowerShaderLib/Lib/BigShadows.hlsl"
 
 struct appdata
 {
@@ -37,6 +38,7 @@ struct v2f
     float4 fogCoord:TEXCOORD5;//fogCoord{x,y}, z:heightColorAtten
     // motion vectors
     DECLARE_MOTION_VS_OUTPUT(6,7);
+    float4 bigShadowCoord:TEXCOORD8;
     float4 color:COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -87,6 +89,11 @@ v2f vert (appdata v)
     o.color = v.color;
 
     CALC_MOTION_POSITIONS(v.prevPos,v.vertex,o,o.vertex);
+    
+    branch_if(!_BigShadowOff){
+        float3 bigShadowCoord = TransformWorldToBigShadow(worldPos);
+        o.bigShadowCoord.xyz = bigShadowCoord;
+    }
     return o;
 }
 
@@ -187,6 +194,13 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float4 shadowMask = SampleShadowMask(lightmapUV);
     float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
+
+    branch_if(!_BigShadowOff)
+    {
+        float atten = CalcBigShadowAtten(i.bigShadowCoord.xyz,1);
+        mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
+        // return atten;
+    }    
 
     float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
     branch_if(_CustomLightOn)

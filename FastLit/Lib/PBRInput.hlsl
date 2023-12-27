@@ -124,6 +124,7 @@ half _PlanarReflectionReverseU,_PlanarReflectionReverseV;
 
 //---------------------------------------- pbr details
 half4 _LightmapColor;
+half _BigShadowOff;
 
 CBUFFER_END
 

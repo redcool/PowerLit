@@ -273,13 +273,13 @@ Shader "URP/FastLit"
             #pragma shader_feature_local _DETAIL_ON
             #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
 
-            #pragma multi_compile _ _MIN_VERSION
+            #pragma multi_compile _ MIN_VERSION
 
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
 
             #include "Lib/PBRInput.hlsl"
-            #if defined(_MIN_VERSION)
+            #if defined(MIN_VERSION)
             // #include "Lib/PBRInputMin.hlsl"
             #include "Lib/PBRForwardPassMin.hlsl"
             #else

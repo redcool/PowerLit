@@ -179,6 +179,10 @@ Shader "URP/FastLit"
 
 
         [Group(Alpha)]
+        [GroupHeader(Alpha,AlphaTest)]
+        [GroupToggle(Alpha,ALPHA_TEST)]_ClipOn("_AlphaTestOn",int) = 0
+        [GroupSlider(Alpha)]_Cutoff("_Cutoff",range(0,1)) = 0.5
+        
         [GroupHeader(Alpha,BlendMode)]
         [GroupPresetBlendMode(Alpha,,_SrcMode,_DstMode)]_PresetBlendMode("_PresetBlendMode",int)=0
         // [GroupEnum(Alpha,UnityEngine.Rendering.BlendMode)]
@@ -188,9 +192,6 @@ Shader "URP/FastLit"
         [GroupHeader(Alpha,Premultiply)]
         [GroupToggle(Alpha)]_AlphaPremultiply("_AlphaPremultiply",int) = 0
 
-        [GroupHeader(Alpha,AlphaTest)]
-        [GroupToggle(Alpha,ALPHA_TEST)]_ClipOn("_AlphaTestOn",int) = 0
-        [GroupSlider(Alpha)]_Cutoff("_Cutoff",range(0,1)) = 0.5
 
         [Group(PlanarReflection)]
         [GroupToggle(PlanarReflection,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0

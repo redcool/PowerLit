@@ -12,6 +12,7 @@
 #include "../../PowerShaderLib/Lib/WeatherNoiseTexture.hlsl"
 #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
 #include "../../PowerShaderLib/Lib/BigShadows.hlsl"
+#include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
 
 struct appdata
 {
@@ -236,6 +237,10 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 //-------- clip
     #if defined(ALPHA_TEST)
         clip(alpha - _Cutoff);
+    #endif
+//-------- lod group fading
+    #if defined(LOD_FADE_CROSSFADE)
+        ClipLOD(i.vertex.xy);
     #endif
     
 //--------- lighting

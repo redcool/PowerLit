@@ -274,6 +274,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION
 
             #pragma multi_compile _ MIN_VERSION
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
 
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX

@@ -201,10 +201,10 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
 
     float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
-    // branch_if(_CustomLightOn)
-    // {
-    //     OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);    
-    // }
+    branch_if(_CustomLightOn)
+    {
+        OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);    
+    }
 
     float3 l = mainLight.direction;
     float3 v = normalize(UnityWorldSpaceViewDir(worldPos));

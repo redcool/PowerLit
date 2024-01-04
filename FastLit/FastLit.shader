@@ -279,7 +279,7 @@ Shader "URP/FastLit"
 
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
-
+            
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)
             // #include "Lib/PBRInputMin.hlsl"

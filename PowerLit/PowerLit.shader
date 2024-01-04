@@ -128,11 +128,9 @@ Shader "URP/PowerLit"
         [Header(Alpha Premulti)]
         [GroupToggle(_)]_AlphaPremultiply("_AlphaPremultiply",int) = 0 //_ALPHA_PREMULTIPLY_ON
 //================================================= settings
-        [Header(Depth)]
+        [Header(Settings)]
         [GroupToggle]_ZWriteMode("_ZWriteMode",int) = 1
-        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("_ZTest",int) = 4
-
-        [Header(Cull)]
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTestMode("_ZTestMode",int) = 4
         [Enum(UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
         [Header(Color Mask)]
@@ -269,7 +267,7 @@ Shader "URP/PowerLit"
         {
             blend [_SrcMode][_DstMode]
             zwrite[_ZWriteMode]
-            ztest[_ZTest]
+            ztest[_ZTestMode]
             cull [_CullMode]
             ColorMask[_ColorMask]
             Stencil

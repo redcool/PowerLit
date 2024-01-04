@@ -26,7 +26,7 @@ void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cu
     albedo = c.rgb;
     alpha = c.a;
 
-    #if defined(_ALPHATEST_ON)
+    #if defined(ALPHA_TEST)
         clip(alpha - cutoff);
     #endif
 }

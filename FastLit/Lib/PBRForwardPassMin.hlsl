@@ -23,6 +23,7 @@
 #include "../../PowerShaderLib/Lib/NatureLib.hlsl"
 #include "../../PowerShaderLib/Lib/WeatherNoiseTexture.hlsl"
 #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
+#include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
 
 struct appdata
 {

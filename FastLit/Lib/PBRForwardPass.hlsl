@@ -240,7 +240,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #endif
 //-------- lod group fading
     #if defined(LOD_FADE_CROSSFADE)
-        ClipLOD(i.vertex.xy);
+        ClipLOD(i.vertex.xy,2);
     #endif
     
 //--------- lighting

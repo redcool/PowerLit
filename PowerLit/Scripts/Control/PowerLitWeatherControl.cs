@@ -148,9 +148,15 @@ namespace PowerUtilities
 
             UpdateVFX(rainVFX, _GlobalRainIntensity, _IsGlobalRainOn,true);
             UpdateVFX(snowVFX, _GlobalSnowIntensity, _IsGlobalSnowOn,true);
-
         }
-            
+        private void Update()
+        {
+            UpdateThunder();
+
+            UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
+            UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
+        }
+       
         IEnumerator WaitForUpdate()
         {
             while (true)
@@ -160,12 +166,13 @@ namespace PowerUtilities
             }
         }
 
-        private void Update()
+        private void OnDisable()
         {
-            UpdateThunder();
-
-            UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
-            UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
+            StopAllCoroutines();
+            Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), 0);
         }
 
         public void UpdateParams()

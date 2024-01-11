@@ -357,7 +357,7 @@ Shader "URP/FastLit"
 
             ZWrite On
             ZTest LEqual
-            ColorMask 0
+            // ColorMask 0
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag 
@@ -547,7 +547,7 @@ Shader "URP/FastLit"
 
             ZWrite On
             ZTest LEqual
-            ColorMask 0
+            // ColorMask 0
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag 

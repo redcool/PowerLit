@@ -58,6 +58,7 @@ half4 _WindDir;
 half _WindSpeed;
 
 half _SnowIntensity;
+half _SnowIntensityUseMainTexA;
 half _ApplyEdgeOn;
 
 half4 _RippleTex_ST;

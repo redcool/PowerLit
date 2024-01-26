@@ -211,7 +211,7 @@ float4 frag(Varyings input
 
     float nv = saturate(dot(n,v));
 //---------- snow    
-    ApplySnow(albedo/**/,n);
+    ApplySnow(albedo/**/,n,alpha);
     
 //---------- surface bedow    
     ApplySurfaceBelow(albedo/**/,worldPos);

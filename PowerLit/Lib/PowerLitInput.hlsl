@@ -105,6 +105,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 //#if defined(_SNOW_ON)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_SnowOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SnowIntensity)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SnowIntensityUseMainTexA)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ApplyEdgeOn)
 //#endif
 //--------------------------------- Fog
@@ -260,6 +261,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 //--------------------------------- Snow
     #define _SnowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowOn)
     #define _SnowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensity)
+    #define _SnowIntensityUseMainTexA UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensityUseMainTexA)
+    
     #define _ApplyEdgeOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ApplyEdgeOn)
 //--------------------------------- Fog
     #define _FogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FogOn)

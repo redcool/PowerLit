@@ -201,10 +201,10 @@ float4 frag(Varyings input
         ApplyRainPbr(albedo/**/,metallic/**/,smoothness/**/,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
     }
     #endif
-    float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
 
+    float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
 //---------- snow    
-    ApplySnow(albedo/**/,n);
+    ApplySnow(albedo/**/,n,alpha);
     
 //---------- surface bedow    
     ApplySurfaceBelow(albedo/**/,worldPos);

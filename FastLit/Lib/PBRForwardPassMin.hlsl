@@ -46,7 +46,7 @@ struct v2f
     float4 tSpace0:TEXCOORD1;
     float4 tSpace1:TEXCOORD2;
     float4 tSpace2:TEXCOORD3;
-    // float4 shadowCoord:TEXCOORD4;
+    float4 shadowCoord:TEXCOORD4;
     float4 fogCoord:TEXCOORD5;//fogCoord{x,y}, z:heightColorAtten
     // motion vectors
     DECLARE_MOTION_VS_OUTPUT(6,7);
@@ -83,7 +83,7 @@ v2f vert (appdata v)
     // #endif
 
     TANGENT_SPACE_COMBINE_WORLD(worldPos,worldNormal,float4(worldTangent,v.tangent.w),o/**/);
-    // o.shadowCoord = TransformWorldToShadowCoord(worldPos);
+    o.shadowCoord = TransformWorldToShadowCoord(worldPos);
     o.fogCoord.xy = CalcFogFactor(p.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
 
     half upFaceAtten = 1;
@@ -181,7 +181,14 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
         ApplyRainPbr(albedo/**/,metallic/**/,smoothness/**/,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
     }
     #endif
-    
+    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));    
+//-------- snow
+    #if defined(_SNOW_ON)
+    branch_if(IsSnowOn())
+    {
+        albedo = MixSnow(albedo,1,_SnowIntensity,n,_ApplyEdgeOn);
+    }
+    #endif    
 //---------- roughness
     float roughness = 0;
     float a = 0;
@@ -198,10 +205,10 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 
 //-------- lighting prepare 
     float4 shadowMask = SampleShadowMask(lightmapUV);
-    float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
+    float4 shadowCoord = i.shadowCoord; // TransformWorldToShadowCoord(worldPos);
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
 
-    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
+
     branch_if(_CustomLightOn)
     {
         OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);    
@@ -224,13 +231,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(i);
 
-//-------- snow
-    // #if defined(_SNOW_ON)
-    // branch_if(IsSnowOn())
-    // {
-    //     albedo = MixSnow(albedo,1,_SnowIntensity,normal,_ApplyEdgeOn);
-    // }
-    // #endif
+
 
 //-------- clip
     #if defined(ALPHA_TEST)

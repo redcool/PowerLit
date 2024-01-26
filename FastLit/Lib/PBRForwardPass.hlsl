@@ -176,7 +176,16 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
         ApplyRainPbr(albedo/**/,metallic/**/,smoothness/**/,_RainColor,_RainMetallic,_RainSmoothness,rainIntensity);
     }
     #endif
-    
+    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
+//-------- snow
+    #if defined(_SNOW_ON)
+    branch_if(IsSnowOn())
+    {
+
+        half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
+        albedo = MixSnow(albedo,0.9+_GlossyEnvironmentColor*0.1,snowAtten,n,_ApplyEdgeOn);
+    }
+    #endif    
 //---------- roughness
     float roughness = 0;
     float a = 0;
@@ -203,7 +212,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
         // return atten;
     }    
 
-    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
+
     branch_if(_CustomLightOn)
     {
         OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);    
@@ -226,13 +235,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(i);
 
-//-------- snow
-    #if defined(_SNOW_ON)
-    branch_if(IsSnowOn())
-    {
-        albedo = MixSnow(albedo,1,_SnowIntensity,normal,_ApplyEdgeOn);
-    }
-    #endif
+
 
 //-------- clip
     #if defined(ALPHA_TEST)

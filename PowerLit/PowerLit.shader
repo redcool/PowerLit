@@ -146,8 +146,9 @@ Shader "URP/PowerLit"
   
         [Header(Snow)]
         [GroupToggle(_,_SNOW_ON)]_SnowOn("_SnowOn",int) = 0
-        [GroupToggle]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
-        _SnowIntensity("_SnowIntensity",range(0,1)) = 0
+        [GroupToggle(Snow,,snow show in edge first)]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
+        [GroupItem(Snow)]_SnowIntensity("_SnowIntensity",range(0,1)) = 0
+        [GroupToggle(Snow,,mainTex.a as snow atten)] _SnowIntensityUseMainTexA("_SnowIntensityUseMainTexA",int) = 0
 
         [Header(Fog)]
         [GroupToggle()]_FogOn("_FogOn",int) = 1

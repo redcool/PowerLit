@@ -114,12 +114,12 @@ void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
     #endif
 }
 
-void ApplySnow(inout float3 albedo,float3 worldNormal){
+void ApplySnow(inout float3 albedo,float3 worldNormal,half alpha){
     #if defined(_SNOW_ON)
     branch_if(! IsSnowOn())
         return;
-    
-    albedo = MixSnow(albedo,1,_SnowIntensity,worldNormal,_ApplyEdgeOn);
+    half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
+    albedo = MixSnow(albedo,1,snowAtten,worldNormal,_ApplyEdgeOn);
     #endif
 }
 

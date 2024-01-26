@@ -119,7 +119,7 @@ void ApplySnow(inout float3 albedo,float3 worldNormal,half alpha){
     branch_if(! IsSnowOn())
         return;
     half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
-    albedo = MixSnow(albedo,1,snowAtten,worldNormal,_ApplyEdgeOn);
+    albedo = MixSnow(albedo,1,snowAtten,worldNormal);
     #endif
 }
 

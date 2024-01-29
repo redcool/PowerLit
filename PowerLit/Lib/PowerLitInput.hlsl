@@ -193,9 +193,6 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 // #define IsRainOn() (_IsGlobalRainOn && _RainOn)
 // #define IsSnowOn() (_IsGlobalSnowOn && _SnowOn)
 // #define IsWindOn() (_IsGlobalWindOn && _WindOn)
-#define IsRainOn() (_IsGlobalRainOn)
-#define IsSnowOn() (_IsGlobalSnowOn)
-#define IsWindOn() (_IsGlobalWindOn)
 
 //--------------------------------- Main
     #define _BaseMap_ST UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BaseMap_ST)

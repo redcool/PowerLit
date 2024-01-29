@@ -59,7 +59,7 @@ half _WindSpeed;
 
 half _SnowIntensity;
 half _SnowIntensityUseMainTexA;
-half _ApplyEdgeOn;
+// half _ApplyEdgeOn;
 
 half4 _RippleTex_ST;
 half _RippleOffsetAutoStop;

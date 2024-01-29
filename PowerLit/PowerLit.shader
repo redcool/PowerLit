@@ -288,7 +288,7 @@ Shader "URP/PowerLit"
 
             // off temp 
             // #pragma multi_compile_instancing
-        //     #pragma instancing_options forcemaxcount:70
+            // #pragma instancing_options forcemaxcount:70
             
             // material keywords
             #pragma shader_feature_local _PARALLAX 
@@ -331,88 +331,10 @@ Shader "URP/PowerLit"
             // unity keywords
             // #pragma multi_compile_fog
             #define SHADOWS_FULL_MIX // realtime + shadowMask
-        //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
             #pragma multi_compile _ LIGHTMAP_ON
-        //     #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature
-
-            #include "Lib/PowerLitCore.hlsl"
-            #include "Lib/PowerLitForwardPass.hlsl"
-            ENDHLSL
-        }
-
-        Pass
-        {
-            name "ForwardDepthEqual"
-            blend [_SrcMode][_DstMode]
-            zwrite[_ZWriteMode]
-            ztest equal
-            cull [_CullMode]
-            ColorMask[_ColorMask]
-            Stencil
-            {
-                Ref [_Stencil]
-                Comp [_StencilComp]
-                Pass [_StencilOp]
-                ReadMask [_StencilReadMask]
-                WriteMask [_StencilWriteMask]
-            }
-
-            Tags{"LightMode"="ForwardDepthEqual"}
-            HLSLPROGRAM
-            // #pragma prefer_hlslcc gles
-            #pragma vertex vert
-            #pragma fragment frag
-
-            // off temp 
-            // #pragma multi_compile_instancing
-        //     #pragma instancing_options forcemaxcount:70
-            
-            // material keywords
-            #pragma shader_feature_local _PARALLAX 
-            #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
-            #pragma shader_feature_local_fragment _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _EMISSION
-            #pragma shader_feature_local_fragment _PLANAR_REFLECTION_ON
-            // #define _EMISSION
-            // #define _PLANAR_REFLECTION_ON
-            #pragma shader_feature_local_fragment _IBL_ON
-            // #pragma shader_feature_local_fragment _ALPHA_PREMULTIPLY_ON
-            // #pragma shader_feature_local_fragment _HEIGHT_FOG_ON
-            // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
-            #pragma shader_feature SIMPLE_FOG
-            #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
-            #pragma shader_feature_local_fragment _RAIN_ON
-            #pragma shader_feature_local_fragment _STOREY_ON
-            #pragma shader_feature_local_fragment _DETAIL_ON
-
-            // use uniform if
-            // #define _CUSTOM_LIGHT_ON
-            #define _SURFACE_BELOW_ON
-            // #define _EMISSION_HEIGHT_ON
-            // #define _INTERIOR_MAP_ON
-            // #pragma shader_feature_local_fragment _CUSTOM_LIGHT_ON
-            // #pragma shader_feature_local_fragment _SURFACE_BELOW_ON
-            // #pragma shader_feature_local_fragment _EMISSION_HEIGHT_ON
-
-            // off temp
-            // #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
-            
-            // urp keywords 
-            #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
-            // #pragma multi_compile_fragment _ _SHADOWS_SOFT
-            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
-            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
-
-            // unity keywords
-            // #pragma multi_compile_fog
-            #define SHADOWS_FULL_MIX // realtime + shadowMask
-        //     #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
-            #pragma multi_compile _ SHADOWS_SHADOWMASK // mixed light need open shadow, otherwise no shadowMask
-            #pragma multi_compile _ LIGHTMAP_ON
-        //     #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature
+            //     #pragma shader_feature_local_fragment DEBUG_DISPLAY // change to shader_feature
 
             #include "Lib/PowerLitCore.hlsl"
             #include "Lib/PowerLitForwardPass.hlsl"

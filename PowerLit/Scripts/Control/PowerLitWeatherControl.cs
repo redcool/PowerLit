@@ -12,14 +12,18 @@ namespace PowerUtilities
     {
         public override void OnInspectorGUI()
         {
+            EditorGUILayout.BeginVertical("Box");
+            EditorGUILayout.HelpBox("Use transform.forward control Global Wind Dir", MessageType.Info);
+            EditorGUILayout.EndVertical();
+
             PowerLitWeatherControl control = (PowerLitWeatherControl)target;
 
             EditorGUI.BeginChangeCheck();
             base.OnInspectorGUI();
 
-            //EditorGUILayout.BeginVertical("Box");
-            //EditorGUILayout.HelpBox("Use transform.forward control Global Wind Dir",MessageType.None);
-            //EditorGUILayout.EndVertical();
+
+            if (!control.enabled)
+                return;
 
             if (EditorGUI.EndChangeCheck() || control.transform.hasChanged)
             {
@@ -136,27 +140,16 @@ namespace PowerUtilities
         #endregion
 
         // Start is called before the first frame update
-        void Start()
+        public void Start()
         {
-            mainLightStartIntensity = mainLight? mainLight.intensity : 0;
-            mainLightStartColor = mainLight ? mainLight.color : Color.black;
+            InitWeather();
+        }
 
+        private void OnEnable()
+        {
+            StopAllCoroutines();
             StartCoroutine(WaitForUpdate());
-
-            if (!followTarget)
-                followTarget =Camera.main?.gameObject;
-
-            UpdateVFX(rainVFX, _GlobalRainIntensity, _IsGlobalRainOn,true);
-            UpdateVFX(snowVFX, _GlobalSnowIntensity, _IsGlobalSnowOn,true);
         }
-        private void Update()
-        {
-            UpdateThunder();
-
-            UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
-            UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
-        }
-       
         IEnumerator WaitForUpdate()
         {
             while (true)
@@ -165,6 +158,26 @@ namespace PowerUtilities
                 yield return aSecond;
             }
         }
+        private void Update()
+        {
+            UpdateThunder();
+
+            UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
+            UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
+        }
+
+        public void InitWeather()
+        {
+            mainLightStartIntensity = mainLight ? mainLight.intensity : 0;
+            mainLightStartColor = mainLight ? mainLight.color : Color.black;
+
+            if (!followTarget)
+                followTarget = Camera.main?.gameObject;
+
+            UpdateVFX(rainVFX, _GlobalRainIntensity, _IsGlobalRainOn, true);
+            UpdateVFX(snowVFX, _GlobalSnowIntensity, _IsGlobalSnowOn, true);
+        }
+
 
         private void OnDisable()
         {
@@ -173,8 +186,14 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), 0);
+
+            if (cloudShadowBox)
+                cloudShadowBox.SetActive(false);
         }
 
+        /// <summary>
+        /// Set weather params
+        /// </summary>
         public void UpdateParams()
         {
             Shader.SetGlobalFloat(nameof(_GlobalFogIntensity), _GlobalFogIntensity);

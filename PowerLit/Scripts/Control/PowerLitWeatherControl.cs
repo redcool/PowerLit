@@ -53,6 +53,7 @@ namespace PowerUtilities
 
         [EditorGroupLayout("WeatherTex",true)]
         [Tooltip("noise texute used for Fog,Rain")]
+        [LoadAsset("noise4layers.png")]
         public Texture2D _WeatherNoiseTexture;
         //[Header("Fog")]
         [EditorGroupLayout("Fog",true)]

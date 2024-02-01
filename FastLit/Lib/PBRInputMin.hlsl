@@ -1,3 +1,7 @@
+/**
+do not use this file
+*/
+
 #if !defined(PBR_INPUT_MIN_HLSL)
 #define PBR_INPUT_MIN_HLSL
 #include "../../PowerShaderLib/Lib/UnityLib.hlsl"

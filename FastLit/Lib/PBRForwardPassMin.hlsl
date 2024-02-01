@@ -187,7 +187,8 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     branch_if(IsSnowOn())
     {
         half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
-        albedo = MixSnow(albedo,1,snowAtten,n);
+        snowAtten *= occlusion;
+        albedo = MixSnow(albedo,1,snowAtten,n,_ApplyEdgeOn);
     }
     #endif    
 //---------- roughness

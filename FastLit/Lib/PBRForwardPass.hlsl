@@ -72,7 +72,7 @@ v2f vert (appdata v)
     }
     #endif
 
-    TANGENT_SPACE_COMBINE_WORLD(worldPos,worldNormal,float4(worldTangent,v.tangent.w),o/**/);
+    TANGENT_SPACE_COMBINE_WORLD(worldPos,worldNormal,float4(worldTangent,v.tangent.w * unity_WorldTransformParams.w),o/**/);
     // o.shadowCoord = TransformWorldToShadowCoord(worldPos);
     o.fogCoord.xy = CalcFogFactor(p.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
 

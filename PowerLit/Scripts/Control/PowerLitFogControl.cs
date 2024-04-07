@@ -1,7 +1,39 @@
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using PowerUtilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(PowerLitFogControl))]
+public class PowerLitFogControlEditor : PowerEditor<PowerLitFogControl>
+{
+    public override bool NeedDrawDefaultUI() => true;
+
+    public override string Version => "0.0.2";
+
+    public override void DrawInspectorUI(PowerLitFogControl inst)
+    {
+        if(GUILayout.Button("Use this"))
+        {
+            inst.enabled = false;
+            inst.enabled = true;
+        }
+
+        if (PowerLitFogControl.instanceManager.IsUsed(inst))
+        {
+            EditorGUILayout.HelpBox("current instance is used",MessageType.Info);
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("current instance is not used", MessageType.Info);
+        }
+
+    }
+}
+#endif
 
 [ExecuteAlways]
 public class PowerLitFogControl : MonoBehaviour
@@ -28,21 +60,42 @@ public class PowerLitFogControl : MonoBehaviour
     [Range(0.02f, 0.99f)] public float _FogNoiseStartRate = 0.1f;
     [Range(0, 1)] public float _FogNoiseIntensity = 1;
 
+    // trace fog instances
+    public static InstanceManager<PowerLitFogControl> instanceManager = new InstanceManager<PowerLitFogControl>();
+
+    public bool IsUsed() => instanceManager.GetTopInstance(this) == this;
+
     // Start is called before the first frame update
     void Start()
     {
         UpdateParams();
     }
 
-    private void LateUpdate()
+    private void OnEnable()
     {
+        instanceManager.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        instanceManager.Remove(this);
+    }
+
+    void LateUpdate()
+    {
+        TryUpdateParams();
+    }
+
+    public void TryUpdateParams()
+    {
+        var curInst = instanceManager.GetTopInstance(this);
 #if UNITY_EDITOR
-        UpdateParams();
+        curInst.UpdateParams();
 #else
         if(Time.time - lastTime> updateInterval)
         {
             lastTime = Time.time;
-            UpdateParams();
+            inst.UpdateParams();
         }
 #endif
     }

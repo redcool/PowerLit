@@ -53,28 +53,20 @@ public class PowerLitFogControl : MonoBehaviour
     // trace fog instances
     public static MonoInstanceManager<PowerLitFogControl> instanceManager = new MonoInstanceManager<PowerLitFogControl>();
 
-    public bool IsUsed() => instanceManager.GetTopInstanceOrDefault(this) == this;
-
     // Start is called before the first frame update
     void Start()
     {
         UpdateParams();
-    }
-
-    private void OnEnable()
-    {
         instanceManager.Add(this);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         instanceManager.Remove(this);
     }
 
     void LateUpdate()
     {
-        instanceManager.UpdateMonoEnable(this, TryUpdateParams);
-
         TryUpdateParams();
     }
 

@@ -155,16 +155,11 @@ namespace PowerUtilities
         public void Start()
         {
             InitWeather();
-        }
-
-        private void OnEnable()
-        {
             instanceManager.Add(this);
         }
 
         private void OnDisable()
         {
-            instanceManager.Remove(this);
 
             Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), 0);
@@ -175,12 +170,14 @@ namespace PowerUtilities
                 cloudShadowBox.SetActive(false);
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            instanceManager.UpdateMonoEnable(this, TryUpdate);
+            instanceManager.Remove(this);
+            
         }
 
-        public void TryUpdate() { 
+        private void Update()
+        {
             UpdateThunder();
 
             UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);

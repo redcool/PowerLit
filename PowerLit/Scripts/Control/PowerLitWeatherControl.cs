@@ -8,10 +8,13 @@ namespace PowerUtilities
     using UnityEditor;
 
     [CustomEditor(typeof(PowerLitWeatherControl))]
-    public class PowerLitWeatherControlEditor : Editor
+    public class PowerLitWeatherControlEditor : PowerEditor<PowerLitWeatherControl>
     {
+        public override string Version => "0.0.2";
         public override void OnInspectorGUI()
         {
+            var inst = target as PowerLitWeatherControl;
+
             EditorGUILayout.BeginVertical("Box");
             EditorGUILayout.HelpBox("Use transform.forward control Global Wind Dir", MessageType.Info);
             EditorGUILayout.EndVertical();
@@ -19,8 +22,14 @@ namespace PowerUtilities
             PowerLitWeatherControl control = (PowerLitWeatherControl)target;
 
             EditorGUI.BeginChangeCheck();
-            base.OnInspectorGUI();
+            DrawDefaultInspector();
 
+            //================== instance manager
+            if (GUILayout.Button("Use this"))
+            {
+                inst.enabled = false;
+                inst.enabled = true;
+            }
 
             if (!control.enabled)
                 return;
@@ -29,6 +38,8 @@ namespace PowerUtilities
             {
                 control.UpdateParams();
             }
+
+
         }
     }
 #endif
@@ -49,7 +60,7 @@ namespace PowerUtilities
             X,Y,Z
         }
 
-        WaitForSeconds aSecond = new WaitForSeconds(1);
+        public static MonoInstanceManager<PowerLitWeatherControl> instanceManager = new MonoInstanceManager<PowerLitWeatherControl>();
 
         [EditorGroupLayout("WeatherTex",true)]
         [Tooltip("noise texute used for Fog,Rain")]
@@ -148,23 +159,34 @@ namespace PowerUtilities
 
         private void OnEnable()
         {
-            StopAllCoroutines();
-            StartCoroutine(WaitForUpdate());
+            instanceManager.Add(this);
         }
-        IEnumerator WaitForUpdate()
+
+        private void OnDisable()
         {
-            while (true)
-            {
-                UpdateParams();
-                yield return aSecond;
-            }
+            instanceManager.Remove(this);
+
+            Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), 0);
+            Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), 0);
+
+            if (cloudShadowBox)
+                cloudShadowBox.SetActive(false);
         }
+
         private void Update()
         {
+            instanceManager.UpdateMonoEnable(this, TryUpdate);
+        }
+
+        public void TryUpdate() { 
             UpdateThunder();
 
             UpdateVFX(rainVFX,_GlobalRainIntensity,_IsGlobalRainOn);
             UpdateVFX(snowVFX, _GlobalSnowIntensity,_IsGlobalSnowOn);
+
+            UpdateParams();
         }
 
         public void InitWeather()
@@ -179,18 +201,6 @@ namespace PowerUtilities
             UpdateVFX(snowVFX, _GlobalSnowIntensity, _IsGlobalSnowOn, true);
         }
 
-
-        private void OnDisable()
-        {
-            StopAllCoroutines();
-            Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), 0);
-            Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), 0);
-            Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), 0);
-            Shader.SetGlobalFloat(nameof(_IsGlobalWindOn), 0);
-
-            if (cloudShadowBox)
-                cloudShadowBox.SetActive(false);
-        }
 
         /// <summary>
         /// Set weather params

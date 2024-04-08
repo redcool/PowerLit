@@ -21,16 +21,6 @@ public class PowerLitFogControlEditor : PowerEditor<PowerLitFogControl>
             inst.enabled = false;
             inst.enabled = true;
         }
-
-        if (PowerLitFogControl.instanceManager.IsUsed(inst))
-        {
-            EditorGUILayout.HelpBox("current instance is used",MessageType.Info);
-        }
-        else
-        {
-            EditorGUILayout.HelpBox("current instance is not used", MessageType.Info);
-        }
-
     }
 }
 #endif
@@ -61,9 +51,9 @@ public class PowerLitFogControl : MonoBehaviour
     [Range(0, 1)] public float _FogNoiseIntensity = 1;
 
     // trace fog instances
-    public static InstanceManager<PowerLitFogControl> instanceManager = new InstanceManager<PowerLitFogControl>();
+    public static MonoInstanceManager<PowerLitFogControl> instanceManager = new MonoInstanceManager<PowerLitFogControl>();
 
-    public bool IsUsed() => instanceManager.GetTopInstance(this) == this;
+    public bool IsUsed() => instanceManager.GetTopInstanceOrDefault(this) == this;
 
     // Start is called before the first frame update
     void Start()
@@ -83,19 +73,20 @@ public class PowerLitFogControl : MonoBehaviour
 
     void LateUpdate()
     {
+        instanceManager.UpdateMonoEnable(this, TryUpdateParams);
+
         TryUpdateParams();
     }
 
     public void TryUpdateParams()
     {
-        var curInst = instanceManager.GetTopInstance(this);
 #if UNITY_EDITOR
-        curInst.UpdateParams();
+        UpdateParams();
 #else
         if(Time.time - lastTime> updateInterval)
         {
             lastTime = Time.time;
-            inst.UpdateParams();
+            UpdateParams();
         }
 #endif
     }

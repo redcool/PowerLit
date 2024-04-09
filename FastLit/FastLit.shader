@@ -16,6 +16,9 @@ Shader "URP/FastLit"
         [GroupItem(PBR Mask)]_Metallic("_Metallic",range(0,1)) = 0.5
         [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
         [GroupItem(PBR Mask)]_Occlusion("_Occlusion",range(0,1)) = 0
+        
+        [GroupHeader(Surface,mrt options)]
+        [GroupItem(Surface,ssr use this)]_MRTSmoothness("_MRTSmoothness",range(0,1)) = 1
 
         [Group(LightMode)]
         [GroupToggle(LightMode)]_SpecularOn("_SpecularOn",int) = 1
@@ -210,22 +213,22 @@ Shader "URP/FastLit"
 //================================================= future function variables,dont use these when dont know
         [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
         [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve2("_Reserve2",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve3("_Reserve3",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve4("_Reserve4",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve5("_Reserve5",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve6("_Reserve6",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve7("_Reserve7",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve8("_Reserve8",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve9("_Reserve9",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve2("_Reserve2",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve3("_Reserve3",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve4("_Reserve4",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve5("_Reserve5",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve6("_Reserve6",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve7("_Reserve7",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve8("_Reserve8",vector)=(0,0,0,0)
+        // [HideInInpector]_Reserve9("_Reserve9",vector)=(0,0,0,0)
         [HideInInpector]_ReserveTex0("_ReserveTex0",2d)="white"{}
         [HideInInpector]_ReserveTex1("_ReserveTex1",2d)="white"{}
-        [HideInInpector]_ReserveTex2("_ReserveTex2",2d)="white"{}
-        [HideInInpector]_ReserveTex4("_ReserveTex3",2d)="white"{}
-        [HideInInpector]_ReserveTex5("_ReserveTex4",2d)="white"{}
-        [HideInInpector]_ReserveTex6("_ReserveTex5",2d)="white"{}
-        [HideInInpector]_ReserveTex7("_ReserveTex6",2d)="white"{}
-        [HideInInpector]_ReserveTex8("_ReserveTex7",2d)="white"{}
+        // [HideInInpector]_ReserveTex2("_ReserveTex2",2d)="white"{}
+        // [HideInInpector]_ReserveTex4("_ReserveTex3",2d)="white"{}
+        // [HideInInpector]_ReserveTex5("_ReserveTex4",2d)="white"{}
+        // [HideInInpector]_ReserveTex6("_ReserveTex5",2d)="white"{}
+        // [HideInInpector]_ReserveTex7("_ReserveTex6",2d)="white"{}
+        // [HideInInpector]_ReserveTex8("_ReserveTex7",2d)="white"{}
     }
 
     SubShader

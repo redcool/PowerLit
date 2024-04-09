@@ -230,7 +230,7 @@ float4 frag(Varyings input
 
 //------- mrt output    
     // output world normal
-    outputNormal = half4(n.xyz,smoothness);
+    outputNormal = half4(n.xyz,smoothness * _MRTSmoothness);
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(input);
     

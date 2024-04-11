@@ -91,7 +91,7 @@ Shader "URP/PowerLit"
         // [GroupToggle(,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
 
         [GroupHeader(,BoxProjection)]
-        [GroupToggle(,_REFLECTION_PROBE_BOX_PROJECTION)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
+        [GroupToggle(,_REFLECTION_PROBE_BOX_PROJECTION_1)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [Header(Custom Light)]
         [GroupToggle()]_CustomLightOn("_CustomLightOn",float) = 0
@@ -235,33 +235,10 @@ Shader "URP/PowerLit"
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
 
-//================================================= future function variables,dont use these when dont know
-        [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve2("_Reserve2",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve3("_Reserve3",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve4("_Reserve4",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve5("_Reserve5",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve6("_Reserve6",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve7("_Reserve7",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve8("_Reserve8",vector)=(0,0,0,0)
-        [HideInInpector]_Reserve9("_Reserve9",vector)=(0,0,0,0)
-        [HideInInpector]_ReserveTex0("_ReserveTex0",2d)="white"{}
-        [HideInInpector]_ReserveTex1("_ReserveTex1",2d)="white"{}
-        [HideInInpector]_ReserveTex2("_ReserveTex2",2d)="white"{}
-        [HideInInpector]_ReserveTex4("_ReserveTex3",2d)="white"{}
-        [HideInInpector]_ReserveTexArr0("_ReserveTexArr0",2darray)="white"{}
-        [HideInInpector]_ReserveTexArr1("_ReserveTexArr1",2darray)="white"{}
-        [HideInInpector]_ReserveTex3D0("_ReserveTex3D0",3d)="white"{}
-        [HideInInpector]_ReserveTex3D1("_ReserveTex3D1",3d)="white"{}
-        [HideInInpector]_ReserveTexCube0("_ReserveTexCube0",cube)="white"{}
-        [HideInInpector]_ReserveTexCube1("_ReserveTexCube1",cube)="white"{}
-        [HideInInpector]_ReserveTexCubeArr0("_ReserveTexCubeArr0",cubearray)="white"{}
-        [HideInInpector]_ReserveTexCubeArr1("_ReserveTexCubeArr1",cubearray)="white"{}
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
+        Tags { "RenderType"="Opaque" }
         LOD 100
 
         Pass
@@ -322,7 +299,7 @@ Shader "URP/PowerLit"
             // #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
             
             // urp keywords 
-            #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+            #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION_1
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile_fragment _ _SHADOWS_SOFT
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
@@ -473,7 +450,7 @@ Shader "URP/PowerLit"
             // #pragma shader_feature_local_fragment _INTERIOR_MAP_ON
             
             // urp keywords 
-            #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+            #pragma shader_feature_local_fragment _ _REFLECTION_PROBE_BOX_PROJECTION_1
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS //_ADDITIONAL_LIGHTS_VERTEX
             #pragma multi_compile_fragment _ _SHADOWS_SOFT

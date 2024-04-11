@@ -231,7 +231,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 
 //-------- output mrt
     // output world normal
-    outputNormal = half4(n.xyz,smoothness);
+    outputNormal = half4(n.xyz,smoothness*_MRTSmoothness);
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(i);
 

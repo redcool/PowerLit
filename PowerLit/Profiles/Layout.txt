@@ -5,7 +5,7 @@ tabNames =  Settings, Main,Details,Alpha,Parallax,Shadow,Env,Emission,Wind,Snow,
 
 // Tab's contents
 Settings =_ZWriteMode,_ZTestMode,_CullMode,_RenderQueue,_ColorMask,_BakedEmission,_StencilComp,_Stencil,_StencilOp
-Main = _BaseMap,_Color,_AlbedoMulVertexColor,_SurfaceBelowOn,_SurfaceDepth,_BelowColor,_NormalMap,_NormalScale,_MetallicMaskMap,_Metallic,_Smoothness,_Occlusion,_InvertSmoothnessOn,_MetallicChannel,_SmoothnessChannel,_OcclusionChannel,_MSOInfo,
+Main = _BaseMap,_Color,_AlbedoMulVertexColor,_SurfaceBelowOn,_SurfaceDepth,_BelowColor,_NormalMap,_NormalScale,_MetallicMaskMap,_Metallic,_Smoothness,_Occlusion,_InvertSmoothnessOn,_MetallicChannel,_SmoothnessChannel,_OcclusionChannel,_MRTSmoothness,
 Alpha=_ClipOn,_Cutoff,_AlphaPremultiply,_PresetBlendMode,_RenderQueue
 Parallax=_ParallaxOn,_ParallaxIterate,_ParallaxMap,_ParallaxMapChannel,_ParallaxHeight
 Shadow=_IsReceiveShadowOff,_GIApplyMainLightShadow,_ScreenShadowOn,_CloudShadowOn,_CloudShadowTilingOffset,_CloudShadowIntensityInfo,_CloudShadowColor,_BigShadowOff

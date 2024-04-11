@@ -25,6 +25,10 @@ Shader "URP/PowerLit"
         [GroupItem(Main)]_Smoothness("_Smoothness",range(0,1)) = 0.5
         [GroupItem(Main)]_Occlusion("_Occlusion",range(0,1)) = 0.5
         [GroupToggle(Main)]_InvertSmoothnessOn("_InvertSmoothnessOn",int) = 0
+        
+        [GroupHeader(Surface,mrt options)]
+        [GroupItem(Surface,ssr use this)]_MRTSmoothness("_MRTSmoothness",range(0,1)) = 1
+        
 //------- disable temporary
         // [GroupHeader(Main,PBRMask Channel)]
         // [GroupEnum(Main,R 0 G 1 B 2)]_MetallicChannel("_MetallicChannel",int) = 0

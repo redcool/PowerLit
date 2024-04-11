@@ -32,6 +32,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 
     UNITY_DEFINE_INSTANCED_PROP(half ,_Metallic)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Smoothness)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_MRTSmoothness)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Occlusion)
     UNITY_DEFINE_INSTANCED_PROP(half ,_InvertSmoothnessOn)
 
@@ -207,6 +208,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
     #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Metallic)
     #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Smoothness)
+    #define _MRTSmoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MRTSmoothness)
     #define _Occlusion UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Occlusion)
     #define _InvertSmoothnessOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_InvertSmoothnessOn)
 

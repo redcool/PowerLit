@@ -21,7 +21,7 @@ CBUFFER_START(UnityPerMaterial)
 half4 _Color;
 half4 _MainTex_ST;
 // half4 _Metallic_Smoothness_Occlusion_NormalScale;
-half _Metallic,_Smoothness,_Occlusion,_NormalScale;
+half _Metallic,_Smoothness,_Occlusion,_NormalScale,_MRTSmoothness;
 half _AlbedoMulVertexColor;
 
 half _SpecularOn;

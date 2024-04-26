@@ -77,6 +77,7 @@ namespace PowerUtilities
 
         [EditorGroupLayout("Snow",true)]
         public bool _IsGlobalSnowOn;
+        [EditorGroupLayout("Snow")] [ColorUsage(true,true)] public Color _GlobalSnowColor = Color.white;
         [EditorGroupLayout("Snow")][Range(0,1)]public float _GlobalSnowIntensity = 1;
 
         [EditorGroupLayout("Wind",true)]
@@ -207,6 +208,7 @@ namespace PowerUtilities
             Shader.SetGlobalFloat(nameof(_GlobalFogIntensity), _GlobalFogIntensity);
             Shader.SetGlobalFloat(nameof(_GlobalRainIntensity), _GlobalRainIntensity);
             Shader.SetGlobalFloat(nameof(_GlobalSnowIntensity), Mathf.SmoothStep(0, 1, _GlobalSnowIntensity));
+            Shader.SetGlobalColor(nameof(_GlobalSnowColor), _GlobalSnowColor);
 
             var forward = transform.forward;
             Shader.SetGlobalVector(_GlobalWindDir, new Vector4(forward.x, forward.y, forward.z, _GlobalWindIntensity));

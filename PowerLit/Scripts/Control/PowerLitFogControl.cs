@@ -56,10 +56,13 @@ public class PowerLitFogControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateParams();
         instanceManager.Add(this);
     }
-
+    private void OnEnable()
+    {
+        UpdateParams();
+        
+    }
     private void OnDestroy()
     {
         instanceManager.Remove(this);

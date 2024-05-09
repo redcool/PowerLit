@@ -10,36 +10,35 @@ namespace PowerUtilities
     [CustomEditor(typeof(PowerLitWeatherControl))]
     public class PowerLitWeatherControlEditor : PowerEditor<PowerLitWeatherControl>
     {
-        public override string Version => "0.0.2";
-        public override void OnInspectorGUI()
+        public override string Version => "0.0.3";
+        public override string TitleHelpStr => "Use transform.forward control Global Wind Dir";
+        public override bool NeedDrawDefaultUI() => true;
+
+        public override void DrawInspectorUI(PowerLitWeatherControl inst)
         {
-            var inst = target as PowerLitWeatherControl;
+            DrawOptions(inst);
+        }
 
-            EditorGUILayout.BeginVertical("Box");
-            EditorGUILayout.HelpBox("Use transform.forward control Global Wind Dir", MessageType.Info);
-            EditorGUILayout.EndVertical();
-
-            PowerLitWeatherControl control = (PowerLitWeatherControl)target;
-
+        static void DrawOptions(PowerLitWeatherControl inst)
+        {
             EditorGUI.BeginChangeCheck();
-            DrawDefaultInspector();
 
-            //================== instance manager
+            GUILayout.BeginVertical("Box");
+            GUILayout.Label("Options", EditorStyles.boldLabel);
             if (GUILayout.Button("Use this"))
             {
                 inst.enabled = false;
                 inst.enabled = true;
             }
+            GUILayout.EndVertical();
 
-            if (!control.enabled)
+            if (!inst.enabled)
                 return;
 
-            if (EditorGUI.EndChangeCheck() || control.transform.hasChanged)
+            if (EditorGUI.EndChangeCheck() || inst.transform.hasChanged)
             {
-                control.UpdateParams();
+                inst.UpdateParams();
             }
-
-
         }
     }
 #endif
@@ -50,6 +49,18 @@ namespace PowerUtilities
     [ExecuteInEditMode]
     public class PowerLitWeatherControl : MonoBehaviour
     {
+        // 
+        public const string 
+            SCENE_TEXS = "SceneTexs",
+            RAIN = "Rain",
+            SNOW = "Snow",
+            WIND ="Wind",
+            THUNDER = "Thunder",
+            FOG="Fog",
+            SKY = "Sky",
+            PARTICLES_FLOW_CAMERA="ParticlesFlowCamera",
+            CLOUD_SHADOW="CloudShadow"
+            ;
         public enum ThunderMode
         {
             Additive=0,Replace
@@ -62,39 +73,49 @@ namespace PowerUtilities
 
         public static MonoInstanceManager<PowerLitWeatherControl> instanceManager = new MonoInstanceManager<PowerLitWeatherControl>();
 
-        [EditorGroupLayout("WeatherTex",true)]
+        //--------SceneTex
+        [EditorGroupLayout(SCENE_TEXS, true)]
         [Tooltip("noise texute used for Fog,Rain")]
         [LoadAsset("noise4layers.png")]
         public Texture2D _WeatherNoiseTexture;
+
+        [EditorGroupLayout(SCENE_TEXS)]
+        [Tooltip("Scene MatCap ,used for MIN_VERSION ")]
+        public Texture2D _SceneMatCap;
+
+        [EditorGroupLayout(SCENE_TEXS)]
+        [Tooltip("SceneMatCap(xy:Tiling,zw:Offset)")]
+        public Vector4 _SceneMatCap_ST = new Vector4(1, 1, 0, 0);
+
         //[Header("Fog")]
-        [EditorGroupLayout("Fog",true)]
+        [EditorGroupLayout(FOG,true)]
         public bool _IsGlobalFogOn;
-        [EditorGroupLayout("Fog")][Range(0,1)]public float _GlobalFogIntensity = 1;
+        [EditorGroupLayout(FOG)][Range(0,1)]public float _GlobalFogIntensity = 1;
 
-        [EditorGroupLayout("Rain",true)]
+        [EditorGroupLayout(RAIN,true)]
         public bool _IsGlobalRainOn;
-        [EditorGroupLayout("Rain")][Range(0, 1)] public float _GlobalRainIntensity = 1;
+        [EditorGroupLayout(RAIN)][Range(0, 1)] public float _GlobalRainIntensity = 1;
 
-        [EditorGroupLayout("Snow",true)]
+        [EditorGroupLayout(SNOW,true)]
         public bool _IsGlobalSnowOn;
-        [EditorGroupLayout("Snow")] [ColorUsage(true,true)] public Color _GlobalSnowColor = Color.white;
-        [EditorGroupLayout("Snow")][Range(0,1)]public float _GlobalSnowIntensity = 1;
+        [EditorGroupLayout(SNOW)] [ColorUsage(true,true)] public Color _GlobalSnowColor = Color.white;
+        [EditorGroupLayout(SNOW)][Range(0,1)]public float _GlobalSnowIntensity = 1;
 
-        [EditorGroupLayout("Wind",true)]
+        [EditorGroupLayout(WIND,true)]
         public bool _IsGlobalWindOn;
-        [EditorGroupLayout("Wind")][Range(0, 15)] public float _GlobalWindIntensity = 1;
+        [EditorGroupLayout(WIND)][Range(0, 15)] public float _GlobalWindIntensity = 1;
 
-        [EditorGroupLayout("Thunder",true)]
+        [EditorGroupLayout(THUNDER,true)]
         public bool thunderOn;
-        [EditorGroupLayout("Thunder")] public Light mainLight;
-        [EditorGroupLayout("Thunder")] public ThunderMode thunderMode;
-        [EditorGroupLayout("Thunder")] public AnimationCurve thunderCurve;
-        [EditorGroupLayout("Thunder")] public Gradient thunderColor;
-        [EditorGroupLayout("Thunder")][Min(0.1f)]public float thunderTime = 3;
-        [EditorGroupLayout("Thunder")] public Vector2 thunderInvervalTime = new Vector2(1, 10);
+        [EditorGroupLayout(THUNDER)] public Light mainLight;
+        [EditorGroupLayout(THUNDER)] public ThunderMode thunderMode;
+        [EditorGroupLayout(THUNDER)] public AnimationCurve thunderCurve;
+        [EditorGroupLayout(THUNDER)] public Gradient thunderColor;
+        [EditorGroupLayout(THUNDER)][Min(0.1f)]public float thunderTime = 3;
+        [EditorGroupLayout(THUNDER)] public Vector2 thunderInvervalTime = new Vector2(1, 10);
 
-        [EditorGroupLayout("Sky", true)] public bool isGlobalSkyOn;
-        [EditorGroupLayout("Sky")][Range(0, 1)] public float skyExposure;
+        [EditorGroupLayout(SKY, true)] public bool isGlobalSkyOn;
+        [EditorGroupLayout(SKY)][Range(0, 1)] public float skyExposure;
        
 
         //public PowerGradient TestThunderColor;
@@ -102,12 +123,12 @@ namespace PowerUtilities
         float mainLightStartIntensity;
         Color mainLightStartColor;
 
-        [EditorGroupLayout("Particles follow camera",true)]
+        [EditorGroupLayout(PARTICLES_FLOW_CAMERA,true)]
         public GameObject rainVFX;
-        [EditorGroupLayout("Particles follow camera")] public GameObject snowVFX;
+        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public GameObject snowVFX;
 
-        [EditorGroupLayout("Particles follow camera")] public GameObject followTarget;
-        [EditorGroupLayout("Particles follow camera")] public float followSpeed = 1;
+        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public GameObject followTarget;
+        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public float followSpeed = 1;
 
         // world scanline
         //[EditorGroupLayout("World ScanLine", true)]
@@ -128,17 +149,17 @@ namespace PowerUtilities
         //[EditorGroupLayout("World ScanLine")] public ScanLineAxis _ScanLineAxis;
 
         // clouds
-        [EditorGroupLayout("Clouds", true)] public bool _CloudShadowOn;
-        [EditorGroupLayout("Clouds")] public GameObject cloudShadowBox;
-        [EditorGroupLayout("Clouds")] public Texture cloudShadowNoiseTex;
+        [EditorGroupLayout(CLOUD_SHADOW, true)] public bool _CloudShadowOn;
+        [EditorGroupLayout(CLOUD_SHADOW)] public GameObject cloudShadowBox;
+        [EditorGroupLayout(CLOUD_SHADOW)] public Texture cloudShadowNoiseTex;
 
-        [EditorGroupLayout("Clouds")] public Vector4 _CloudNoiseTilingOffset = new Vector4(.1f, .1f, 0, 0);
-        [EditorGroupLayout("Clouds")] public bool _CloudNoiseOffsetStop;
-        [EditorGroupLayout("Clouds")] [Range(0,1)] public float _CloudNoiseRangeMin = 0;
-        [EditorGroupLayout("Clouds")] [Range(0,1)] public float _CloudNoiseRangeMax = 1;
-        [EditorGroupLayout("Clouds")] public Color _CloudShadowColor = Color.black;
-        [EditorGroupLayout("Clouds")] public float _CloudBaseShadowIntensity = 0;
-        [EditorGroupLayout("Clouds")] public float _CloudShadowIntensity = 1;
+        [EditorGroupLayout(CLOUD_SHADOW)] public Vector4 _CloudNoiseTilingOffset = new Vector4(.1f, .1f, 0, 0);
+        [EditorGroupLayout(CLOUD_SHADOW)] public bool _CloudNoiseOffsetStop;
+        [EditorGroupLayout(CLOUD_SHADOW)] [Range(0,1)] public float _CloudNoiseRangeMin = 0;
+        [EditorGroupLayout(CLOUD_SHADOW)] [Range(0,1)] public float _CloudNoiseRangeMax = 1;
+        [EditorGroupLayout(CLOUD_SHADOW)] public Color _CloudShadowColor = Color.black;
+        [EditorGroupLayout(CLOUD_SHADOW)] public float _CloudBaseShadowIntensity = 0;
+        [EditorGroupLayout(CLOUD_SHADOW)] public float _CloudShadowIntensity = 1;
 
         Material cloudShadowBoxMat;
 
@@ -228,6 +249,9 @@ namespace PowerUtilities
             //Shader.SetGlobalVector(nameof(_EmissionScanLineMax), sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax);
             //Shader.SetGlobalColor(nameof(_EmissionScanLineColor), _EmissionScanLineColor);
             //Shader.SetGlobalInt(nameof(_ScanLineAxis), (int)_ScanLineAxis);
+            //-------- matcap
+            Shader.SetGlobalTexture(nameof(_SceneMatCap), _SceneMatCap ?? Texture2D.whiteTexture);
+            Shader.SetGlobalVector(nameof(_SceneMatCap_ST), _SceneMatCap_ST);
 
             UpdateCloudShadow();
         }

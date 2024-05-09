@@ -24,6 +24,7 @@
 #include "../../PowerShaderLib/Lib/WeatherNoiseTexture.hlsl"
 #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
 #include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
+#include "../../PowerShaderLib/Lib/MatCapLib.hlsl"
 
 struct appdata
 {
@@ -231,7 +232,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     // output world normal
     outputNormal = half4(n.xyz,smoothness*_MRTSmoothness);
     // output motion
-    outputMotionVectors = CALC_MOTION_VECTORS(i);
+    // outputMotionVectors = CALC_MOTION_VECTORS(i);
 
 
 
@@ -246,13 +247,18 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 //--------- lighting
     float specTerm = 0;
 
-    if(_SpecularOn){
+    branch_if(_SpecularOn){
+        #if defined(_PBRMODE_PBR)
         specTerm = MinimalistCookTorrance(nh,lh,a,a2);
+        #else
+         float4 matCap = SampleMatCap(_SceneMatCap,sampler_SceneMatCap,n,_SceneMatCap_ST,0);
+        specTerm = matCap.xyz * _MatCapScale;
+        // return specTerm;
+        #endif
     }
 
 
     float3 directColor = (diffColor + specColor * specTerm) * radiance;
-// return directColor.xyzx;
 //------- gi
     //--- custom ibl
     #if defined(_IBL_ON)
@@ -316,7 +322,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 
 //------ fog
     // col.rgb = MixFog(col.xyz,i.fogFactor.x);
-    BlendFogSphereKeyword(col.rgb/**/,worldPos,i.fogCoord.xy,_HeightFogOn,_FogNoiseOn,_DepthFogOn); // 2fps
+    //BlendFogSphereKeyword(col.rgb/**/,worldPos,i.fogCoord.xy,_HeightFogOn,_FogNoiseOn,_DepthFogOn); // 2fps
     col.a = alpha;
 
     return col;

@@ -21,6 +21,7 @@ TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 TEXTURE2D(_DetailPBRMaskMap);SAMPLER(sampler_DetailPBRMaskMap);
 
+
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;
 half4 _MainTex_ST;
@@ -54,6 +55,8 @@ half _AlphaPremultiply;
 half _Cutoff;
 
 half4 _EmissionColor;
+
+half4 _MatCap_ST;
 
 CBUFFER_END
 #endif //PBR_INPUT_MIN_HLSL

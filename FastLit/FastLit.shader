@@ -210,6 +210,10 @@ Shader "URP/FastLit"
 		[GroupEnum(Settings,UnityEngine.Rendering.CompareFunction)]_ZTestMode("_ZTestMode",float) = 4
         [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
 
+        [Group(MatCap)]
+        // [GroupItem(MatCap,specTerm MIN_VERSION use )] _MatCap("_MatCap",2d)=""{}
+        [GroupItem(MatCap)] _MatCapScale("_MatCapScale",float)= 1
+
 //================================================= future function variables,dont use these when dont know
         // [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
         // [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)
@@ -390,6 +394,7 @@ Shader "URP/FastLit"
             #pragma multi_compile_fragment _ LIGHTMAP_ON
 
             // only use pbr
+            // comments this,will use matcap
             #define _PBRMODE_PBR
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             

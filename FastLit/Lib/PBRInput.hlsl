@@ -16,6 +16,7 @@ sampler2D _ReflectionTexture;
 TEXTURE2D(_RippleTex);SAMPLER(sampler_RippleTex);
 TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 TEXTURE2D(_DetailPBRMaskMap);SAMPLER(sampler_DetailPBRMaskMap);
+TEXTURE2D(_SceneMatCap);SAMPLER(sampler_SceneMatCap);
 
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;
@@ -127,7 +128,11 @@ half _PlanarReflectionReverseU,_PlanarReflectionReverseV;
 half4 _LightmapColor;
 half _BigShadowOff;
 
+half _MatCapScale;
+
 CBUFFER_END
+
+half4 _SceneMatCap_ST; // use consts
 
     // //---------Cloud shadows
     // half _CloudShadowOn;

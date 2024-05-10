@@ -4,6 +4,7 @@
 
 //for compatible PowerLit
 #define _PbrMask _MetallicMaskMap
+#define _PbrMask_ST _MetallicMaskMap_ST
 #define _MainTex _BaseMap
 #define _MainTex_ST _BaseMap_ST
 
@@ -21,6 +22,8 @@ TEXTURE2D(_SceneMatCap);SAMPLER(sampler_SceneMatCap);
 CBUFFER_START(UnityPerMaterial)
 half4 _Color;
 half4 _MainTex_ST;
+half4 _NormalMap_ST;
+half4 _PbrMask_ST;
 // half4 _Metallic_Smoothness_Occlusion_NormalScale;
 half _Metallic,_Smoothness,_Occlusion,_NormalScale,_MRTSmoothness;
 half _AlbedoMulVertexColor;

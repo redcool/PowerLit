@@ -107,9 +107,10 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     TANGENT_SPACE_SPLIT(i);
 
     float2 mainUV = TRANSFORM_TEX(i.uv.xy, _MainTex);
+    float2 normalUV = i.uv.xy *_NormalMap_ST.xy + _NormalMap_ST.zw;
+    float2 pbrMaskUV = i.uv.xy * _PbrMask_ST.xy + _PbrMask_ST.zw;
     float2 lightmapUV = i.uv.zw;
     float2 screenUV = i.vertex.xy/_ScaledScreenParams.xy;
-
 //---------- rain
     //========  rain 1 input.uv apply rain flow
     #if defined(_RAIN_ON)
@@ -130,7 +131,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float alpha = mainTex.w;
 
 //---------- pbrMask
-    float4 pbrMask = tex2D(_PbrMask,mainUV);
+    float4 pbrMask = tex2D(_PbrMask,pbrMaskUV);
     float metallic = 0;
     float smoothness =0;
     float occlusion =0;
@@ -155,7 +156,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 
 
 //---------- normal
-    float3 tn = UnpackNormalScale(tex2D(_NormalMap,mainUV),_NormalScale);
+    float3 tn = UnpackNormalScale(tex2D(_NormalMap,normalUV),_NormalScale);
 //-------- rain ripple 
     #if defined(_RAIN_ON)
     branch_if(IsRainOn())
@@ -185,6 +186,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     {
         float3 startPos = unity_ObjectToWorld._14_24_34 + i.vertexPos;
         float3 snowColor = CalcNoiseSnowColor(albedo,1,(startPos+startPos.xzy)*0.5,float4(_SnowNoiseTiling.xy,0,0));
+        // snowColor += lerp(albedo,snowColor,0.2);
 
         half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
         snowAtten *= pbrMask.w;        

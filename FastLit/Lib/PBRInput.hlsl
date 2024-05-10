@@ -129,6 +129,7 @@ half4 _LightmapColor;
 half _BigShadowOff;
 
 half _MatCapScale;
+half2 _SnowNoiseTiling;
 
 CBUFFER_END
 

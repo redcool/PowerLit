@@ -40,6 +40,7 @@ struct v2f
     // motion vectors
     DECLARE_MOTION_VS_OUTPUT(6,7);
     float4 bigShadowCoord:TEXCOORD8;
+    float3 vertexPos:TEXCOORD9;
     float4 color:COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -63,6 +64,7 @@ v2f vert (appdata v)
     #endif
 
     o.vertex = UnityWorldToClipPos(worldPos);
+    o.vertexPos = v.vertex;
     o.uv.xy = v.uv;
     o.uv.zw = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
     #if defined(_STOREY_ON)
@@ -181,9 +183,13 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #if defined(_SNOW_ON)
     branch_if(IsSnowOn())
     {
+        float3 startPos = unity_ObjectToWorld._14_24_34 + i.vertexPos;
+        float3 snowColor = CalcNoiseSnowColor(albedo,1,(startPos+startPos.xzy)*0.5,float4(_SnowNoiseTiling.xy,0,0));
+
         half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
         snowAtten *= pbrMask.w;        
-        albedo = MixSnow(albedo,1,snowAtten,n,_ApplyEdgeOn);
+        albedo = MixSnow(albedo,snowColor,snowAtten,n,_ApplyEdgeOn);
+        // return albedo.xyzx;
     }
     #endif    
 //---------- roughness

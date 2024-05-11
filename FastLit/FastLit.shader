@@ -145,9 +145,13 @@ Shader "URP/FastLit"
         [GroupToggle(Snow,_SNOW_ON)]_SnowOn("_SnowOn",int) = 0
         [GroupToggle(Snow,,snow show in edge first)]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
         [GroupItem(Snow)]_SnowIntensity("_SnowIntensity",range(0,1)) = 0
-        
-        [GroupVectorSlider(Snow,NoiseTilingX NoiseTilingY,0_10 0_10,,float)]_SnowNoiseTiling("_SnowNoiseTiling",vector) = (1,1,0,0)
         [GroupToggle(Snow,,mainTex.a as snow atten)] _SnowIntensityUseMainTexA("_SnowIntensityUseMainTexA",int) = 0
+
+        [GroupHeader(Snow,SnowNoise)]
+        [GroupVectorSlider(Snow,NoiseTilingX NoiseTilingY,0_10 0_10,,float)]_SnowNoiseTiling("_SnowNoiseTiling",vector) = (1,1,0,0)
+        [GroupVectorSlider(Snow,weightR weightG weightB weightA,0_10 0_10 0_10 0_10,,float)]_SnowNoiseWeights("_SnowNoiseWeights",vector) = (1,.1,.1,1)
+        [GroupToggle(Snow,,flatten normal where no snow)]_SnowNormalMask("_SnowNormalMask",float) = 0
+        
 
         [Group(Rain)]
         [GroupToggle(Rain,_RAIN_ON)]_RainOn("_RainOn",int) = 0

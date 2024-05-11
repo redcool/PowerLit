@@ -64,6 +64,9 @@ half _WindSpeed;
 half _SnowIntensity;
 half _SnowIntensityUseMainTexA;
 half _ApplyEdgeOn;
+half _SnowNormalMask;
+half2 _SnowNoiseTiling;
+half4 _SnowNoiseWeights;
 
 half4 _RippleTex_ST;
 half _RippleOffsetAutoStop;
@@ -132,7 +135,7 @@ half4 _LightmapColor;
 half _BigShadowOff;
 
 half _MatCapScale;
-half2 _SnowNoiseTiling;
+
 
 CBUFFER_END
 

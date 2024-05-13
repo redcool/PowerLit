@@ -135,7 +135,7 @@ float4 frag(Varyings input
 
     #if defined(_PARALLAX)
         // branch_if(! _ParallaxInVSOn)
-        ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz); // move to vs
+        ApplyParallax(input.uv.xy/**/,input.viewDirTS_NV.xyz,_ParallaxHeight); // move to vs
     #endif
 
     //========  rain 1 input.uv apply rain flow

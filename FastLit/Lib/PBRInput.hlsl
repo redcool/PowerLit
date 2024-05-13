@@ -136,6 +136,8 @@ half _BigShadowOff;
 
 half _MatCapScale;
 
+half _ParallaxHeight,_ParallaxMapChannel;
+half4 _ParallaxMap_ST;
 
 CBUFFER_END
 

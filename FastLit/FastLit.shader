@@ -219,7 +219,15 @@ Shader "URP/FastLit"
         [Group(MatCap)]
         // [GroupItem(MatCap,specTerm MIN_VERSION use )] _MatCap("_MatCap",2d)=""{}
         [GroupItem(MatCap)] _MatCapScale("_MatCapScale",float)= 1
-
+//================================================= Parallax
+        [Group(Parallax)]
+        [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
+        // [GroupSlider(Parallax,iterate count,int)]_ParallaxIterate("_ParallaxIterate",range(1,10)) = 1
+        // [GroupToggle(Parallax,run in vertex shader)]_ParallaxInVSOn("_ParallaxInVSOn",int) = 0
+        
+        [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
+        [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
+        [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.3)) = 0.01
 //================================================= future function variables,dont use these when dont know
         // [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
         // [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)
@@ -276,6 +284,7 @@ Shader "URP/FastLit"
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
             #pragma shader_feature SIMPLE_FOG
+            #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
             #pragma shader_feature_fragment _EMISSION

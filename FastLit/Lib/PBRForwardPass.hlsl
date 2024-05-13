@@ -13,6 +13,7 @@
 #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
 #include "../../PowerShaderLib/Lib/BigShadows.hlsl"
 #include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
+#include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
 
 struct appdata
 {
@@ -41,6 +42,7 @@ struct v2f
     DECLARE_MOTION_VS_OUTPUT(6,7);
     float4 bigShadowCoord:TEXCOORD8;
     float3 vertexPos:TEXCOORD9;
+    float3 viewDirTS:TEXCOORD10;
     float4 color:COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -97,6 +99,15 @@ v2f vert (appdata v)
         float3 bigShadowCoord = TransformWorldToBigShadow(worldPos);
         o.bigShadowCoord.xyz = bigShadowCoord;
     }
+
+    #if defined(_PARALLAX)
+    float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
+    o.viewDirTS.xyz = (float3(
+        dot(worldTangent,viewDirWS),
+        dot(b,viewDirWS),
+        dot(worldNormal,viewDirWS)
+    ));
+    #endif
     return o;
 }
 
@@ -105,6 +116,11 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     UNITY_SETUP_INSTANCE_ID(i);
 
     TANGENT_SPACE_SPLIT(i);
+
+    #if defined(_PARALLAX)
+        // branch_if(! _ParallaxInVSOn)
+        ApplyParallax(i.uv.xy/**/,i.viewDirTS.xyz,_ParallaxHeight,_ParallaxMapChannel,1,_ParallaxMap_ST); // move to vs
+    #endif
 
     float2 mainUV = TRANSFORM_TEX(i.uv.xy, _MainTex);
     float2 normalUV = i.uv.xy *_NormalMap_ST.xy + _NormalMap_ST.zw;

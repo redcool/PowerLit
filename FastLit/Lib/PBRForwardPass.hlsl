@@ -185,14 +185,14 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     branch_if(IsSnowOn())
     {
         float3 startPos = unity_ObjectToWorld._14_24_34 + i.vertexPos;
-        float3 snowColor = CalcNoiseSnowColor(albedo,1,(startPos+startPos.xzy)*0.5,float4(_SnowNoiseTiling.xy,0,0),_SnowNoiseWeights);
+        float4 snowColor_Noise = CalcNoiseSnowColor(albedo,1,(startPos+startPos.xzy)*0.5,float4(_SnowNoiseTiling.xy,0,0),_SnowNoiseWeights);
 
         half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
         // snowAtten *= pbrMask.w;        
-        albedo = MixSnow(albedo,snowColor,snowAtten,n,_ApplyEdgeOn);
+        albedo = MixSnow(albedo,snowColor_Noise,snowAtten,n,_ApplyEdgeOn);
 
         // snow normal mask
-        float snowMask = smoothstep(0.4,0.7,albedo.x);
+        float snowMask = smoothstep(0.4,0.7,snowColor_Noise.w);
         n = _SnowNormalMask ? lerp(1,n,snowMask) : n;
     }
     #endif    

@@ -475,5 +475,5 @@ Shader "URP/PowerLit"
         }
 
     }
-    CustomEditor "PowerUtilities.PowerLitShaderGUI"
+    CustomEditor "PowerUtilities.PowerShaderInspector"
 }

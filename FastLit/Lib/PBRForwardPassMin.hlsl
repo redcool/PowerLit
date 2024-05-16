@@ -188,7 +188,6 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #if defined(_SNOW_ON)
     branch_if(IsSnowOn())
     {
-        return 1;
         float3 startPos = unity_ObjectToWorld._14_24_34 + i.vertexPos;
         float4 snowColor_Noise = CalcNoiseSnowColor(albedo,1,(startPos+startPos.xzy)*0.5,float4(_SnowNoiseTiling.xy,0,0),_SnowNoiseWeights);
 

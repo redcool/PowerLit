@@ -130,7 +130,7 @@ Shader "URP/FastLit"
 //=================================================  weather
         [Group(Fog)]
         [GroupToggle(Fog)]_FogOn("_FogOn",int) = 1
-        [GroupToggle(Fog,SIMPLE_FOG,use simple linear depth height fog)]_SimpleFog("_SimpleFog",int) = 0
+        // [GroupToggle(Fog,SIMPLE_FOG,use simple linear depth height fog)]_SimpleFog("_SimpleFog",int) = 0
         [GroupToggle(Fog)]_FogNoiseOn("_FogNoiseOn",int) = 0
         [GroupToggle(Fog)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(Fog)]_HeightFogOn("_HeightFogOn",int) = 1
@@ -283,7 +283,7 @@ Shader "URP/FastLit"
             #define _PBRMODE_PBR
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
-            #pragma shader_feature SIMPLE_FOG
+            // #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
@@ -304,6 +304,8 @@ Shader "URP/FastLit"
 
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
+
+            #define _DEPTH_FOG_NOISE_ON
             
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)

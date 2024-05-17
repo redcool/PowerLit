@@ -373,7 +373,17 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 
 //------ fog
     // col.rgb = MixFog(col.xyz,i.fogFactor.x);
-    BlendFogSphereKeyword(col.rgb/**/,worldPos,i.fogCoord.xy,_HeightFogOn,_FogNoiseOn,_DepthFogOn); // 2fps
+    // #endif
+    float fogNoise = 0;
+    #if defined(_DEPTH_FOG_NOISE_ON)
+    branch_if(_FogNoiseOn)
+    {
+        half4 weights=float4(1,.1,.1,1);
+        fogNoise = CalcWorldNoise(worldPos,_FogNoiseTilingOffset,-_GlobalWindDir,weights);
+    }
+    #endif
+
+    BlendFogSphereKeyword(col.rgb/**/,worldPos,i.fogCoord.xy,_HeightFogOn,fogNoise,_DepthFogOn); // 2fps
     col.a = alpha;
     return col;
 }

@@ -86,13 +86,15 @@ float3 ScreenToWorldPos(float2 screenUV){
 
 void ApplyFog(inout float4 color,float3 worldPos,float2 sphereFogCoord,half globalAtten){
     float fogNoise = 0;
-    // #if defined(_DEPTH_FOG_NOISE_ON)
+    
+    #if defined(_DEPTH_FOG_NOISE_ON)
     branch_if(_FogNoiseOn)
     {
-        float2 fogNoiseUV = (worldPos.xz+worldPos.yz) * _FogDirTiling.w+ _FogDirTiling.xz * _Time.y;
-        fogNoise = SampleWeatherNoise(fogNoiseUV);
+        half4 weights=float4(1,.1,.1,1);
+        fogNoise = CalcWorldNoise(worldPos,_FogNoiseTilingOffset,-_GlobalWindDir,weights);
     }
-    // #endif
+    #endif
+
     BlendFogSphere(color.rgb/**/,worldPos,sphereFogCoord,_HeightFogOn,fogNoise,_DepthFogOn,globalAtten);
 }
 

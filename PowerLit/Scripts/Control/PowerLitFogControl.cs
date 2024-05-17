@@ -46,7 +46,7 @@ public class PowerLitFogControl : MonoBehaviour
     public Color _FogNearColor = Color.black, _FogFarColor = Color.white;
 
     [Header("Noise")]
-    public Vector4 _FogNoiseTilingOffset = new Vector4(0.1f, 0, 0,0);
+    public Vector4 _FogNoiseDir = new Vector4(0.1f, 0, 0,0);
     [HideInInspector] [Obsolete]
     [Range(0, 1)] public float _FogNoiseTiling = .1f;
     [Range(0.02f, 0.99f)] public float _FogNoiseStartRate = 0.1f;
@@ -101,7 +101,7 @@ public class PowerLitFogControl : MonoBehaviour
         Shader.SetGlobalColor(nameof(_HeightFogMaxColor), _HeightFogMaxColor* (isFogColorApplyAlpha ? _HeightFogMaxColor.a : 1));
 
         Shader.SetGlobalVector("_FogDistance", new Vector4(_FogMin, _FogMax));
-        Shader.SetGlobalVector("_FogNoiseTilingOffset", _FogNoiseTilingOffset);
+        Shader.SetGlobalVector("_FogNoiseTilingOffset", _FogNoiseDir);
         Shader.SetGlobalVector("_FogNoiseParams", new Vector4(_FogNoiseStartRate, _FogNoiseIntensity));
 
         RenderSettings.fogColor = _FogFarColor * (isFogColorApplyAlpha ? _FogFarColor.a : 1);

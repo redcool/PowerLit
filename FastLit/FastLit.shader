@@ -253,7 +253,7 @@ Shader "URP/FastLit"
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        LOD 300
+        LOD 600
 
         Pass
         {
@@ -381,6 +381,136 @@ Shader "URP/FastLit"
         }
     }
 
+        SubShader //lod 300
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 300
+
+        Pass
+        {
+		    name "FastLitForward"
+			ZWrite[_ZWriteMode]
+			Blend [_SrcMode][_DstMode]
+			// BlendOp[_BlendOp]
+			Cull[_CullMode]
+			ztest[_ZTestMode]
+			// ColorMask [_ColorMask]
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            // #pragma multi_compile_fog
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            // #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
+            
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
+            #pragma multi_compile_fragment _ LIGHTMAP_ON
+
+            // only use pbr
+            // comments this,will use matcap
+            #define _PBRMODE_PBR
+            // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
+            
+            #pragma shader_feature SIMPLE_FOG
+            #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
+            #pragma shader_feature_fragment ALPHA_TEST
+            #pragma shader_feature_fragment _EMISSION
+            #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
+
+            #pragma shader_feature_local_fragment _SNOW_ON
+            #pragma shader_feature_local_vertex _WIND_ON
+            // #pragma shader_feature_local_fragment _RAIN_ON
+
+            #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local _STOREY_ON
+            #pragma shader_feature_local _DETAIL_ON
+            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+
+            // #pragma multi_compile _ MIN_VERSION
+            // #define MIN_VERSION
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
+
+            // #define _CLOUD_SHADOW_ON
+            #define SHADOWS_FULL_MIX
+            
+            #include "Lib/PBRInput.hlsl"
+            #if defined(MIN_VERSION)
+            // #include "Lib/PBRInputMin.hlsl"
+            #include "Lib/PBRForwardPassMin.hlsl"
+            #else
+            #include "Lib/PBRForwardPass.hlsl"
+            #endif
+
+            ENDHLSL
+        }
+        
+        Pass{
+            Tags{"LightMode" = "DepthOnly"}
+
+            ZWrite On
+            ZTest LEqual
+            // ColorMask 0
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag 
+            #pragma shader_feature_fragment ALPHA_TEST
+
+            #define USE_SAMPLER2D
+            #include "Lib/PBRInput.hlsl"
+            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+
+            ENDHLSL
+        }
+
+        Pass{
+            Tags{"LightMode" = "ShadowCaster"}
+
+            ZWrite On
+            ZTest LEqual
+            ColorMask 0
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+
+            #pragma shader_feature_fragment ALPHA_TEST
+            #pragma shader_feature_local_vertex _WIND_ON
+
+            #define SHADOW_PASS 
+            #define USE_SAMPLER2D
+            #define _MainTexChannel 3
+            #define _CustomShadowNormalBias _CustomShadowNormalBias
+            #define _CustomShadowDepthBias _CustomShadowDepthBias
+            #include "Lib/PBRInput.hlsl"
+            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+
+            ENDHLSL
+        }
+        Pass{
+            Name "Meta"
+            Tags{"LightMode" = "Meta"}
+            Cull Off
+            
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag 
+            #pragma shader_feature_fragment ALPHA_TEST
+            #pragma shader_feature_local_fragment _EMISSION
+
+            #include "Lib/PBRInput.hlsl"
+            // #include "Lib/FastLitMetaPass.hlsl"
+            #include "../../PowerShaderLib/URPLib/PBR1_MetaPass.hlsl"
+
+            ENDHLSL
+        }
+    }
+    
     SubShader // MIN_VERSION
     {
         Tags { "RenderType"="Opaque" }

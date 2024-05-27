@@ -93,7 +93,8 @@ v2f vert (appdata v)
 
     o.color = v.color;
 
-    CALC_MOTION_POSITIONS_WORLD(v.prevPos,worldPos,o,o.vertex);
+    CALC_MOTION_POSITIONS(v.prevPos,v.vertex,o,o.vertex);
+    // CALC_MOTION_POSITIONS_WORLD(v.prevPos,worldPos,o,o.vertex);
     
     branch_if(!_BigShadowOff){
         float3 bigShadowCoord = TransformWorldToBigShadow(worldPos);

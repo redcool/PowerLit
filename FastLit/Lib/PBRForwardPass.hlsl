@@ -41,7 +41,7 @@ struct v2f
     // motion vectors
     DECLARE_MOTION_VS_OUTPUT(6,7);
     float4 bigShadowCoord:TEXCOORD8;
-    float3 vertexPos:TEXCOORD9;
+    float4 vertexPos:TEXCOORD9;
     float3 viewDirTS:TEXCOORD10;
     float4 color:COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -380,7 +380,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     branch_if(_FogNoiseOn)
     {
         half4 weights=float4(1,.1,.1,1);
-        fogNoise = CalcWorldNoise(worldPos,_FogNoiseTilingOffset,-_GlobalWindDir,weights);
+        fogNoise = CalcWorldNoise(worldPos,_FogNoiseTilingOffset,-_GlobalWindDir.xyz,weights);
     }
     #endif
 

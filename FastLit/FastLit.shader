@@ -252,6 +252,9 @@ Shader "URP/FastLit"
 
     SubShader
     {
+        /**
+        fullfeature
+        */
         Tags { "RenderType"="Opaque" }
         LOD 600
 
@@ -304,7 +307,6 @@ Shader "URP/FastLit"
 
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
-
             #define _DEPTH_FOG_NOISE_ON
             
             #include "Lib/PBRInput.hlsl"
@@ -381,8 +383,13 @@ Shader "URP/FastLit"
         }
     }
 
-        SubShader //lod 300
+    SubShader //lod 300
     {
+        /**
+            turn off:
+            _RAIN
+            _PARALLAX
+        */
         Tags { "RenderType"="Opaque" }
         LOD 300
 
@@ -415,7 +422,8 @@ Shader "URP/FastLit"
             #define _PBRMODE_PBR
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
-            #pragma shader_feature SIMPLE_FOG
+            // #pragma shader_feature SIMPLE_FOG
+            // #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
             #pragma shader_feature_fragment _EMISSION
@@ -545,7 +553,7 @@ Shader "URP/FastLit"
             #define _PBRMODE_PBR
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
-            #pragma shader_feature SIMPLE_FOG
+            // #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
             #pragma shader_feature_fragment _EMISSION

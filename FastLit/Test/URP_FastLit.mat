@@ -21,21 +21,24 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: URP_FastLit
-  m_Shader: {fileID: 4800000, guid: ad46f1324a2b5e641a111ac3a66444ba, type: 3}
+  m_Shader: {fileID: 4800000, guid: e7554e4022b5ce7418d917687dd6d380, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _IBL_ON
-  - _INTERIOR_MAP_ON
   m_InvalidKeywords:
   - ENV_REFRACTION_ON
   - ENV_REFRACT_ON
   - InteriorMap
   - Refract
+  - _INTERIOR_MAP_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -165,16 +168,17 @@ Material:
     - _AdditionalLightShadowsOn: 0
     - _AdditionalLightShadowsSoftOn: 0
     - _AdditionalLightSoftShadowScale: 1
+    - _AlbedoMulVertexColor: 0
     - _AlphaClip: 0
     - _AlphaMax: 1
     - _AlphaMin: 0
     - _AlphaPremultiply: 0
     - _AlphaScale: 1
-    - _ClipOn: 0
     - _AnisoRough: 0
     - _AnisoShift: 0
     - _ApplyEdgeOn: 1
     - _BackFaceOn: 0
+    - _BigShadowOff: 0
     - _Blend: 0
     - _BlendScreenColor: 0
     - _BoxProjectionOn: 0
@@ -191,6 +195,8 @@ Material:
     - _ColorScale: 1
     - _Cull: 2
     - _CullMode: 0
+    - _CurvedBackwardScale: 0.0002
+    - _CurvedSidewayScale: -0.0039
     - _CustomLightColorUsage: 0
     - _CustomLightOn: 0
     - _CustomShadowDepthBias: 0
@@ -280,7 +286,8 @@ Material:
     - _LMIntensityAdditional: 1
     - _LMSaturateAdditional: 0
     - _LightmapSHAdditional: 0
-    - _MainLightShadowSoftScale: 0
+    - _MRTSmoothness: 1
+    - _MainLightShadowSoftScale: 0.368
     - _MainLightSoftShadowScale: 0
     - _MainTexChannel: 0
     - _MainTexMaskChannel: 0
@@ -304,7 +311,8 @@ Material:
     - _MatCapIntensity: 1
     - _MatCapOn: 0
     - _MatCapRotateOn: 0
-    - _Metallic: 1
+    - _MatCapScale: 1
+    - _Metallic: 0.418
     - _NoiseUseAttenMaskMap: 0
     - _NormalMapScale: 1
     - _NormalScale: 0
@@ -337,7 +345,9 @@ Material:
     - _PixelDissolveOn: 0
     - _PixelWidth: 10
     - _PlanarReflectionOn: 0
+    - _PlanarReflectionReverseU: 0
     - _PlanarReflectionReverseUV: 0
+    - _PlanarReflectionReverseV: 0
     - _PremultiVertexColor: 1
     - _PresetBlendMode: 0
     - _QueueOffset: 0
@@ -356,6 +366,7 @@ Material:
     - _ReceiveShadows: 1
     - _RefractMode: 1
     - _RippleAlbedoIntensity: 0.1
+    - _RippleBlendNormal: 1
     - _RippleBlendNormalOn: 0
     - _RippleIntensity: 1
     - _RippleOffsetAutoStop: 0
@@ -363,11 +374,14 @@ Material:
     - _ScreenShadowOn: 0
     - _ShadowsSoft: 0
     - _Shininess: 0
-    - _Smoothness: 1
+    - _SimpleFog: 0
+    - _Smoothness: 0.317
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SnowFlakeIntensity: 0.1
     - _SnowIntensity: 0
+    - _SnowIntensityUseMainTexA: 0
+    - _SnowNormalMask: 0
     - _SnowOn: 0
     - _SpecSource: 0
     - _SpecularHighlights: 1
@@ -426,7 +440,7 @@ Material:
     - _CloudShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _CloudShadowIntensityInfo: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _CloudShadowTilingOffset: {r: 0.1, g: 0.1, b: 0.1, a: 0.1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.5754717, g: 0.5754717, b: 0.5754717, a: 1}
     - _ColorX: {r: 1, g: 1, b: 1, a: 1}
     - _ColorY: {r: 1, g: 1, b: 1, a: 1}
     - _ColorZ: {r: 1, g: 1, b: 1, a: 1}
@@ -449,20 +463,25 @@ Material:
     - _FresnelColor2: {r: 1, g: 1, b: 1, a: 1}
     - _FresnelIntensity_LMSHAdd_LMSaturateAdd_LMIntensityAdd: {r: 1, g: 0, b: 0, a: 1}
     - _JitterInfo: {r: 0.1, g: 0.1, b: 1, a: 0}
+    - _LightmapColor: {r: 1, g: 1, b: 1, a: 1}
     - _MSOInfo: {r: 1, g: 1, b: 0, a: 0}
     - _MainTexSheet: {r: 1, g: 1, b: 1, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _Metallic_Smoothness_Occlusion_NormalScale: {r: 0.562, g: 1, b: 0, a: 0}
-    - _NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow: {r: 0, g: 0.5, b: 0, a: 0}
+    - _NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow: {r: 0, g: 0.5,
+        b: 0, a: 0}
     - _OffsetDir: {r: 1, g: 1, b: 0, a: 0}
     - _OffsetRadialCenter_Scale: {r: 0.5, g: 0.5, b: 1, a: 1}
     - _OffsetTexColorTint: {r: 1, g: 1, b: 1, a: 1}
     - _OffsetTexColorTint2: {r: 1, g: 1, b: 1, a: 1}
     - _OffsetTile: {r: 1, g: 1, b: 1, a: 1}
     - _RainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _RainFlowTilingOffset: {r: 10, g: 10, b: 10, a: 10}
     - _RainReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
     - _RainReflectTilingOffset: {r: 50, g: 50, b: 10, a: 10}
     - _ReflectDirOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _SnowNoiseTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _SnowNoiseWeights: {r: 1, g: 0.1, b: 0.1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _StoreyLineColor: {r: 1, g: 1, b: 1, a: 1}
     - _StoreyTiling_LightSwitchSpeed_Height_Line: {r: 0, g: 0, b: 1, a: 0}

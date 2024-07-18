@@ -14,6 +14,7 @@
 #include "../../PowerShaderLib/Lib/BigShadows.hlsl"
 #include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
 #include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
+#include "../../PowerShaderLib/Lib/CurvedLib.hlsl"
 
 struct appdata
 {
@@ -64,6 +65,8 @@ v2f vert (appdata v)
         worldPos = WindAnimationVertex(worldPos,v.vertex.xyz,worldNormal,attenParam * _WindAnimParam, _WindDir,_WindSpeed).xyz;
     }
     #endif
+
+    worldPos.xy += CalcCurvedPos(_WorldSpaceCameraPos,worldPos,_CurvedSidewayScale,_CurvedBackwardScale);
 
     o.vertex = UnityWorldToClipPos(worldPos);
     o.vertexPos = v.vertex;

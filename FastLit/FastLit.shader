@@ -228,6 +228,11 @@ Shader "URP/FastLit"
         [GroupItem(Parallax)]_ParallaxMap("_ParallaxMap",2d) = "white"{}
         [GroupEnum(Parallax,R 0 G 1 B 2 A 3)]_ParallaxMapChannel("_ParallaxMapChannel",int) = 3
         [GroupSlider(Parallax)]_ParallaxHeight("_ParallaxHeight",range(0.005,0.3)) = 0.01
+
+        [Group(Curved)]
+        [GroupSlider(Curved,x curve intensity,float)] _CurvedSidewayScale("_CurvedSidewayScale",range(-0.01,0.01)) = 0
+        [GroupSlider(Curved,y curve instensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
+
 //================================================= future function variables,dont use these when dont know
         // [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
         // [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)

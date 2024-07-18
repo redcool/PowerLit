@@ -1,7 +1,7 @@
 // when edit this file need reselect material
 
 // Tabs
-tabNames =  Settings, Main,Lighting,Details,Alpha,Parallax,Env,Emission,Wind,Snow,Fog,Rain,MatCap
+tabNames =  Settings, Main,Lighting,Details,Alpha,Parallax,Env,Emission,Wind,Snow,Fog,Rain,MatCap,Curved
 
 // Tab's contents
 Settings =_ZWriteMode,_ZTestMode,_CullMode,_RenderQueue,_ColorMask,_BakedEmission,_StencilComp,_Stencil,_StencilOp
@@ -22,4 +22,5 @@ Rain = _RainOn,_RippleTex,_RippleOffsetAutoStop,_RippleSpeed,_RippleIntensity,_R
 
 Details = _DetailOn,_DetailPBRMaskMap,_DetailPBRMetallic,_DetailPBRSmoothness,_DetailPBROcclusion,_DetailUVUseWorldPos,_DetailWorldPlaneMode,_DetailWorldPosTriplanar,_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion
 MatCap = _MatCap,_MatCapScale
+Curved = _CurvedSidewayScale,_CurvedBackwardScale
 //Debug = _DebugDisplay

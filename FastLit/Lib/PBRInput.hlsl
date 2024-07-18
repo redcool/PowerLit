@@ -139,6 +139,8 @@ half _MatCapScale;
 half _ParallaxHeight,_ParallaxMapChannel;
 half4 _ParallaxMap_ST;
 
+half _CurvedBackwardScale,_CurvedSidewayScale;
+
 CBUFFER_END
 
 half4 _SceneMatCap_ST; // use consts

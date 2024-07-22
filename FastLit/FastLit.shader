@@ -338,6 +338,8 @@ Shader "URP/FastLit"
 
             #define USE_SAMPLER2D
             #include "Lib/PBRInput.hlsl"
+
+            #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
@@ -365,6 +367,8 @@ Shader "URP/FastLit"
             #define _CustomShadowNormalBias _CustomShadowNormalBias
             #define _CustomShadowDepthBias _CustomShadowDepthBias
             #include "Lib/PBRInput.hlsl"
+
+            #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
@@ -474,6 +478,8 @@ Shader "URP/FastLit"
 
             #define USE_SAMPLER2D
             #include "Lib/PBRInput.hlsl"
+
+            #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
@@ -501,6 +507,8 @@ Shader "URP/FastLit"
             #define _CustomShadowNormalBias _CustomShadowNormalBias
             #define _CustomShadowDepthBias _CustomShadowDepthBias
             #include "Lib/PBRInput.hlsl"
+
+            #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
@@ -604,6 +612,8 @@ Shader "URP/FastLit"
 
             #define USE_SAMPLER2D
             #include "Lib/PBRInput.hlsl"
+
+            #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
@@ -631,6 +641,7 @@ Shader "URP/FastLit"
             #define _CustomShadowNormalBias _CustomShadowNormalBias
             #define _CustomShadowDepthBias _CustomShadowDepthBias
             #include "Lib/PBRInput.hlsl"
+
             #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 

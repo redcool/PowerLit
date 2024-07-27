@@ -10,6 +10,7 @@
 #include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
 #include "../../PowerShaderLib/Lib/BlitLib.hlsl"
 #include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
+#include "Lights.hlsl"
 
 struct appdata
 {
@@ -37,10 +38,10 @@ v2f vert (appdata v,uint vid:SV_VERTEXID)
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_TRANSFER_INSTANCE_ID(v,o);
 
-    o.vertex = UnityObjectToClipPos(v.vertex.xyz);
-
-    if(_MainLightPosition.w==0)
-        FullScreenTriangleVert(vid,o.vertex/**/,o.uv.xy/**/);
+    o.vertex = (_MainLightPosition.w==0) ? float4(v.vertex.xy*2,UNITY_NEAR_CLIP_VALUE,1) : UnityObjectToClipPos(v.vertex.xyz);
+// o.vertex = UnityObjectToClipPos(v.vertex.xyz);
+    // if(_MainLightPosition.w==0)
+        // FullScreenTriangleVert(vid,o.vertex/**/,o.uv.xy/**/);
 
     return o;
 }
@@ -56,19 +57,62 @@ float4 frag (v2f i) : SV_Target
     float4 gbuffer2 = tex2D(_GBuffer2,screenUV);
     // float4 gbuffer3 = tex2D(_GBuffer3,screenUV);
     // return gbuffer0;
-    half3 albedo = gbuffer0.xyz;
+    half3 albedo = gbuffer0.xyz; // include gi
+
     half3 emission = half3(gbuffer1.zw,gbuffer0.w);
+
     float3 normal = float3(gbuffer1.xy,0);
-    normal.z = sqrt(dot(normal.xy,normal.xy));
+    normal.xyz = normal.xyz *2-1;
+
+    // normal.z = sqrt(1.0 - saturate(dot(normal.xy,normal.xy)));
+    normal = normalize(normal);
+// return float4(normal.xyz,0);
     float3 pbrMask = float3(gbuffer2.xyz);
     float shadowAtten = gbuffer2.w;
 
     // return shadowAtten;
-    float depthTex = tex2D(_CameraDepthAttachment,screenUV);
+    float depthTex = tex2D(_CameraDepthAttachment,screenUV).x;
     float3 worldPos = ScreenToWorldPos(screenUV,depthTex,UNITY_MATRIX_I_VP);
-    return worldPos.xyzx;
+
+    Light light = GetLight(_MainLightPosition,_MainLightColor.xyz,shadowAtten,worldPos,_LightAttenuation,1);
+    // float3 worldPos1 = ScreenToWorldPos(tex2D(_CameraDepthAttachment,screenUV+float2(1/_ScaledScreenParams.x,0)),depthTex,UNITY_MATRIX_I_VP);
+    // float3 worldPos2 = ScreenToWorldPos(tex2D(_CameraDepthAttachment,screenUV+float2(0,1/_ScaledScreenParams.y)),depthTex,UNITY_MATRIX_I_VP);
+    // normal = normalize(cross(ddy(worldPos),ddx(worldPos)));
+    
+    // pbr mask
+    float metallic = pbrMask.x;
+    float smoothness =pbrMask.y;
+    float occlusion =pbrMask.z;
+
+    float roughness = 0;
+    float a = 0;
+    float a2 = 0;
+    CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);
+
+    float3 l = light.direction;
+    float3 v = normalize(UnityWorldSpaceViewDir(worldPos));
+    float3 h = normalize(l+v);
+    float3 n = normalize(normal);
+    float lh = saturate(dot(l,h));
+    float nh = saturate(dot(n,h));
+    float nl = saturate(dot(n,l));
+    // return nl;
+
+    float nv = saturate(dot(n,v));
+
+    // if(_MainLightPosition.w == 1)
+    //     return light.distanceAttenuation;
+
+    float3 radiance = light.color * (light.shadowAttenuation * light.distanceAttenuation * nl);
+
+    float specTerm = MinimalistCookTorrance(nh,lh,a,a2);
+
+    float3 specColor = lerp(0.04,albedo,metallic);
+    float3 diffColor = albedo * (1 - metallic);
+    float3 directColor = (diffColor + specColor * specTerm) * radiance;
 
     half4 col = (half4)0;
+    col.xyz = directColor;
     return col;
 }
 

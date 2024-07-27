@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hidden_URP_pbr1_Defered
-  m_Shader: {fileID: 4800000, guid: 5bb56d982c9112948adc87351456cc5f, type: 3}
+  m_Name: pbr1_DeferedLighting
+  m_Shader: {fileID: 4800000, guid: bb795ea860fdd564aad075b62ea207d9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -51,12 +51,12 @@ Material:
     - _AnisoShift: 0
     - _CalcAdditionalLights: 0
     - _CalcTangent: 0
-    - _CullMode: 2
+    - _CullMode: 0
     - _CustomShadowDepthBias: 0.5
     - _CustomShadowNormalBias: 0.5
     - _Cutoff: 0.5
     - _DepthFogOn: 1
-    - _DstMode: 0
+    - _DstMode: 1
     - _EmissionGI: 0
     - _EmissionOn: 0
     - _FogNoiseOn: 0
@@ -72,7 +72,7 @@ Material:
     - _ParallaxOn: 0
     - _PbrMode: 0
     - _PresetBlendMode: 0
-    - _ReceiveAdditionalLightShadow: 1
+    - _ReceiveAdditionalLightShadow: 0
     - _ReceiveShadowOff: 0
     - _SimpleFog: 0
     - _Smoothness: 0.5
@@ -84,7 +84,7 @@ Material:
     - _TFSaturate: 1
     - _TFScale: 1
     - _ZTestMode: 4
-    - _ZWriteMode: 1
+    - _ZWriteMode: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}

@@ -4,6 +4,12 @@
 #define _MainTex _BaseMap
 #define _MainTex_ST _BaseMap_ST
 #define _PbrMask _MetallicMaskMap
+/**
+    sv_target0 , xyz : albedo+giColor, w: emission.z
+    sv_target1 , xy:normal.xy,zw:emission.xy
+    sv_target2 , xyz:pbrMask,w:mainLightShadow
+    sv_target3 , xy(16) : motion vector.xy
+*/
 
 sampler2D _GBuffer0;
 sampler2D _GBuffer1;

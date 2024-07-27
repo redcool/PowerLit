@@ -118,10 +118,11 @@ Varyings vert(Attributes input){
     sv_target3 , xy(16) : motion vector.xy
 */
 float4 frag(Varyings input
-    ,out float4 outputNormal_Emission:SV_TARGET1 //normal:xy,emission:zw, emission.b -> sv_target.w
-    ,out float4 outputPbrMask:SV_TARGET2 // pbrMask:xyz,shadow:w
-    ,out float4 outputMotionVectors:SV_TARGET3 // rg,full
-):SV_Target{
+    ,out float4 outputNormal_Emission:SV_TARGET1 //{xy:normal,zw:emission}
+    ,out float4 outputPbrMask:SV_TARGET2 // {xyz:pbrMask,w:shadow}
+    ,out float4 outputMotionVectors:SV_TARGET3 // {rg}
+):SV_Target//{xyz:albedo,w:emission.b}
+{
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
@@ -281,15 +282,16 @@ float4 frag(Varyings input
         ApplyStoreyLineEmission(emission/**/,worldPos,input.uv.xy,input.color,nv);
     }
     #endif
-
+ 
 //  world emission
     half upFaceAtten = input.bigShadowCoord_UpFaceAtten.w;
     ApplyWorldEmission(emission/**/,worldPos,upFaceAtten);
 
 //------- mrt output    
     // output world normal
-    outputNormal_Emission.xy = n.xy;
-    outputNormal_Emission.zw = emission.xy;
+    float3 outN = n.xyz * 0.5+0.5;
+    outputNormal_Emission.xyz = outN.xyz;
+    // outputNormal_Emission.zw = emission.xy;
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(input);
     outputPbrMask = float4(metallic,smoothness,occlusion,mainLight.shadowAttenuation);

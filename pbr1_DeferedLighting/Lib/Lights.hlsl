@@ -79,7 +79,7 @@ float DistanceAtten(float distance2,float radius2,float maxIntensity,float fallO
 
 float AngleAtten(float3 spotDir,float3 lightDir,float outerAngle ,float innerAngle){
     float atten = (dot(spotDir,lightDir));
-    atten *= smoothstep(innerAngle,outerAngle,atten);
+    atten *= smoothstep(1-outerAngle,1-innerAngle,atten);
     return atten;
 }
 
@@ -97,6 +97,7 @@ Light GetLight(float4 lightPos,float3 color,float shadowAtten,float3 worldPos,fl
     #else
         atten *= DistanceAtten(distSqr,_Radius*_Radius,_Intensity,_Falloff);
         atten *= _IsSpot ? AngleAtten(spotLightDir,lightDir,_SpotLightAngle.x,_SpotLightAngle.y) : 1;
+        // atten *= AngleAtten(spotLightDir,lightDir,_SpotLightAngle.x,_SpotLightAngle.y) * _IsSpot + 1-_IsSpot;
     #endif
 
     Light l = (Light)0;

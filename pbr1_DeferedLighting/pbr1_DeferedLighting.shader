@@ -58,7 +58,7 @@ Shader "Hidden/URP/pbr1_DeferedLighting"
             #pragma fragment frag
             #pragma target 3.0
 
-            #define UNITY_ATTEN
+            // #define UNITY_ATTEN
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRPass.hlsl"
             

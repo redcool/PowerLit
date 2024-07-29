@@ -112,13 +112,13 @@ Varyings vert(Attributes input){
     return output;
 }
 /**
-    sv_target0 , xyz : albedo+giColor, w: emission.z
-    sv_target1 , xy:normal.xy,zw:emission.xy
+    sv_target0 , xyz : albedo+giColor,
+    sv_target1 , xyz:normal.xyz
     sv_target2 , xyz:pbrMask,w:mainLightShadow
     sv_target3 , xy(16) : motion vector.xy
 */
 float4 frag(Varyings input
-    ,out float4 outputNormal_Emission:SV_TARGET1 //{xy:normal,zw:emission}
+    ,out float4 outputNormal:SV_TARGET1 //{xyz:normal}
     ,out float4 outputPbrMask:SV_TARGET2 // {xyz:pbrMask,w:shadow}
     ,out float4 outputMotionVectors:SV_TARGET3 // {rg}
 ):SV_Target//{xyz:albedo,w:emission.b}
@@ -290,14 +290,17 @@ float4 frag(Varyings input
 //------- mrt output    
     // output world normal
     float3 outN = n.xyz * 0.5+0.5;
-    outputNormal_Emission.xyz = outN.xyz;
-    // outputNormal_Emission.zw = emission.xy;
+    outputNormal.xyz = outN.xyz;
+
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(input);
     outputPbrMask = float4(metallic,smoothness,occlusion,mainLight.shadowAttenuation);
 
     col.rgb += albedo;
-    col.a = emission.z;
+
+    // float3 normEmission = (emission.xyz/10);
+    // col.a = normEmission.x;//
+    // outputNormal.w = normEmission.y;
 
     return col;
 }

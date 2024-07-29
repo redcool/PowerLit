@@ -18,41 +18,41 @@ sampler2D _CameraDepthAttachment;
 
 
 CBUFFER_START(UnityPerMaterial)
-half4 _Color;
-half4 _MainTex_ST;
-half _Metallic,_Smoothness,_Occlusion;
+// half4 _Color;
+// half4 _MainTex_ST;
+// half _Metallic,_Smoothness,_Occlusion;
 
-half _NormalScale;
+// half _NormalScale;
 
-half _SpecularOn;
-half _AnisoRough;
-half _AnisoShift;
+// half _SpecularOn;
+// half _AnisoRough;
+// half _AnisoShift;
 
-int _PbrMode;
-half _CalcTangent;
+// int _PbrMode;
+// half _CalcTangent;
 
-// custom shadow 
-half _MainLightShadowSoftScale;
-half _CustomShadowDepthBias,_CustomShadowNormalBias;
+// // custom shadow 
+// half _MainLightShadowSoftScale;
+// half _CustomShadowDepthBias,_CustomShadowNormalBias;
 
-// half _CalcAdditionalLights,_ReceiveAdditionalLightShadow,_AdditionalIghtSoftShadow;
+// // half _CalcAdditionalLights,_ReceiveAdditionalLightShadow,_AdditionalIghtSoftShadow;
 
-//thin film
-half _TFOn,_TFScale,_TFOffset,_TFSaturate,_TFBrightness;
+// //thin film
+// half _TFOn,_TFScale,_TFOffset,_TFSaturate,_TFBrightness;
 
-half _ReceiveShadowOff;
+// half _ReceiveShadowOff;
 
 half _FogOn;
-half _FogNoiseOn;
-half _DepthFogOn;
-half _HeightFogOn;
+// half _FogNoiseOn;
+// half _DepthFogOn;
+// half _HeightFogOn;
 
-half _AlphaPremultiply;
-half _Cutoff;
+// half _AlphaPremultiply;
+// half _Cutoff;
 
-half4 _EmissionColor;
+// half4 _EmissionColor;
 
-half _ParallaxOn,_ParallaxIterate,_ParallaxHeight,_ParallaxMapChannel;
+// half _ParallaxOn,_ParallaxIterate,_ParallaxHeight,_ParallaxMapChannel;
 
 CBUFFER_END
 

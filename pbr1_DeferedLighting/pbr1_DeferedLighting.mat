@@ -51,7 +51,7 @@ Material:
     - _AnisoShift: 0
     - _CalcAdditionalLights: 0
     - _CalcTangent: 0
-    - _CullMode: 0
+    - _CullMode: 1
     - _CustomShadowDepthBias: 0.5
     - _CustomShadowNormalBias: 0.5
     - _Cutoff: 0.5

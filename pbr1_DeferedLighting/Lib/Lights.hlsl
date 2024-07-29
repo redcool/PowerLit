@@ -2,7 +2,14 @@
 #define LIGHTS_HLSL
 // light 
 float4 _LightAttenuation;
+float4 _LightDirection;
+float2 _SpotLightAngle;
 
+float4 _LightRadiusIntensityFalloff;
+#define _Radius _LightRadiusIntensityFalloff.x
+#define _Intensity _LightRadiusIntensityFalloff.y
+#define _Falloff _LightRadiusIntensityFalloff.z
+#define _IsSpot _LightRadiusIntensityFalloff.w
 
 // // Matches Unity Vanila attenuation
 // // Attenuation smoothly decreases to light range.
@@ -49,10 +56,7 @@ float4 _LightAttenuation;
     Distance atten
 
     https://lisyarus.github.io/blog/posts/point-light-attenuation.html
-*/
-float Sqr(float x){
-     return x*x;
-}
+
 float DistanceAtten(float distance,float radius,float maxIntensity,float fallOff){
     float s = distance/radius;
     float isInner = s<1;
@@ -61,6 +65,25 @@ float DistanceAtten(float distance,float radius,float maxIntensity,float fallOff
     float atten = maxIntensity * Sqr(1 - s2)/(1+fallOff*s2);
     return atten * isInner;
 }
+*/
+float Sqr(float x){
+     return x*x;
+}
+float DistanceAtten(float distance2,float radius2,float maxIntensity,float fallOff=1){
+    float s2 = distance2/radius2;
+    float isInner = s2<1;
+
+    float atten = maxIntensity * Sqr(1 - s2)/(1+fallOff*s2);
+    return atten * isInner;
+}
+
+float AngleAtten(float3 spotDir,float3 lightDir,float outerAngle ,float innerAngle){
+    float atten = (dot(spotDir,lightDir));
+    atten *= smoothstep(innerAngle,outerAngle,atten);
+    return atten;
+}
+
+// #define UNITY_ATTEN
 
 Light GetLight(float4 lightPos,float3 color,float shadowAtten,float3 worldPos,float4 distanceAndSpotAttenuation,float3 spotLightDir){
     float3 lightDir = lightPos.xyz - worldPos * lightPos.w;
@@ -68,9 +91,13 @@ Light GetLight(float4 lightPos,float3 color,float shadowAtten,float3 worldPos,fl
 
     lightDir = lightDir * rsqrt(distSqr);
     float atten = 1;
-    atten *= DistanceAttenuation(distSqr,distanceAndSpotAttenuation.xy);
-    // atten *= DistanceAtten(distance(lightPos.xyz,worldPos),3,1,1);
-    atten *= AngleAttenuation(spotLightDir,lightDir,distanceAndSpotAttenuation.zw);
+    #if defined(UNITY_ATTEN)
+        atten *= DistanceAttenuation(distSqr,distanceAndSpotAttenuation.xy);
+        atten *= AngleAttenuation(spotLightDir,lightDir,distanceAndSpotAttenuation.zw);
+    #else
+        atten *= DistanceAtten(distSqr,_Radius*_Radius,_Intensity,_Falloff);
+        atten *= _IsSpot ? AngleAtten(spotLightDir,lightDir,_SpotLightAngle.x,_SpotLightAngle.y) : 1;
+    #endif
 
     Light l = (Light)0;
     l.direction = lightDir;

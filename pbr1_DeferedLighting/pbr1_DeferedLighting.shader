@@ -20,8 +20,8 @@ Shader "Hidden/URP/pbr1_DeferedLighting"
         // [HideInInspector]_DstMode("_DstMode",int) = 0
 
         [Group(Settings)]
-        [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
-		[GroupToggle(Settings)]_ZWriteMode("ZWriteMode",int) = 1
+        // [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
+		// [GroupToggle(Settings)]_ZWriteMode("ZWriteMode",int) = 1
 		/*
 		Disabled,Never,Less,Equal,LessEqual,Greater,NotEqual,GreaterEqual,Always
 		*/
@@ -33,41 +33,22 @@ Shader "Hidden/URP/pbr1_DeferedLighting"
         LOD 100
         Tags { "RenderType"="Transparent" "LightMode"="DeferedLighting"}
 
-        //0 dir light
+        /**
+        dir light
+        Blend One srcAlpha, Zero One
+
+        points
+        Blend One one, Zero One
+        */
         Pass
         {
 			ZWrite off
-			// Blend [_SrcMode][_DstMode]
-            Blend One srcAlpha, Zero One
+			Blend [_SrcMode][_DstMode] , [_SrcAlphaMode][_DstAlphaMode]
+            // Blend One srcAlpha, Zero One
             // BlendOp Add, Add
 			// BlendOp[_BlendOp]
-			Cull off
+			Cull [_CullMode]
 			ztest[_ZTestMode]
-            zclip false
-            
-			// ColorMask [_ColorMask]
-
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #pragma target 3.0
-
-            
-            #include "Lib/PBRInput.hlsl"
-            #include "Lib/PBRPass.hlsl"
-            
-            ENDHLSL
-        }
-        //1 point 
-        Pass
-        {
-			ZWrite off
-			// Blend [_SrcMode][_DstMode]
-            Blend One one, Zero One
-            // BlendOp Add, Add
-			// BlendOp[_BlendOp]
-			Cull front
-			ztest lequal
             // zclip false
             
 			// ColorMask [_ColorMask]
@@ -77,11 +58,12 @@ Shader "Hidden/URP/pbr1_DeferedLighting"
             #pragma fragment frag
             #pragma target 3.0
 
-            
+            #define UNITY_ATTEN
             #include "Lib/PBRInput.hlsl"
             #include "Lib/PBRPass.hlsl"
             
             ENDHLSL
         }
+
     }
 }

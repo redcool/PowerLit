@@ -390,6 +390,68 @@ Shader "URP/FastLit"
 
             ENDHLSL
         }
+
+        Pass
+        {
+            Name "Defered"
+            Tags{"LightMode"="UniversalGBuffer"}
+			ZWrite[_ZWriteMode]
+			Blend [_SrcMode][_DstMode]
+			// BlendOp[_BlendOp]
+			Cull[_CullMode]
+			ztest[_ZTestMode]
+			// ColorMask [_ColorMask]
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            // #pragma multi_compile_fog
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            // #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
+            
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
+            #pragma multi_compile_fragment _ LIGHTMAP_ON
+
+            // only use pbr
+            #define _PBRMODE_PBR
+            // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
+            
+            // #pragma shader_feature SIMPLE_FOG
+            #pragma shader_feature_local _PARALLAX 
+            #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
+            #pragma shader_feature_fragment ALPHA_TEST
+            #pragma shader_feature_fragment _EMISSION
+            #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
+
+            #pragma shader_feature_local_fragment _SNOW_ON
+            #pragma shader_feature_local_vertex _WIND_ON
+            #pragma shader_feature_local_fragment _RAIN_ON
+
+            #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local _STOREY_ON
+            #pragma shader_feature_local _DETAIL_ON
+            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+
+            // #pragma multi_compile _ MIN_VERSION
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
+
+            // #define _CLOUD_SHADOW_ON
+            #define SHADOWS_FULL_MIX
+            #define _DEPTH_FOG_NOISE_ON
+            
+            #include "Lib/PBRInput.hlsl"
+            // #if defined(MIN_VERSION)
+            // #include "Lib/PBRForwardPassMin.hlsl"
+            // #else
+            #include "Lib/DeferedPass.hlsl"
+            // #endif
+
+            ENDHLSL
+        }
     }
 
     SubShader //lod 300
@@ -530,6 +592,67 @@ Shader "URP/FastLit"
 
             ENDHLSL
         }
+        Pass
+        {
+            Name "Defered"
+            Tags{"LightMode"="UniversalGBuffer"}
+			ZWrite[_ZWriteMode]
+			Blend [_SrcMode][_DstMode]
+			// BlendOp[_BlendOp]
+			Cull[_CullMode]
+			ztest[_ZTestMode]
+			// ColorMask [_ColorMask]
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            // #pragma multi_compile_fog
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            // #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
+            
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
+            #pragma multi_compile_fragment _ LIGHTMAP_ON
+
+            // only use pbr
+            #define _PBRMODE_PBR
+            // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
+            
+            // #pragma shader_feature SIMPLE_FOG
+            #pragma shader_feature_local _PARALLAX 
+            #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
+            #pragma shader_feature_fragment ALPHA_TEST
+            #pragma shader_feature_fragment _EMISSION
+            #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
+
+            #pragma shader_feature_local_fragment _SNOW_ON
+            #pragma shader_feature_local_vertex _WIND_ON
+            #pragma shader_feature_local_fragment _RAIN_ON
+
+            #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local _STOREY_ON
+            #pragma shader_feature_local _DETAIL_ON
+            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+
+            // #pragma multi_compile _ MIN_VERSION
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
+
+            // #define _CLOUD_SHADOW_ON
+            #define SHADOWS_FULL_MIX
+            #define _DEPTH_FOG_NOISE_ON
+            
+            #include "Lib/PBRInput.hlsl"
+            // #if defined(MIN_VERSION)
+            // #include "Lib/PBRForwardPassMin.hlsl"
+            // #else
+            #include "Lib/DeferedPass.hlsl"
+            // #endif
+
+            ENDHLSL
+        }
     }
     
     SubShader // MIN_VERSION
@@ -664,6 +787,67 @@ Shader "URP/FastLit"
 
             ENDHLSL
         }
+        Pass
+        {
+            Name "Defered"
+            Tags{"LightMode"="UniversalGBuffer"}
+			ZWrite[_ZWriteMode]
+			Blend [_SrcMode][_DstMode]
+			// BlendOp[_BlendOp]
+			Cull[_CullMode]
+			ztest[_ZTestMode]
+			// ColorMask [_ColorMask]
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            // #pragma multi_compile_fog
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            // #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
+            
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
+            #pragma multi_compile_fragment _ LIGHTMAP_ON
+
+            // only use pbr
+            #define _PBRMODE_PBR
+            // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
+            
+            // #pragma shader_feature SIMPLE_FOG
+            #pragma shader_feature_local _PARALLAX 
+            #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
+            #pragma shader_feature_fragment ALPHA_TEST
+            #pragma shader_feature_fragment _EMISSION
+            #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
+
+            #pragma shader_feature_local_fragment _SNOW_ON
+            #pragma shader_feature_local_vertex _WIND_ON
+            #pragma shader_feature_local_fragment _RAIN_ON
+
+            #pragma shader_feature_local_fragment _IBL_ON
+            #pragma shader_feature_local _STOREY_ON
+            #pragma shader_feature_local _DETAIL_ON
+            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+
+            // #pragma multi_compile _ MIN_VERSION
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
+
+            // #define _CLOUD_SHADOW_ON
+            #define SHADOWS_FULL_MIX
+            #define _DEPTH_FOG_NOISE_ON
+            
+            #include "Lib/PBRInput.hlsl"
+            // #if defined(MIN_VERSION)
+            // #include "Lib/PBRForwardPassMin.hlsl"
+            // #else
+            #include "Lib/DeferedPass.hlsl"
+            // #endif
+
+            ENDHLSL
+        }        
     }
     CustomEditor "PowerUtilities.PowerShaderInspector"
 }

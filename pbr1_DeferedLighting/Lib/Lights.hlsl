@@ -3,8 +3,9 @@
 // light 
 float4 _LightAttenuation;
 float4 _LightDirection;
-float2 _SpotLightAngle;
+float2 _SpotLightAngle; //{outer:dot range[1,0],innerSpotAngle:dot range[1,0]}
 
+// _LightRadiusIntensityFalloff()
 float4 _LightRadiusIntensityFalloff;
 #define _Radius _LightRadiusIntensityFalloff.x
 #define _Intensity _LightRadiusIntensityFalloff.y
@@ -79,7 +80,7 @@ float DistanceAtten(float distance2,float radius2,float maxIntensity,float fallO
 
 float AngleAtten(float3 spotDir,float3 lightDir,float outerAngle ,float innerAngle){
     float atten = (dot(spotDir,lightDir));
-    atten *= smoothstep(1-outerAngle,1-innerAngle,atten);
+    atten *= smoothstep(outerAngle,innerAngle,atten);
     return atten;
 }
 

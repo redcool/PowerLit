@@ -15,7 +15,7 @@ sampler2D _GBuffer0;
 sampler2D _GBuffer1;
 sampler2D _GBuffer2;
 sampler2D _CameraDepthAttachment;
-
+sampler2D _GBuffer4;
 
 CBUFFER_START(UnityPerMaterial)
 // half4 _Color;

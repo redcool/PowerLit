@@ -121,12 +121,21 @@ float4 frag(Varyings input
     ,out float4 outputNormal:SV_TARGET1 //{xyz:normal}
     ,out float4 outputPbrMask:SV_TARGET2 // {xyz:pbrMask,w:shadow}
     ,out float4 outputMotionVectors:SV_TARGET3 // {rg}
+    #if defined(SHADER_API_GLES3)
+    ,out float4 outputWorldPos:SV_TARGET4
+    #endif
 ):SV_Target//{xyz:albedo,w:emission.b}
 {
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     // global vars
     float3 worldPos = float3(input.tSpace0.w,input.tSpace1.w,input.tSpace2.w);
+    
+    //gl,depth buffer too low,use new rt
+    #if defined(SHADER_API_GLES3)
+    outputWorldPos.xyz = worldPos;
+    #endif
+
     float3 vertexNormal = float3(input.tSpace0.z,input.tSpace1.z,input.tSpace2.z);
     float vertexNoise = input.fogCoord.z;
 

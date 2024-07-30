@@ -55,6 +55,7 @@ float4 frag (v2f i) : SV_Target
     float4 gbuffer0 = tex2D(_GBuffer0,screenUV); // albedo
     float4 gbuffer1 = tex2D(_GBuffer1,screenUV); // normal
     float4 gbuffer2 = tex2D(_GBuffer2,screenUV); // pbrMask
+
     // float4 gbuffer3 = tex2D(_GBuffer3,screenUV);
     half3 emission = half3(gbuffer0.w,gbuffer1.w,0);
 
@@ -70,8 +71,13 @@ float4 frag (v2f i) : SV_Target
     float shadowAtten = gbuffer2.w;
 
     // return shadowAtten;
+    #if defined(SHADER_API_GLES3)
+    float4 gbuffer4 = tex2D(_GBuffer4,screenUV); // worldPos only gles3
+    float3 worldPos = gbuffer4.xyz;
+    #else
     float depthTex = tex2D(_CameraDepthAttachment,screenUV).x;
     float3 worldPos = ScreenToWorldPos(screenUV,depthTex,UNITY_MATRIX_I_VP);
+    #endif
 
     Light light = GetLight(_MainLightPosition,_MainLightColor.xyz,shadowAtten,worldPos,_LightAttenuation,_LightDirection);
 
@@ -109,8 +115,9 @@ float4 frag (v2f i) : SV_Target
     float3 diffColor = albedo * (1 - metallic);
     float3 directColor = (diffColor + specColor * specTerm) * radiance;
 
-    // if(_MainLightPosition.w == 1)
+    // if(_MainLightPosition.w == 1){
     //     return light.distanceAttenuation;
+    // }
     // float3 giDiff = SampleSH(float4(normal,1));
 
     half4 col = (half4)0;

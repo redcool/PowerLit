@@ -216,7 +216,7 @@ float4 frag(Varyings input
 //-------- main light
     float4 shadowMask = SampleShadowMask(lightmapUV);
     float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
-    Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,1);
+    Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
     branch_if(_CustomLightOn)
         OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);
 

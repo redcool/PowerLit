@@ -67,6 +67,7 @@ Shader "URP/PowerLit"
         [GroupHeader(,Shadow)]
         [GroupToggle(,_RECEIVE_SHADOWS_OFF)]_IsReceiveShadowOff("_IsReceiveShadowOff",int) = 0
         [GroupToggle()]_GIApplyMainLightShadow("_GIApplyMainLightShadow",int) = 0
+        [GroupItem()]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
 
         [GroupHeader(,ScreenShadow)]
         [GroupToggle()]_ScreenShadowOn("_ScreenShadowOn",int) = 0

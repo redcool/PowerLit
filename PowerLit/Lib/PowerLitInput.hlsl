@@ -47,7 +47,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_Cutoff)
     UNITY_DEFINE_INSTANCED_PROP(half ,_AlphaPremultiply) // ,_ALPHA_PREMULTIPLY_ON)
     UNITY_DEFINE_INSTANCED_PROP(half,_GIApplyMainLightShadow)
-
+    UNITY_DEFINE_INSTANCED_PROP(half,_MainLightShadowSoftScale)
     // UNITY_DEFINE_INSTANCED_PROP(half4,_NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow) 
     
 //--------------------------------- Emission
@@ -205,6 +205,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _Cutoff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Cutoff)
     #define _AlphaPremultiply UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_AlphaPremultiply) // _ALPHA_PREMULTIPLY_ON
     #define _GIApplyMainLightShadow UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_GIApplyMainLightShadow)
+    #define _MainLightShadowSoftScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_MainLightShadowSoftScale)
 
     #define _Metallic UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Metallic)
     #define _Smoothness UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_Smoothness)

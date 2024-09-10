@@ -313,6 +313,7 @@ Shader "URP/FastLit"
             // #define _CLOUD_SHADOW_ON
             #define SHADOWS_FULL_MIX
             #define _DEPTH_FOG_NOISE_ON
+            // #define CALC_WORLD_NOISE_2_LAYERS
             
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)

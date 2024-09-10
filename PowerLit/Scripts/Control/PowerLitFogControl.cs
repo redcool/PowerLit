@@ -32,6 +32,7 @@ public class PowerLitFogControl : MonoBehaviour
     [Min(1)] public float updateInterval = 1;
     float lastTime;
 
+    [Tooltip("fogColor.rgb multiply fogColor.a")]
     public bool isFogColorApplyAlpha;
 
     [Header("HeightFog")]
@@ -45,11 +46,18 @@ public class PowerLitFogControl : MonoBehaviour
     public float _FogMax = 100;
     public Color _FogNearColor = Color.black, _FogFarColor = Color.white;
 
-    [Header("Noise")]
-    public Vector4 _FogNoiseDir = new Vector4(0.1f, 0, 0,0);
+    [Header("Fog Noise")]
+    [DisplayName("FogNoise TilingOffset", "xy : worldPos tiling , zw:worldPos offset")]
+    //[ListItemDraw("x:,x,y:,y,z:,z,w:,w", "15,80,15,80,15,80,15,80",isShowTitleRow =true)]
+    public Vector4 _FogNoiseDir = new Vector4(0.4f, .3f, .2f,.1f);
+
     [HideInInspector] [Obsolete]
     [Range(0, 1)] public float _FogNoiseTiling = .1f;
+
+    [Tooltip("noise appear out of this")]
     [Range(0.02f, 0.99f)] public float _FogNoiseStartRate = 0.1f;
+
+
     [Range(0, 1)] public float _FogNoiseIntensity = 1;
 
     // trace fog instances

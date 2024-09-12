@@ -30,10 +30,6 @@ Shader "URP/FastLit"
         [GroupToggle(Shadow,_RECEIVE_SHADOWS_OFF)]_ReceiveShadowOff("_ReceiveShadowOff",int) = 0
         [GroupItem(Shadow)]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
 
-        [GroupHeader(Shadow,custom bias)]
-        [GroupSlider(Shadow,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
-        [GroupSlider(Shadow,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0
-
         [GroupHeader(,_BigShadowOff)]
         [GroupToggle]_BigShadowOff("_BigShadowOff",int) = 0
 
@@ -234,7 +230,11 @@ Shader "URP/FastLit"
         [GroupSlider(Curved,y curve instensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
 //================================================= ShadowCaster
         [Group(ShadowCaster)]
-        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 1
+        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
+
+        [GroupHeader(ShadowCaster,custom bias)]
+        [GroupSlider(ShadowCaster,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
+        [GroupSlider(ShadowCaster,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0        
 //================================================= future function variables,dont use these when dont know
         // [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
         // [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)

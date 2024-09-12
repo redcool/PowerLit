@@ -187,6 +187,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half,_BigShadowOff)
     UNITY_DEFINE_INSTANCED_PROP(half,_CurvedBackwardScale)
     UNITY_DEFINE_INSTANCED_PROP(half,_CurvedSidewayScale)
+
+    UNITY_DEFINE_INSTANCED_PROP(half,_CustomShadowDepthBias)
+    UNITY_DEFINE_INSTANCED_PROP(half,_CustomShadowNormalBias)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
@@ -333,6 +336,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _BigShadowOff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BigShadowOff) 
     #define _CurvedBackwardScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CurvedBackwardScale) 
     #define _CurvedSidewayScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CurvedSidewayScale) 
+    #define _CustomShadowDepthBias UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomShadowDepthBias) 
+    #define _CustomShadowNormalBias UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomShadowNormalBias) 
 /**
     Global Variables Emission Scanline
 */    

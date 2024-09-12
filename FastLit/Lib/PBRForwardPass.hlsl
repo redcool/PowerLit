@@ -237,9 +237,9 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
     branch_if(!_BigShadowOff)
     {
+        // i.bigShadowCoord.z += 0.001;
         float atten = CalcBigShadowAtten(i.bigShadowCoord.xyz,1);
         mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
-// return mainLight.shadowAttenuation;
     }
 
 

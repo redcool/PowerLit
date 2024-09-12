@@ -231,8 +231,10 @@ Shader "URP/PowerLit"
         [GroupSlider(Curved,y curve instensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
 //================================================= ShadowCaster
         [Group(ShadowCaster)]
-        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 1
-
+        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
+        [GroupHeader(ShadowCaster,custom bias)]
+        [GroupSlider(ShadowCaster,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
+        [GroupSlider(ShadowCaster,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0      
 // ================================================== stencil settings
         [Group(Stencil)]
         [GroupEnum(Stencil,UnityEngine.Rendering.CompareFunction)]_StencilComp ("Stencil Comparison", Float) = 0
@@ -352,8 +354,8 @@ Shader "URP/PowerLit"
             #define SHADOW_PASS 
         //     #define USE_SAMPLER2D
             #define _MainTexChannel 3
-            #define _CustomShadowNormalBias 0
-            #define _CustomShadowDepthBias 0
+        //     #define _CustomShadowNormalBias _CustomShadowNormalBias
+        //     #define _CustomShadowDepthBias _CustomShadowDepthBias
             #define USE_BASEMAP
             #include "Lib/PowerLitInput.hlsl"
 
@@ -380,8 +382,8 @@ Shader "URP/PowerLit"
             // #define SHADOW_PASS 
         //     #define USE_SAMPLER2D
             #define _MainTexChannel 3
-            #define _CustomShadowNormalBias 0
-            #define _CustomShadowDepthBias 0
+        //     #define _CustomShadowNormalBias _CustomShadowNormalBias
+        //     #define _CustomShadowDepthBias _CustomShadowDepthBias
             #define USE_BASEMAP
             #include "Lib/PowerLitInput.hlsl"
 

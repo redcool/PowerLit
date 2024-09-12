@@ -6,7 +6,7 @@ tabNames =  Settings, Main,Lighting,Details,Alpha,Parallax,Env,Emission,Wind,Sno
 // Tab's contents
 Settings =_ZWriteMode,_ZTestMode,_CullMode,_RenderQueue,_ColorMask,_BakedEmission,_StencilComp,_Stencil,_StencilOp
 Main = _BaseMap,_Color,_AlbedoMulVertexColor,_NormalMap,_NormalScale,_MetallicMaskMap,_Metallic,_Smoothness,_Occlusion,_MRTSmoothness
-Lighting = _SpecularOn,_PbrMode,_ReceiveShadowOff,_MainLightShadowSoftScale,_CustomShadowNormalBias,_CustomShadowDepthBias,_BigShadowOff,_CalcAdditionalLights,_ReceiveAdditionalLightShadow,
+Lighting = _SpecularOn,_PbrMode,_ReceiveShadowOff,_MainLightShadowSoftScale,_BigShadowOff,_CalcAdditionalLights,_ReceiveAdditionalLightShadow,
 // _CalcTangent,_AnisoRough,_AnisoShift,_ClothRange,
 
 Alpha=_ClipOn,_Cutoff,_AlphaPremultiply,_PresetBlendMode,_RenderQueue
@@ -23,5 +23,5 @@ Rain = _RainOn,_RippleTex,_RippleOffsetAutoStop,_RippleSpeed,_RippleIntensity,_R
 Details = _DetailOn,_DetailPBRMaskMap,_DetailPBRMetallic,_DetailPBRSmoothness,_DetailPBROcclusion,_DetailUVUseWorldPos,_DetailWorldPlaneMode,_DetailWorldPosTriplanar,_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion
 MatCap = _MatCap,_MatCapScale
 Curved = _CurvedSidewayScale,_CurvedBackwardScale
-ShadowCaster = _ShadowCasterCullMode
+ShadowCaster = _ShadowCasterCullMode,_CustomShadowNormalBias,_CustomShadowDepthBias
 //Debug = _DebugDisplay

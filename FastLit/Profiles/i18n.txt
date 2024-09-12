@@ -4,7 +4,7 @@
 // 版本号: vx.y.z.w (x:基础架构,y:功能,z:功能update或fixed,w:提交序号)
 Help=PowerVFX 特效渲染 
 
-Help=FastLit,用于场景渲染 |多选,按住Control键 |(v2.2.22)
+Help=FastLit,用于场景渲染 |多选,按住Control键 |(v2.2.23)
 _BaseMap = _BaseMap
 _Color=_Color
 _NormalMap =_NormalMap

@@ -185,6 +185,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     // UNITY_DEFINE_INSTANCED_PROP(half,_BoxProjectionOn)
 
     UNITY_DEFINE_INSTANCED_PROP(half,_BigShadowOff)
+    UNITY_DEFINE_INSTANCED_PROP(half,_CurvedBackwardScale)
+    UNITY_DEFINE_INSTANCED_PROP(half,_CurvedSidewayScale)
     
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
@@ -329,7 +331,8 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 
     #define _BigShadowOff UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_BigShadowOff) 
-
+    #define _CurvedBackwardScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CurvedBackwardScale) 
+    #define _CurvedSidewayScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CurvedSidewayScale) 
 /**
     Global Variables Emission Scanline
 */    

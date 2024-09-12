@@ -31,11 +31,12 @@ Material:
   - ENV_REFRACT_ON
   - InteriorMap
   - Refract
+  - SIMPLE_FOG
   - _INTERIOR_MAP_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -195,8 +196,8 @@ Material:
     - _ColorScale: 1
     - _Cull: 2
     - _CullMode: 0
-    - _CurvedBackwardScale: 0.0002
-    - _CurvedSidewayScale: -0.0039
+    - _CurvedBackwardScale: 0
+    - _CurvedSidewayScale: 0
     - _CustomLightColorUsage: 0
     - _CustomLightOn: 0
     - _CustomShadowDepthBias: 0
@@ -261,8 +262,8 @@ Material:
     - _EnvRefractionOn: 1
     - _EnvRotateAutoStop: 0
     - _EnvironmentReflections: 1
-    - _FogNoiseOn: 0
-    - _FogOn: 0
+    - _FogNoiseOn: 1
+    - _FogOn: 1
     - _FresnelColorMode: 0
     - _FresnelIntensity: 1
     - _FresnelOn: 0
@@ -287,7 +288,7 @@ Material:
     - _LMSaturateAdditional: 0
     - _LightmapSHAdditional: 0
     - _MRTSmoothness: 1
-    - _MainLightShadowSoftScale: 0.368
+    - _MainLightShadowSoftScale: 0.858
     - _MainLightSoftShadowScale: 0
     - _MainTexChannel: 0
     - _MainTexMaskChannel: 0
@@ -374,7 +375,7 @@ Material:
     - _ScreenShadowOn: 0
     - _ShadowsSoft: 0
     - _Shininess: 0
-    - _SimpleFog: 0
+    - _SimpleFog: 1
     - _Smoothness: 0.317
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
@@ -468,8 +469,7 @@ Material:
     - _MainTexSheet: {r: 1, g: 1, b: 1, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _Metallic_Smoothness_Occlusion_NormalScale: {r: 0.562, g: 1, b: 0, a: 0}
-    - _NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow: {r: 0, g: 0.5,
-        b: 0, a: 0}
+    - _NormalScale_Cutoff_AlphaPremultiply_GIApplyMainLightShadow: {r: 0, g: 0.5, b: 0, a: 0}
     - _OffsetDir: {r: 1, g: 1, b: 0, a: 0}
     - _OffsetRadialCenter_Scale: {r: 0.5, g: 0.5, b: 1, a: 1}
     - _OffsetTexColorTint: {r: 1, g: 1, b: 1, a: 1}

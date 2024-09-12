@@ -35,7 +35,7 @@ Shader "URP/FastLit"
         [GroupSlider(Shadow,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0
 
         [GroupHeader(,_BigShadowOff)]
-        [GroupToggle]_BigShadowOff("_BigShadowOff",int) = 0        
+        [GroupToggle]_BigShadowOff("_BigShadowOff",int) = 0
 
         [Group(AdditionalLights)]
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS_ON)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
@@ -232,7 +232,9 @@ Shader "URP/FastLit"
         [Group(Curved)]
         [GroupSlider(Curved,x curve intensity,float)] _CurvedSidewayScale("_CurvedSidewayScale",range(-0.01,0.01)) = 0
         [GroupSlider(Curved,y curve instensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
-
+//================================================= ShadowCaster
+        [Group(ShadowCaster)]
+        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 1
 //================================================= future function variables,dont use these when dont know
         // [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
         // [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)
@@ -352,6 +354,7 @@ Shader "URP/FastLit"
             ZWrite On
             ZTest LEqual
             ColorMask 0
+            cull [_ShadowCasterCullMode]
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

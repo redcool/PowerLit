@@ -226,6 +226,13 @@ Shader "URP/PowerLit"
         [GroupItem(StoreyLine)][noscaleoffset]_StoreyLineNoiseMap("_StoreyLineNoiseMap",2d) = "bump"{}
         [GroupItem(StoreyLine)][hdr]_StoreyLineColor("_StoreyLineColor",color) = (1,1,1,1)
 
+        [Group(Curved)]
+        [GroupSlider(Curved,x curve intensity,float)] _CurvedSidewayScale("_CurvedSidewayScale",range(-0.01,0.01)) = 0
+        [GroupSlider(Curved,y curve instensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
+//================================================= ShadowCaster
+        [Group(ShadowCaster)]
+        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 1
+
 // ================================================== stencil settings
         [Group(Stencil)]
         [GroupEnum(Stencil,UnityEngine.Rendering.CompareFunction)]_StencilComp ("Stencil Comparison", Float) = 0
@@ -327,6 +334,9 @@ Shader "URP/PowerLit"
         Pass{
             Name "ShadowCaster"
             Tags{"LightMode"="ShadowCaster"}
+            ColorMask 0
+            cull [_ShadowCasterCullMode]
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -346,6 +356,8 @@ Shader "URP/PowerLit"
             #define _CustomShadowDepthBias 0
             #define USE_BASEMAP
             #include "Lib/PowerLitInput.hlsl"
+
+            #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
@@ -356,7 +368,7 @@ Shader "URP/PowerLit"
             Tags{"LightMode"="DepthOnly"}
             zwrite on
             colorMask 0
-            cull[_CullMode]
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -372,6 +384,8 @@ Shader "URP/PowerLit"
             #define _CustomShadowDepthBias 0
             #define USE_BASEMAP
             #include "Lib/PowerLitInput.hlsl"
+
+            #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
             ENDHLSL
         }

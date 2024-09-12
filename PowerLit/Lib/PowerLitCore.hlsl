@@ -18,6 +18,7 @@
 #include "../../PowerShaderLib/Lib/BigShadows.hlsl"
 #include "../../PowerShaderLib/Lib/GILib.hlsl"
 #include "../../PowerShaderLib/URPLib/URP_DebugDisplay.hlsl"
+#include "../../PowerShaderLib/Lib/CurvedLib.hlsl"
 
 // #define SIMPLE_NOISE_TEX
 

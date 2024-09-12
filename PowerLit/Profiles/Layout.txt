@@ -1,7 +1,7 @@
 // when edit this file need reselect material
 
 // Tabs
-tabNames =  Settings, Main,Details,Alpha,Parallax,Shadow,Env,Emission,Wind,Snow,Fog,Rain,Storey,Debug
+tabNames =  Settings, Main,Details,Alpha,Parallax,Shadow,Env,Emission,Wind,Snow,Fog,Rain,Storey,Curved,ShadowCaster,Debug
 
 // Tab's contents
 Settings =_ZWriteMode,_ZTestMode,_CullMode,_RenderQueue,_ColorMask,_BakedEmission,_StencilComp,_Stencil,_StencilOp
@@ -18,4 +18,6 @@ Rain = _RainOn,_RippleTex,_RippleOffsetAutoStop,_RippleSpeed,_RippleIntensity,_R
 Storey = _StoreyTilingOn,_StoreyHeight,_StoreyWindowInfo,_StoreyLightSwitchSpeed,_StoreyLightOpaque,_StoreyLineOn,_StoreyLineNoiseMap,_StoreyLineColor,_StoreyTiling_LightSwitchSpeed_Height_Line
 Details = _DetailOn,_DetailPBRMaskMap,_DetailPBRMetallic,_DetailPBRSmoothness,_DetailPBROcclusion,_DetailUVUseWorldPos,_DetailWorldPlaneMode,_DetailWorldPosTriplanar,_DetailPbrMaskApplyMetallic,_DetailPbrMaskApplySmoothness,_DetailPbrMaskApplyOcclusion
 //Light = _ReceiveAdditionalLightShadow
+Curved = _CurvedSidewayScale,_CurvedBackwardScale
+ShadowCaster = _ShadowCasterCullMode
 Debug = _DebugDisplay

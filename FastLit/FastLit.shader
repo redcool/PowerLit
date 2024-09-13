@@ -227,10 +227,10 @@ Shader "URP/FastLit"
 
         [Group(Curved)]
         [GroupSlider(Curved,x curve intensity,float)] _CurvedSidewayScale("_CurvedSidewayScale",range(-0.01,0.01)) = 0
-        [GroupSlider(Curved,y curve instensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
+        [GroupSlider(Curved,y curve intensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
 //================================================= ShadowCaster
         [Group(ShadowCaster)]
-        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
+        // [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
 
         [GroupHeader(ShadowCaster,custom bias)]
         [GroupSlider(ShadowCaster,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
@@ -333,6 +333,7 @@ Shader "URP/FastLit"
 
             ZWrite On
             ZTest LEqual
+            Cull[_CullMode]
             // ColorMask 0
             HLSLPROGRAM
             #pragma vertex vert
@@ -354,7 +355,7 @@ Shader "URP/FastLit"
             ZWrite On
             ZTest LEqual
             ColorMask 0
-            cull [_ShadowCasterCullMode]
+            cull [_CullMode]
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -536,6 +537,7 @@ Shader "URP/FastLit"
 
             ZWrite On
             ZTest LEqual
+            Cull[_CullMode]
             // ColorMask 0
             HLSLPROGRAM
             #pragma vertex vert
@@ -557,6 +559,7 @@ Shader "URP/FastLit"
             ZWrite On
             ZTest LEqual
             ColorMask 0
+            Cull[_CullMode]
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -731,6 +734,7 @@ Shader "URP/FastLit"
 
             ZWrite On
             ZTest LEqual
+            Cull[_CullMode]
             // ColorMask 0
             HLSLPROGRAM
             #pragma vertex vert
@@ -752,6 +756,7 @@ Shader "URP/FastLit"
             ZWrite On
             ZTest LEqual
             ColorMask 0
+            Cull[_CullMode]
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

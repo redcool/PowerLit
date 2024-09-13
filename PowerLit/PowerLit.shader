@@ -228,10 +228,10 @@ Shader "URP/PowerLit"
 
         [Group(Curved)]
         [GroupSlider(Curved,x curve intensity,float)] _CurvedSidewayScale("_CurvedSidewayScale",range(-0.01,0.01)) = 0
-        [GroupSlider(Curved,y curve instensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
+        [GroupSlider(Curved,y curve intensity,float)] _CurvedBackwardScale("_CurvedBackwardScale",range(-0.01,0.01)) = 0
 //================================================= ShadowCaster
         [Group(ShadowCaster)]
-        [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
+        // [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
         [GroupHeader(ShadowCaster,custom bias)]
         [GroupSlider(ShadowCaster,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
         [GroupSlider(ShadowCaster,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0      
@@ -337,7 +337,7 @@ Shader "URP/PowerLit"
             Name "ShadowCaster"
             Tags{"LightMode"="ShadowCaster"}
             ColorMask 0
-            cull [_ShadowCasterCullMode]
+            cull [_CullMode]
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -370,6 +370,7 @@ Shader "URP/PowerLit"
             Tags{"LightMode"="DepthOnly"}
             zwrite on
             colorMask 0
+            cull [_CullMode]
 
             HLSLPROGRAM
             #pragma vertex vert

@@ -24,7 +24,7 @@ Shader "URP/FastLit"
         [GroupToggle(LightMode)]_SpecularOn("_SpecularOn",int) = 1
         // [Enum(PBR,0,Aniso,1,Charlie,2)]_PbrMode("_PbrMode",int) = 0
         // [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE,true)]_PbrMode("_PbrMode",int) = 0
-        
+//=================================================  Shadow
         [Group(Shadow)]
         //[LineHeader(Shadows)]
         [GroupToggle(Shadow,_RECEIVE_SHADOWS_OFF)]_ReceiveShadowOff("_ReceiveShadowOff",int) = 0
@@ -130,13 +130,13 @@ Shader "URP/FastLit"
         [GroupToggle(Fog,,use PowerLitFogControl FogNoise control noise )]_FogNoiseOn("_FogNoiseOn",int) = 0
         [GroupToggle(Fog)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(Fog)]_HeightFogOn("_HeightFogOn",int) = 1
-
+//================================================= Wind  
         [Group(Wind)]
         [GroupToggle(Wind,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
         [GroupVectorSlider(Wind,branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
         [GroupVectorSlider(Wind,WindVector Intensity,0_1)]_WindDir("_WindDir,dir:(xyz),Intensity:(w)",vector) = (1,0.1,0,0.5)
         [GroupItem(Wind)]_WindSpeed("_WindSpeed",range(0,1)) = 0.3
-  
+//================================================= Snow  
         [Group(Snow)]
         [GroupToggle(Snow,_SNOW_ON)]_SnowOn("_SnowOn",int) = 0
         [GroupToggle(Snow,,snow show in edge first)]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
@@ -148,7 +148,7 @@ Shader "URP/FastLit"
         [GroupVectorSlider(Snow,weightR weightG weightB weightA,0_10 0_10 0_10 0_10,,float)]_SnowNoiseWeights("_SnowNoiseWeights",vector) = (1,.1,.1,1)
         [GroupToggle(Snow,,flatten normal where no snow)]_SnowNormalMask("_SnowNormalMask",float) = 0
         
-
+//================================================= Rain
         [Group(Rain)]
         [GroupToggle(Rain,_RAIN_ON)]_RainOn("_RainOn",int) = 0
 
@@ -183,27 +183,27 @@ Shader "URP/FastLit"
         [GroupItem(Rain)]_RainFlowTilingOffset("_RainFlowTilingOffset",vector) = (10,10,10,10)
         [GroupItem(Rain)]_RainFlowIntensity("_RainFlowIntensity",range(0,1)) = .5
 
-
+//================================================= Alpha
         [Group(Alpha)]
         [GroupHeader(Alpha,AlphaTest)]
         [GroupToggle(Alpha,ALPHA_TEST)]_ClipOn("_AlphaTestOn",int) = 0
         [GroupSlider(Alpha)]_Cutoff("_Cutoff",range(0,1)) = 0.5
         
+        [GroupHeader(Alpha,Premultiply)]
+        [GroupToggle(Alpha)]_AlphaPremultiply("_AlphaPremultiply",int) = 0
+
         [GroupHeader(Alpha,BlendMode)]
-        [GroupPresetBlendMode(Alpha,,_SrcMode,_DstMode)]_PresetBlendMode("_PresetBlendMode",int)=0
+        // [GroupPresetBlendMode(Alpha,,_SrcMode,_DstMode)]_PresetBlendMode("_PresetBlendMode",int)=0 // PowerShaderInspector,will show _PresetBlendMode
         // [GroupEnum(Alpha,UnityEngine.Rendering.BlendMode)]
         [HideInInspector]_SrcMode("_SrcMode",int) = 1
         [HideInInspector]_DstMode("_DstMode",int) = 0
 
-        [GroupHeader(Alpha,Premultiply)]
-        [GroupToggle(Alpha)]_AlphaPremultiply("_AlphaPremultiply",int) = 0
-
-
+//================================================= PlanarReflection
         [Group(PlanarReflection)]
         [GroupToggle(PlanarReflection,_PLANAR_REFLECTION_ON)]_PlanarReflectionOn("_PlanarReflectionOn",int) = 0
         [GroupToggle(PlanarReflection)]_PlanarReflectionReverseU("_PlanarReflectionReverseU",int) = 0
         [GroupToggle(PlanarReflection)]_PlanarReflectionReverseV("_PlanarReflectionReverseV",int) = 0
-
+//================================================= Settings
         [Group(Settings)]
 		[GroupToggle(Settings)]_ZWriteMode("ZWriteMode",int) = 1
 		/*
@@ -211,7 +211,16 @@ Shader "URP/FastLit"
 		*/
 		[GroupEnum(Settings,UnityEngine.Rendering.CompareFunction)]_ZTestMode("_ZTestMode",float) = 4
         [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
-
+        [Header(Color Mask)]
+        [GroupEnum(_,RGBA 16 RGB 15 RG 12 GB 6 RB 10 R 8 G 4 B 2 A 1 None 0)] _ColorMask("_ColorMask",int) = 15
+// ================================================== stencil settings
+        [Group(Stencil)]
+        [GroupEnum(Stencil,UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Float) = 0
+        [GroupItem(Stencil)] _Stencil ("Stencil ID", int) = 0
+        [GroupEnum(Stencil,UnityEngine.Rendering.StencilOp)] _StencilOp ("Stencil Operation", Float) = 0
+        [GroupItem(Stencil)] _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        [GroupItem(Stencil)] _StencilReadMask ("Stencil Read Mask", Float) = 255
+//================================================= matcap        
         [Group(MatCap)]
         // [GroupItem(MatCap,specTerm MIN_VERSION use )] _MatCap("_MatCap",2d)=""{}
         [GroupItem(MatCap)] _MatCapScale("_MatCapScale",float)= 1
@@ -273,8 +282,16 @@ Shader "URP/FastLit"
 			// BlendOp[_BlendOp]
 			Cull[_CullMode]
 			ztest[_ZTestMode]
-			// ColorMask [_ColorMask]
+			ColorMask [_ColorMask]
 
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -335,6 +352,14 @@ Shader "URP/FastLit"
             ZTest LEqual
             Cull[_CullMode]
             // ColorMask 0
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag 
@@ -356,6 +381,14 @@ Shader "URP/FastLit"
             ZTest LEqual
             ColorMask 0
             cull [_CullMode]
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -477,8 +510,15 @@ Shader "URP/FastLit"
 			// BlendOp[_BlendOp]
 			Cull[_CullMode]
 			ztest[_ZTestMode]
-			// ColorMask [_ColorMask]
-
+			ColorMask [_ColorMask]
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -539,6 +579,14 @@ Shader "URP/FastLit"
             ZTest LEqual
             Cull[_CullMode]
             // ColorMask 0
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag 
@@ -560,6 +608,14 @@ Shader "URP/FastLit"
             ZTest LEqual
             ColorMask 0
             Cull[_CullMode]
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -675,8 +731,15 @@ Shader "URP/FastLit"
 			// BlendOp[_BlendOp]
 			Cull[_CullMode]
 			ztest[_ZTestMode]
-			// ColorMask [_ColorMask]
-
+			ColorMask [_ColorMask]
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -736,6 +799,14 @@ Shader "URP/FastLit"
             ZTest LEqual
             Cull[_CullMode]
             // ColorMask 0
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag 
@@ -757,6 +828,14 @@ Shader "URP/FastLit"
             ZTest LEqual
             ColorMask 0
             Cull[_CullMode]
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                // ReadMask [_StencilReadMask]
+                // WriteMask [_StencilWriteMask]
+            }
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

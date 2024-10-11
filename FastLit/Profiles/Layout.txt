@@ -4,7 +4,7 @@
 tabNames =  Settings, Main,Lighting,Details,Alpha,Parallax,Env,Emission,Wind,Snow,Fog,Rain,MatCap,Curved,ShadowCaster
 
 // Tab's contents
-Settings =_ZWriteMode,_ZTestMode,_CullMode,_RenderQueue,_ColorMask,_BakedEmission,_StencilComp,_Stencil,_StencilOp
+Settings =_ZWriteMode,_ZTestMode,_CullMode,_RenderQueue,_ColorMask,_BakedEmission,_StencilComp,_Stencil,_StencilOp,_StencilReadMask,_StencilWriteMask
 Main = _BaseMap,_Color,_AlbedoMulVertexColor,_NormalMap,_NormalScale,_MetallicMaskMap,_Metallic,_Smoothness,_Occlusion,_MRTSmoothness
 Lighting = _SpecularOn,_PbrMode,_ReceiveShadowOff,_MainLightShadowSoftScale,_BigShadowOff,_CalcAdditionalLights,_ReceiveAdditionalLightShadow,
 // _CalcTangent,_AnisoRough,_AnisoShift,_ClothRange,

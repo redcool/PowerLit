@@ -140,20 +140,8 @@ half _ParallaxHeight,_ParallaxMapChannel;
 half4 _ParallaxMap_ST;
 
 half _CurvedBackwardScale,_CurvedSidewayScale;
-
+float _SphereFogId; // sphere fog index
 CBUFFER_END
 
 half4 _SceneMatCap_ST; // use consts
-
-    // //---------Cloud shadows
-    // half _CloudShadowOn;
-    // half4 _CloudNoiseTilingOffset;
-    // half _CloudNoiseRangeMin;
-    // half _CloudNoiseRangeMax;
-    // half _CloudNoiseOffsetStop;
-
-    // half4 _CloudShadowColor;
-    // half _CloudBaseShadowIntensity;
-    // half _CloudShadowIntensity;
-
 #endif //PBR_INPUT_HLSL

@@ -130,6 +130,7 @@ Shader "URP/FastLit"
         [GroupToggle(Fog,,use PowerLitFogControl FogNoise control noise )]_FogNoiseOn("_FogNoiseOn",int) = 0
         [GroupToggle(Fog)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(Fog)]_HeightFogOn("_HeightFogOn",int) = 1
+        [GroupItem(Fog,SphereFogDatas index)]_SphereFogId("_SphereFogId",int) = 0
 //================================================= Wind  
         [Group(Wind)]
         [GroupToggle(Wind,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
@@ -244,26 +245,6 @@ Shader "URP/FastLit"
         [GroupHeader(ShadowCaster,custom bias)]
         [GroupSlider(ShadowCaster,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
         [GroupSlider(ShadowCaster,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0        
-//================================================= future function variables,dont use these when dont know
-        // [HideInInpector]_Reserve0("_Reserve0",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve1("_Reserve1",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve2("_Reserve2",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve3("_Reserve3",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve4("_Reserve4",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve5("_Reserve5",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve6("_Reserve6",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve7("_Reserve7",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve8("_Reserve8",vector)=(0,0,0,0)
-        // [HideInInpector]_Reserve9("_Reserve9",vector)=(0,0,0,0)
-        // [HideInInpector]_ReserveTex0("_ReserveTex0",2d)="white"{}
-        // [HideInInpector]_ReserveTex1("_ReserveTex1",2d)="white"{}
-        // [HideInInpector]_ReserveTex2("_ReserveTex2",2d)="white"{}
-        // [HideInInpector]_ReserveTex4("_ReserveTex3",2d)="white"{}
-        // [HideInInpector]_ReserveTex5("_ReserveTex4",2d)="white"{}
-        // [HideInInpector]_ReserveTex6("_ReserveTex5",2d)="white"{}
-        // [HideInInpector]_ReserveTex7("_ReserveTex6",2d)="white"{}
-        // [HideInInpector]_ReserveTex8("_ReserveTex7",2d)="white"{}
-
     }
 
     SubShader

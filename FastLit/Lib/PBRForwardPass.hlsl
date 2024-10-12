@@ -4,6 +4,8 @@
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BSDF.hlsl"
 #include "../../PowerShaderLib/Lib/Colors.hlsl"
+
+#define _SPHERE_FOG_LAYERS
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/URPLib/Lighting.hlsl"

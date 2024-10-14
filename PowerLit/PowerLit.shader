@@ -161,6 +161,7 @@ Shader "URP/PowerLit"
         [GroupToggle(_,)]_FogNoiseOn("_FogNoiseOn",int) = 0 //_DEPTH_FOG_NOISE_ON
         [GroupToggle(_)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(_)]_HeightFogOn("_HeightFogOn",int) = 1
+        [GroupItem(_,SphereFogDatas index)]_SphereFogId("_SphereFogId",int) = 0
 
         [GroupToggle(_,_RAIN_ON)]_RainOn("_RainOn",int) = 0
 

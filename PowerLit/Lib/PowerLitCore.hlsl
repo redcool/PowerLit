@@ -4,6 +4,8 @@
 #include "PowerLitInput.hlsl"
 #include "../../PowerShaderLib/Lib/NatureLib.hlsl"
 #include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
+
+#define _SPHERE_FOG_LAYERS
 #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
 #include "../../PowerShaderLib/Lib/NoiseLib.hlsl"

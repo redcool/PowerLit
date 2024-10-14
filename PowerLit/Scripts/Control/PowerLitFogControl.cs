@@ -37,6 +37,9 @@ public class PowerLitFogControlEditor : PowerEditor<PowerLitFogControl>
 [ExecuteAlways]
 public class PowerLitFogControl : MonoBehaviour
 {
+    //[Tooltip("use structedBuffer or cbuffer")]
+    //public bool isUseStructedBuffer;
+
     [Min(1)] public float updateInterval = 1;
     float lastTime;
 
@@ -152,7 +155,7 @@ public class PowerLitFogControl : MonoBehaviour
         Shader.SetGlobalInt("_HeightFogFilterUpFace", fogData._HeightFogFilterUpFace ? 1 : 0);
 
         Shader.SetGlobalColor("_FogNearColor", fogData._FogNearColor * (fogData.isFogColorApplyAlpha ? fogData._FogNearColor.a : 1));
-        //Shader.SetGlobalColor("_FogFarColor", _FogFarColor);
+        Shader.SetGlobalColor("_FogFarColor", fogData._FogFarColor * (fogData.isFogColorApplyAlpha ? fogData._FogFarColor.a : 1));
         Shader.SetGlobalColor("_HeightFogMinColor", fogData._HeightFogMinColor * (fogData.isFogColorApplyAlpha ? fogData._HeightFogMinColor.a : 1));
         Shader.SetGlobalColor("_HeightFogMaxColor", fogData._HeightFogMaxColor * (fogData.isFogColorApplyAlpha ? fogData._HeightFogMaxColor.a : 1));
 
@@ -171,9 +174,7 @@ public class PowerLitFogControl : MonoBehaviour
     public void UpdateParams()
     {
         Shader.SetGlobalInt("_SphereFogLayers", sphereFogDatas.Count);
-
-        // simpleFog
-        UpdateSimpleFogParams(sphereFogDatas[0]);
+        SyncUnityFog(sphereFogDatas[0]);
 
         //========= strructedBuffer
         UpdateStructuredBuffer();
@@ -181,9 +182,11 @@ public class PowerLitFogControl : MonoBehaviour
         UpdateCBuffer();
     }
 
-    void UpdateSimpleFogParams(SphereFogData fogData)
+    private void SyncUnityFog(SphereFogData fogData)
     {
-        Shader.SetGlobalVector("_FogParams", new Vector4(0, 0, -1 / (fogData._FogMax - fogData._FogMin), fogData._FogMax / (fogData._FogMax - fogData._FogMin)));
+        RenderSettings.fogColor = fogData.FogFarColor();
+        RenderSettings.fogStartDistance = fogData._FogMin;
+        RenderSettings.fogEndDistance = fogData._FogMax;
     }
 
     private void UpdateStructuredBuffer()
@@ -204,17 +207,6 @@ public class PowerLitFogControl : MonoBehaviour
 
     void UpdateCBuffer()
     {
-        return;
-        Shader.SetGlobalFloatArray("_HeightFogMinArray", sphereFogDatas.Select(d => d._HeightFogMin).ToArray());
-        //_HeightFogMaxArray
-        //    _HeightFogMinColorArray
-        //    _HeightFogMaxColorArray
-
-        //    _HeightFogFilterUpFaceArray
-        //    _FogNearColorArrays
-        //    _FogDistanceArray
-        //    _FogNoiseTilingOffsetArray
-
-        //    _FogNoiseParamsArray
+        SphereFogDataSplitter.UpdateParams(sphereFogDatas);
     }
 }

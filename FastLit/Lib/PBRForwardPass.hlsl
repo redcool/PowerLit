@@ -383,7 +383,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #if defined(_DEPTH_FOG_NOISE_ON)
     branch_if(_FogNoiseOn)
     {
-        half4 weights=float4(1,.1,.1,1);
+        half4 weights=float4(.5,.1,.1,.5);
         fogNoise = CalcWorldNoise(worldPos,_FogNoiseTilingOffset,-_GlobalWindDir.xyz,weights);
     }
     #endif

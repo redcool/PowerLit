@@ -114,6 +114,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_FogNoiseOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_DepthFogOn)
     UNITY_DEFINE_INSTANCED_PROP(half ,_HeightFogOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SphereFogId)
+    
 //--------------------------------- Parallax
 //#if defined(_PARALLAX)
     // UNITY_DEFINE_INSTANCED_PROP(half ,_ParallaxOn) // to UNITY_DEFINE_INSTANCED_PROP(keyword ,_PARALLAX)
@@ -272,6 +274,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 //--------------------------------- Fog
     #define _FogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FogOn)
     #define _FogNoiseOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FogNoiseOn)
+    #define _SphereFogId UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SphereFogId)
     #define _DepthFogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_DepthFogOn)
     #define _HeightFogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_HeightFogOn)
 //--------------------------------- Parallax

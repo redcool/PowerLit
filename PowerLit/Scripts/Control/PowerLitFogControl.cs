@@ -173,7 +173,12 @@ public class PowerLitFogControl : MonoBehaviour
 
     public void UpdateParams()
     {
+        if (sphereFogDatas.Count == 0)
+        {
+            SyncDefaultParamsToDatas();
+        }
         Shader.SetGlobalInt("_SphereFogLayers", sphereFogDatas.Count);
+
         SyncUnityFog(sphereFogDatas[0]);
 
         //========= strructedBuffer

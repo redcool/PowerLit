@@ -15,7 +15,7 @@ Properties {
 
     [Group(Noise)]
     [GroupToggle(Noise,CLOUD_ON)]_CloudOn("_CloudOn",int) = 0
-    [GroupItem(Noise)]_NoiseTex("_NoiseTex",3d) = ""{}
+    [GroupItem(Noise)] [NoScaleOffset]_NoiseTex("_NoiseTex",3d) = ""{}
     [GroupItem(Noise)]_Scale("Scale",float) = 1
     [GroupItem(Noise)]_Speed("Speed",float) = 1
     [GroupVectorSlider(Noise,Min Max,0_1 0_1)]_Distribution("_Distribution",vector) = (0.2,0.4,1,1)
@@ -35,12 +35,14 @@ SubShader {
 
     Pass {
 
-        CGPROGRAM
+        HLSLPROGRAM
         #pragma vertex vert
         #pragma fragment frag
 
-        #include "UnityCG.cginc"
-        #include "Lighting.cginc"
+        // #include "UnityCG.cginc"
+        // #include "Lighting.cginc"
+        #define DRP
+        #include "../../PowerShaderLib/Lib/UnityLib.hlsl"
 
         // global vars
         half _GlobalSkyOn;
@@ -456,7 +458,7 @@ SubShader {
             return half4(col,1.0);
 
         }
-        ENDCG
+        ENDHLSL
     }
 }
 

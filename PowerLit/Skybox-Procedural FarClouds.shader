@@ -86,7 +86,8 @@ SubShader {
     #else
         #define GAMMA 2.2
         // HACK: to get gfx-tests in Gamma mode to agree until UNITY_ACTIVE_COLORSPACE_IS_GAMMA is working properly
-        #define COLOR_2_GAMMA(color) ((unity_ColorSpaceDouble.r>2.0) ? pow(color,1.0/GAMMA) : color)
+        // #define COLOR_2_GAMMA(color) ((unity_ColorSpaceDouble.r>2.0) ? pow(color,1.0/GAMMA) : color)
+        #define COLOR_2_GAMMA(color) pow(color,1/GAMMA)
         #define COLOR_2_LINEAR(color) color
         #define LINEAR_2_LINEAR(color) color
     #endif

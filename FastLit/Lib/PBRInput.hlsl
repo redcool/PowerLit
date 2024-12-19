@@ -53,6 +53,7 @@ half _HeightFogOn;
 half _AlphaPremultiply;
 half _Cutoff;
 
+half _EmissionOn;
 half4 _EmissionColor;
 half2 _ClothRange;
 
@@ -136,6 +137,7 @@ half _BigShadowOff;
 
 half _MatCapScale;
 
+half _ParallaxOn;
 half _ParallaxHeight,_ParallaxMapChannel;
 half4 _ParallaxMap_ST;
 

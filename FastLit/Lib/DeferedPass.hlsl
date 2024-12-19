@@ -105,12 +105,14 @@ v2f vert (appdata v)
     }
 
     #if defined(_PARALLAX)
-    float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
-    o.viewDirTS.xyz = (float3(
-        dot(worldTangent,viewDirWS),
-        dot(b,viewDirWS),
-        dot(worldNormal,viewDirWS)
-    ));
+    branch_if(_ParallaxOn){
+        float3 viewDirWS = normalize(_WorldSpaceCameraPos - worldPos);
+        o.viewDirTS.xyz = (float3(
+            dot(worldTangent,viewDirWS),
+            dot(b,viewDirWS),
+            dot(worldNormal,viewDirWS)
+        ));
+    }
     #endif
     return o;
 }
@@ -141,8 +143,8 @@ float4 frag(v2f i
 
 
     #if defined(_PARALLAX)
-        // branch_if(! _ParallaxInVSOn)
-        ApplyParallax(i.uv.xy/**/,i.viewDirTS.xyz,_ParallaxHeight,_ParallaxMapChannel,1,_ParallaxMap_ST); // move to vs
+        branch_if(_ParallaxOn)
+            ApplyParallax(i.uv.xy/**/,i.viewDirTS.xyz,_ParallaxHeight,_ParallaxMapChannel,1,_ParallaxMap_ST); // move to vs
     #endif
 
     float2 mainUV = TRANSFORM_TEX(i.uv.xy, _MainTex);
@@ -337,6 +339,7 @@ float4 frag(v2f i
 //------ emission
     half3 emissionColor = 0;
     #if defined(_EMISSION)
+    branch_if(_EmissionOn)
         emissionColor += CalcEmission(tex2D(_EmissionMap,mainUV),_EmissionColor.xyz,_EmissionColor.w);
     #endif
     #if defined(_STOREY_ON)

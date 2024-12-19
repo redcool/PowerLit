@@ -305,6 +305,7 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
 //------ emission
     half3 emissionColor = 0;
     #if defined(_EMISSION)
+    branch_if(_EmissionOn)
         emissionColor += CalcEmission(tex2D(_EmissionMap,mainUV),_EmissionColor.xyz,_EmissionColor.w);
     #endif
     // #if defined(_STOREY_ON)

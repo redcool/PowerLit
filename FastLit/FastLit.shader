@@ -57,7 +57,7 @@ Shader "URP/FastLit"
         [GroupItem(Details)]_DetailPbrMaskApplyOcclusion("_DetailPbrMaskApplyOcclusion",range(0,1)) = 1
 //================================================= emission
         [Group(Emission)]
-        [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0
+        [GroupToggle(Emission,)]_EmissionOn("_EmissionOn",int) = 0  //_EMISSION
         [GroupItem(Emission)]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d)=""{}
         [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
         [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
@@ -133,7 +133,7 @@ Shader "URP/FastLit"
         [GroupItem(Fog,SphereFogDatas index)]_SphereFogId("_SphereFogId",int) = 0
 //================================================= Wind  
         [Group(Wind)]
-        [GroupToggle(Wind,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
+        [GroupToggle(Wind,)]_WindOn("_WindOn (need vertex color.r)",float) = 0  // _WIND_ON
         [GroupVectorSlider(Wind,branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
         [GroupVectorSlider(Wind,WindVector Intensity,0_1)]_WindDir("_WindDir,dir:(xyz),Intensity:(w)",vector) = (1,0.1,0,0.5)
         [GroupItem(Wind)]_WindSpeed("_WindSpeed",range(0,1)) = 0.3
@@ -227,7 +227,7 @@ Shader "URP/FastLit"
         [GroupItem(MatCap)] _MatCapScale("_MatCapScale",float)= 1
 //================================================= Parallax
         [Group(Parallax)]
-        [GroupToggle(Parallax,_PARALLAX)]_ParallaxOn("_ParallaxOn",int) = 0
+        [GroupToggle(Parallax)]_ParallaxOn("_ParallaxOn",int) = 0 //_PARALLAX
         // [GroupSlider(Parallax,iterate count,int)]_ParallaxIterate("_ParallaxIterate",range(1,10)) = 1
         // [GroupToggle(Parallax,run in vertex shader)]_ParallaxInVSOn("_ParallaxInVSOn",int) = 0
         
@@ -292,14 +292,14 @@ Shader "URP/FastLit"
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
             // #pragma shader_feature SIMPLE_FOG
-            #pragma shader_feature_local _PARALLAX 
+            #define _PARALLAX // #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_fragment _EMISSION
+            #define _EMISSION//#pragma shader_feature_fragment _EMISSION
             #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
@@ -378,7 +378,7 @@ Shader "URP/FastLit"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
             #define SHADOW_PASS 
             #define USE_SAMPLER2D
@@ -440,14 +440,14 @@ Shader "URP/FastLit"
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
             // #pragma shader_feature SIMPLE_FOG
-            #pragma shader_feature_local _PARALLAX 
+            #define _PARALLAX // #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_fragment _EMISSION
+            #define _EMISSION//#pragma shader_feature_fragment _EMISSION
             #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
@@ -520,14 +520,14 @@ Shader "URP/FastLit"
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
             // #pragma shader_feature SIMPLE_FOG
-            // #pragma shader_feature_local _PARALLAX 
+            // #define _PARALLAX // #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_fragment _EMISSION
+            #define _EMISSION//#pragma shader_feature_fragment _EMISSION
             #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             // #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
@@ -605,7 +605,7 @@ Shader "URP/FastLit"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
             #define SHADOW_PASS 
             #define USE_SAMPLER2D
@@ -666,14 +666,14 @@ Shader "URP/FastLit"
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
             // #pragma shader_feature SIMPLE_FOG
-            #pragma shader_feature_local _PARALLAX 
+            #define _PARALLAX // #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_fragment _EMISSION
+            #define _EMISSION//#pragma shader_feature_fragment _EMISSION
             #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
@@ -743,11 +743,11 @@ Shader "URP/FastLit"
             // #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_fragment _EMISSION
+            #define _EMISSION//#pragma shader_feature_fragment _EMISSION
             #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON
@@ -825,7 +825,7 @@ Shader "URP/FastLit"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
             #define SHADOW_PASS 
             #define USE_SAMPLER2D
@@ -886,14 +886,14 @@ Shader "URP/FastLit"
             // #pragma shader_feature_fragment _PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE //_PBRMODE_GGX
             
             // #pragma shader_feature SIMPLE_FOG
-            #pragma shader_feature_local _PARALLAX 
+            #define _PARALLAX // #pragma shader_feature_local _PARALLAX 
             #pragma shader_feature_fragment _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_fragment _EMISSION
+            #define _EMISSION//#pragma shader_feature_fragment _EMISSION
             #pragma shader_feature_fragment _PLANAR_REFLECTION_ON
 
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
 
             #pragma shader_feature_local_fragment _IBL_ON

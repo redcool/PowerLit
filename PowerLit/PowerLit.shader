@@ -144,7 +144,7 @@ Shader "URP/PowerLit"
 
 //=================================================  weather
         [Header(Wind)]
-        [GroupToggle(_,_WIND_ON)]_WindOn("_WindOn (need vertex color.r)",float) = 0
+        [GroupToggle()]_WindOn("_WindOn (need vertex color.r)",float) = 0
         [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
         [GroupVectorSlider(WindVector Intensity,0_1)]_WindDir("_WindDir,dir:(xyz),Intensity:(w)",vector) = (1,0.1,0,0.5)
         _WindSpeed("_WindSpeed",range(0,1)) = 0.3
@@ -296,7 +296,7 @@ Shader "URP/PowerLit"
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
             #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
             #pragma shader_feature_local_fragment _STOREY_ON
             #pragma shader_feature_local_fragment _DETAIL_ON
@@ -350,7 +350,7 @@ Shader "URP/PowerLit"
 
             // #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature_local_fragment _ALPHATEST_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
             #define SHADOW_PASS 
         //     #define USE_SAMPLER2D
@@ -379,7 +379,7 @@ Shader "URP/PowerLit"
             #pragma multi_compile_instancing
             // #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma shader_feature_local_fragment _ALPHATEST_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            // #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
             // #define SHADOW_PASS 
         //     #define USE_SAMPLER2D
@@ -454,7 +454,7 @@ Shader "URP/PowerLit"
             // #pragma shader_feature_local_fragment _DEPTH_FOG_ON
             #pragma shader_feature SIMPLE_FOG
             #pragma shader_feature_local_fragment _SNOW_ON
-            #pragma shader_feature_local_vertex _WIND_ON
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
             #pragma shader_feature_local_fragment _RAIN_ON
             #pragma shader_feature_local_fragment _STOREY_ON
             #pragma shader_feature_local_fragment _DETAIL_ON

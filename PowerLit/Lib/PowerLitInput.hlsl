@@ -91,7 +91,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 
 //--------------------------------- Wind
 //#if defined(_WIND_ON)
-    // UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
+    UNITY_DEFINE_INSTANCED_PROP(half ,_WindOn)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindAnimParam)
     UNITY_DEFINE_INSTANCED_PROP(half4 ,_WindDir)
     UNITY_DEFINE_INSTANCED_PROP(half ,_WindSpeed)
@@ -341,23 +341,5 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CurvedSidewayScale UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CurvedSidewayScale) 
     #define _CustomShadowDepthBias UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomShadowDepthBias) 
     #define _CustomShadowNormalBias UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomShadowNormalBias) 
-/**
-    Global Variables Emission Scanline
-*/    
-    // half4 _EmissionScanLineColor;
-    // half3 _EmissionScanLineMin;
-    // half3 _EmissionScanLineMax;
-    // half4 _EmissionScanLineRange_Rate;
-    // half _ScanLineAxis;
 
-    //---------Cloud shadows
-    // half _CloudShadowOn;
-    // half4 _CloudNoiseTilingOffset;
-    // half _CloudNoiseRangeMin;
-    // half _CloudNoiseRangeMax;
-    // half _CloudNoiseOffsetStop;
-
-    // half4 _CloudShadowColor;
-    // half _CloudBaseShadowIntensity;
-    // half _CloudShadowIntensity;
 #endif //POWER_LIT_INPUT_HLSL

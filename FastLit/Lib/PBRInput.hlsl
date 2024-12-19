@@ -8,6 +8,7 @@
 #define _MainTex _BaseMap
 #define _MainTex_ST _BaseMap_ST
 
+
 sampler2D _MainTex;
 sampler2D _NormalMap;
 sampler2D _PbrMask;
@@ -58,6 +59,7 @@ half4 _EmissionColor;
 half2 _ClothRange;
 
 //----------------------------------------
+half _WindOn;
 half4 _WindAnimParam;
 half4 _WindDir;
 half _WindSpeed;

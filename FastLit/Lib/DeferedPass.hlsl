@@ -1,6 +1,10 @@
 #if !defined(DEFERED_PASS_HLSL)
 #define DEFERED_PASS_HLSL
 
+#if defined(SHADER_API_GLES3)
+    #define OUTPUT_WORLD_POS
+#endif
+
 #include "../../PowerShaderLib/Lib/TangentLib.hlsl"
 #include "../../PowerShaderLib/Lib/BSDF.hlsl"
 #include "../../PowerShaderLib/Lib/Colors.hlsl"
@@ -127,7 +131,7 @@ float4 frag(v2f i
     ,out float4 outputNormal:SV_TARGET1 //{xyz:normal}
     ,out float4 outputPbrMask:SV_TARGET2 // {xyz:pbrMask,w:shadow}
     ,out float4 outputMotionVectors:SV_TARGET3 // {rg}
-    #if defined(SHADER_API_GLES3)
+    #if defined(OUTPUT_WORLD_POS)
     ,out float4 outputWorldPos:SV_TARGET4
     #endif
 ):SV_Target//{xyz:albedo,w:emission.b}
@@ -138,7 +142,7 @@ float4 frag(v2f i
 
     //gl,depth buffer too low,use new rt
     #if defined(SHADER_API_GLES3)
-    outputWorldPos.xyz = worldPos;
+    outputWorldPos = float4(worldPos,1);
     #endif
 
 

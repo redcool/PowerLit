@@ -42,7 +42,9 @@ struct v2f
     // float4 shadowCoord:TEXCOORD4;
     float4 fogCoord:TEXCOORD5;//fogCoord{x,y}, z:heightColorAtten
     // motion vectors
+    #if defined(OUTPUT_MOTION)
     DECLARE_MOTION_VS_OUTPUT(6,7);
+    #endif
     float4 bigShadowCoord:TEXCOORD8;
     float4 vertexPos:TEXCOORD9;
     float3 viewDirTS:TEXCOORD10;
@@ -98,8 +100,9 @@ v2f vert (appdata v)
 
     o.color = v.color;
 
+    #if defined(OUTPUT_MOTION)
     CALC_MOTION_POSITIONS(v.prevPos,v.vertex,o,o.vertex);
-    // CALC_MOTION_POSITIONS_WORLD(v.prevPos,worldPos,o,o.vertex);
+    #endif
     
     branch_if(!_BigShadowOff){
         float3 bigShadowCoord = TransformWorldToBigShadow(worldPos);
@@ -119,7 +122,19 @@ v2f vert (appdata v)
     return o;
 }
 
-float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVectors:SV_TARGET2) : SV_Target
+float4 frag (v2f i
+#if defined(OUTPUT_NORMAL)
+,out float4 outputNormal:SV_TARGET1
+#endif
+
+#if defined(OUTPUT_MOTION)
+,out float4 outputMotionVectors:SV_TARGET2
+#endif
+
+#if defined(OUTPUT_WORLD_POS)
+,out float4 outputPos:SV_TARGET3
+#endif
+) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(i);
 
@@ -208,12 +223,12 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     #if defined(_SNOW_ON)
     branch_if(IsSnowOn())
     {
-        float3 startPos = unity_ObjectToWorld._14_24_34 + i.vertexPos;
+        float3 startPos = unity_ObjectToWorld._14_24_34 + i.vertexPos.xyz;
         float4 snowColor_Noise = CalcNoiseSnowColor(albedo,1,(startPos+startPos.xzy)*0.5,float4(_SnowNoiseTiling.xy,0,0),_SnowNoiseWeights);
 
         half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
         // snowAtten *= pbrMask.w;        
-        albedo = MixSnow(albedo,snowColor_Noise,snowAtten,n,_ApplyEdgeOn);
+        albedo = MixSnow(albedo,snowColor_Noise.xyz,snowAtten,n,_ApplyEdgeOn);
 
         // snow normal mask
         float snowMask = smoothstep(0.4,0.7,snowColor_Noise.w);
@@ -246,7 +261,6 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
         mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
     }
 
-
     branch_if(_CustomLightOn)
     {
         OffsetLight(mainLight/**/,specColor/**/,_CustomLightColorUsage,_CustomLightDir.xyz,_CustomLightColor.xyz);    
@@ -264,12 +278,19 @@ float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVec
     float3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
 //-------- output mrt
+#if defined(OUTPUT_NORMAL)
     // output world normal
     outputNormal = half4(n.xyz,smoothness*_MRTSmoothness);
+#endif
+
+#if defined(OUTPUT_MOTION)
     // output motion
     outputMotionVectors = CALC_MOTION_VECTORS(i);
+#endif    
 
-
+#if defined(OUTPUT_WORLD_POS)
+    outputPos = float4(worldPos,1);
+#endif
 
 //-------- clip
     #if defined(ALPHA_TEST)

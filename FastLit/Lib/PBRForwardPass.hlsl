@@ -376,8 +376,7 @@ float4 frag (v2f i
 //------ emission
     half3 emissionColor = 0;
     #if defined(_EMISSION)
-    branch_if(_EmissionOn)
-        emissionColor += CalcEmission(tex2D(_EmissionMap,mainUV),_EmissionColor.xyz,_EmissionColor.w);
+        emissionColor += CalcEmission(tex2D(_EmissionMap,mainUV),_EmissionColor.xyz,_EmissionColor.w*_EmissionOn);
     #endif
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)

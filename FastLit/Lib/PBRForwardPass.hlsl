@@ -165,9 +165,10 @@ float4 frag (v2f i
     #endif
 //-------- albedo
     float4 mainTex = tex2D(_MainTex, mainUV) * _Color;
+    float alpha = mainTex.w;
     float3 albedo = mainTex.xyz;
     albedo *= _AlbedoMulVertexColor ? i.color.xyz : 1;
-    float alpha = mainTex.w;
+    albedo *= _AlphaPremultiply ? alpha : 1;
 
 //---------- pbrMask
     float4 pbrMask = tex2D(_PbrMask,pbrMaskUV);

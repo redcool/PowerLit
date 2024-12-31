@@ -172,7 +172,7 @@ float4 frag(Varyings input
 //------------ albedo
     float3 albedo = 0;
     float alpha = 1;
-    CalcAlbedo(_BaseMap,sampler_BaseMap,mainUV,_Color,_Cutoff,0,albedo/*out*/,alpha/*out*/);
+    CalcAlbedo(_BaseMap,sampler_BaseMap,mainUV,_Color,_Cutoff,0,_AlphaPremultiply,albedo/*out*/,alpha/*out*/);
 
     half4 pbrMask = SAMPLE_TEXTURE2D(_MetallicMaskMap,sampler_MetallicMaskMap,mainUV);
     float metallic = 0;

@@ -24,9 +24,9 @@
 
 // #define SIMPLE_NOISE_TEX
 
-void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,out float3 albedo,out float alpha ){
+void CalcAlbedo(TEXTURE2D_PARAM(map,sampler_Map),float2 uv,float4 color,float cutoff,bool isClipOn,bool isAlphaPremultiply,out float3 albedo,out float alpha ){
     float4 c = SAMPLE_TEXTURE2D(map,sampler_Map,uv) * color;
-    albedo = c.rgb;
+    albedo = c.rgb * (isAlphaPremultiply?c.a : 1);
     alpha = c.a;
 
     #if defined(ALPHA_TEST)

@@ -144,7 +144,8 @@ half _ParallaxHeight,_ParallaxMapChannel;
 half4 _ParallaxMap_ST;
 
 half _CurvedBackwardScale,_CurvedSidewayScale;
-float _SphereFogId; // sphere fog index
+half _SphereFogId; // sphere fog index
+half _RotateShadow;
 CBUFFER_END
 
 half4 _SceneMatCap_ST; // use consts

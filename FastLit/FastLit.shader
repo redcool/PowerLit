@@ -37,7 +37,8 @@ Shader "URP/FastLit"
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS_ON)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
         [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_ON)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_SOFT)]_AdditionalIghtSoftShadow("_AdditionalIghtSoftShadow",int) = 0
-
+        [GroupHeader(,RotateShadow)]
+        [GroupToggle(,,shadow caster use matrix _CameraYRot or _MainLightYRot )]_RotateShadow("_RotateShadow",int) = 0
 //================================================= Details
         [Group(Details)]
         [GroupToggle(Details,_DETAIL_ON)]_DetailOn("_DetailOn",int) = 0
@@ -343,7 +344,7 @@ Shader "URP/FastLit"
                 Pass [_StencilOp]
                 ReadMask [_StencilReadMask]
                 WriteMask [_StencilWriteMask]
-            }            
+            }
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag 
@@ -374,7 +375,7 @@ Shader "URP/FastLit"
                 WriteMask [_StencilWriteMask]
             }            
             HLSLPROGRAM
-            #pragma vertex vert
+            #pragma vertex vertShadow
             #pragma fragment frag
 
             // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
@@ -392,6 +393,16 @@ Shader "URP/FastLit"
 
             #define _CURVED_WORLD
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+
+            // rotate by Mainlight
+            float4x4 _MainLightYRot;
+            // #define _MainLightYRot _CameraYRot
+
+            shadow_v2f vertShadow(shadow_appdata input){
+                input.vertex.xyz = _RotateShadow ? mul(_MainLightYRot,input.vertex).xyz : input.vertex.xyz;
+
+                return vert(input);
+            }
 
             ENDHLSL
         }

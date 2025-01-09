@@ -10,7 +10,7 @@ _PlanarReflectionOn=#ff8800
 
 _EmissionHeightOn=#ff8800
 _InteriorMapOn=#ff8800
-_BoxProjectionOn=#ff8800
+//_BoxProjectionOn=#ff8800
 _DebugDisplay=#ff8800
 _StoreyTilingOn=#ff8800
 _SimpleFog=#ff8800
@@ -18,4 +18,4 @@ _SnowOn=#ff8800
 _WindOn=#ff8800
 _RainOn=#ff8800
 _DetailOn=#ff8800
-_SurfaceBelowOn=#ff8800
+//_SurfaceBelowOn=#ff8800

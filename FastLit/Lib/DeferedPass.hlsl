@@ -329,7 +329,7 @@ float4 frag(v2f i
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
     float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset.xyz/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
-    ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex);
+    ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex,0,0,_BoxProjectionOn);
     
     giColor = (giDiff * _LightmapColor.xyz + giSpec) * occlusion;
 

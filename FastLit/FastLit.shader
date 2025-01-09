@@ -110,7 +110,8 @@ Shader "URP/FastLit"
         // [GroupToggle(Env,_INTERIOR_MAP_ON)]_InteriorMapOn("_InteriorMapOn",int) = 0
 
         [GroupHeader(Env,BoxProjection)]
-        [GroupToggle(Env,_REFLECTION_PROBE_BOX_PROJECTION_1)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
+        //_REFLECTION_PROBE_BOX_PROJECTION_1
+        [GroupToggle(Env,)]_BoxProjectionOn("_BoxProjectionOn",int) = 0
 
         [GroupHeader(Env,Fresnel)]
         [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
@@ -306,7 +307,9 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+
+
+            #define _REFLECTION_PROBE_BOX_PROJECTION_1 //#pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
 
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
@@ -468,7 +471,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+            #define _REFLECTION_PROBE_BOX_PROJECTION_1 //#pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
 
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
@@ -551,7 +554,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+            #define _REFLECTION_PROBE_BOX_PROJECTION_1 //#pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
 
             // #pragma multi_compile _ MIN_VERSION
             // #define MIN_VERSION
@@ -698,7 +701,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+            #define _REFLECTION_PROBE_BOX_PROJECTION_1 //#pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
 
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
@@ -772,7 +775,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+            #define _REFLECTION_PROBE_BOX_PROJECTION_1 //#pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
 
             // #pragma multi_compile _ MIN_VERSION
             #define MIN_VERSION
@@ -918,7 +921,7 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
-            #pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
+            #define _REFLECTION_PROBE_BOX_PROJECTION_1 //#pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
 
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE

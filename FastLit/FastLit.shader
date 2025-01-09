@@ -34,8 +34,10 @@ Shader "URP/FastLit"
         [GroupToggle]_BigShadowOff("_BigShadowOff",int) = 0
 
         [Group(AdditionalLights)]
-        [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHTS_ON)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
-        [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_ON)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
+        //_ADDITIONAL_LIGHTS_ON  
+        [GroupToggle(AdditionalLights,)]_CalcAdditionalLights("_CalcAdditionalLights",int) = 0
+        // _ADDITIONAL_LIGHT_SHADOWS_ON
+        [GroupToggle(AdditionalLights,)]_ReceiveAdditionalLightShadow("_ReceiveAdditionalLightShadow",int) = 1
         // [GroupToggle(AdditionalLights,_ADDITIONAL_LIGHT_SHADOWS_SOFT)]_AdditionalIghtSoftShadow("_AdditionalIghtSoftShadow",int) = 0
         [GroupHeader(,RotateShadow)]
         [GroupToggle(,,shadow caster use matrix _CameraYRot or _MainLightYRot )]_RotateShadow("_RotateShadow",int) = 0
@@ -282,8 +284,8 @@ Shader "URP/FastLit"
             // #pragma multi_compile_fog
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
-            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            #define _ADDITIONAL_LIGHTS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #define _ADDITIONAL_LIGHT_SHADOWS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
             
             #pragma multi_compile _ SHADOWS_SHADOWMASK
@@ -446,8 +448,8 @@ Shader "URP/FastLit"
             // #pragma multi_compile_fog
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
-            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            #define _ADDITIONAL_LIGHTS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #define _ADDITIONAL_LIGHT_SHADOWS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
             
             #pragma multi_compile _ SHADOWS_SHADOWMASK
@@ -528,8 +530,8 @@ Shader "URP/FastLit"
             // #pragma multi_compile_fog
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
-            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            #define _ADDITIONAL_LIGHTS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #define _ADDITIONAL_LIGHT_SHADOWS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
             
             #pragma multi_compile _ SHADOWS_SHADOWMASK
@@ -676,8 +678,8 @@ Shader "URP/FastLit"
             // #pragma multi_compile_fog
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
-            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            #define _ADDITIONAL_LIGHTS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #define _ADDITIONAL_LIGHT_SHADOWS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
             
             #pragma multi_compile _ SHADOWS_SHADOWMASK
@@ -750,8 +752,8 @@ Shader "URP/FastLit"
             // #pragma multi_compile_fog
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
-            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            #define _ADDITIONAL_LIGHTS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #define _ADDITIONAL_LIGHT_SHADOWS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
             
             #pragma multi_compile _ SHADOWS_SHADOWMASK
@@ -896,8 +898,8 @@ Shader "URP/FastLit"
             // #pragma multi_compile_fog
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS// _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
-            #pragma shader_feature_fragment _ _ADDITIONAL_LIGHT_SHADOWS_ON
+            #define _ADDITIONAL_LIGHTS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHTS_ON
+            #define _ADDITIONAL_LIGHT_SHADOWS_ON // #pragma shader_feature_fragment _ADDITIONAL_LIGHT_SHADOWS_ON
             // #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS_SOFT
             
             #pragma multi_compile _ SHADOWS_SHADOWMASK

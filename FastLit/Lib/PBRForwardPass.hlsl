@@ -372,7 +372,7 @@ float4 frag (v2f i
     col.rgb = directColor + giColor;
 
     #if defined(_ADDITIONAL_LIGHTS_ON)
-        col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask);
+        col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask,1,_CalcAdditionalLights,_ReceiveAdditionalLightShadow);
     #endif
 //------ emission
     half3 emissionColor = 0;

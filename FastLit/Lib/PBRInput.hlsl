@@ -40,7 +40,8 @@ half _CalcTangent;
 half _MainLightShadowSoftScale;
 half _CustomShadowDepthBias,_CustomShadowNormalBias;
 
-// half _CalcAdditionalLights,_ReceiveAdditionalLightShadow,_AdditionalIghtSoftShadow;
+half _CalcAdditionalLights,_ReceiveAdditionalLightShadow;
+// half _AdditionalIghtSoftShadow;
 
 //thin film
 // half _TFOn,_TFScale,_TFOffset,_TFSaturate,_TFBrightness;

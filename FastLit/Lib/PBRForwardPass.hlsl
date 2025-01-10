@@ -363,8 +363,27 @@ float4 frag (v2f i
     #endif
     float3 giColor = 0;
     float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
-    float3 giSpec = CalcGISpec(IBL_CUBE,IBL_CUBE_SAMPLER,IBL_HDR,specColor,worldPos,n,v,_ReflectDirOffset.xyz/*reflectDirOffset*/,_EnvIntensity/*reflectIntensity*/
-    ,nv,roughness,a2,smoothness,metallic,half2(0,1),_FresnelIntensity,planarReflectTex,0,0,_BoxProjectionOn);
+    float3 giSpec = CalcGISpec(IBL_CUBE,
+        IBL_CUBE_SAMPLER,
+        IBL_HDR,
+        specColor,
+        worldPos,
+        n,
+        v,
+        _ReflectDirOffset.xyz/*reflectDirOffset*/,
+        _EnvIntensity/*reflectIntensity*/,
+        nv,
+        roughness,
+        a2,
+        smoothness,
+        metallic,
+        half2(0,1),
+        _FresnelIntensity,
+        planarReflectTex,
+        0,
+        0,
+        _BoxProjectionOn
+    );
     
     giColor = (giDiff * _LightmapColor.xyz + giSpec) * occlusion;
 
@@ -392,17 +411,7 @@ float4 frag (v2f i
     }
     col.rgb += emissionColor;
 
-    // #if defined(_CLOUD_SHADOW_ON)
-    // branch_if(_CloudShadowOn)
-    // {
-    //     col.xyz *= CalcCloudShadow(TEXTURE2D_ARGS(_WeatherNoiseTexture,sampler_WeatherNoiseTexture),worldPos,_CloudNoiseTilingOffset,_CloudNoiseOffsetStop,
-    //     _CloudNoiseRangeMin,_CloudNoiseRangeMax,_CloudShadowColor,_CloudShadowIntensity,_CloudBaseShadowIntensity);
-    // }
-    // #endif
-
-//------ fog
-    // col.rgb = MixFog(col.xyz,i.fogFactor.x);
-    // #endif
+    //------sphere fog
     float fogNoise = 0;
     #if defined(_DEPTH_FOG_NOISE_ON)
     branch_if(_FogNoiseOn)

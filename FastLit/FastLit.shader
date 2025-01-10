@@ -316,7 +316,7 @@ Shader "URP/FastLit"
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
 
-            // #define _CLOUD_SHADOW_ON
+            
             #define SHADOWS_FULL_MIX
             #define _DEPTH_FOG_NOISE_ON
             // #define CALC_WORLD_NOISE_2_LAYERS
@@ -354,6 +354,7 @@ Shader "URP/FastLit"
             #pragma vertex vert
             #pragma fragment frag 
             #pragma shader_feature_fragment ALPHA_TEST
+            #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
             #define USE_SAMPLER2D
             #include "Lib/PBRInput.hlsl"
@@ -478,7 +479,7 @@ Shader "URP/FastLit"
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
 
-            // #define _CLOUD_SHADOW_ON
+            
             #define SHADOWS_FULL_MIX
             #define _DEPTH_FOG_NOISE_ON
             
@@ -562,7 +563,7 @@ Shader "URP/FastLit"
             // #define MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
 
-            // #define _CLOUD_SHADOW_ON
+            
             #define SHADOWS_FULL_MIX
             
             #include "Lib/PBRInput.hlsl"
@@ -708,7 +709,7 @@ Shader "URP/FastLit"
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
 
-            // #define _CLOUD_SHADOW_ON
+            
             #define SHADOWS_FULL_MIX
             #define _DEPTH_FOG_NOISE_ON
             
@@ -783,7 +784,7 @@ Shader "URP/FastLit"
             #define MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
 
-            // #define _CLOUD_SHADOW_ON
+            
             #define SHADOWS_FULL_MIX
             
             #include "Lib/PBRInput.hlsl"
@@ -872,7 +873,8 @@ Shader "URP/FastLit"
             #pragma vertex vert
             #pragma fragment frag 
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma shader_feature_local_fragment _EMISSION
+            #define _EMISSION
+            // #pragma shader_feature_fragment _EMISSION
 
             #include "Lib/PBRInput.hlsl"
             // #include "Lib/FastLitMetaPass.hlsl"
@@ -928,7 +930,7 @@ Shader "URP/FastLit"
             // #pragma multi_compile _ MIN_VERSION
             #pragma multi_compile _ LOD_FADE_CROSSFADE
 
-            // #define _CLOUD_SHADOW_ON
+            
             #define SHADOWS_FULL_MIX
             #define _DEPTH_FOG_NOISE_ON
             

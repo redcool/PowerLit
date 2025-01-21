@@ -148,13 +148,18 @@ Shader "URP/PowerLit"
         [GroupVectorSlider(branch edge globalOffset flutterOffset,0_0.4 0_0.5 0_0.6 0_0.06)]_WindAnimParam("_WindAnimParam(x:branch,edge,z : global offset,w:flutter offset)",vector) = (1,1,0.1,0.3)
         [GroupVectorSlider(WindVector Intensity,0_1)]_WindDir("_WindDir,dir:(xyz),Intensity:(w)",vector) = (1,0.1,0,0.5)
         _WindSpeed("_WindSpeed",range(0,1)) = 0.3
-  
+//================================================= Snow  
         [Header(Snow)]
         [GroupToggle(_,_SNOW_ON)]_SnowOn("_SnowOn",int) = 0
         [GroupToggle(Snow,,snow show in edge first)]_ApplyEdgeOn("_ApplyEdgeOn",int) = 1
         [GroupItem(Snow)]_SnowIntensity("_SnowIntensity",range(0,1)) = 0
         [GroupToggle(Snow,,mainTex.a as snow atten)] _SnowIntensityUseMainTexA("_SnowIntensityUseMainTexA",int) = 0
 
+        [GroupHeader(Snow,SnowNoise)]
+        [GroupVectorSlider(Snow,NoiseTilingX NoiseTilingY,0_10 0_10,,float)]_SnowNoiseTiling("_SnowNoiseTiling",vector) = (1,1,0,0)
+        [GroupVectorSlider(Snow,weightR weightG weightB weightA,0_10 0_10 0_10 0_10,,float)]_SnowNoiseWeights("_SnowNoiseWeights",vector) = (1,.1,.1,1)
+        [GroupToggle(Snow,,flatten normal where no snow)]_SnowNormalMask("_SnowNormalMask",float) = 0
+//================================================= Fog  
         [Header(Fog)]
         [GroupToggle()]_FogOn("_FogOn",int) = 1
         [GroupToggle(_,SIMPLE_FOG,use simple linear depth height fog)]_SimpleFog("_SimpleFog",int) = 0
@@ -162,7 +167,7 @@ Shader "URP/PowerLit"
         [GroupToggle(_)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(_)]_HeightFogOn("_HeightFogOn",int) = 1
         [GroupItem(_,SphereFogDatas index)]_SphereFogId("_SphereFogId",int) = 0
-
+//================================================= Rain
         [GroupToggle(_,_RAIN_ON)]_RainOn("_RainOn",int) = 0
 
         [GroupHeader(Rain Ripple)]

@@ -28,6 +28,7 @@ struct Varyings{
     float4 viewDirTS_NV:TEXCOORD7;
     // motion vectors
     DECLARE_MOTION_VS_OUTPUT(1,8);
+    float4 vertexPos:TEXCOORD9;
 
     float4 color:COLOR;
     float4 fogCoord:COLOR1;
@@ -117,6 +118,7 @@ Varyings vert(Attributes input){
     // zero motionsf
     ZERO_MOTION_POSITIONS(input.prevPos,input.pos,output,clipPos);
     #endif
+    output.vertexPos = input.pos;
 
     return output;
 }
@@ -206,7 +208,7 @@ float4 frag(Varyings input
 
     float3 n = normalize(TangentToWorld(tn,input.tSpace0,input.tSpace1,input.tSpace2));
 //---------- snow    
-    ApplySnow(albedo/**/,n,alpha);
+    ApplySnow(albedo/**/,n/**/,alpha,input.vertexPos);
     
 //---------- surface bedow    
     ApplySurfaceBelow(albedo/**/,worldPos);
@@ -338,13 +340,13 @@ float4 frag(Varyings input
     col.a = alpha;
     // ApplyScreenShadow(color.xyz/**/,data.screenUV);
 
-    #if defined(_CLOUD_SHADOW_ON)
-    branch_if(_CloudShadowOn)
-    {
-        col.xyz *= CalcCloudShadow(TEXTURE2D_ARGS(_WeatherNoiseTexture,sampler_WeatherNoiseTexture),worldPos,_CloudNoiseTilingOffset,_CloudNoiseOffsetStop,
-        _CloudNoiseRangeMin,_CloudNoiseRangeMax,_CloudShadowColor,_CloudShadowIntensity,_CloudBaseShadowIntensity);
-    }
-    #endif
+    // #if defined(_CLOUD_SHADOW_ON)
+    // branch_if(_CloudShadowOn)
+    // {
+    //     col.xyz *= CalcCloudShadow(TEXTURE2D_ARGS(_WeatherNoiseTexture,sampler_WeatherNoiseTexture),worldPos,_CloudNoiseTilingOffset,_CloudNoiseOffsetStop,
+    //     _CloudNoiseRangeMin,_CloudNoiseRangeMax,_CloudShadowColor,_CloudShadowIntensity,_CloudBaseShadowIntensity);
+    // }
+    // #endif
 
     ApplyFog(col/**/,worldPos,input.fogCoord.xy,upFaceAtten);
     return col;

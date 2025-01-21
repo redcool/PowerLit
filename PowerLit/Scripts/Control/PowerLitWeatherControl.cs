@@ -123,9 +123,13 @@ namespace PowerUtilities
         float mainLightStartIntensity;
         Color mainLightStartColor;
 
+        [LoadAsset("Rain.prefab")]
         [EditorGroupLayout(PARTICLES_FLOW_CAMERA,true)]
         public GameObject rainVFX;
-        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public GameObject snowVFX;
+
+        [LoadAsset("SnowStorm.prefab")]
+        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)]
+         public GameObject snowVFX;
 
         [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public GameObject followTarget;
         [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public float followSpeed = 1;

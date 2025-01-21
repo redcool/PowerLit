@@ -119,12 +119,21 @@ void ApplySurfaceBelow(inout float3 albedo,float3 worldPos){
     #endif
 }
 
-void ApplySnow(inout float3 albedo,float3 worldNormal,half alpha){
+void ApplySnow(inout float3 albedo,inout float3 n,half alpha,float3 vertexPos){
     #if defined(_SNOW_ON)
-    branch_if(! IsSnowOn())
-        return;
-    half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
-    albedo = MixSnow(albedo,1,snowAtten,worldNormal,_ApplyEdgeOn);
+    branch_if(IsSnowOn())
+    {
+        float3 startPos = unity_ObjectToWorld._14_24_34 + vertexPos.xyz;
+        float4 snowColor_Noise = CalcNoiseSnowColor(albedo,1,(startPos+startPos.xzy)*0.5,float4(_SnowNoiseTiling.xy,0,0),_SnowNoiseWeights);
+
+        half snowAtten = (_SnowIntensityUseMainTexA ? alpha : 1) * _SnowIntensity;
+        // snowAtten *= pbrMask.w;        
+        albedo = MixSnow(albedo,snowColor_Noise.xyz,snowAtten,n,_ApplyEdgeOn);
+
+        // snow normal mask
+        float snowMask = smoothstep(0.4,0.7,snowColor_Noise.w);
+        n = _SnowNormalMask ? lerp(1,n,snowMask) : n;
+    }
     #endif
 }
 

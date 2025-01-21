@@ -108,6 +108,11 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SnowIntensity)
     UNITY_DEFINE_INSTANCED_PROP(half ,_SnowIntensityUseMainTexA)
     UNITY_DEFINE_INSTANCED_PROP(half ,_ApplyEdgeOn)
+
+    UNITY_DEFINE_INSTANCED_PROP(half ,_SnowNormalMask)
+    UNITY_DEFINE_INSTANCED_PROP(half2 ,_SnowNoiseTiling)
+    UNITY_DEFINE_INSTANCED_PROP(half4 ,_SnowNoiseWeights)
+
 //#endif
 //--------------------------------- Fog
     UNITY_DEFINE_INSTANCED_PROP(half ,_FogOn)
@@ -269,8 +274,12 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _SnowOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowOn)
     #define _SnowIntensity UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensity)
     #define _SnowIntensityUseMainTexA UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowIntensityUseMainTexA)
-    
     #define _ApplyEdgeOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_ApplyEdgeOn)
+
+    #define _SnowNormalMask UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowNormalMask)
+    #define _SnowNoiseTiling UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowNoiseTiling)
+    #define _SnowNoiseWeights UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_SnowNoiseWeights)
+
 //--------------------------------- Fog
     #define _FogOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FogOn)
     #define _FogNoiseOn UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_FogNoiseOn)

@@ -28,6 +28,7 @@ struct Varyings{
     float4 viewDirTS_NV:TEXCOORD7;
     // motion vectors
     DECLARE_MOTION_VS_OUTPUT(1,8);
+    float4 vertexPos:TEXCOORD9;
 
     float4 color:COLOR;
     float4 fogCoord:COLOR1;
@@ -109,6 +110,7 @@ Varyings vert(Attributes input){
     ));
 
     CALC_MOTION_POSITIONS(input.prevPos,input.pos,output,clipPos);
+    output.vertexPos = input.pos;
     return output;
 }
 /**
@@ -221,7 +223,7 @@ float4 frag(Varyings input
 
     float nv = saturate(dot(n,v));
 //---------- snow    
-    ApplySnow(albedo/**/,n,alpha);
+    ApplySnow(albedo/**/,n/**/,alpha,input.vertexPos);
     
 //---------- surface bedow    
     ApplySurfaceBelow(albedo/**/,worldPos);

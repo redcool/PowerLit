@@ -24,6 +24,10 @@ Shader "URP/FastLit"
         [GroupToggle(LightMode)]_SpecularOn("_SpecularOn",int) = 1
         // [Enum(PBR,0,Aniso,1,Charlie,2)]_PbrMode("_PbrMode",int) = 0
         // [GroupEnum(LightMode,_PBRMODE_PBR _PBRMODE_ANISO _PBRMODE_CHARLIE,true)]_PbrMode("_PbrMode",int) = 0
+//=================================================  Diffuse
+        [Group(Cell Diffuse)]
+        [GroupToggle(Cell Diffuse)]_CellDiffuseOn("_CellDiffuseOn",int) = 0
+        [GroupVectorSlider(Lighting,Min Max,0_1 0_1)] _DiffuseRange("_DiffuseRange",vector) = (0,0.5,0,0)
 //=================================================  Shadow
         [Group(Shadow)]
         //[LineHeader(Shadows)]
@@ -310,6 +314,8 @@ Shader "URP/FastLit"
             #pragma shader_feature_local_fragment _IBL_ON
             #pragma shader_feature_local _STOREY_ON
             #pragma shader_feature_local _DETAIL_ON
+
+
             #define _REFLECTION_PROBE_BOX_PROJECTION_1 //#pragma shader_feature_local_fragment _REFLECTION_PROBE_BOX_PROJECTION_1
 
             // #pragma multi_compile _ MIN_VERSION
@@ -322,6 +328,7 @@ Shader "URP/FastLit"
             #define OUTPUT_MOTION
             #define OUTPUT_WORLD_POS
             #define OUTPUT_NORMAL
+            #define _CELL_DIFFUSE
             
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)
@@ -564,6 +571,12 @@ Shader "URP/FastLit"
 
             
             #define SHADOWS_FULL_MIX
+            // #define _DEPTH_FOG_NOISE_ON
+            // #define CALC_WORLD_NOISE_2_LAYERS
+            #define OUTPUT_MOTION
+            #define OUTPUT_WORLD_POS
+            #define OUTPUT_NORMAL
+            #define _CELL_DIFFUSE            
             
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)
@@ -785,7 +798,13 @@ Shader "URP/FastLit"
 
             
             #define SHADOWS_FULL_MIX
-            
+            // #define _DEPTH_FOG_NOISE_ON
+            // // #define CALC_WORLD_NOISE_2_LAYERS
+            // #define OUTPUT_MOTION
+            // #define OUTPUT_WORLD_POS
+            // #define OUTPUT_NORMAL
+            #define _CELL_DIFFUSE
+
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)
             // #include "Lib/PBRInputMin.hlsl"

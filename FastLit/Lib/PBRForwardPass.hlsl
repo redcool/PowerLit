@@ -275,7 +275,10 @@ float4 frag (v2f i
     float nh = saturate(dot(n,h));
     float nl = saturate(dot(n,l));
     float nv = saturate(dot(n,v));
-
+    
+#if defined(_CELL_DIFFUSE)
+    nl = _CellDiffuseOn ? smoothstep(_DiffuseRange.x,_DiffuseRange.y,nl) : nl;
+#endif
     float3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
 //-------- output mrt
@@ -389,7 +392,6 @@ float4 frag (v2f i
 
     float4 col = 0;
     col.rgb = directColor + giColor;
-
     #if defined(_ADDITIONAL_LIGHTS_ON)
         col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask,1,_CalcAdditionalLights,_ReceiveAdditionalLightShadow);
     #endif

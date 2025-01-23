@@ -30,6 +30,12 @@ half _Metallic,_Smoothness,_Occlusion,_NormalScale,_MRTSmoothness;
 half _AlbedoMulVertexColor;
 
 half _SpecularOn;
+
+#if defined(_CELL_DIFFUSE)
+half _CellDiffuseOn;
+half4 _DiffuseRange;
+#endif
+
 half _AnisoRough;
 half _AnisoShift;
 

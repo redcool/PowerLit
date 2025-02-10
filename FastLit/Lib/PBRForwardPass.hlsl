@@ -275,16 +275,9 @@ float4 frag (v2f i
     float nh = saturate(dot(n,h));
     float nl = saturate(dot(n,l));
     float nv = saturate(dot(n,v));
-    
-#if defined(_CELL_DIFFUSE)
+    // control nl size
     nl = _CellDiffuseOn ? smoothstep(_DiffuseRange.x,_DiffuseRange.y,nl) : nl;
 
-    // branch_if(_CellDiffuseOn)
-    // {
-    //     float halfLambert = nl * 0.5 + 0.5;
-    //     nl = 1-saturate((1.0 + ((halfLambert - (_FirstShadowThreshold - _FirstShadowSmoothOffset)) * ( -1))/( _FirstShadowSmoothOffset)));
-    // }
-#endif
     float3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
 //-------- output mrt

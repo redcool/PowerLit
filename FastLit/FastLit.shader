@@ -328,7 +328,7 @@ Shader "URP/FastLit"
             #define OUTPUT_MOTION
             #define OUTPUT_WORLD_POS
             #define OUTPUT_NORMAL
-            #define _CELL_DIFFUSE
+            
             
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)
@@ -492,6 +492,7 @@ Shader "URP/FastLit"
             #define OUTPUT_MOTION
             #define OUTPUT_WORLD_POS
             #define OUTPUT_NORMAL
+                        
             #include "Lib/PBRInput.hlsl"
             // #if defined(MIN_VERSION)
             // #include "Lib/PBRForwardPassMin.hlsl"
@@ -576,7 +577,7 @@ Shader "URP/FastLit"
             #define OUTPUT_MOTION
             #define OUTPUT_WORLD_POS
             #define OUTPUT_NORMAL
-            #define _CELL_DIFFUSE            
+                        
             
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)
@@ -803,7 +804,7 @@ Shader "URP/FastLit"
             // #define OUTPUT_MOTION
             // #define OUTPUT_WORLD_POS
             // #define OUTPUT_NORMAL
-            #define _CELL_DIFFUSE
+            
 
             #include "Lib/PBRInput.hlsl"
             #if defined(MIN_VERSION)
@@ -951,6 +952,7 @@ Shader "URP/FastLit"
             
             #define SHADOWS_FULL_MIX
             #define _DEPTH_FOG_NOISE_ON
+            
             
             #include "Lib/PBRInput.hlsl"
             // #if defined(MIN_VERSION)

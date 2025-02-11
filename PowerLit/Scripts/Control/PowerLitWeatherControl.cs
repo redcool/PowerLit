@@ -23,7 +23,7 @@ namespace PowerUtilities
         {
             EditorGUI.BeginChangeCheck();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorStylesEx.HelpBox);
             GUILayout.Label("Options", EditorStyles.boldLabel);
             if (GUILayout.Button("Use this"))
             {
@@ -74,48 +74,48 @@ namespace PowerUtilities
         public static MonoInstanceManager<PowerLitWeatherControl> instanceManager = new MonoInstanceManager<PowerLitWeatherControl>();
 
         //--------SceneTex
-        [EditorGroupLayout(SCENE_TEXS, true)]
+        [EditorGroup(SCENE_TEXS, true)]
         [Tooltip("noise texute used for Fog,Rain")]
         [LoadAsset("noise4layers.png")]
         public Texture2D _WeatherNoiseTexture;
 
-        [EditorGroupLayout(SCENE_TEXS)]
+        [EditorGroup(SCENE_TEXS)]
         [Tooltip("Scene MatCap ,used for MIN_VERSION ")]
         public Texture2D _SceneMatCap;
 
-        [EditorGroupLayout(SCENE_TEXS)]
+        [EditorGroup(SCENE_TEXS)]
         [Tooltip("SceneMatCap(xy:Tiling,zw:Offset)")]
         public Vector4 _SceneMatCap_ST = new Vector4(1, 1, 0, 0);
 
         //[Header("Fog")]
-        [EditorGroupLayout(FOG,true)]
+        [EditorGroup(FOG,true)]
         public bool _IsGlobalFogOn;
-        [EditorGroupLayout(FOG)][Range(0,1)]public float _GlobalFogIntensity = 1;
+        [EditorGroup(FOG)][Range(0,1)]public float _GlobalFogIntensity = 1;
 
-        [EditorGroupLayout(RAIN,true)]
+        [EditorGroup(RAIN,true)]
         public bool _IsGlobalRainOn;
-        [EditorGroupLayout(RAIN)][Range(0, 1)] public float _GlobalRainIntensity = 1;
+        [EditorGroup(RAIN)][Range(0, 1)] public float _GlobalRainIntensity = 1;
 
-        [EditorGroupLayout(SNOW,true)]
+        [EditorGroup(SNOW,true)]
         public bool _IsGlobalSnowOn;
-        [EditorGroupLayout(SNOW)] [ColorUsage(true,true)] public Color _GlobalSnowColor = Color.white;
-        [EditorGroupLayout(SNOW)][Range(0,1)]public float _GlobalSnowIntensity = 1;
+        [EditorGroup(SNOW)] [ColorUsage(true,true)] public Color _GlobalSnowColor = Color.white;
+        [EditorGroup(SNOW)][Range(0,1)]public float _GlobalSnowIntensity = 1;
 
-        [EditorGroupLayout(WIND,true)]
+        [EditorGroup(WIND,true)]
         public bool _IsGlobalWindOn;
-        [EditorGroupLayout(WIND)][Range(0, 15)] public float _GlobalWindIntensity = 1;
+        [EditorGroup(WIND)][Range(0, 15)] public float _GlobalWindIntensity = 1;
 
-        [EditorGroupLayout(THUNDER,true)]
+        [EditorGroup(THUNDER,true)]
         public bool thunderOn;
-        [EditorGroupLayout(THUNDER)] public Light mainLight;
-        [EditorGroupLayout(THUNDER)] public ThunderMode thunderMode;
-        [EditorGroupLayout(THUNDER)] public AnimationCurve thunderCurve;
-        [EditorGroupLayout(THUNDER)] public Gradient thunderColor;
-        [EditorGroupLayout(THUNDER)][Min(0.1f)]public float thunderTime = 3;
-        [EditorGroupLayout(THUNDER)] public Vector2 thunderInvervalTime = new Vector2(1, 10);
+        [EditorGroup(THUNDER)] public Light mainLight;
+        [EditorGroup(THUNDER)] public ThunderMode thunderMode;
+        [EditorGroup(THUNDER)] public AnimationCurve thunderCurve;
+        [EditorGroup(THUNDER)] public Gradient thunderColor;
+        [EditorGroup(THUNDER)][Min(0.1f)]public float thunderTime = 3;
+        [EditorGroup(THUNDER)] public Vector2 thunderInvervalTime = new Vector2(1, 10);
 
-        [EditorGroupLayout(SKY, true)] public bool isGlobalSkyOn;
-        [EditorGroupLayout(SKY)][Range(0, 1)] public float skyExposure;
+        [EditorGroup(SKY, true)] public bool isGlobalSkyOn;
+        [EditorGroup(SKY)][Range(0, 1)] public float skyExposure;
        
 
         //public PowerGradient TestThunderColor;
@@ -123,47 +123,47 @@ namespace PowerUtilities
         float mainLightStartIntensity;
         Color mainLightStartColor;
 
+        [EditorGroup(PARTICLES_FLOW_CAMERA,true)]
         [LoadAsset("Rain.prefab")]
-        [EditorGroupLayout(PARTICLES_FLOW_CAMERA,true)]
         public GameObject rainVFX;
 
+        [EditorGroup(PARTICLES_FLOW_CAMERA)]
         [LoadAsset("SnowStorm.prefab")]
-        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)]
          public GameObject snowVFX;
 
-        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public GameObject followTarget;
-        [EditorGroupLayout(PARTICLES_FLOW_CAMERA)] public float followSpeed = 1;
+        [EditorGroup(PARTICLES_FLOW_CAMERA)] public GameObject followTarget;
+        [EditorGroup(PARTICLES_FLOW_CAMERA)] public float followSpeed = 1;
 
         // world scanline
-        //[EditorGroupLayout("World ScanLine", true)]
+        //[EditorGroup("World ScanLine", true)]
         //public bool showSceneBound=true;
 
-        //[EditorGroupLayout("World ScanLine")]
+        //[EditorGroup("World ScanLine")]
         //[ColorUsage(false,true)]
         //public Color _EmissionScanLineColor = Color.white;
         //[Space(10)]
-        //[EditorGroupLayout("World ScanLine")] public Transform sceneMinTr;
-        //[EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;
-        //[EditorGroupLayout("World ScanLine")] public Transform sceneMaxTr;
-        //[EditorGroupLayout("World ScanLine")] public Vector3 _EmissionScanLineMax = new Vector3(100,0,0);
+        //[EditorGroup("World ScanLine")] public Transform sceneMinTr;
+        //[EditorGroup("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;
+        //[EditorGroup("World ScanLine")] public Transform sceneMaxTr;
+        //[EditorGroup("World ScanLine")] public Vector3 _EmissionScanLineMax = new Vector3(100,0,0);
         //[Space(10)]
-        //[EditorGroupLayout("World ScanLine")][Range(0,1)] public float _EmissionScanLineRate = 0;
-        //[EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMin = 0.1f;
-        //[EditorGroupLayout("World ScanLine")][Range(0,10)] public float _ScanLineRangeMax = 0.2f;
-        //[EditorGroupLayout("World ScanLine")] public ScanLineAxis _ScanLineAxis;
+        //[EditorGroup("World ScanLine")][Range(0,1)] public float _EmissionScanLineRate = 0;
+        //[EditorGroup("World ScanLine")][Range(0,10)] public float _ScanLineRangeMin = 0.1f;
+        //[EditorGroup("World ScanLine")][Range(0,10)] public float _ScanLineRangeMax = 0.2f;
+        //[EditorGroup("World ScanLine")] public ScanLineAxis _ScanLineAxis;
 
         // clouds
-        [EditorGroupLayout(CLOUD_SHADOW, true)] public bool _CloudShadowOn;
-        [EditorGroupLayout(CLOUD_SHADOW)] public GameObject cloudShadowBox;
-        [EditorGroupLayout(CLOUD_SHADOW)] public Texture cloudShadowNoiseTex;
+        [EditorGroup(CLOUD_SHADOW, true)] public bool _CloudShadowOn;
+        [EditorGroup(CLOUD_SHADOW)] public GameObject cloudShadowBox;
+        [EditorGroup(CLOUD_SHADOW)] public Texture cloudShadowNoiseTex;
 
-        [EditorGroupLayout(CLOUD_SHADOW)] public Vector4 _CloudNoiseTilingOffset = new Vector4(.1f, .1f, 0, 0);
-        [EditorGroupLayout(CLOUD_SHADOW)] public bool _CloudNoiseOffsetStop;
-        [EditorGroupLayout(CLOUD_SHADOW)] [Range(0,1)] public float _CloudNoiseRangeMin = 0;
-        [EditorGroupLayout(CLOUD_SHADOW)] [Range(0,1)] public float _CloudNoiseRangeMax = 1;
-        [EditorGroupLayout(CLOUD_SHADOW)] public Color _CloudShadowColor = Color.black;
-        [EditorGroupLayout(CLOUD_SHADOW)] public float _CloudBaseShadowIntensity = 0;
-        [EditorGroupLayout(CLOUD_SHADOW)] public float _CloudShadowIntensity = 1;
+        [EditorGroup(CLOUD_SHADOW)] public Vector4 _CloudNoiseTilingOffset = new Vector4(.1f, .1f, 0, 0);
+        [EditorGroup(CLOUD_SHADOW)] public bool _CloudNoiseOffsetStop;
+        [EditorGroup(CLOUD_SHADOW)] [Range(0,1)] public float _CloudNoiseRangeMin = 0;
+        [EditorGroup(CLOUD_SHADOW)] [Range(0,1)] public float _CloudNoiseRangeMax = 1;
+        [EditorGroup(CLOUD_SHADOW)] public Color _CloudShadowColor = Color.black;
+        [EditorGroup(CLOUD_SHADOW)] public float _CloudBaseShadowIntensity = 0;
+        [EditorGroup(CLOUD_SHADOW)] public float _CloudShadowIntensity = 1;
 
         Material cloudShadowBoxMat;
 

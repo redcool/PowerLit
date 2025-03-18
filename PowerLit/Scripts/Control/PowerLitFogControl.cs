@@ -196,7 +196,7 @@ public class PowerLitFogControl : MonoBehaviour
 
     private void UpdateStructuredBuffer()
     {
-        if (fogBuffer == null || fogBuffer.count != sphereFogDatas.Count)
+        if (fogBuffer == null || !fogBuffer.IsValid() || fogBuffer.count != sphereFogDatas.Count)
         {
             fogBuffer?.Dispose();
 

@@ -225,7 +225,7 @@ Shader "URP/FastLit"
 // ================================================== stencil settings
         [Group(Stencil)]
         [GroupEnum(Stencil,UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Float) = 0
-        [GroupItem(Stencil)] _Stencil ("Stencil ID", int) = 0
+        [GroupStencil(Stencil)] _Stencil ("Stencil ID", int) = 0
         [GroupEnum(Stencil,UnityEngine.Rendering.StencilOp)] _StencilOp ("Stencil Operation", Float) = 0
         [GroupHeader(Stencil,)]
         [GroupEnum(Stencil,UnityEngine.Rendering.StencilOp)] _StencilFailOp ("Stencil Fail Operation", Float) = 0

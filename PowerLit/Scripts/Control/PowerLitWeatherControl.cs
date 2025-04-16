@@ -65,14 +65,19 @@ namespace PowerUtilities
         {
             Additive=0,Replace
         }
-           
-        public enum ScanLineAxis
-        {
-            X,Y,Z
-        }
 
         public static MonoInstanceManager<PowerLitWeatherControl> instanceManager = new MonoInstanceManager<PowerLitWeatherControl>();
+        /// <summary>
+        /// override settings
+        /// </summary>
+        //[EditorGroup("Override Settings",true)]
+        //[Tooltip("use this setting override PowerLitWeatherControl's params")]
+        //[EditorSettingSO]
+        //public PowerLitWeatherSettings overrideWeatherSettings;
 
+        /// <summary>
+        /// current settings
+        /// </summary>
         //--------SceneTex
         [EditorGroup(SCENE_TEXS, true)]
         [Tooltip("noise texute used for Fog,Rain")]
@@ -134,24 +139,6 @@ namespace PowerUtilities
         [EditorGroup(PARTICLES_FLOW_CAMERA)] public GameObject followTarget;
         [EditorGroup(PARTICLES_FLOW_CAMERA)] public float followSpeed = 1;
 
-        // world scanline
-        //[EditorGroup("World ScanLine", true)]
-        //public bool showSceneBound=true;
-
-        //[EditorGroup("World ScanLine")]
-        //[ColorUsage(false,true)]
-        //public Color _EmissionScanLineColor = Color.white;
-        //[Space(10)]
-        //[EditorGroup("World ScanLine")] public Transform sceneMinTr;
-        //[EditorGroup("World ScanLine")] public Vector3 _EmissionScanLineMin = Vector3.zero;
-        //[EditorGroup("World ScanLine")] public Transform sceneMaxTr;
-        //[EditorGroup("World ScanLine")] public Vector3 _EmissionScanLineMax = new Vector3(100,0,0);
-        //[Space(10)]
-        //[EditorGroup("World ScanLine")][Range(0,1)] public float _EmissionScanLineRate = 0;
-        //[EditorGroup("World ScanLine")][Range(0,10)] public float _ScanLineRangeMin = 0.1f;
-        //[EditorGroup("World ScanLine")][Range(0,10)] public float _ScanLineRangeMax = 0.2f;
-        //[EditorGroup("World ScanLine")] public ScanLineAxis _ScanLineAxis;
-
         // clouds
         [EditorGroup(CLOUD_SHADOW, true)] public bool _CloudShadowOn;
         [EditorGroup(CLOUD_SHADOW)] public GameObject cloudShadowBox;
@@ -177,16 +164,14 @@ namespace PowerUtilities
 
         #endregion
 
-        // Start is called before the first frame update
-        public void Start()
+        public void OnEnable()
         {
             InitWeather();
             instanceManager.Add(this);
         }
 
-        private void OnDisable()
+        public void OnDisable()
         {
-
             Shader.SetGlobalFloat(nameof(_IsGlobalFogOn), 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalRainOn), 0);
             Shader.SetGlobalFloat(nameof(_IsGlobalSnowOn), 0);
@@ -194,15 +179,11 @@ namespace PowerUtilities
 
             if (cloudShadowBox)
                 cloudShadowBox.SetActive(false);
-        }
 
-        private void OnDestroy()
-        {
             instanceManager.Remove(this);
-            
         }
 
-        private void Update()
+        public void Update()
         {
             UpdateThunder();
 
@@ -247,12 +228,6 @@ namespace PowerUtilities
 
             Shader.SetGlobalFloat(_GlobalSkyExposure, isGlobalSkyOn ? Mathf.Max(0.02f,skyExposure) : 1);
 
-            // world scan line
-            //Shader.SetGlobalVector(_EmissionScanLineRange_Rate, new Vector4(_ScanLineRangeMin*0.01f, _ScanLineRangeMax*0.01f, _EmissionScanLineRate));
-            //Shader.SetGlobalVector(nameof(_EmissionScanLineMin), sceneMinTr ? sceneMinTr.position : _EmissionScanLineMin);
-            //Shader.SetGlobalVector(nameof(_EmissionScanLineMax), sceneMaxTr ? sceneMaxTr.position : _EmissionScanLineMax);
-            //Shader.SetGlobalColor(nameof(_EmissionScanLineColor), _EmissionScanLineColor);
-            //Shader.SetGlobalInt(nameof(_ScanLineAxis), (int)_ScanLineAxis);
             //-------- matcap
             Shader.SetGlobalTexture(nameof(_SceneMatCap), _SceneMatCap ?? Texture2D.whiteTexture);
             Shader.SetGlobalVector(nameof(_SceneMatCap_ST), _SceneMatCap_ST);

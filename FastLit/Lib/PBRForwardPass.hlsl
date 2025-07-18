@@ -17,6 +17,7 @@
 #include "../../PowerShaderLib/Lib/PowerUtils.hlsl"
 #include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
 #include "../../PowerShaderLib/Lib/CurvedLib.hlsl"
+#include "../../PowerShaderLib/Lib/FullscreenLib.hlsl"
 
 struct appdata
 {
@@ -72,7 +73,9 @@ v2f vert (appdata v)
 
     worldPos.xy += CalcCurvedPos(_WorldSpaceCameraPos,worldPos,_CurvedSidewayScale,_CurvedBackwardScale);
 
-    o.vertex = UnityWorldToClipPos(worldPos);
+    // o.vertex = UnityWorldToClipPos(worldPos);
+    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,half4(0,0,1,1),true,v.uv1);
+
     o.vertexPos = v.vertex;
     o.uv.xy = v.uv;
     o.uv.zw = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;

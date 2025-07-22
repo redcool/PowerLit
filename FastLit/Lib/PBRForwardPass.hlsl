@@ -74,7 +74,8 @@ v2f vert (appdata v)
     worldPos.xy += CalcCurvedPos(_WorldSpaceCameraPos,worldPos,_CurvedSidewayScale,_CurvedBackwardScale);
 
     // o.vertex = UnityWorldToClipPos(worldPos);
-    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,half4(0,0,1,1),true,v.uv1);
+    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,_FullScreenUVRange,true,v.uv1);
+    // o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,half4(0.,0,1,1),true,v.uv1);
 
     o.vertexPos = v.vertex;
     o.uv.xy = v.uv;

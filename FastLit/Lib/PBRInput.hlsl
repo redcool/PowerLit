@@ -156,5 +156,5 @@ half _BoxProjectionOn;
 CBUFFER_END
 
 half4 _SceneMatCap_ST; // use consts
-
+half _FullScreenOn; // output to full rt
 #endif //PBR_INPUT_HLSL

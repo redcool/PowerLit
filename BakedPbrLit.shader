@@ -176,8 +176,10 @@ Shader "URP/BakedPbrLit"
                 v2f o = (v2f)0;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
                 float2 mainUV = TRANSFORM_TEX(v.uv, _MainTex);
-                float2 uv1 = _UV1ReverseY ? float2(v.uv1.x, 1 - v.uv1.y) : v.uv1;
-                o.uv.xy = GetUV(float4(mainUV,uv1),float4(v.uv2,v.uv3), _UseUV);
+
+                o.uv.xy = GetUV(float4(mainUV,v.uv1),float4(v.uv2,v.uv3), _UseUV);
+                o.uv.y = _UV1ReverseY ? 1 - o.uv.y : o.uv.y;
+
                 o.fogCoord = CalcFogFactor(worldPos.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
                 o.color = v.color;
 

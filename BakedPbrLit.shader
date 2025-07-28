@@ -4,7 +4,7 @@ Shader "URP/BakedPbrLit"
     {
         [Group(Main)]
         [GroupItem(Main)] _MainTex ("Texture", 2D) = "white" {}
-        [GroupToggle(Main,,sample texture use uv1)] _UseUV1 ("_UseUV1", float) = 0
+        [GroupEnum(Main,uv0 0 uv1 1 uv2 2 uv3 3,,sample texture use uv uv1 uv2 uv3)] _UseUV ("_UseUV", range(0,3)) = 0
         [GroupToggle(Main,,uv1 y reverse)] _UV1ReverseY ("_UV1ReverseY", float) = 0
         [GroupItem(Main)] [hdr] _Color("_Color",color) = (1,1,1,1)
         [GroupToggle(Main,,preMulti vertex color)] _PreMulVertexColor ("_PreMulVertexColor", float) = 0
@@ -109,6 +109,7 @@ Shader "URP/BakedPbrLit"
             #include "../PowerShaderLib/Lib/UnityLib.hlsl"
             #include "../PowerShaderLib/Lib/MaterialLib.hlsl"
             #include "../PowerShaderLib/Lib/GILib.hlsl"
+            #include "../PowerShaderLib/Lib/UVMapping.hlsl"
             #include "../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
 
             struct appdata
@@ -116,6 +117,8 @@ Shader "URP/BakedPbrLit"
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
                 float2 uv1:TEXCOORD1;
+                float2 uv2:TEXCOORD2;
+                float2 uv3:TEXCOORD3;
                 DECLARE_MOTION_VS_INPUT(prevPos);
                 float3 normal:NORMAL;
                 float4 tangent:TANGENT;
@@ -131,7 +134,7 @@ Shader "URP/BakedPbrLit"
                 TANGENT_SPACE_DECLARE(1,2,3);
                 float2 fogCoord:TEXCOORD4;
                 // motion vectors
-                DECLARE_MOTION_VS_OUTPUT(6,7);
+                DECLARE_MOTION_VS_OUTPUT(5,6);
                 float4 color:COLOR;
             };
 
@@ -148,7 +151,7 @@ Shader "URP/BakedPbrLit"
             half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
             half _Cutoff;
             half _NormalUnifiedOn;
-            half _UseUV1,_UV1ReverseY;
+            half _UseUV,_UV1ReverseY;
             half _MainTexArrayId;
             half _PreMulVertexColor;
 
@@ -172,8 +175,9 @@ Shader "URP/BakedPbrLit"
                 
                 v2f o = (v2f)0;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                o.uv.xy = TRANSFORM_TEX(v.uv, _MainTex);
-                o.uv.zw = _UV1ReverseY ? float2(v.uv1.x, 1 - v.uv1.y) : v.uv1;
+                float2 mainUV = TRANSFORM_TEX(v.uv, _MainTex);
+                float2 uv1 = _UV1ReverseY ? float2(v.uv1.x, 1 - v.uv1.y) : v.uv1;
+                o.uv.xy = GetUV(float4(mainUV,uv1),float4(v.uv2,v.uv3), _UseUV);
                 o.fogCoord = CalcFogFactor(worldPos.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
                 o.color = v.color;
 
@@ -199,8 +203,7 @@ Shader "URP/BakedPbrLit"
             {
                 TANGENT_SPACE_SPLIT(i);
 
-                // float3 worldPos = i.worldPos.xyz;
-                float2 uv = _UseUV1? i.uv.zw : i.uv.xy;
+                float2 uv = i.uv;
                 
                 // sample the texture
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;

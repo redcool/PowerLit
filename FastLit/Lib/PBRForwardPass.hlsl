@@ -18,13 +18,15 @@
 #include "../../PowerShaderLib/Lib/ParallaxLib.hlsl"
 #include "../../PowerShaderLib/Lib/CurvedLib.hlsl"
 #include "../../PowerShaderLib/Lib/FullscreenLib.hlsl"
+#include "../../PowerShaderLib/Lib/UVMapping.hlsl"
 
 struct appdata
 {
     float4 vertex : POSITION;
     float2 uv : TEXCOORD0;
     float2 uv1:TEXCOORD1;
-    // float2 uv2:TEXCOORD2;
+    float2 uv2:TEXCOORD2;
+    float2 uv3:TEXCOORD3;
     DECLARE_MOTION_VS_INPUT(prevPos);
     float3 normal:NORMAL;
     float4 tangent:TANGENT;
@@ -74,8 +76,8 @@ v2f vert (appdata v)
     worldPos.xy += CalcCurvedPos(_WorldSpaceCameraPos,worldPos,_CurvedSidewayScale,_CurvedBackwardScale);
 
     // o.vertex = UnityWorldToClipPos(worldPos);
-    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,_FullScreenUVRange,true,v.uv1);
-    // o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,half4(0.,0,1,1),true,v.uv1);
+    float2 uv1 = GetUV(float4(v.uv,v.uv1),float4(v.uv2,v.uv3),_FullScreenUVId);
+    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,_FullScreenUVRange,true,uv1);
 
     o.vertexPos = v.vertex;
     o.uv.xy = v.uv;

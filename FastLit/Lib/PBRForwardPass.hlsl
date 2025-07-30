@@ -278,9 +278,9 @@ float4 frag (v2f i
     float3 h = normalize(l+v);
     
     float lh = saturate(dot(l,h));
-    float nh = saturate(dot(n,h));
-    float nl = saturate(dot(n,l));
-    float nv = saturate(dot(n,v));
+    float nh = CalcLocalAtten(dot(n,h));
+    float nl = CalcLocalAtten(dot(n,l));
+    float nv = CalcLocalAtten(dot(n,v));
     // control nl size
     nl = _CellDiffuseOn ? smoothstep(_DiffuseRange.x,_DiffuseRange.y,nl) : nl;
 
@@ -394,9 +394,9 @@ float4 frag (v2f i
     );
     
     giColor = (giDiff * _LightmapColor.xyz + giSpec) * occlusion;
-
     float4 col = 0;
     col.rgb = directColor + giColor;
+
     #if defined(_ADDITIONAL_LIGHTS_ON)
         col.rgb += CalcAdditionalLights(worldPos,diffColor,specColor,n,v,a,a2,shadowMask,1,_CalcAdditionalLights,_ReceiveAdditionalLightShadow);
     #endif

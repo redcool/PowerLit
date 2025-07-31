@@ -520,7 +520,7 @@ Shader "URP/FastLit"
 
         Pass
         {
-		    name "FastLitForward"
+		    name "FastLitForward 300"
 			ZWrite[_ZWriteMode]
 			Blend [_SrcMode][_DstMode]
 			// BlendOp[_BlendOp]
@@ -968,5 +968,7 @@ Shader "URP/FastLit"
             ENDHLSL
         }        
     }
+
+    FallBack "Hidden/Universal Render Pipeline/FallbackError"
     CustomEditor "PowerUtilities.PowerShaderInspector"
 }

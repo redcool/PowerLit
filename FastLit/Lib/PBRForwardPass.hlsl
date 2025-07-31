@@ -75,13 +75,16 @@ v2f vert (appdata v)
 
     worldPos.xy += CalcCurvedPos(_WorldSpaceCameraPos,worldPos,_CurvedSidewayScale,_CurvedBackwardScale);
 
+    float2 lightmapUV = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+    float2 uv1 = GetUV1(v.uv1,lightmapUV,_UV1TransformToLightmapUV);
+    float2 uv = GetUV(float4(v.uv,uv1),float4(v.uv2,v.uv3),_FullScreenUVId);
+
     // o.vertex = UnityWorldToClipPos(worldPos);
-    float2 uv1 = GetUV(float4(v.uv,v.uv1),float4(v.uv2,v.uv3),_FullScreenUVId);
-    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,_FullScreenUVRange,true,uv1);
+    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,_FullScreenUVRange,true,uv);
 
     o.vertexPos = v.vertex;
     o.uv.xy = v.uv;
-    o.uv.zw = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+    o.uv.zw = lightmapUV;
     #if defined(_STOREY_ON)
     // if(_StoreyTilingOn)
     {

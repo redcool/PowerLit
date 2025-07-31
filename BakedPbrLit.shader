@@ -5,7 +5,9 @@ Shader "URP/BakedPbrLit"
         [Group(Main)]
         [GroupItem(Main)] _MainTex ("Texture", 2D) = "white" {}
         [GroupEnum(Main,uv0 0 uv1 1 uv2 2 uv3 3,,sample texture use uv uv1 uv2 uv3)] _UseUV ("_UseUV", range(0,3)) = 0
-        [GroupToggle(Main,,uv1 y reverse)] _UV1ReverseY ("_UV1ReverseY", float) = 0
+        [GroupToggle(Main,,uv1 y reverse)] _UseUVReverseY ("_UseUVReverseY", float) = 0
+        [GroupToggle(Main,,uv1 transform to scene lightmao uv)] _UV1TransformToLightmapUV ("_UV1TransformToLightmapUV", float) = 0
+        
         [GroupItem(Main)] [hdr] _Color("_Color",color) = (1,1,1,1)
         [GroupToggle(Main,,preMulti vertex color)] _PreMulVertexColor ("_PreMulVertexColor", float) = 0
 // ================================================== main texture array
@@ -151,7 +153,7 @@ Shader "URP/BakedPbrLit"
             half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
             half _Cutoff;
             half _NormalUnifiedOn;
-            half _UseUV,_UV1ReverseY;
+            half _UseUV,_UseUVReverseY;
             half _MainTexArrayId;
             half _PreMulVertexColor;
 
@@ -162,6 +164,7 @@ Shader "URP/BakedPbrLit"
             half _FresnelIntensity;
             half4 _IBLCube_HDR;;
             half _NormalScale;
+            half _UV1TransformToLightmapUV;
             CBUFFER_END
             
             #include "../PowerShaderLib/Lib/FogLib.hlsl"
@@ -176,9 +179,12 @@ Shader "URP/BakedPbrLit"
                 v2f o = (v2f)0;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
                 float2 mainUV = TRANSFORM_TEX(v.uv, _MainTex);
+                float2 lightmapUV = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+                float2 uv1 = GetUV1(v.uv1,lightmapUV,_UV1TransformToLightmapUV);
 
-                o.uv.xy = GetUV(float4(mainUV,v.uv1),float4(v.uv2,v.uv3), _UseUV);
-                o.uv.y = _UV1ReverseY ? 1 - o.uv.y : o.uv.y;
+                o.uv.xy = GetUV(float4(mainUV,uv1),float4(v.uv2,v.uv3), _UseUV);
+                o.uv.y = _UseUVReverseY ? 1 - o.uv.y : o.uv.y;
+                o.uv.zw = lightmapUV;
 
                 o.fogCoord = CalcFogFactor(worldPos.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
                 o.color = v.color;

@@ -10,6 +10,11 @@ Shader "URP/BakedPbrLit"
         
         [GroupItem(Main)] [hdr] _Color("_Color",color) = (1,1,1,1)
         [GroupToggle(Main,,preMulti vertex color)] _PreMulVertexColor ("_PreMulVertexColor", float) = 0
+        [GroupHeader(Main,PreMulAlpha)]
+// ================================================== premul alpha and rgbm
+        [GroupToggle(Main,,preMulti alpha)] _PremulAlpha ("_PremulAlpha", float) = 0
+        [GroupSlider(Main,rgbm scale,float)] _RGBMScale ("_RGBMScale", range(0,8)) = 2
+
 // ================================================== main texture array
         [GroupHeader(Main,MainTexArray)]
         [GroupToggle(Main,MAIN_TEX_ARRAY,mainTex use tex1DARRAY)] _MainTexArrayOn ("_MainTexArrayOn", float) = 0
@@ -165,6 +170,7 @@ Shader "URP/BakedPbrLit"
             half4 _IBLCube_HDR;;
             half _NormalScale;
             half _UV1TransformToLightmapUV;
+            half _PremulAlpha,_RGBMScale;
             CBUFFER_END
             
             #include "../PowerShaderLib/Lib/FogLib.hlsl"
@@ -211,13 +217,17 @@ Shader "URP/BakedPbrLit"
             {
                 TANGENT_SPACE_SPLIT(i);
 
-                float2 uv = i.uv;
+                float2 uv = i.uv.xy;
                 
                 // sample the texture
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;
-                half4 mainTex = SampleMainTex(uv) * _Color * vertexColor;
-                float3 albedo = mainTex.xyz;
-                float alpha = mainTex.w;
+                half4 mainTex = SampleMainTex(uv);
+                half4 mainTexCol = mainTex * _Color * vertexColor;
+                float3 albedo = mainTexCol.xyz;
+                float alpha = mainTexCol.w;
+
+                // alpha premultiply and rgbm scale
+                albedo =_PremulAlpha ? mainTex.xyz*mainTex.w* _RGBMScale : albedo;
 
                 //---------- pbrMask
                 float4 pbrMask = tex2D(_PbrMask,uv);

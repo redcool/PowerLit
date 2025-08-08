@@ -143,6 +143,7 @@ float4 frag (v2f i
 #if defined(OUTPUT_WORLD_POS)
 ,out float4 outputPos:SV_TARGET3
 #endif
+
 ) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(i);
@@ -289,20 +290,7 @@ float4 frag (v2f i
 
     float3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
-//-------- output mrt
-#if defined(OUTPUT_NORMAL)
-    // output world normal
-    outputNormal = half4(n.xyz,smoothness*_MRTSmoothness);
-#endif
 
-#if defined(OUTPUT_MOTION)
-    // output motion
-    outputMotionVectors = CALC_MOTION_VECTORS(i);
-#endif    
-
-#if defined(OUTPUT_WORLD_POS)
-    outputPos = float4(worldPos,1);
-#endif
 
 //-------- clip
     #if defined(ALPHA_TEST)
@@ -433,6 +421,28 @@ float4 frag (v2f i
 
     BlendFogSphereKeyword(col.rgb/**/,worldPos,i.fogCoord.xy,_HeightFogOn,fogNoise,_DepthFogOn); // 2fps
     col.a = alpha;
+
+    //-------- output mrt
+    #if defined(OUTPUT_NORMAL)
+        // output world normal
+        outputNormal = half4(n.xyz,smoothness*_MRTSmoothness);
+        // save normal [01]
+        outputNormal = _OutputNormal01 ? outputNormal * 0.5+0.5 : outputNormal;
+    #endif
+
+    #if defined(OUTPUT_MOTION)
+        // output motion
+        outputMotionVectors = CALC_MOTION_VECTORS(i);
+
+        // save pbrmask
+        outputMotionVectors = _OutputPbrMask ? float4(metallic,smoothness,occlusion,1) : outputMotionVectors;
+    #endif
+
+    #if defined(OUTPUT_WORLD_POS)
+        outputPos = float4(worldPos,1);
+        outputPos = _OutputEmission? emissionColor.xyzx : outputPos;
+    #endif
+
     return col;
 }
 

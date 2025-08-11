@@ -31,6 +31,8 @@ Shader "URP/BakedPbrLit"
 //================================================= Normal
         [Group(Normal)]
         [GroupItem(Normal)]_NormalMap("_NormalMap",2d)="bump"{}
+        [GroupToggle(Normal, TANGENT_NORMAL_MAP_ON,normalMap in tangent space)]_TangentNormalMapOn("_TangentNormalMapOn",int) = 0
+        
         [GroupItem(Normal)]_NormalScale("_NormalScale",range(0,5)) = 1        
         [GroupToggle(Normal, ,output flat normal force)]_NormalUnifiedOn("_NormalUnifiedOn",int) = 0
 //================================================= emission
@@ -112,6 +114,7 @@ Shader "URP/BakedPbrLit"
             #pragma shader_feature MAIN_TEX_ARRAY
             #pragma shader_feature _EMISSION
             #pragma shader_feature _IBL_ON
+            #pragma shader_feature TANGENT_NORMAL_MAP_ON
 
             #include "../PowerShaderLib/Lib/UnityLib.hlsl"
             #include "../PowerShaderLib/Lib/MaterialLib.hlsl"
@@ -237,8 +240,10 @@ Shader "URP/BakedPbrLit"
                 SplitPbrMaskTexture(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,int3(0,1,2),float3(_Metallic,_Smoothness,_Occlusion),false);
 
                 //---------- normal
-                float3 tn = UnpackNormalScale(tex2D(_NormalMap,uv),_NormalScale);
-                float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
+                float3 n = UnpackNormalScale(tex2D(_NormalMap,uv),_NormalScale);
+                #if defined(TANGENT_NORMAL_MAP_ON)
+                    n = normalize(TangentToWorld(n,i.tSpace0,i.tSpace1,i.tSpace2));
+                #endif
                 
                 float3 v = normalize(GetWorldSpaceViewDir(worldPos));
                 float nv = saturate(dot(n,v));

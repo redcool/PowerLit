@@ -157,6 +157,5 @@ CBUFFER_END
 
 half4 _SceneMatCap_ST; // use consts
 half _FullScreenOn; // output to full rt
-half _UV1TransformToLightmapUV; // uv1 transform to lightmap uv
-half _OutputNormal01,_OutputPbrMask,_OutputEmission;
+
 #endif //PBR_INPUT_HLSL

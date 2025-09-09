@@ -156,19 +156,28 @@ Shader "Skybox/Sky1"
                 float focusedEyeCos = pow(saturate(dot(lightDir,ray)),_SunSizeConvergence);
                 return getMiePhase(-focusedEyeCos,focusedEyeCos * focusedEyeCos,_SunSize);
             }
+            float CalcMoonAtten(float3 lightDir,float3 ray){
+                float lr = saturate(dot(lightDir,ray));
+                lr = smoothstep(0.999,1.0,lr);
+
+                return getMiePhase(-lr,lr * lr,_SunSize);
+            }
                     
             /**
-                exp(5.25x4 - 6.80x3 +3.83x2 + 0.459x -0.00287)
+                f(x) = A exp(P(x))
+
+                霍纳法则的形式 P(x) = ax4 + bx3 + cx2 + dx + e
+                最终数值如下:
+                0.25 * exp(5.25x4 - 6.80x3 +3.83x2 + 0.459x -0.00287)
             */
             float scale(float inCos)
             {
                 float x = 1.0 - inCos;
-                // return .5* exp(2*x *x * x *x);
+                return 0.1 * exp(x*x*x*x*5); // simple exp curve
                 return 0.25 * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));
             }
 
-            void CalcSkyInOut(out half3 cIn,out half3 cOut,float3 eyeRay,float3 cameraPos,float3 kInvWavelength,float kKrESun,float kKr4PI){
-                cIn = cOut = 0;
+            void CalcSkyInOut(inout half3 cIn,inout half3 cOut,float3 eyeRay,float3 cameraPos,float3 kInvWavelength,float kKrESun,float kKr4PI){
                 // sky
                 // Calculate the length of the "atmosphere" ,sqrt(1.05 + 1. * [-1,1]*[-1,1] - 1.) - 1.0 * [-1,1] = [2.05,0.22,1.05]
                 float far = sqrt(kOuterRadius2+kInnerRadius2*eyeRay.y*eyeRay.y-kInnerRadius2) - kInnerRadius * eyeRay.y;
@@ -176,7 +185,7 @@ Shader "Skybox/Sky1"
 
                 float height = kInnerRadius + kCameraHeight; //1.0001
                 float depth = exp(kScaleOverScaleDepth * -kCameraHeight); // exp(-0.016) =0.98
-                float startAngle = dot(eyeRay,cameraPos)/1; //[-1,1]
+                float startAngle = dot(eyeRay,cameraPos); //[-1,1]
                 float startOffset = depth * scale(startAngle);
 
                 float sampleLength = far/kSamples;
@@ -190,10 +199,11 @@ Shader "Skybox/Sky1"
                 {
                     float height = length(samplePoint);
                     float depth = exp(kScaleOverScaleDepth * (kInnerRadius - height));
-                    float lightAngle = dot(_WorldSpaceLightPos0.xyz,samplePoint)/height;
-                    float cameraAngle = dot(eyeRay,samplePoint)/height;
+                    float lightAngle = dot(_WorldSpaceLightPos0.xyz,samplePoint);
+                    float cameraAngle = dot(eyeRay,samplePoint);
 
-                    float scatter = (startOffset + depth*scale(lightAngle) - scale(cameraAngle));
+                    float scatter = (startOffset + depth*(scale(lightAngle) - scale(cameraAngle)));
+                    // scatter = startOffset+(scale(lightAngle) - scale(cameraAngle)); // simple curve
                     scatter = clamp(scatter,0,kMAX_SCATTER);
                     float3 attenuate = exp(-scatter * (kInvWavelength * kKr4PI + kKm4PI));
 
@@ -204,8 +214,8 @@ Shader "Skybox/Sky1"
                 cOut = frontColor * kKmESun;
             }
 
-            void CalcGroundInOut(out half3 cIn,out half3 cOut,float3 eyeRay,float3 cameraPos,float3 kInvWavelength,float kKrESun,float kKr4PI){
-                //ground
+            void CalcGroundInOut(inout half3 cIn,inout half3 cOut,float3 eyeRay,float3 cameraPos,float3 kInvWavelength,float kKrESun,float kKr4PI){
+                //ground 
                 float far = -kCameraHeight/min(-0.001,eyeRay.y);
                 float3 pos = cameraPos + far * eyeRay;
 
@@ -255,7 +265,7 @@ Shader "Skybox/Sky1"
                 float3 eyeRay = normalize(worldPos);
 
                 float far = 0;
-                half3 cIn,cOut;
+                half3 cIn=0,cOut=0;
                 if(eyeRay.y >=0){
                     CalcSkyInOut(cIn/**/,cOut/**/,eyeRay,cameraPos,kInvWavelength,kKrESun,kKr4PI);
                 }else{
@@ -263,34 +273,37 @@ Shader "Skybox/Sky1"
                 }
                 groundColor = _Exposure * (cIn + _GroundColor * cOut);
                 skyColor = _Exposure * cIn * getRayleighPhase(_WorldSpaceLightPos0.xyz,-eyeRay);
- 
                 
                 half lightColorIntensity = clamp(length(_LightColor0),0.25,1);
                 sunColor = kHDSundiskIntensityFactor * saturate(cOut) * _LightColor0.xyz / lightColorIntensity;
             }
 
+
             v2f vert (appdata v)
             {
                 v2f o = (v2f)0;
                 o.pos = TransformObjectToHClip(v.vertex);
-                o.worldPos = TransformObjectToWorld(v.vertex);
+
+                // remove matrix translate
+                o.worldPos = mul((float3x3)unity_ObjectToWorld, v.vertex.xyz);
 
                 CalcColors(o.skyColor,o.groundColor,o.sunColor,o.worldPos.xyz);
                 return o;
             }
 
-
             half4 frag (v2f i) : SV_Target
             {
                 // CalcColors(i.skyColor,i.groundColor,i.sunColor,i.worldPos.xyz);
-
                 half3 col = 0;
-                float3 ray = normalize(-i.worldPos);
+                float3 ray = normalize(i.worldPos);
                 float3 lightDir = _WorldSpaceLightPos0;
-
                 float y = ray.y/SKY_GROUND_THRESHOLD;
-                col = lerp(i.skyColor,i.groundColor,saturate(y));
-                col += ray.y <0? i.sunColor * calcSunAttenuation(lightDir,-ray) : 0;
+// return i.skyColor.xyzx;
+                col = lerp(i.groundColor,i.skyColor,saturate(y));
+
+                col.xyz += ray.y > 0 ? 
+                    i.sunColor * calcSunAttenuation(lightDir,ray) + CalcMoonAtten(lightDir,-ray)
+                    : 0;
 
                 return half4(col,1);
             }

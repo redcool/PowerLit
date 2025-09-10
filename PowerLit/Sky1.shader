@@ -187,7 +187,7 @@ Shader "Skybox/Sky1"
             float scale(float inCos)
             {
                 float x = 1.0 - inCos;
-                return 0.1 * exp(x*x*x*x*5); // simple exp curve, more red
+                // return 0.1 * exp(x*x*x*x*5); // simple exp curve, more red
                 return 0.25 * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));
             }
 
@@ -195,7 +195,7 @@ Shader "Skybox/Sky1"
                 // sky
                 // Calculate the length of the "atmosphere" ,sqrt(1.05 + 1. * [-1,1]*[-1,1] - 1.) - 1.0 * [-1,1] = [2.05,0.22,1.05]
                 float far = sqrt(kOuterRadius2+kInnerRadius2*eyeRay.y*eyeRay.y-kInnerRadius2) - kInnerRadius * eyeRay.y;
-                // far = 0.1;
+                // far = 0.15;
 
                 float height = kInnerRadius + kCameraHeight; //1.0001
                 float depth = exp(kScaleOverScaleDepth * -kCameraHeight); // exp(-0.016) =0.98
@@ -203,7 +203,7 @@ Shader "Skybox/Sky1"
                 float startOffset = depth * scale(startAngle);
 
                 float sampleLength = far/kSamples;
-                float scaledLength = sampleLength * kScale; // len * 40
+                float scaledLength = sampleLength * kScale; // len * 40 ,
                 float3 sampleRay = eyeRay * sampleLength;
                 float3 samplePoint = cameraPos + sampleRay * 0.5;
 
@@ -217,13 +217,40 @@ Shader "Skybox/Sky1"
                     float cameraAngle = dot(eyeRay,samplePoint);
 
                     float scatter = (startOffset + depth*(scale(lightAngle) - scale(cameraAngle)));
-                    scatter = startOffset+(scale(lightAngle) ); // simple curve
+                    scatter = depth * scale(startAngle) + (scale(lightAngle) ); // simple curve
                     scatter = clamp(scatter,0,kMAX_SCATTER);
+
                     float3 attenuate = exp(-scatter * (kInvWavelength * kKr4PI + kKm4PI));
 
                     frontColor += attenuate * depth * scaledLength;
+                    // frontColor = attenuate * scaledLength;
+
                     samplePoint += sampleRay;
                 }
+                cIn = frontColor * kInvWavelength * kKrESun;
+                cOut = frontColor * kKmESun;
+            }
+
+            /**
+                sky color kernel
+            */
+            void CalcSkyInOut2(inout half3 cIn,inout half3 cOut,float3 eyeRay,float3 cameraPos,float3 kInvWavelength,float kKrESun,float kKr4PI){
+                float far = sqrt(kOuterRadius2+kInnerRadius2*eyeRay.y*eyeRay.y-kInnerRadius2) - kInnerRadius * eyeRay.y;
+                float sampleLength = far/kSamples;
+                float scaledLength = sampleLength * kScale; // len * 40 ,
+
+                float3 startCos = dot(eyeRay,cameraPos); // ray,view
+                float3 sampleRay = eyeRay * .02;
+                float3 samplePoint = cameraPos + sampleRay;
+
+                float  lightCos = dot(_WorldSpaceLightPos0,samplePoint);
+                float scatter = scale(startCos) + scale(lightCos);
+                scatter = clamp(scatter,0,kMAX_SCATTER);
+                
+                float3 atten = exp(-scatter * (kInvWavelength * kKr4PI + kKm4PI));
+
+                half3 frontColor = atten * scaledLength;
+
                 cIn = frontColor * kInvWavelength * kKrESun;
                 cOut = frontColor * kKmESun;
             }
@@ -233,7 +260,7 @@ Shader "Skybox/Sky1"
                 float far = -kCameraHeight/min(-0.001,eyeRay.y);
                 float3 pos = cameraPos + far * eyeRay;
 
-                float depth = exp(-kCameraHeight) * (1/kScaleDepth);
+                float depth = exp(-kCameraHeight/kScaleDepth);
                 float cameraAngle = dot(-eyeRay,pos);
                 float lightAngle = dot(_WorldSpaceLightPos0.xyz,pos);
                 float cameraScale = scale(cameraAngle);
@@ -253,7 +280,9 @@ Shader "Skybox/Sky1"
                     float height = length(samplePoint);
                     float depth = exp(kScaleOverScaleDepth * (kInnerRadius - height));
                     float scatter = depth * depthScale -cameraOffset;
-                    attenuate = exp(- clamp(scatter,0,kMAX_SCATTER) * (kInvWavelength * kKr4PI + kKm4PI));
+                    scatter = clamp(scatter,0,kMAX_SCATTER);
+
+                    attenuate = exp(-scatter * (kInvWavelength * kKr4PI + kKm4PI));
                     frontColor += attenuate * depth * scaledLength;
                     samplePoint += sampleRay;
                 }
@@ -286,6 +315,7 @@ Shader "Skybox/Sky1"
                     CalcGroundInOut(cIn/**/,cOut/**/,eyeRay,cameraPos,kInvWavelength,kKrESun,kKr4PI);
                 }
                 groundColor = _Exposure * (cIn + _GroundColor * cOut);
+                
                 skyColor = _Exposure * cIn * getRayleighPhase(_WorldSpaceLightPos0.xyz,-eyeRay);
                 
                 half lightColorIntensity = clamp(length(_LightColor0),0.25,1);

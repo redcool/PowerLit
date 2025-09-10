@@ -3,14 +3,17 @@ Shader "Skybox/Sky1"
     Properties
     {
     [Group(Main)]
-    [GroupItem(Main)]_SunSize ("Sun Size", Range(0,1)) = 0.04
-    [GroupItem(Main)]_SunSizeConvergence("Sun Size Convergence", Range(1,10)) = 5
+    // [GroupItem(Main)]_SunSize ("Sun Size", Range(0,1)) = 0.04
+    // [GroupItem(Main)]_SunSizeConvergence("Sun Size Convergence", Range(1,10)) = 5
+    [GroupVectorSlider(Main,min max,0_1 0_1,sun halo range)]_SunSizeRange ("Sun Size Range", Vector) = (0.9,1,0,0)
 
     [GroupItem(Main)]_AtmosphereThickness ("Atmosphere Thickness", Range(0,5)) = 1.0
     [GroupItem(Main)]_SkyTint ("Sky Tint", Color) = (.5, .5, .5, 1)
     [GroupItem(Main)]_GroundColor ("Ground", Color) = (.369, .349, .341, 1)
 
     [GroupItem(Main)]_Exposure("Exposure", Range(0, 8)) = 1.3
+    // [GroupItem(Main)]_MoonSize ("Moon Size", Range(0,1)) = 0.04
+    [GroupVectorSlider(Main,min max,0_1 0_1,moon halo range)] _MoonSizeRange ("Moon Size Range", Vector) = (0.999,1,0,0)
     }
 
     SubShader
@@ -29,10 +32,13 @@ Shader "Skybox/Sky1"
             CBUFFER_START(UnityPerMaterial)
                 half _Exposure;
                 half3 _GroundColor;
-                half _SunSize;
-                half _SunSizeConvergence;
+                // half _SunSize;
+                // half _SunSizeConvergence;
                 half3 _SkyTint;
                 half _AtmosphereThickness;
+                half2 _SunSizeRange;
+                // half _MoonSize;
+                half2 _MoonSizeRange;
             CBUFFER_END
 
             struct appdata
@@ -100,7 +106,7 @@ Shader "Skybox/Sky1"
 
                 MIE_G2 常用于亨耶-格林斯坦相位函数（Henyey-Greenstein Phase Function）: hgPhase
             */
-            #define MIE_G (-0.990)
+            #define MIE_G (-0.99)
             #define MIE_G2 0.9801
 
             #define SKY_GROUND_THRESHOLD 0.02
@@ -143,37 +149,45 @@ Shader "Skybox/Sky1"
 
                 return x;
             }
+            // float calcSunAttenuation(float3 lightDir,float3 ray){
+            //     float focusedEyeCos = pow(saturate(dot(lightDir,ray)),5); //_SunSizeConvergence
+            //     return getMiePhase(-focusedEyeCos,focusedEyeCos * focusedEyeCos,_SunSize);
+            // }
+
             // Calc HG phase
             float HenyeyGreenstein(float g, float cosTheta/* dot(lightDir,viewDir)*/) {
                 float g2 = g * g;
                 float numerator = 1.0 - g2;
                 float denominator = 1.0 + g2 - 2.0 * g * cosTheta;
                 return numerator / pow(denominator, 1.5);
-                // return numerator / pow(denominator, 1.5)/PI_4;
+                // return numerator / pow(denominator, 1.5)/12;
             }
 
-            float calcSunAttenuation(float3 lightDir,float3 ray){
-                float focusedEyeCos = pow(saturate(dot(lightDir,ray)),_SunSizeConvergence);
-                return getMiePhase(-focusedEyeCos,focusedEyeCos * focusedEyeCos,_SunSize);
-            }
-            float CalcMoonAtten(float3 lightDir,float3 ray){
+            /**
+                range : [0.99,1]
+                sunSize : [0,1]
+            */
+            float CalcSunAtten(float3 lightDir,float3 ray,float2 range){
                 float lr = saturate(dot(lightDir,ray));
-                lr = smoothstep(0.999,1.0,lr);
+                lr = smoothstep(range.x,range.y,lr);
 
-                return getMiePhase(-lr,lr * lr,_SunSize);
+                return HenyeyGreenstein(0.999,lr);
             }
                     
             /**
+                https://www.desmos.com/calculator/xk0tctqsui?lang=zh-CN
+                
                 f(x) = A exp(P(x))
 
                 霍纳法则的形式 P(x) = ax4 + bx3 + cx2 + dx + e
                 最终数值如下:
                 0.25 * exp(5.25x4 - 6.80x3 +3.83x2 + 0.459x -0.00287)
+
             */
             float scale(float inCos)
             {
                 float x = 1.0 - inCos;
-                return 0.1 * exp(x*x*x*x*5); // simple exp curve
+                return 0.1 * exp(x*x*x*x*5); // simple exp curve, more red
                 return 0.25 * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));
             }
 
@@ -203,7 +217,7 @@ Shader "Skybox/Sky1"
                     float cameraAngle = dot(eyeRay,samplePoint);
 
                     float scatter = (startOffset + depth*(scale(lightAngle) - scale(cameraAngle)));
-                    // scatter = startOffset+(scale(lightAngle) - scale(cameraAngle)); // simple curve
+                    scatter = startOffset+(scale(lightAngle) ); // simple curve
                     scatter = clamp(scatter,0,kMAX_SCATTER);
                     float3 attenuate = exp(-scatter * (kInvWavelength * kKr4PI + kKm4PI));
 
@@ -298,11 +312,12 @@ Shader "Skybox/Sky1"
                 float3 ray = normalize(i.worldPos);
                 float3 lightDir = _WorldSpaceLightPos0;
                 float y = ray.y/SKY_GROUND_THRESHOLD;
-// return i.skyColor.xyzx;
+
                 col = lerp(i.groundColor,i.skyColor,saturate(y));
 
                 col.xyz += ray.y > 0 ? 
-                    i.sunColor * calcSunAttenuation(lightDir,ray) + CalcMoonAtten(lightDir,-ray)
+                    i.sunColor * CalcSunAtten(lightDir,ray,_SunSizeRange) 
+                    + CalcSunAtten(lightDir,-ray,_MoonSizeRange)
                     : 0;
 
                 return half4(col,1);

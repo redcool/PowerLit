@@ -53,13 +53,17 @@ Shader "URP/BakedPbrLit"
 
         [GroupHeader(Env,GI Diffuse Params)]
         [GroupItem(Env)]_GIDiffColor("_GIDiffColor",color) = (1,1,1,1)
-// ================================================== Main Light shadow
-        [Group(Shadow)]
-        [GroupToggle(Shadow,_RECEIVE_SHADOWS_OFF)]_ReceiveShadowOff("_ReceiveShadowOff",int) = 0
-        [GroupItem(Shadow)]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
+// ================================================== Main Light 
+        [Group(Light)]
+        [GroupHeader(Light,Main Light)]
+        [GroupToggle(Light)]_MainLightOn("_MainLightOn",float) = 0
 
-        [GroupHeader(Shadow,_BigShadowOff)]
-        [GroupToggle(Shadow)]_BigShadowOff("_BigShadowOff",int) = 0
+        [GroupHeader(Light,MainLight Shadow)]
+        [GroupToggle(Light,_RECEIVE_SHADOWS_OFF)]_ReceiveShadowOff("_ReceiveShadowOff",int) = 0
+        [GroupItem(Light)]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
+
+        [GroupHeader(Light,BigShadow)]
+        [GroupToggle(Light)]_BigShadowOff("_BigShadowOff",int) = 0
 //================================================= ShadowCaster
         [Group(ShadowCaster)]
         // [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
@@ -169,6 +173,7 @@ Shader "URP/BakedPbrLit"
             half _CustomShadowNormalBias,_CustomShadowDepthBias;
             half4 _GIDiffColor;
             half _BigShadowOff;
+            half _MainLightOn;
             CBUFFER_END
     ENDHLSL
 
@@ -298,6 +303,7 @@ Shader "URP/BakedPbrLit"
                 float nl = saturate(dot(n,mainLight.direction));
 
                 half3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
+                radiance = _MainLightOn?radiance : 1; // use main Light or unlit
 
                 float3 diffColor = albedo * (1 - metallic);
                 float3 specColor = lerp(0.04,albedo,metallic);

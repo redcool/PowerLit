@@ -30,8 +30,8 @@ Shader "URP/BakedPbrLit"
 
 //================================================= Normal
         [Group(Normal)]
+        [GroupToggle(Normal, NORMAL_MAP_ON,normalMap in tangent space)]_NormalMapOn("_NormalMapOn",int) = 0
         [GroupItem(Normal)]_NormalMap("_NormalMap",2d)="bump"{}
-        [GroupToggle(Normal, TANGENT_NORMAL_MAP_ON,normalMap in tangent space)]_TangentNormalMapOn("_TangentNormalMapOn",int) = 0
         
         [GroupItem(Normal)]_NormalScale("_NormalScale",range(0,5)) = 1        
         [GroupToggle(Normal, ,output flat normal force)]_NormalUnifiedOn("_NormalUnifiedOn",int) = 0
@@ -48,12 +48,25 @@ Shader "URP/BakedPbrLit"
         [GroupItem(Env)][NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
         
         [GroupHeader(Env,IBL Params)]
-        [GroupItem(Env)]_EnvIntensity("_EnvIntensity",float) = 1
+        [GroupItem(Env)]_EnvIntensity("_EnvIntensity",color) = (1,1,1,1)
         [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
+
+        [GroupHeader(Env,GI Diffuse Params)]
+        [GroupItem(Env)]_GIDiffColor("_GIDiffColor",color) = (1,1,1,1)
+// ================================================== Main Light shadow
+        [Group(Shadow)]
+        [GroupToggle(Shadow,_RECEIVE_SHADOWS_OFF)]_ReceiveShadowOff("_ReceiveShadowOff",int) = 0
+        [GroupItem(Shadow)]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
+//================================================= ShadowCaster
+        [Group(ShadowCaster)]
+        // [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
+        [GroupHeader(ShadowCaster,custom bias)]
+        [GroupSlider(ShadowCaster,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
+        [GroupSlider(ShadowCaster,,float)]_CustomShadowDepthBias("_CustomShadowDepthBias",range(-1,1)) = 0              
 // ================================================== Fog
         [Group(Fog)]
         [GroupToggle(Fog)]_FogOn("_FogOn",int) = 1
-        [GroupToggle(Fog,SIMPLE_FOG,use simple linear depth height fog)]_SimpleFog("_SimpleFog",int) = 0
+        // [GroupToggle(Fog,SIMPLE_FOG,use simple linear depth height fog)]_SimpleFog("_SimpleFog",int) = 0
         [GroupToggle(Fog)]_FogNoiseOn("_FogNoiseOn",int) = 0
         [GroupToggle(Fog)]_DepthFogOn("_DepthFogOn",int) = 1
         [GroupToggle(Fog)]_HeightFogOn("_HeightFogOn",int) = 1        
@@ -85,41 +98,13 @@ Shader "URP/BakedPbrLit"
 		[GroupEnum(Settings,UnityEngine.Rendering.CompareFunction)]_ZTestMode("_ZTestMode",float) = 4
         [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
     }
-    SubShader
-    {
-        Tags { "RenderType"="Opaque" }
-        LOD 100
 
-        Pass
-        {
-            blend [_SrcMode][_DstMode]
-            zwrite[_ZWriteMode]
-            ztest[_ZTestMode]
-            cull [_CullMode]
-
-            Stencil
-            {
-                Ref [_Stencil]
-                Comp [_StencilComp]
-                Pass [_StencilOp]
-                ReadMask [_StencilReadMask]
-                WriteMask [_StencilWriteMask]
-            }
-
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #pragma shader_feature SIMPLE_FOG
-            #pragma shader_feature ALPHA_TEST
-            #pragma shader_feature MAIN_TEX_ARRAY
-            #pragma shader_feature _EMISSION
-            #pragma shader_feature _IBL_ON
-            #pragma shader_feature TANGENT_NORMAL_MAP_ON
-
+    HLSLINCLUDE
             #include "../PowerShaderLib/Lib/UnityLib.hlsl"
             #include "../PowerShaderLib/Lib/MaterialLib.hlsl"
             #include "../PowerShaderLib/Lib/GILib.hlsl"
             #include "../PowerShaderLib/Lib/UVMapping.hlsl"
+            #include "../PowerShaderLib/URPLib/URP_Lighting.hlsl"
             #include "../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
 
             struct appdata
@@ -168,14 +153,53 @@ Shader "URP/BakedPbrLit"
             half _EmissionOn;
             half4 _EmissionColor;
             half _Metallic,_Smoothness,_Occlusion;
-            half _EnvIntensity;
+            half3 _EnvIntensity;
             half _FresnelIntensity;
             half4 _IBLCube_HDR;;
             half _NormalScale;
             half _UV1TransformToLightmapUV;
             half _PremulAlpha,_RGBMScale;
+
+            half _MainLightShadowSoftScale;
+            half _CustomShadowNormalBias,_CustomShadowDepthBias;
+            half4 _GIDiffColor;
             CBUFFER_END
-            
+    ENDHLSL
+
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 100
+
+        Pass
+        {
+            blend [_SrcMode][_DstMode]
+            zwrite[_ZWriteMode]
+            ztest[_ZTestMode]
+            cull [_CullMode]
+
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // #pragma shader_feature SIMPLE_FOG
+            #pragma shader_feature ALPHA_TEST
+            #pragma shader_feature MAIN_TEX_ARRAY
+            #pragma shader_feature _EMISSION
+            #pragma shader_feature _IBL_ON
+            #pragma shader_feature NORMAL_MAP_ON
+            #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
+            // #pragma multi_compile _ _SHADOWS_SOFT
+
             #include "../PowerShaderLib/Lib/FogLib.hlsl"
 
 
@@ -221,7 +245,8 @@ Shader "URP/BakedPbrLit"
                 TANGENT_SPACE_SPLIT(i);
 
                 float2 uv = i.uv.xy;
-                
+                float2 lightmapUV = i.uv.zw;
+
                 // sample the texture
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;
                 half4 mainTex = SampleMainTex(uv);
@@ -239,14 +264,23 @@ Shader "URP/BakedPbrLit"
                 float occlusion =0;
                 SplitPbrMaskTexture(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,int3(0,1,2),float3(_Metallic,_Smoothness,_Occlusion),false);
 
+                //---------- main light
+                float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
+                Light mainLight = GetMainLight(shadowCoord,worldPos,_MainLightShadowSoftScale);
                 //---------- normal
-                float3 n = UnpackNormalScale(tex2D(_NormalMap,uv),_NormalScale);
-                #if defined(TANGENT_NORMAL_MAP_ON)
-                    n = normalize(TangentToWorld(n,i.tSpace0,i.tSpace1,i.tSpace2));
+                #if defined(NORMAL_MAP_ON)
+                    float3 tn = UnpackNormalScale(tex2D(_NormalMap,uv),_NormalScale);
+                    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
+                    n = normalize(n+normal);
+                #else
+                    float3 n = normal;
                 #endif
-                
+
                 float3 v = normalize(GetWorldSpaceViewDir(worldPos));
                 float nv = saturate(dot(n,v));
+                float nl = saturate(dot(n,mainLight.direction));
+
+                half3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
                 float3 diffColor = albedo * (1 - metallic);
                 float3 specColor = lerp(0.04,albedo,metallic);
@@ -267,7 +301,7 @@ Shader "URP/BakedPbrLit"
                     #define IBL_HDR unity_SpecCube0_HDR
                 #endif
                 float3 giColor = 0;
-                // float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
+                float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
                 float3 giSpec = CalcGISpec(IBL_CUBE,
                     IBL_CUBE_SAMPLER,
                     IBL_HDR,
@@ -289,10 +323,10 @@ Shader "URP/BakedPbrLit"
                     0,
                     0
                 );
-                // giColor = (giDiff * _LightmapColor.xyz + giSpec) * occlusion;
-                giColor = giSpec;
+                giColor = (giDiff * _GIDiffColor.xyz + giSpec) * occlusion;
+                // giColor = giSpec;
                 
-                half3 directColor = diffColor;
+                half3 directColor = diffColor * radiance;
 
                 half4 col = (half4)0;
                 col.xyz = directColor + giColor;
@@ -320,6 +354,83 @@ Shader "URP/BakedPbrLit"
 
                 return col;
             }
+            ENDHLSL
+        }
+
+        Pass{
+            Tags{"LightMode" = "DepthOnly"}
+
+            ZWrite On
+            ZTest LEqual
+            Cull[_CullMode]
+            // ColorMask 0
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag 
+            #pragma shader_feature_fragment ALPHA_TEST
+            // #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
+
+            #define USE_SAMPLER2D
+            // #include "Lib/PBRInput.hlsl"
+
+            // #define _CURVED_WORLD
+            #include "../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+
+            ENDHLSL
+        }
+
+        Pass{
+            Tags{"LightMode" = "ShadowCaster"}
+
+            ZWrite On
+            ZTest LEqual
+            ColorMask 0
+            cull [_CullMode]
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }            
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            // This is used during shadow map generation to differentiate between directional and punctual light shadows, as they use different formulas to apply Normal Bias
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+
+            #pragma shader_feature_fragment ALPHA_TEST
+            // #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
+
+            #define SHADOW_PASS 
+            #define USE_SAMPLER2D
+            #define _MainTexChannel 3
+            #define _CustomShadowNormalBias _CustomShadowNormalBias
+            #define _CustomShadowDepthBias _CustomShadowDepthBias
+
+            // #define _CURVED_WORLD
+            #include "../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+
+            // rotate by Mainlight
+            // float4x4 _MainLightYRot;
+            // #define _MainLightYRot _CameraYRot
+
+            // shadow_v2f vertShadow(shadow_appdata input){
+            //     input.vertex.xyz = _RotateShadow ? mul(_MainLightYRot,input.vertex).xyz : input.vertex.xyz;
+
+            //     return vert(input);
+            // }
+
             ENDHLSL
         }
     }

@@ -57,6 +57,9 @@ Shader "URP/BakedPbrLit"
         [Group(Shadow)]
         [GroupToggle(Shadow,_RECEIVE_SHADOWS_OFF)]_ReceiveShadowOff("_ReceiveShadowOff",int) = 0
         [GroupItem(Shadow)]_MainLightShadowSoftScale("_MainLightShadowSoftScale",range(0,1)) = 0.1
+
+        [GroupHeader(Shadow,_BigShadowOff)]
+        [GroupToggle(Shadow)]_BigShadowOff("_BigShadowOff",int) = 0
 //================================================= ShadowCaster
         [Group(ShadowCaster)]
         // [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
@@ -106,6 +109,7 @@ Shader "URP/BakedPbrLit"
             #include "../PowerShaderLib/Lib/UVMapping.hlsl"
             #include "../PowerShaderLib/URPLib/URP_Lighting.hlsl"
             #include "../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
+            #include "../PowerShaderLib/Lib/BigShadows.hlsl"
 
             struct appdata
             {
@@ -130,6 +134,7 @@ Shader "URP/BakedPbrLit"
                 float2 fogCoord:TEXCOORD4;
                 // motion vectors
                 DECLARE_MOTION_VS_OUTPUT(5,6);
+                float4 bigShadowCoord:TEXCOORD7;
                 float4 color:COLOR;
             };
 
@@ -163,6 +168,7 @@ Shader "URP/BakedPbrLit"
             half _MainLightShadowSoftScale;
             half _CustomShadowNormalBias,_CustomShadowDepthBias;
             half4 _GIDiffColor;
+            half _BigShadowOff;
             CBUFFER_END
     ENDHLSL
 
@@ -227,6 +233,11 @@ Shader "URP/BakedPbrLit"
                 TANGENT_SPACE_COMBINE_WORLD(worldPos,worldNormal,float4(worldTangent,v.tangent.w * unity_WorldTransformParams.w),o/**/);
 
                 CALC_MOTION_POSITIONS(v.prevPos,v.vertex,o,o.vertex);
+
+                branch_if(!_BigShadowOff){
+                    float3 bigShadowCoord = TransformWorldToBigShadow(worldPos);
+                    o.bigShadowCoord.xyz = bigShadowCoord;
+                }
                 return o;
             }
 
@@ -267,6 +278,12 @@ Shader "URP/BakedPbrLit"
                 //---------- main light
                 float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
                 Light mainLight = GetMainLight(shadowCoord,worldPos,_MainLightShadowSoftScale);
+                branch_if(!_BigShadowOff)
+                {
+                    // i.bigShadowCoord.z += 0.001;
+                    float atten = CalcBigShadowAtten(i.bigShadowCoord.xyz,1);
+                    mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
+                }
                 //---------- normal
                 #if defined(NORMAL_MAP_ON)
                     float3 tn = UnpackNormalScale(tex2D(_NormalMap,uv),_NormalScale);

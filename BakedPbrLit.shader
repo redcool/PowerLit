@@ -48,15 +48,15 @@ Shader "URP/BakedPbrLit"
         [GroupItem(Env)][NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
         
         [GroupHeader(Env,IBL Params)]
-        [GroupItem(Env)]_EnvIntensity("_EnvIntensity",color) = (1,1,1,1)
+        [GroupItem(Env,ibl color tint)]_EnvIntensity("_EnvIntensity",color) = (1,1,1,1)
         [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
 
         [GroupHeader(Env,GI Diffuse Params)]
-        [GroupItem(Env)]_GIDiffColor("_GIDiffColor",color) = (1,1,1,1)
+        [GroupItem(Env,gi diffuse color tint)]_GIDiffuseColor("_GIDiffuseColor",color) = (0,0,0,1)
 // ================================================== Main Light 
         [Group(Light)]
         [GroupHeader(Light,Main Light)]
-        [GroupToggle(Light)]_MainLightOn("_MainLightOn",float) = 0
+        [GroupToggle(Light,,use lit or unlit)]_MainLightOn("_MainLightOn",float) = 0
 
         [GroupHeader(Light,MainLight Shadow)]
         [GroupToggle(Light,_RECEIVE_SHADOWS_OFF)]_ReceiveShadowOff("_ReceiveShadowOff",int) = 0
@@ -171,7 +171,7 @@ Shader "URP/BakedPbrLit"
 
             half _MainLightShadowSoftScale;
             half _CustomShadowNormalBias,_CustomShadowDepthBias;
-            half4 _GIDiffColor;
+            half4 _GIDiffuseColor;
             half _BigShadowOff;
             half _MainLightOn;
             CBUFFER_END
@@ -302,8 +302,8 @@ Shader "URP/BakedPbrLit"
                 float nv = saturate(dot(n,v));
                 float nl = saturate(dot(n,mainLight.direction));
 
-                half3 radiance = mainLight.color * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
-                radiance = _MainLightOn?radiance : 1; // use main Light or unlit
+                half3 lightColor = _MainLightOn ? mainLight.color : 1;
+                half3 radiance = lightColor * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
                 float3 diffColor = albedo * (1 - metallic);
                 float3 specColor = lerp(0.04,albedo,metallic);
@@ -346,7 +346,7 @@ Shader "URP/BakedPbrLit"
                     0,
                     0
                 );
-                giColor = (giDiff * _GIDiffColor.xyz + giSpec) * occlusion;
+                giColor = (giDiff * _GIDiffuseColor.xyz + giSpec) * occlusion;
                 // giColor = giSpec;
                 
                 half3 directColor = diffColor * radiance;

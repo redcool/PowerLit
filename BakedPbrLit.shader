@@ -52,7 +52,7 @@ Shader "URP/BakedPbrLit"
         [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
 
         [GroupHeader(Env,GI Diffuse Params)]
-        [GroupItem(Env,gi diffuse color tint)]_GIDiffuseColor("_GIDiffuseColor",color) = (0,0,0,1)
+        [GroupItem(Env,gi diffuse color tint)][hdr]_GIDiffuseColor("_GIDiffuseColor",color) = (0,0,0,1)
 // ================================================== Main Light 
         [Group(Light)]
         [GroupHeader(Light,Main Light)]

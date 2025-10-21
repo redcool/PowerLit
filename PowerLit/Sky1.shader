@@ -217,7 +217,7 @@ Shader "Skybox/Sky1"
                     float cameraAngle = dot(eyeRay,samplePoint);
 
                     float scatter = (startOffset + depth*(scale(lightAngle) - scale(cameraAngle)));
-                    scatter = depth * scale(startAngle) + (scale(lightAngle) ); // simple curve
+                    // scatter = depth * scale(startAngle) + (scale(lightAngle) ); // simple curve
                     scatter = clamp(scatter,0,kMAX_SCATTER);
 
                     float3 attenuate = exp(-scatter * (kInvWavelength * kKr4PI + kKm4PI));

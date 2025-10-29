@@ -107,74 +107,145 @@ Shader "URP/BakedPbrLit"
     }
 
     HLSLINCLUDE
-            #include "../PowerShaderLib/Lib/UnityLib.hlsl"
-            #include "../PowerShaderLib/Lib/MaterialLib.hlsl"
-            #include "../PowerShaderLib/Lib/GILib.hlsl"
-            #include "../PowerShaderLib/Lib/UVMapping.hlsl"
-            #include "../PowerShaderLib/URPLib/URP_Lighting.hlsl"
-            #include "../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
-            #include "../PowerShaderLib/Lib/BigShadows.hlsl"
+        #include "../PowerShaderLib/Lib/UnityLib.hlsl"
+        #include "../PowerShaderLib/Lib/MaterialLib.hlsl"
+        #include "../PowerShaderLib/Lib/GILib.hlsl"
+        #include "../PowerShaderLib/Lib/UVMapping.hlsl"
+        #include "../PowerShaderLib/URPLib/URP_Lighting.hlsl"
+        #include "../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
+        #include "../PowerShaderLib/Lib/BigShadows.hlsl"
+        #include "../PowerShaderLib/Lib/InstancingLib.hlsl"
+        struct appdata
+        {
+            float4 vertex : POSITION;
+            float2 uv : TEXCOORD0;
+            float2 uv1:TEXCOORD1;
+            float2 uv2:TEXCOORD2;
+            float2 uv3:TEXCOORD3;
+            DECLARE_MOTION_VS_INPUT(prevPos);
+            float3 normal:NORMAL;
+            float4 tangent:TANGENT;
+            float4 color:COLOR;
+            UNITY_VERTEX_INPUT_INSTANCE_ID
+        };
 
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-                float2 uv1:TEXCOORD1;
-                float2 uv2:TEXCOORD2;
-                float2 uv3:TEXCOORD3;
-                DECLARE_MOTION_VS_INPUT(prevPos);
-                float3 normal:NORMAL;
-                float4 tangent:TANGENT;
-                float4 color:COLOR;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
-            };
+        struct v2f
+        {
+            float4 vertex : SV_POSITION;
+            float4 uv : TEXCOORD0;
+            
+            TANGENT_SPACE_DECLARE(1,2,3);
+            float2 fogCoord:TEXCOORD4;
+            // motion vectors
+            DECLARE_MOTION_VS_OUTPUT(5,6);
+            float4 bigShadowCoord:TEXCOORD7;
+            float4 color:COLOR;
+            UNITY_VERTEX_INPUT_INSTANCE_ID
+        };
 
-            struct v2f
-            {
-                float4 vertex : SV_POSITION;
-                float4 uv : TEXCOORD0;
-                
-                TANGENT_SPACE_DECLARE(1,2,3);
-                float2 fogCoord:TEXCOORD4;
-                // motion vectors
-                DECLARE_MOTION_VS_OUTPUT(5,6);
-                float4 bigShadowCoord:TEXCOORD7;
-                float4 color:COLOR;
-            };
+        TEXTURE2D_ARRAY(_MainTexArray);SAMPLER(sampler_MainTexArray);
+        TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
+        sampler2D _MainTex;
+        sampler2D _EmissionMap;
+        sampler2D _PbrMask;
+        sampler2D _NormalMap;
 
-            TEXTURE2D_ARRAY(_MainTexArray);SAMPLER(sampler_MainTexArray);
-            TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
-            sampler2D _MainTex;
-            sampler2D _EmissionMap;
-            sampler2D _PbrMask;
-            sampler2D _NormalMap;
+        CBUFFER_START(UnityPerMaterial)
+        float4 _MainTex_ST;
+        half4 _Color;
+        half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
+        half _Cutoff;
+        half _NormalUnifiedOn;
+        half _UseUV,_UseUVReverseY;
+        half _MainTexArrayId;
+        half _PreMulVertexColor;
 
-            CBUFFER_START(UnityPerMaterial)
-            float4 _MainTex_ST;
-            half4 _Color;
-            half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
-            half _Cutoff;
-            half _NormalUnifiedOn;
-            half _UseUV,_UseUVReverseY;
-            half _MainTexArrayId;
-            half _PreMulVertexColor;
+        half _EmissionOn;
+        half4 _EmissionColor;
+        half _Metallic,_Smoothness,_Occlusion;
+        half4 _EnvIntensity;
+        half _FresnelIntensity;
+        half4 _IBLCube_HDR;;
+        half _NormalScale;
+        half _UV1TransformToLightmapUV;
+        half _PremulAlpha,_RGBMScale;
 
-            half _EmissionOn;
-            half4 _EmissionColor;
-            half _Metallic,_Smoothness,_Occlusion;
-            half3 _EnvIntensity;
-            half _FresnelIntensity;
-            half4 _IBLCube_HDR;;
-            half _NormalScale;
-            half _UV1TransformToLightmapUV;
-            half _PremulAlpha,_RGBMScale;
+        half _MainLightShadowSoftScale;
+        half _CustomShadowNormalBias,_CustomShadowDepthBias;
+        half4 _GIDiffuseColor;
+        half _BigShadowOff;
+        half _MainLightOn;
+        CBUFFER_END
 
-            half _MainLightShadowSoftScale;
-            half _CustomShadowNormalBias,_CustomShadowDepthBias;
-            half4 _GIDiffuseColor;
-            half _BigShadowOff;
-            half _MainLightOn;
-            CBUFFER_END
+        #if defined(UNITY_DOTS_INSTANCING_ENABLED)
+            DOTS_CBUFFER_START(MaterialPropertyMetadata)
+                DEF_VAR(float4 ,_MainTex_ST)
+                DEF_VAR(half4 ,_Color)
+                DEF_VAR(half ,_FogOn)
+                DEF_VAR(half ,_FogNoiseOn)
+                DEF_VAR(half ,_DepthFogOn)
+                DEF_VAR(half ,_HeightFogOn)
+                DEF_VAR(half ,_Cutoff)
+                DEF_VAR(half ,_NormalUnifiedOn)
+                DEF_VAR(half ,_UseUV)
+                DEF_VAR(half ,_UseUVReverseY)
+                DEF_VAR(half ,_MainTexArrayId)
+                DEF_VAR(half ,_PreMulVertexColor)
+
+                DEF_VAR(half ,_EmissionOn)
+                DEF_VAR(half4 ,_EmissionColor)
+                DEF_VAR(half ,_Metallic)
+                DEF_VAR(half ,_Smoothness)
+                DEF_VAR(half ,_Occlusion)
+                DEF_VAR(half4 ,_EnvIntensity)
+                DEF_VAR(half ,_FresnelIntensity)
+                DEF_VAR(half4 ,_IBLCube_HDR)
+                DEF_VAR(half ,_NormalScale)
+                DEF_VAR(half ,_UV1TransformToLightmapUV)
+                DEF_VAR(half ,_PremulAlpha)
+                DEF_VAR(half ,_RGBMScale)
+
+                DEF_VAR(half ,_MainLightShadowSoftScale)
+                DEF_VAR(half ,_CustomShadowNormalBias)
+                DEF_VAR(half ,_CustomShadowDepthBias)
+                DEF_VAR(half4 ,_GIDiffuseColor)
+                DEF_VAR(half ,_BigShadowOff)
+                DEF_VAR(half ,_MainLightOn)
+            DOTS_CBUFFER_END
+
+            #define _MainTex_ST GET_VAR(float4 ,_MainTex_ST)
+            #define _Color GET_VAR(half4 ,_Color)
+            #define _FogOn GET_VAR(half ,_FogOn)
+            #define _FogNoiseOn GET_VAR(half ,_FogNoiseOn)
+            #define _DepthFogOn GET_VAR(half ,_DepthFogOn)
+            #define _HeightFogOn GET_VAR(half ,_HeightFogOn)
+            #define _Cutoff GET_VAR(half ,_Cutoff)
+            #define _NormalUnifiedOn GET_VAR(half ,_NormalUnifiedOn)
+            #define _UseUV GET_VAR(half ,_UseUV)
+            #define _UseUVReverseY GET_VAR(half ,_UseUVReverseY)
+            #define _MainTexArrayId GET_VAR(half ,_MainTexArrayId)
+            #define _PreMulVertexColor GET_VAR(half ,_PreMulVertexColor)
+
+            #define _EmissionOn GET_VAR(half ,_EmissionOn)
+            #define _EmissionColor GET_VAR(half4 ,_EmissionColor)
+            #define _Metallic GET_VAR(half ,_Metallic)
+            #define _Smoothness GET_VAR(half ,_Smoothness)
+            #define _Occlusion GET_VAR(half ,_Occlusion)
+            #define _EnvIntensity GET_VAR(half4 ,_EnvIntensity)
+            #define _FresnelIntensity GET_VAR(half ,_FresnelIntensity)
+            #define _IBLCube_HDR GET_VAR(half4 ,_IBLCube_HDR)
+            #define _NormalScale GET_VAR(half ,_NormalScale)
+            #define _UV1TransformToLightmapUV GET_VAR(half ,_UV1TransformToLightmapUV)
+            #define _PremulAlpha GET_VAR(half ,_PremulAlpha)
+            #define _RGBMScale GET_VAR(half ,_RGBMScale)
+
+            #define _MainLightShadowSoftScale GET_VAR(half ,_MainLightShadowSoftScale)
+            #define _CustomShadowNormalBias GET_VAR(half ,_CustomShadowNormalBias)
+            #define _CustomShadowDepthBias GET_VAR(half ,_CustomShadowDepthBias)
+            #define _GIDiffuseColor GET_VAR(half4 ,_GIDiffuseColor)
+            #define _BigShadowOff GET_VAR(half ,_BigShadowOff)
+            #define _MainLightOn GET_VAR(half ,_MainLightOn)
+        #endif
     ENDHLSL
 
     SubShader
@@ -199,6 +270,7 @@ Shader "URP/BakedPbrLit"
             }
 
             HLSLPROGRAM
+            #pragma target 4.5
             #pragma vertex vert
             #pragma fragment frag
             // #pragma shader_feature SIMPLE_FOG
@@ -210,17 +282,21 @@ Shader "URP/BakedPbrLit"
             #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile _ DOTS_INSTANCING_ON
 
             #include "../PowerShaderLib/Lib/FogLib.hlsl"
 
 
             v2f vert (appdata v)
             {
+                v2f o = (v2f)0;
+                UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_TRANSFER_INSTANCE_ID(v,o);
+
                 float3 worldPos = TransformObjectToWorld(v.vertex.xyz);
                 float3 worldNormal = normalize(TransformObjectToWorldNormal(v.normal));
                 float3 worldTangent = normalize(TransformObjectToWorldDir(v.tangent.xyz));
                 
-                v2f o = (v2f)0;
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
                 float2 mainUV = TRANSFORM_TEX(v.uv, _MainTex);
                 float2 lightmapUV = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
@@ -258,6 +334,8 @@ Shader "URP/BakedPbrLit"
 
             float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVectors:SV_TARGET2) : SV_Target
             {
+                UNITY_SETUP_INSTANCE_ID(i);
+
                 TANGENT_SPACE_SPLIT(i);
 
                 float2 uv = i.uv.xy;
@@ -335,7 +413,7 @@ Shader "URP/BakedPbrLit"
                     n,
                     v,
                     0/*reflectDirOffset*/,
-                    _EnvIntensity/*reflectIntensity*/,
+                    _EnvIntensity.xyz/*reflectIntensity*/,
                     nv,
                     roughness,
                     a2,

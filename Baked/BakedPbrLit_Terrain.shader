@@ -1,46 +1,34 @@
-Shader "URP/BakedPbrLit"
+Shader "URP/BakedPbrLit_Terrain"
 {
     Properties
     {
         [Group(Main)]
-        [GroupItem(Main)] _MainTex ("Texture", 2D) = "white" {}
-        [GroupEnum(Main,uv0 0 uv1 1 uv2 2 uv3 3,,sample texture use uv uv1 uv2 uv3)] _UseUV ("_UseUV", range(0,3)) = 0
-        [GroupToggle(Main,,uv1 y reverse)] _UseUVReverseY ("_UseUVReverseY", float) = 0
-        [GroupToggle(Main,,uv1 transform to scene lightmao uv)] _UV1TransformToLightmapUV ("_UV1TransformToLightmapUV", float) = 0
-        
-        [GroupItem(Main)] [hdr] _Color("_Color",color) = (1,1,1,1)
-        [GroupToggle(Main,,preMulti vertex color)] _PreMulVertexColor ("_PreMulVertexColor", float) = 0
-        [GroupHeader(Main,PreMulAlpha)]
-// ================================================== premul alpha and rgbm
-        [GroupToggle(Main,,preMulti alpha)] _PremulAlpha ("_PremulAlpha", float) = 0
-        [GroupSlider(Main,rgbm scale,float)] _RGBMScale ("_RGBMScale", range(0,8)) = 2
-
-// ================================================== main texture array
-        [GroupHeader(Main,MainTexArray)]
-        [GroupToggle(Main,MAIN_TEX_ARRAY,mainTex use tex1DARRAY)] _MainTexArrayOn ("_MainTexArrayOn", float) = 0
-        [GroupItem(Main)] _MainTexArray ("_MainTexArray", 2DArray) = "white" {}
-        [GroupSlider(Main,texArr id,int)] _MainTexArrayId ("_MainTexArrayId", range(0,16)) = 0
+        [GroupItem(Main)] _SplatTex1 ("Splat 1", 2D) = "black" {}
+        [GroupItem(Main)] _SplatTex2 ("Splat 2", 2D) = "black" {}
+        [GroupItem(Main)] _SplatTex3 ("Splat 3", 2D) = "black" {}
+        [GroupItem(Main)] _SplatTex4 ("Splat 4", 2D) = "black" {}
+        [GroupItem(Main)] _ControlMap ("Control Map", 2D) = "white" {}
 // ================================================== pbrMask        
-        [Group(PBR Mask)]
-        [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
+//         [Group(PBR Mask)]
+//         [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
 
-        [GroupItem(PBR Mask)]_Metallic("_Metallic",range(0,1)) = 0.5
-        [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
-        [GroupItem(PBR Mask)]_Occlusion("_Occlusion",range(0,1)) = 0
+//         [GroupItem(PBR Mask)]_Metallic("_Metallic",range(0,1)) = 0.5
+//         [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
+//         [GroupItem(PBR Mask)]_Occlusion("_Occlusion",range(0,1)) = 0
 
-//================================================= Normal
-        [Group(Normal)]
-        [GroupToggle(Normal, NORMAL_MAP_ON,normalMap in tangent space)]_NormalMapOn("_NormalMapOn",int) = 0
-        [GroupItem(Normal)]_NormalMap("_NormalMap",2d)="bump"{}
+// //================================================= Normal
+//         [Group(Normal)]
+//         [GroupToggle(Normal, NORMAL_MAP_ON,normalMap in tangent space)]_NormalMapOn("_NormalMapOn",int) = 0
+//         [GroupItem(Normal)]_NormalMap("_NormalMap",2d)="bump"{}
         
-        [GroupItem(Normal)]_NormalScale("_NormalScale",range(0,5)) = 1        
-        [GroupToggle(Normal, ,output flat normal force)]_NormalUnifiedOn("_NormalUnifiedOn",int) = 0
+//         [GroupItem(Normal)]_NormalScale("_NormalScale",range(0,5)) = 1        
+//         [GroupToggle(Normal, ,output flat normal force)]_NormalUnifiedOn("_NormalUnifiedOn",int) = 0
 //================================================= emission
-        [Group(Emission)]
-        [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0  //_EMISSION
-        [GroupItem(Emission)]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d)=""{}
-        [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
-        [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
+        // [Group(Emission)]
+        // [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0  //_EMISSION
+        // [GroupItem(Emission)]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d)=""{}
+        // [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
+        // [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
 //================================================= Env
         [Group(Env)]
         [GroupHeader(Env,Custom IBL)]
@@ -107,14 +95,14 @@ Shader "URP/BakedPbrLit"
     }
 
     HLSLINCLUDE
-        #include "../PowerShaderLib/Lib/UnityLib.hlsl"
-        #include "../PowerShaderLib/Lib/MaterialLib.hlsl"
-        #include "../PowerShaderLib/Lib/GILib.hlsl"
-        #include "../PowerShaderLib/Lib/UVMapping.hlsl"
-        #include "../PowerShaderLib/URPLib/URP_Lighting.hlsl"
-        #include "../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
-        #include "../PowerShaderLib/Lib/BigShadows.hlsl"
-        #include "../PowerShaderLib/Lib/InstancingLib.hlsl"
+        #include "../../PowerShaderLib/Lib/UnityLib.hlsl"
+        #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
+        #include "../../PowerShaderLib/Lib/GILib.hlsl"
+        #include "../../PowerShaderLib/Lib/UVMapping.hlsl"
+        #include "../../PowerShaderLib/URPLib/URP_Lighting.hlsl"
+        #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
+        #include "../../PowerShaderLib/Lib/BigShadows.hlsl"
+        #include "../../PowerShaderLib/Lib/InstancingLib.hlsl"
         struct appdata
         {
             float4 vertex : POSITION;
@@ -139,19 +127,28 @@ Shader "URP/BakedPbrLit"
             // motion vectors
             DECLARE_MOTION_VS_OUTPUT(5,6);
             float4 bigShadowCoord:TEXCOORD7;
+            float4 splat12UV:TEXCOORD8;
+            float4 splat34UV:TEXCOORD9;
+
             float4 color:COLOR;
             UNITY_VERTEX_INPUT_INSTANCE_ID
         };
 
-        TEXTURE2D_ARRAY(_MainTexArray);SAMPLER(sampler_MainTexArray);
+        // TEXTURE2D_ARRAY(_MainTexArray);SAMPLER(sampler_MainTexArray);
         TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
-        sampler2D _MainTex;
+
+        sampler2D _SplatTex1,_SplatTex2,_SplatTex3,_SplatTex4,_ControlMap;
         sampler2D _EmissionMap;
         sampler2D _PbrMask;
         sampler2D _NormalMap;
 
         CBUFFER_START(UnityPerMaterial)
-        float4 _MainTex_ST;
+        float4 _SplatTex1_ST;
+        float4 _SplatTex2_ST;
+        float4 _SplatTex3_ST;
+        float4 _SplatTex4_ST;
+        float4 _ControlMap_ST;
+
         half4 _Color;
         half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
         half _Cutoff;
@@ -160,13 +157,13 @@ Shader "URP/BakedPbrLit"
         half _MainTexArrayId;
         half _PreMulVertexColor;
 
-        half _EmissionOn;
-        half4 _EmissionColor;
+        // half _EmissionOn;
+        // half4 _EmissionColor;
         half _Metallic,_Smoothness,_Occlusion;
         half3 _EnvIntensity;
         half _FresnelIntensity;
         half4 _IBLCube_HDR;;
-        half _NormalScale;
+        // half _NormalScale;
         half _UV1TransformToLightmapUV;
         half _PremulAlpha,_RGBMScale;
 
@@ -176,73 +173,6 @@ Shader "URP/BakedPbrLit"
         half _BigShadowOff;
         half _MainLightOn;
         CBUFFER_END
-
-
-#if defined(UNITY_DOTS_INSTANCING_ENABLED)
-DOTS_CBUFFER_START(MaterialPropertyMetadata)
-	DEF_VAR(float4, _MainTex_ST)
-	DEF_VAR(half4, _Color)
-	DEF_VAR(half, _FogOn)
-	DEF_VAR(half, _FogNoiseOn)
-	DEF_VAR(half, _DepthFogOn)
-	DEF_VAR(half, _HeightFogOn)
-	DEF_VAR(half, _Cutoff)
-	DEF_VAR(half, _NormalUnifiedOn)
-	DEF_VAR(half, _UseUV)
-	DEF_VAR(half, _UseUVReverseY)
-	DEF_VAR(half, _MainTexArrayId)
-	DEF_VAR(half, _PreMulVertexColor)
-	DEF_VAR(half, _EmissionOn)
-	DEF_VAR(half4, _EmissionColor)
-	DEF_VAR(half, _Metallic)
-	DEF_VAR(half, _Smoothness)
-	DEF_VAR(half, _Occlusion)
-	DEF_VAR(half3, _EnvIntensity)
-	DEF_VAR(half, _FresnelIntensity)
-	DEF_VAR(half4, _IBLCube_HDR)
-	DEF_VAR(half, _NormalScale)
-	DEF_VAR(half, _UV1TransformToLightmapUV)
-	DEF_VAR(half, _PremulAlpha)
-	DEF_VAR(half, _RGBMScale)
-	DEF_VAR(half, _MainLightShadowSoftScale)
-	DEF_VAR(half, _CustomShadowNormalBias)
-	DEF_VAR(half, _CustomShadowDepthBias)
-	DEF_VAR(half4, _GIDiffuseColor)
-	DEF_VAR(half, _BigShadowOff)
-	DEF_VAR(half, _MainLightOn)
-DOTS_CBUFFER_END
-
-	#define _MainTex_ST GET_VAR(float4, _MainTex_ST)
-	#define _Color GET_VAR(half4, _Color)
-	#define _FogOn GET_VAR(half, _FogOn)
-	#define _FogNoiseOn GET_VAR(half, _FogNoiseOn)
-	#define _DepthFogOn GET_VAR(half, _DepthFogOn)
-	#define _HeightFogOn GET_VAR(half, _HeightFogOn)
-	#define _Cutoff GET_VAR(half, _Cutoff)
-	#define _NormalUnifiedOn GET_VAR(half, _NormalUnifiedOn)
-	#define _UseUV GET_VAR(half, _UseUV)
-	#define _UseUVReverseY GET_VAR(half, _UseUVReverseY)
-	#define _MainTexArrayId GET_VAR(half, _MainTexArrayId)
-	#define _PreMulVertexColor GET_VAR(half, _PreMulVertexColor)
-	#define _EmissionOn GET_VAR(half, _EmissionOn)
-	#define _EmissionColor GET_VAR(half4, _EmissionColor)
-	#define _Metallic GET_VAR(half, _Metallic)
-	#define _Smoothness GET_VAR(half, _Smoothness)
-	#define _Occlusion GET_VAR(half, _Occlusion)
-	#define _EnvIntensity GET_VAR(half3, _EnvIntensity)
-	#define _FresnelIntensity GET_VAR(half, _FresnelIntensity)
-	#define _IBLCube_HDR GET_VAR(half4, _IBLCube_HDR)
-	#define _NormalScale GET_VAR(half, _NormalScale)
-	#define _UV1TransformToLightmapUV GET_VAR(half, _UV1TransformToLightmapUV)
-	#define _PremulAlpha GET_VAR(half, _PremulAlpha)
-	#define _RGBMScale GET_VAR(half, _RGBMScale)
-	#define _MainLightShadowSoftScale GET_VAR(half, _MainLightShadowSoftScale)
-	#define _CustomShadowNormalBias GET_VAR(half, _CustomShadowNormalBias)
-	#define _CustomShadowDepthBias GET_VAR(half, _CustomShadowDepthBias)
-	#define _GIDiffuseColor GET_VAR(half4, _GIDiffuseColor)
-	#define _BigShadowOff GET_VAR(half, _BigShadowOff)
-	#define _MainLightOn GET_VAR(half, _MainLightOn)
-#endif
 
     ENDHLSL
 
@@ -282,7 +212,7 @@ DOTS_CBUFFER_END
             // #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
-            #include "../PowerShaderLib/Lib/FogLib.hlsl"
+            #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
 
             v2f vert (appdata v)
@@ -296,13 +226,17 @@ DOTS_CBUFFER_END
                 float3 worldTangent = normalize(TransformObjectToWorldDir(v.tangent.xyz));
                 
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                float2 mainUV = TRANSFORM_TEX(v.uv, _MainTex);
+                float2 mainUV = TRANSFORM_TEX(v.uv, _ControlMap);
+
                 float2 lightmapUV = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
                 float2 uv1 = GetUV1(v.uv1,lightmapUV,_UV1TransformToLightmapUV);
 
                 o.uv.xy = GetUV(float4(mainUV,uv1),float4(v.uv2,v.uv3), _UseUV);
                 o.uv.y = _UseUVReverseY ? 1 - o.uv.y : o.uv.y;
                 o.uv.zw = lightmapUV;
+
+                o.splat12UV = float4(TRANSFORM_TEX(v.uv,_SplatTex1) , TRANSFORM_TEX(v.uv,_SplatTex2));
+                o.splat34UV = float4(TRANSFORM_TEX(v.uv,_SplatTex3) , TRANSFORM_TEX(v.uv,_SplatTex4));
 
                 o.fogCoord = CalcFogFactor(worldPos.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
                 o.color = v.color;
@@ -320,17 +254,20 @@ DOTS_CBUFFER_END
                 return o;
             }
 
-            half4 SampleMainTex(float2 uv){
-                #if defined(MAIN_TEX_ARRAY)
-                // half4 tex = tex2DARRAY(_MainTexArray,float3(uv,_MainTexArrayId));
-                half4 tex = SAMPLE_TEXTURE2D_ARRAY(_MainTexArray,sampler_MainTexArray,uv,_MainTexArrayId);
-                #else
-                half4 tex = tex2D(_MainTex, uv);
-                #endif
-                return tex;
+
+            half4 SampleSplats(float2 controlMapUV,float4 splat12UV,float4 splat34UV){
+                half4 controlMap = tex2D(_ControlMap,controlMapUV);
+                half4 splat1 = tex2D(_SplatTex1,splat12UV.xy);
+                half4 splat2 = tex2D(_SplatTex2,splat12UV.zw);
+                half4 splat3 = tex2D(_SplatTex3,splat34UV.xy);
+                half4 splat4 = tex2D(_SplatTex4,splat34UV.zw);
+                return splat1 * controlMap.x 
+                + splat2 * controlMap.y 
+                + splat3 * controlMap.z 
+                + splat4 * controlMap.w; 
             }
 
-            float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVectors:SV_TARGET2) : SV_Target
+            half4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVectors:SV_TARGET2) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
 
@@ -341,7 +278,9 @@ DOTS_CBUFFER_END
 
                 // sample the texture
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;
-                half4 mainTex = SampleMainTex(uv);
+                // half4 mainTex = SampleMainTex(uv);
+                half4 mainTex = SampleSplats(uv,i.splat12UV,i.splat34UV);
+                return mainTex;
                 half4 mainTexCol = mainTex * _Color * vertexColor;
                 float3 albedo = mainTexCol.xyz;
                 float alpha = mainTexCol.w;
@@ -483,7 +422,7 @@ DOTS_CBUFFER_END
             // #include "Lib/PBRInput.hlsl"
 
             // #define _CURVED_WORLD
-            #include "../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             ENDHLSL
         }
@@ -520,7 +459,7 @@ DOTS_CBUFFER_END
             #define _CustomShadowDepthBias _CustomShadowDepthBias
 
             // #define _CURVED_WORLD
-            #include "../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             // rotate by Mainlight
             // float4x4 _MainLightYRot;

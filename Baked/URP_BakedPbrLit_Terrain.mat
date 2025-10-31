@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: URP_BakedPbrLit_Terrain
+  m_Shader: {fileID: 4800000, guid: d031ffe852ff7db4da31348ebeb92742, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _ControlMap:
+        m_Texture: {fileID: 2800000, guid: 6449cd275bde43b4ab6c406536774326, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IBLCube:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexArray:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PbrMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplatTex1:
+        m_Texture: {fileID: 2800000, guid: dfa4adc5e0044b149bd91dbd6315f777, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplatTex2:
+        m_Texture: {fileID: 2800000, guid: 6b18c6a715f6a2c428c52726742b960a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplatTex3:
+        m_Texture: {fileID: 2800000, guid: 3af0e016cc94e7f479b103f747ff2602, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplatTex4:
+        m_Texture: {fileID: 2800000, guid: 83136185c54466940a186204d814ca80, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BigShadowOff: 0
+    - _ClipOn: 0
+    - _CullMode: 2
+    - _CustomShadowDepthBias: 0
+    - _CustomShadowNormalBias: 0
+    - _Cutoff: 0.5
+    - _DepthFogOn: 1
+    - _DstMode: 0
+    - _EmissionGI: 0
+    - _EmissionOn: 0
+    - _FogNoiseOn: 0
+    - _FogOn: 1
+    - _FresnelIntensity: 1
+    - _HeightFogOn: 1
+    - _IBLOn: 0
+    - _MainLightOn: 0
+    - _MainLightShadowSoftScale: 0.1
+    - _MainTexArrayId: 0
+    - _MainTexArrayOn: 0
+    - _Metallic: 0.5
+    - _NormalMapOn: 0
+    - _NormalScale: 1
+    - _NormalUnifiedOn: 0
+    - _Occlusion: 0
+    - _PreMulVertexColor: 0
+    - _PremulAlpha: 0
+    - _PresetBlendMode: 0
+    - _RGBMScale: 2
+    - _ReceiveShadowOff: 0
+    - _Smoothness: 0.5
+    - _SrcMode: 1
+    - _Stencil: 0
+    - _StencilComp: 0
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UV1TransformToLightmapUV: 0
+    - _UseUV: 0
+    - _UseUVReverseY: 0
+    - _ZTestMode: 4
+    - _ZWriteMode: 1
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _EnvIntensity: {r: 1, g: 1, b: 1, a: 1}
+    - _GIDiffuseColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []

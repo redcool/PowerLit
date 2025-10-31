@@ -2,12 +2,23 @@ Shader "URP/BakedPbrLit_Terrain"
 {
     Properties
     {
-        [Group(Main)]
-        [GroupItem(Main)] _SplatTex1 ("Splat 1", 2D) = "black" {}
-        [GroupItem(Main)] _SplatTex2 ("Splat 2", 2D) = "black" {}
-        [GroupItem(Main)] _SplatTex3 ("Splat 3", 2D) = "black" {}
-        [GroupItem(Main)] _SplatTex4 ("Splat 4", 2D) = "black" {}
-        [GroupItem(Main)] _ControlMap ("Control Map", 2D) = "white" {}
+        [Group(Splat)]
+        [GroupItem(Splat)] _SplatTex1 ("Splat 1", 2D) = "black" {}
+        [GroupItem(Splat)] _SplatColor1 ("_SplatColor 1", color) = (1,1,1,1)
+        
+        [GroupItem(Splat)] _SplatTex2 ("Splat 2", 2D) = "black" {}
+        [GroupItem(Splat)] _SplatColor2 ("_SplatColor ", color) = (1,1,1,1)
+        
+        [GroupItem(Splat)] _SplatTex3 ("Splat 3", 2D) = "black" {}
+        [GroupItem(Splat)] _SplatColor3 ("_SplatColor 3", color) = (1,1,1,1)
+        
+        [GroupItem(Splat)] _SplatTex4 ("Splat 4", 2D) = "black" {}
+        [GroupItem(Splat)] _SplatColor4 ("_SplatColor 4", color) = (1,1,1,1)
+
+        [GroupItem(Splat,blend splat textures with channels(xyzw))] _ControlMap ("Control Map", 2D) = "white" {}
+        
+        [GroupVectorSlider(Splat,edgeMin edgeMax,0_1 0_1,splat map blend size)]
+        _SplatEdgeRange("_SplatEdgeRange",vector) = (0,1,0,0)
 // ================================================== pbrMask        
 //         [Group(PBR Mask)]
 //         [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
@@ -143,13 +154,11 @@ Shader "URP/BakedPbrLit_Terrain"
         sampler2D _NormalMap;
 
         CBUFFER_START(UnityPerMaterial)
-        float4 _SplatTex1_ST;
-        float4 _SplatTex2_ST;
-        float4 _SplatTex3_ST;
-        float4 _SplatTex4_ST;
+        float4 _SplatTex1_ST, _SplatTex2_ST, _SplatTex3_ST, _SplatTex4_ST;
         float4 _ControlMap_ST;
+        float2 _SplatEdgeRange;
+        half4 _SplatColor1,_SplatColor2,_SplatColor3,_SplatColor4;
 
-        half4 _Color;
         half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
         half _Cutoff;
         half _NormalUnifiedOn;
@@ -254,17 +263,21 @@ Shader "URP/BakedPbrLit_Terrain"
                 return o;
             }
 
-
-            half4 SampleSplats(float2 controlMapUV,float4 splat12UV,float4 splat34UV){
-                half4 controlMap = tex2D(_ControlMap,controlMapUV);
+            #define SAMPLE_SPLAT(splatControl,splatColor) (splatControl * splatColor)
+            /**
+                Sample splats(4)
+            */
+            half4 SampleSplats(float4 splatControl,float4 splat12UV,float4 splat34UV,half4 vertexColor){
                 half4 splat1 = tex2D(_SplatTex1,splat12UV.xy);
                 half4 splat2 = tex2D(_SplatTex2,splat12UV.zw);
                 half4 splat3 = tex2D(_SplatTex3,splat34UV.xy);
                 half4 splat4 = tex2D(_SplatTex4,splat34UV.zw);
-                return splat1 * controlMap.x 
-                + splat2 * controlMap.y 
-                + splat3 * controlMap.z 
-                + splat4 * controlMap.w; 
+
+                return  SAMPLE_SPLAT(splatControl.x * vertexColor.x , splat1 *_SplatColor1)
+                + SAMPLE_SPLAT(splatControl.y * vertexColor.y , splat2 *_SplatColor2)
+                + SAMPLE_SPLAT(splatControl.z * vertexColor.z , splat3 *_SplatColor3)
+                + SAMPLE_SPLAT(splatControl.w * vertexColor.w , splat4 *_SplatColor4) 
+                ;
             }
 
             half4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVectors:SV_TARGET2) : SV_Target
@@ -279,14 +292,15 @@ Shader "URP/BakedPbrLit_Terrain"
                 // sample the texture
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;
                 // half4 mainTex = SampleMainTex(uv);
-                half4 mainTex = SampleSplats(uv,i.splat12UV,i.splat34UV);
-                return mainTex;
-                half4 mainTexCol = mainTex * _Color * vertexColor;
+                float4 controlMap = tex2D(_ControlMap,uv);
+                controlMap = smoothstep(_SplatEdgeRange.x,_SplatEdgeRange.y,controlMap);
+
+                half4 mainTexCol = SampleSplats(controlMap,i.splat12UV,i.splat34UV,i.color);
                 float3 albedo = mainTexCol.xyz;
                 float alpha = mainTexCol.w;
 
                 // alpha premultiply and rgbm scale
-                albedo =_PremulAlpha ? mainTex.xyz*mainTex.w* _RGBMScale : albedo;
+                albedo =_PremulAlpha ? albedo.xyz*alpha* _RGBMScale : albedo;
 
                 //---------- pbrMask
                 float4 pbrMask = tex2D(_PbrMask,uv);

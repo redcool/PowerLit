@@ -3,22 +3,25 @@ Shader "URP/BakedPbrLit_Terrain"
     Properties
     {
         [Group(Splat)]
-        [GroupItem(Splat)] _SplatTex1 ("Splat 1", 2D) = "black" {}
+        [GroupItem(Splat)] _Splat0 ("Splat 1", 2D) = "black" {}
         [GroupItem(Splat)] _SplatColor1 ("_SplatColor 1", color) = (1,1,1,1)
         
-        [GroupItem(Splat)] _SplatTex2 ("Splat 2", 2D) = "black" {}
+        [GroupItem(Splat)] _Splat1 ("Splat 2", 2D) = "black" {}
         [GroupItem(Splat)] _SplatColor2 ("_SplatColor ", color) = (1,1,1,1)
         
-        [GroupItem(Splat)] _SplatTex3 ("Splat 3", 2D) = "black" {}
+        [GroupItem(Splat)] _Splat2 ("Splat 3", 2D) = "black" {}
         [GroupItem(Splat)] _SplatColor3 ("_SplatColor 3", color) = (1,1,1,1)
         
-        [GroupItem(Splat)] _SplatTex4 ("Splat 4", 2D) = "black" {}
+        [GroupItem(Splat)] _Splat3 ("Splat 4", 2D) = "black" {}
         [GroupItem(Splat)] _SplatColor4 ("_SplatColor 4", color) = (1,1,1,1)
 
-        [GroupItem(Splat,blend splat textures with channels(xyzw))] _ControlMap ("Control Map", 2D) = "white" {}
+        [GroupItem(Splat,blend splat textures with channels(xyzw))] _Control ("Control Map", 2D) = "white" {}
         
         [GroupVectorSlider(Splat,edgeMin edgeMax,0_1 0_1,splat map blend size)]
         _SplatEdgeRange("_SplatEdgeRange",vector) = (0,1,0,0)
+
+        [GroupVectorSlider(Splat,splat0 splat1 splat2 splat3,0_1 0_1 0_1 0_1,splat map blend weights)]
+        _SplatBlendWeights("_SplatBlendWeights",vector) = (1,1,1,1)
 // ================================================== pbrMask        
 //         [Group(PBR Mask)]
 //         [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
@@ -148,16 +151,17 @@ Shader "URP/BakedPbrLit_Terrain"
         // TEXTURE2D_ARRAY(_MainTexArray);SAMPLER(sampler_MainTexArray);
         TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 
-        sampler2D _SplatTex1,_SplatTex2,_SplatTex3,_SplatTex4,_ControlMap;
+        sampler2D _Splat0,_Splat1,_Splat2,_Splat3,_Control;
         sampler2D _EmissionMap;
         sampler2D _PbrMask;
         sampler2D _NormalMap;
 
         CBUFFER_START(UnityPerMaterial)
-        float4 _SplatTex1_ST, _SplatTex2_ST, _SplatTex3_ST, _SplatTex4_ST;
-        float4 _ControlMap_ST;
+        float4 _Splat0_ST, _Splat1_ST, _Splat2_ST, _Splat3_ST;
+        float4 _Control_ST;
         float2 _SplatEdgeRange;
         half4 _SplatColor1,_SplatColor2,_SplatColor3,_SplatColor4;
+        half4 _SplatBlendWeights;
 
         half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
         half _Cutoff;
@@ -235,7 +239,7 @@ Shader "URP/BakedPbrLit_Terrain"
                 float3 worldTangent = normalize(TransformObjectToWorldDir(v.tangent.xyz));
                 
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                float2 mainUV = TRANSFORM_TEX(v.uv, _ControlMap);
+                float2 mainUV = TRANSFORM_TEX(v.uv, _Control);
 
                 float2 lightmapUV = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
                 float2 uv1 = GetUV1(v.uv1,lightmapUV,_UV1TransformToLightmapUV);
@@ -244,8 +248,8 @@ Shader "URP/BakedPbrLit_Terrain"
                 o.uv.y = _UseUVReverseY ? 1 - o.uv.y : o.uv.y;
                 o.uv.zw = lightmapUV;
 
-                o.splat12UV = float4(TRANSFORM_TEX(v.uv,_SplatTex1) , TRANSFORM_TEX(v.uv,_SplatTex2));
-                o.splat34UV = float4(TRANSFORM_TEX(v.uv,_SplatTex3) , TRANSFORM_TEX(v.uv,_SplatTex4));
+                o.splat12UV = float4(TRANSFORM_TEX(v.uv,_Splat0) , TRANSFORM_TEX(v.uv,_Splat1));
+                o.splat34UV = float4(TRANSFORM_TEX(v.uv,_Splat2) , TRANSFORM_TEX(v.uv,_Splat3));
 
                 o.fogCoord = CalcFogFactor(worldPos.xyz,o.vertex.z,_HeightFogOn,_DepthFogOn);
                 o.color = v.color;
@@ -268,15 +272,15 @@ Shader "URP/BakedPbrLit_Terrain"
                 Sample splats(4)
             */
             half4 SampleSplats(float4 splatControl,float4 splat12UV,float4 splat34UV,half4 vertexColor){
-                half4 splat1 = tex2D(_SplatTex1,splat12UV.xy);
-                half4 splat2 = tex2D(_SplatTex2,splat12UV.zw);
-                half4 splat3 = tex2D(_SplatTex3,splat34UV.xy);
-                half4 splat4 = tex2D(_SplatTex4,splat34UV.zw);
+                half4 splat1 = tex2D(_Splat0,splat12UV.xy);
+                half4 splat2 = tex2D(_Splat1,splat12UV.zw);
+                half4 splat3 = tex2D(_Splat2,splat34UV.xy);
+                half4 splat4 = tex2D(_Splat3,splat34UV.zw);
 
-                return  SAMPLE_SPLAT(splatControl.x * vertexColor.x , splat1 *_SplatColor1)
-                + SAMPLE_SPLAT(splatControl.y * vertexColor.y , splat2 *_SplatColor2)
-                + SAMPLE_SPLAT(splatControl.z * vertexColor.z , splat3 *_SplatColor3)
-                + SAMPLE_SPLAT(splatControl.w * vertexColor.w , splat4 *_SplatColor4) 
+                return  SAMPLE_SPLAT(splatControl.x * vertexColor.x * _SplatBlendWeights.x, splat1 *_SplatColor1)
+                + SAMPLE_SPLAT(splatControl.y * vertexColor.y * _SplatBlendWeights.y, splat2 *_SplatColor2)
+                + SAMPLE_SPLAT(splatControl.z * vertexColor.z * _SplatBlendWeights.z, splat3 *_SplatColor3)
+                + SAMPLE_SPLAT(splatControl.w * vertexColor.w * _SplatBlendWeights.w, splat4 *_SplatColor4) 
                 ;
             }
 
@@ -292,7 +296,7 @@ Shader "URP/BakedPbrLit_Terrain"
                 // sample the texture
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;
                 // half4 mainTex = SampleMainTex(uv);
-                float4 controlMap = tex2D(_ControlMap,uv);
+                float4 controlMap = tex2D(_Control,uv);
                 controlMap = smoothstep(_SplatEdgeRange.x,_SplatEdgeRange.y,controlMap);
 
                 half4 mainTexCol = SampleSplats(controlMap,i.splat12UV,i.splat34UV,i.color);

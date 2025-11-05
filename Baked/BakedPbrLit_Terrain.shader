@@ -2,6 +2,11 @@ Shader "URP/BakedPbrLit_Terrain"
 {
     Properties
     {
+        [Group(Base)]
+        [GroupItem(Base,underground color)] _BaseMap ("_BaseMap", 2D) = "black" {}
+        [GroupItem(Base)] _BaseColor ("_BaseColor", color) = (1,1,1,1)
+        [GroupToggle(Base,,baseColor multi controlMap remain weight )] _ControlMapRemainWeightOn("_ControlMapRemainWeightOn",float) = 1
+
         [Group(Splat)]
         [GroupItem(Splat)] _Splat0 ("Splat 1", 2D) = "black" {}
         [GroupItem(Splat)] _SplatColor1 ("_SplatColor 1", color) = (1,1,1,1)
@@ -15,8 +20,8 @@ Shader "URP/BakedPbrLit_Terrain"
         [GroupItem(Splat)] _Splat3 ("Splat 4", 2D) = "black" {}
         [GroupItem(Splat)] _SplatColor4 ("_SplatColor 4", color) = (1,1,1,1)
 
-        [GroupItem(Splat,blend splat textures with channels(xyzw))] _Control ("Control Map", 2D) = "white" {}
-        
+        [GroupItem(Splat,blend splat textures with channels(xyzw))] _Control ("Control Map( no sRGB)", 2D) = "white" {}
+        [GroupToggle(Splat,,adjust controlMap curve)] _SplatEdgeRangeOn("_SplatEdgeRangeOn",float) = 0
         [GroupVectorSlider(Splat,edgeMin edgeMax,0_1 0_1,splat map blend size)]
         _SplatEdgeRange("_SplatEdgeRange",vector) = (0,1,0,0)
 
@@ -151,6 +156,7 @@ Shader "URP/BakedPbrLit_Terrain"
         // TEXTURE2D_ARRAY(_MainTexArray);SAMPLER(sampler_MainTexArray);
         TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
 
+        sampler2D _BaseMap;
         sampler2D _Splat0,_Splat1,_Splat2,_Splat3,_Control;
         sampler2D _EmissionMap;
         sampler2D _PbrMask;
@@ -162,6 +168,10 @@ Shader "URP/BakedPbrLit_Terrain"
         float2 _SplatEdgeRange;
         half4 _SplatColor1,_SplatColor2,_SplatColor3,_SplatColor4;
         half4 _SplatBlendWeights;
+        half _SplatEdgeRangeOn;
+
+        half4 _BaseColor;
+        half _ControlMapRemainWeightOn;
 
         half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
         half _Cutoff;
@@ -297,11 +307,16 @@ Shader "URP/BakedPbrLit_Terrain"
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;
                 // half4 mainTex = SampleMainTex(uv);
                 float4 controlMap = tex2D(_Control,uv);
-                controlMap = smoothstep(_SplatEdgeRange.x,_SplatEdgeRange.y,controlMap);
+                controlMap = _SplatEdgeRangeOn ? smoothstep(_SplatEdgeRange.x,_SplatEdgeRange.y,controlMap) : controlMap;
 
-                half4 mainTexCol = SampleSplats(controlMap,i.splat12UV,i.splat34UV,i.color);
-                float3 albedo = mainTexCol.xyz;
-                float alpha = mainTexCol.w;
+                half4 baseMapCol = tex2D(_BaseMap, uv) * _BaseColor;
+                baseMapCol *= _ControlMapRemainWeightOn ? saturate(1-length(controlMap)) : 1;
+// return baseMapCol;
+                half4 splatCol = SampleSplats(controlMap,i.splat12UV,i.splat34UV,i.color);
+                splatCol += baseMapCol;
+
+                float3 albedo = splatCol.xyz;
+                float alpha = splatCol.w;
 
                 // alpha premultiply and rgbm scale
                 albedo =_PremulAlpha ? albedo.xyz*alpha* _RGBMScale : albedo;

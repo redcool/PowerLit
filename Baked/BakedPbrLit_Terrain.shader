@@ -2,6 +2,7 @@ Shader "URP/BakedPbrLit_Terrain"
 {
     Properties
     {
+        [GroupHeader(V0.0.2)]
         [Group(Base)]
         [GroupItem(Base,underground color)] _BaseMap ("_BaseMap", 2D) = "black" {}
         [GroupItem(Base)] _BaseColor ("_BaseColor", color) = (1,1,1,1)
@@ -9,20 +10,23 @@ Shader "URP/BakedPbrLit_Terrain"
 
         [Group(Splat)]
         [GroupItem(Splat)] _Splat0 ("Splat 1", 2D) = "black" {}
-        [GroupItem(Splat)] _SplatColor1 ("_SplatColor 1", color) = (1,1,1,1)
+        [GroupItem(Splat)] _SplatColor0 ("_SplatColor 1", color) = (1,1,1,1)
         
         [GroupItem(Splat)] _Splat1 ("Splat 2", 2D) = "black" {}
-        [GroupItem(Splat)] _SplatColor2 ("_SplatColor ", color) = (1,1,1,1)
+        [GroupItem(Splat)] _SplatColor1 ("_SplatColor 2", color) = (1,1,1,1)
         
         [GroupItem(Splat)] _Splat2 ("Splat 3", 2D) = "black" {}
-        [GroupItem(Splat)] _SplatColor3 ("_SplatColor 3", color) = (1,1,1,1)
+        [GroupItem(Splat)] _SplatColor2 ("_SplatColor 3", color) = (1,1,1,1)
         
         [GroupItem(Splat)] _Splat3 ("Splat 4", 2D) = "black" {}
-        [GroupItem(Splat)] _SplatColor4 ("_SplatColor 4", color) = (1,1,1,1)
+        [GroupItem(Splat)] _SplatColor3 ("_SplatColor 4", color) = (1,1,1,1)
 
         [GroupItem(Splat,blend splat textures with channels(xyzw))] _Control ("Control Map( no sRGB)", 2D) = "white" {}
-        [GroupToggle(Splat,,adjust controlMap curve)] _SplatEdgeRangeOn("_SplatEdgeRangeOn",float) = 0
-        [GroupVectorSlider(Splat,edgeMin edgeMax,0_1 0_1,splat map blend size)]
+
+        [GroupToggle(Splat,,adjust splat map blend edge)] _SplatEdgeRangeOn("_SplatEdgeRangeOn",float) = 0
+
+        [MaterialDisableGroup(_SplatEdgeRangeOn)]
+        [GroupVectorSlider(Splat,edgeMin edgeMax,0_1 0_1,adjust splat map blend edge )]
         _SplatEdgeRange("_SplatEdgeRange",vector) = (0,1,0,0)
 
         [GroupVectorSlider(Splat,splat0 splat1 splat2 splat3,0_1 0_1 0_1 0_1,splat map blend weights)]
@@ -166,7 +170,7 @@ Shader "URP/BakedPbrLit_Terrain"
         float4 _Splat0_ST, _Splat1_ST, _Splat2_ST, _Splat3_ST;
         float4 _Control_ST;
         float2 _SplatEdgeRange;
-        half4 _SplatColor1,_SplatColor2,_SplatColor3,_SplatColor4;
+        half4 _SplatColor0,_SplatColor1,_SplatColor2,_SplatColor3;
         half4 _SplatBlendWeights;
         half _SplatEdgeRangeOn;
 
@@ -287,10 +291,10 @@ Shader "URP/BakedPbrLit_Terrain"
                 half4 splat3 = tex2D(_Splat2,splat34UV.xy);
                 half4 splat4 = tex2D(_Splat3,splat34UV.zw);
 
-                return  SAMPLE_SPLAT(splatControl.x * vertexColor.x * _SplatBlendWeights.x, splat1 *_SplatColor1)
-                + SAMPLE_SPLAT(splatControl.y * vertexColor.y * _SplatBlendWeights.y, splat2 *_SplatColor2)
-                + SAMPLE_SPLAT(splatControl.z * vertexColor.z * _SplatBlendWeights.z, splat3 *_SplatColor3)
-                + SAMPLE_SPLAT(splatControl.w * vertexColor.w * _SplatBlendWeights.w, splat4 *_SplatColor4) 
+                return  SAMPLE_SPLAT(splatControl.x * vertexColor.x * _SplatBlendWeights.x, splat1 *_SplatColor0)
+                + SAMPLE_SPLAT(splatControl.y * vertexColor.y * _SplatBlendWeights.y, splat2 *_SplatColor1)
+                + SAMPLE_SPLAT(splatControl.z * vertexColor.z * _SplatBlendWeights.z, splat3 *_SplatColor2)
+                + SAMPLE_SPLAT(splatControl.w * vertexColor.w * _SplatBlendWeights.w, splat4 *_SplatColor3) 
                 ;
             }
 

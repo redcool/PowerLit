@@ -149,7 +149,7 @@ Shader "URP/BakedPbrLit"
         sampler2D _EmissionMap;
         sampler2D _PbrMask;
         sampler2D _NormalMap;
-
+        
         CBUFFER_START(UnityPerMaterial)
         float4 _MainTex_ST;
         half4 _Color;
@@ -347,7 +347,7 @@ DOTS_CBUFFER_END
                 float alpha = mainTexCol.w;
 
                 // alpha premultiply and rgbm scale
-                albedo =_PremulAlpha ? mainTex.xyz*mainTex.w* _RGBMScale : albedo;
+                albedo =_PremulAlpha ? albedo * (alpha * _RGBMScale) : albedo;
 
                 //---------- pbrMask
                 float4 pbrMask = tex2D(_PbrMask,uv);

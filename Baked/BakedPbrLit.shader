@@ -19,7 +19,11 @@ Shader "URP/BakedPbrLit"
         [GroupHeader(Main,MainTexArray)]
         [GroupToggle(Main,MAIN_TEX_ARRAY,mainTex use tex1DARRAY)] _MainTexArrayOn ("_MainTexArrayOn", float) = 0
         [GroupItem(Main)] _MainTexArray ("_MainTexArray", 2DArray) = "white" {}
-        [GroupSlider(Main,texArr id,int)] _MainTexArrayId ("_MainTexArrayId", range(0,16)) = 0
+        [GroupSlider(Main,texArr id ,int)] _MainTexArrayId ("_MainTexArrayId", range(0,16)) = 0
+
+        [GroupHeader(Main,MainTexArray_UDIM)]
+        [GroupToggle(Main,,use udim)] _MainTexUDIMOn ("_MainTexUDIMOn", float) = 0
+        [GroupSlider(Main,udim count in row ,int)] _MainTexUDIMCountARow ("_MainTexUDIMCountARow", range(1,16)) = 1
 // ================================================== pbrMask        
         [Group(PBR Mask)]
         [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
@@ -122,7 +126,7 @@ Shader "URP/BakedPbrLit"
             float2 uv1:TEXCOORD1;
             float2 uv2:TEXCOORD2;
             float2 uv3:TEXCOORD3;
-            DECLARE_MOTION_VS_INPUT(prevPos);
+            DECLARE_MOTION_VS_INPUT(prevPos);// texcoord4
             float3 normal:NORMAL;
             float4 tangent:TANGENT;
             float4 color:COLOR;
@@ -158,6 +162,7 @@ Shader "URP/BakedPbrLit"
         half _NormalUnifiedOn;
         half _UseUV,_UseUVReverseY;
         half _MainTexArrayId;
+        half _MainTexUDIMOn,_MainTexUDIMCountARow;
         half _PreMulVertexColor;
 
         half _EmissionOn;
@@ -320,12 +325,17 @@ DOTS_CBUFFER_END
                 return o;
             }
 
-            half4 SampleMainTex(float2 uv){
+            half4 SampleMainTex(inout float2 uv/**/){
                 #if defined(MAIN_TEX_ARRAY)
-                // half4 tex = tex2DARRAY(_MainTexArray,float3(uv,_MainTexArrayId));
-                half4 tex = SAMPLE_TEXTURE2D_ARRAY(_MainTexArray,sampler_MainTexArray,uv,_MainTexArrayId);
+                    float2 newUV = 0;
+                    half texId = 0;
+                    CalcUDIM(newUV/**/,texId/**/,uv,_MainTexUDIMCountARow);
+                    
+                    uv = _MainTexUDIMOn? newUV : uv;
+                    texId = _MainTexUDIMOn? texId : _MainTexArrayId;
+                    half4 tex = SAMPLE_TEXTURE2D_ARRAY(_MainTexArray,sampler_MainTexArray,uv,texId);
                 #else
-                half4 tex = tex2D(_MainTex, uv);
+                    half4 tex = tex2D(_MainTex, uv);
                 #endif
                 return tex;
             }
@@ -338,10 +348,10 @@ DOTS_CBUFFER_END
 
                 float2 uv = i.uv.xy;
                 float2 lightmapUV = i.uv.zw;
-
+                
                 // sample the texture
                 half4 vertexColor = _PreMulVertexColor ? i.color : 1;
-                half4 mainTex = SampleMainTex(uv);
+                half4 mainTex = SampleMainTex(uv/**/);
                 half4 mainTexCol = mainTex * _Color * vertexColor;
                 float3 albedo = mainTexCol.xyz;
                 float alpha = mainTexCol.w;

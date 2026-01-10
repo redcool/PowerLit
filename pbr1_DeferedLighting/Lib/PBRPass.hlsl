@@ -79,9 +79,16 @@ float4 frag (v2f i) : SV_Target
     float3 worldPos = ScreenToWorldPos(screenUV,depthTex,UNITY_MATRIX_I_VP);
     #endif
 
-    Light light = GetLight(_MainLightPosition,_MainLightColor.xyz,shadowAtten,worldPos,_LightAttenuation,_LightDirection
-    ,_Radius,_Intensity,_Falloff,_IsSpot,_SpotLightAngle
-    );
+    Light light = GetLight(_MainLightPosition,
+    _MainLightColor.xyz,
+    shadowAtten,worldPos,
+    _LightAttenuation,
+    _LightDirection,
+    _Radius,
+    _Intensity,
+    _Falloff,
+    _IsSpot,
+    _SpotLightAngle);
 
     // float3 worldPos1 = ScreenToWorldPos(tex2D(_CameraDepthAttachment,screenUV+float2(1/_ScaledScreenParams.x,0)),depthTex,UNITY_MATRIX_I_VP);
     // float3 worldPos2 = ScreenToWorldPos(tex2D(_CameraDepthAttachment,screenUV+float2(0,1/_ScaledScreenParams.y)),depthTex,UNITY_MATRIX_I_VP);

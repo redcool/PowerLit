@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using UnityEditor;
 #endif
 using PowerUtilities;
@@ -74,6 +74,7 @@ public class PowerLitFogControl : MonoBehaviour
 
     //================== sphereFogDatas 
     public List<SphereFogData> sphereFogDatas = new List<SphereFogData>();
+    SphereFogDataStruct[] sphereFogDataStructs;
     // trace fog instances
     public static MonoInstanceManager<PowerLitFogControl> instanceManager = new MonoInstanceManager<PowerLitFogControl>();
 
@@ -196,17 +197,15 @@ public class PowerLitFogControl : MonoBehaviour
 
     private void UpdateStructuredBuffer()
     {
-        if (fogBuffer == null || !fogBuffer.IsValid() || fogBuffer.count != sphereFogDatas.Count)
+        if (!fogBuffer.IsValidSafe(GraphicsBuffer.Target.Structured,sphereFogDatas.Count, SphereFogDataStruct.ByteCount))
         {
             fogBuffer?.Dispose();
 
-            var stride = Marshal.SizeOf<SphereFogDataStruct>(); // 29 float
-            fogBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, sphereFogDatas.Count, stride);
+            fogBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, sphereFogDatas.Count, SphereFogDataStruct.ByteCount);
+            sphereFogDataStructs = sphereFogDatas.Select(data => (SphereFogDataStruct)data).ToArray();
         }
 
-        fogBuffer.SetData(sphereFogDatas
-            .Select(d => (SphereFogDataStruct)d)
-            .ToArray());
+        fogBuffer.SetData(sphereFogDataStructs);
         Shader.SetGlobalBuffer("_SphereFogDatas", fogBuffer);
     }
 

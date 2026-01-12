@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -69,6 +70,17 @@ public struct SphereFogDataStruct
     public Vector4 fogNoiseTilingOffset;
     public Vector4 fogNoiseParams; // composite args
     public Vector4 fogParams; // for SIMPLE_FOG
+
+    static int byteCount;
+    public static int ByteCount
+    {
+        get
+        {
+            if (byteCount == 0)
+                byteCount = Marshal.SizeOf<SphereFogDataStruct>();
+            return byteCount;
+        }
+    }
 
     public static implicit operator SphereFogDataStruct(SphereFogData fogData)
     {

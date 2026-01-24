@@ -238,7 +238,8 @@ Shader "URP/BakedPbrLit_Terrain"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ DOTS_INSTANCING_ON
-
+            #pragma multi_compile _ LIGHTMAP_ON
+            
             #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
 

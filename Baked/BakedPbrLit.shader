@@ -286,6 +286,7 @@ DOTS_CBUFFER_END
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ DOTS_INSTANCING_ON
+            #pragma multi_compile _ LIGHTMAP_ON
 
             #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
@@ -413,6 +414,7 @@ DOTS_CBUFFER_END
                 #endif
                 float3 giColor = 0;
                 float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
+               
                 float3 giSpec = CalcGISpec(IBL_CUBE,
                     IBL_CUBE_SAMPLER,
                     IBL_HDR,

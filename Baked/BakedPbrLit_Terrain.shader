@@ -239,6 +239,7 @@ Shader "URP/BakedPbrLit_Terrain"
             // #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
             
             #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
@@ -334,8 +335,9 @@ Shader "URP/BakedPbrLit_Terrain"
                 SplitPbrMaskTexture(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,int3(0,1,2),float3(_Metallic,_Smoothness,_Occlusion),false);
 
                 //---------- main light
+                float4 shadowMask = SampleShadowMask(lightmapUV);
                 float4 shadowCoord = TransformWorldToShadowCoord(worldPos);
-                Light mainLight = GetMainLight(shadowCoord,worldPos,_MainLightShadowSoftScale);
+                Light mainLight = GetMainLight(shadowCoord,worldPos,shadowMask,_MainLightShadowSoftScale);
                 branch_if(!_BigShadowOff)
                 {
                     // i.bigShadowCoord.z += 0.001;

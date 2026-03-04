@@ -32,20 +32,20 @@ Shader "URP/BakedPbrLit_Terrain"
         [GroupVectorSlider(Splat,splat0 splat1 splat2 splat3,0_1 0_1 0_1 0_1,splat map blend weights)]
         _SplatBlendWeights("_SplatBlendWeights",vector) = (1,1,1,1)
 // ================================================== pbrMask        
-//         [Group(PBR Mask)]
-//         [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
+        [Group(PBR Mask)]
+        [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
 
-//         [GroupItem(PBR Mask)]_Metallic("_Metallic",range(0,1)) = 0.5
-//         [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
-//         [GroupItem(PBR Mask)]_Occlusion("_Occlusion",range(0,1)) = 0
+        [GroupItem(PBR Mask)]_Metallic("_Metallic",range(0,1)) = 0.5
+        [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
+        [GroupItem(PBR Mask)]_Occlusion("_Occlusion",range(0,1)) = 0
 
 // //================================================= Normal
-//         [Group(Normal)]
+        [Group(Normal)]
 //         [GroupToggle(Normal, NORMAL_MAP_ON,normalMap in tangent space)]_NormalMapOn("_NormalMapOn",int) = 0
 //         [GroupItem(Normal)]_NormalMap("_NormalMap",2d)="bump"{}
         
 //         [GroupItem(Normal)]_NormalScale("_NormalScale",range(0,5)) = 1        
-//         [GroupToggle(Normal, ,output flat normal force)]_NormalUnifiedOn("_NormalUnifiedOn",int) = 0
+        [GroupToggle(Normal, ,output flat normal force)]_NormalUnifiedOn("_NormalUnifiedOn",int) = 0
 //================================================= emission
         // [Group(Emission)]
         // [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0  //_EMISSION
@@ -180,9 +180,9 @@ Shader "URP/BakedPbrLit_Terrain"
         half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
         half _Cutoff;
         half _NormalUnifiedOn;
-        half _UseUV,_UseUVReverseY;
-        half _MainTexArrayId;
-        half _PreMulVertexColor;
+        // half _UseUV,_UseUVReverseY;
+        // half _MainTexArrayId;
+        // half _PreMulVertexColor;
 
         // half _EmissionOn;
         // half4 _EmissionColor;
@@ -191,8 +191,8 @@ Shader "URP/BakedPbrLit_Terrain"
         half _FresnelIntensity;
         half4 _IBLCube_HDR;;
         // half _NormalScale;
-        half _UV1TransformToLightmapUV;
-        half _PremulAlpha,_RGBMScale;
+        // half _UV1TransformToLightmapUV;
+        // half _PremulAlpha,_RGBMScale;
 
         half _MainLightShadowSoftScale;
         half _CustomShadowNormalBias,_CustomShadowDepthBias;
@@ -258,10 +258,10 @@ Shader "URP/BakedPbrLit_Terrain"
                 float2 mainUV = TRANSFORM_TEX(v.uv, _Control);
 
                 float2 lightmapUV = v.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
-                float2 uv1 = GetUV1(v.uv1,lightmapUV,_UV1TransformToLightmapUV);
+                float2 uv1 = GetUV1(v.uv1,lightmapUV,0);
 
-                o.uv.xy = GetUV(float4(mainUV,uv1),float4(v.uv2,v.uv3), _UseUV);
-                o.uv.y = _UseUVReverseY ? 1 - o.uv.y : o.uv.y;
+                o.uv.xy = mainUV;//GetUV(float4(mainUV,uv1),float4(v.uv2,v.uv3), _UseUV);
+                // o.uv.y = _UseUVReverseY ? 1 - o.uv.y : o.uv.y;
                 o.uv.zw = lightmapUV;
 
                 o.splat12UV = float4(TRANSFORM_TEX(v.uv,_Splat0) , TRANSFORM_TEX(v.uv,_Splat1));
@@ -310,8 +310,6 @@ Shader "URP/BakedPbrLit_Terrain"
                 float2 lightmapUV = i.uv.zw;
 
                 // sample the texture
-                half4 vertexColor = _PreMulVertexColor ? i.color : 1;
-                // half4 mainTex = SampleMainTex(uv);
                 float4 controlMap = tex2D(_Control,uv);
                 controlMap = _SplatEdgeRangeOn ? smoothstep(_SplatEdgeRange.x,_SplatEdgeRange.y,controlMap) : controlMap;
 
@@ -323,9 +321,6 @@ Shader "URP/BakedPbrLit_Terrain"
 
                 float3 albedo = splatCol.xyz;
                 float alpha = splatCol.w;
-
-                // alpha premultiply and rgbm scale
-                albedo =_PremulAlpha ? albedo.xyz*alpha* _RGBMScale : albedo;
 
                 //---------- pbrMask
                 float4 pbrMask = tex2D(_PbrMask,uv);

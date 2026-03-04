@@ -2,6 +2,7 @@ Shader "URP/BakedPbrLit"
 {
     Properties
     {
+        [GroupHeader(v0.0.2)]
         [Group(Main)]
         [GroupItem(Main)] _MainTex ("Texture", 2D) = "white" {}
         [GroupEnum(Main,uv0 0 uv1 1 uv2 2 uv3 3,,sample texture use uv uv1 uv2 uv3)] _UseUV ("_UseUV", range(0,3)) = 0
@@ -34,7 +35,7 @@ Shader "URP/BakedPbrLit"
 
 //================================================= Normal
         [Group(Normal)]
-        [GroupToggle(Normal, NORMAL_MAP_ON,normalMap in tangent space)]_NormalMapOn("_NormalMapOn",int) = 0
+        [GroupToggle(Normal, NORMAL_MAP_ON,enable normalMap in tangent space)]_NormalMapOn("_NormalMapOn",int) = 0
         [GroupItem(Normal)]_NormalMap("_NormalMap",2d)="bump"{}
         
         [GroupItem(Normal)]_NormalScale("_NormalScale",range(0,5)) = 1        
@@ -46,10 +47,14 @@ Shader "URP/BakedPbrLit"
         [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
         [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
 //================================================= Env
-        [Group(Env)]
+        [Group(Env,set gi diff and gi spec)]
+        [GroupHeader(Env,Calc GI)]
+        [GroupToggle(Env,CALC_GI_DIFF,calc gi diffuse lightmap or sh)]_CalcGIDiff("_CalcGIDiff",float) = 0
+        [GroupToggle(Env,CALC_GI_SPEC,calc gi spec or not)]_CalcGISpec("_CalcGISpec",float) = 0
+        
         [GroupHeader(Env,Custom IBL)]
-        [GroupToggle(Env,_IBL_ON)]_IBLOn("_IBLOn",float) = 0
-        [GroupItem(Env)][NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
+        [GroupToggle(Env,_IBL_ON,use custom ibl _IBLCube or unity_SpecCube0)]_IBLOn("_IBLOn",float) = 0
+        [GroupItem(Env,ibl cubemap)][NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
         
         [GroupHeader(Env,IBL Params)]
         [GroupItem(Env,ibl color tint)]_EnvIntensity("_EnvIntensity",color) = (1,1,1,1)
@@ -58,7 +63,7 @@ Shader "URP/BakedPbrLit"
         [GroupHeader(Env,GI Diffuse Params)]
         [GroupItem(Env,gi diffuse color tint)][hdr]_GIDiffuseColor("_GIDiffuseColor",color) = (0,0,0,1)
 // ================================================== Main Light 
-        [Group(Light)]
+        [Group(Light,set light and shadows)]
         [GroupHeader(Light,Main Light)]
         [GroupToggle(Light,,use lit or unlit)]_MainLightOn("_MainLightOn",float) = 0
 
@@ -69,7 +74,7 @@ Shader "URP/BakedPbrLit"
         [GroupHeader(Light,BigShadow)]
         [GroupToggle(Light)]_BigShadowOff("_BigShadowOff",int) = 0
 //================================================= ShadowCaster
-        [Group(ShadowCaster)]
+        [Group(ShadowCaster,set shadow caster offset along normalDir and viewDir)]
         // [GroupEnum(ShadowCaster,UnityEngine.Rendering.CullMode)]_ShadowCasterCullMode("_ShadowCasterCullMode",int) = 2
         [GroupHeader(ShadowCaster,custom bias)]
         [GroupSlider(ShadowCaster,,float)]_CustomShadowNormalBias("_CustomShadowNormalBias",range(-1,1)) = 0
@@ -111,6 +116,8 @@ Shader "URP/BakedPbrLit"
     }
 
     HLSLINCLUDE
+    #pragma multi_compile _ DOTS_INSTANCING_ON
+
         #include "../../PowerShaderLib/Lib/UnityLib.hlsl"
         #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
         #include "../../PowerShaderLib/Lib/GILib.hlsl"
@@ -156,97 +163,97 @@ Shader "URP/BakedPbrLit"
         
         CBUFFER_START(UnityPerMaterial)
         float4 _MainTex_ST;
-        half4 _Color;
-        half _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
-        half _Cutoff;
-        half _NormalUnifiedOn;
-        half _UseUV,_UseUVReverseY;
-        half _MainTexArrayId;
-        half _MainTexUDIMOn,_MainTexUDIMCountARow;
-        half _PreMulVertexColor;
+        float4 _Color;
+        float _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
+        float _Cutoff;
+        float _NormalUnifiedOn;
+        float _UseUV,_UseUVReverseY;
+        float _MainTexArrayId;
+        float _MainTexUDIMOn,_MainTexUDIMCountARow;
+        float _PreMulVertexColor;
 
-        half _EmissionOn;
-        half4 _EmissionColor;
-        half _Metallic,_Smoothness,_Occlusion;
-        half3 _EnvIntensity;
-        half _FresnelIntensity;
-        half4 _IBLCube_HDR;;
-        half _NormalScale;
-        half _UV1TransformToLightmapUV;
-        half _PremulAlpha,_RGBMScale;
+        float _EmissionOn;
+        float4 _EmissionColor;
+        float _Metallic,_Smoothness,_Occlusion;
+        float3 _EnvIntensity;
+        float _FresnelIntensity;
+        float _NormalScale;
+        float _UV1TransformToLightmapUV;
+        float _PremulAlpha,_RGBMScale;
 
-        half _MainLightShadowSoftScale;
-        half _CustomShadowNormalBias,_CustomShadowDepthBias;
-        half4 _GIDiffuseColor;
-        half _BigShadowOff;
-        half _MainLightOn;
+        float _MainLightShadowSoftScale;
+        float _CustomShadowNormalBias,_CustomShadowDepthBias;
+        float4 _GIDiffuseColor;
+        float _BigShadowOff;
+        float _MainLightOn;
         CBUFFER_END
 
+        float4 _IBLCube_HDR;;
 
 #if defined(UNITY_DOTS_INSTANCING_ENABLED)
 DOTS_CBUFFER_START(MaterialPropertyMetadata)
-	DEF_VAR(float4, _MainTex_ST)
-	DEF_VAR(half4, _Color)
-	DEF_VAR(half, _FogOn)
-	DEF_VAR(half, _FogNoiseOn)
-	DEF_VAR(half, _DepthFogOn)
-	DEF_VAR(half, _HeightFogOn)
-	DEF_VAR(half, _Cutoff)
-	DEF_VAR(half, _NormalUnifiedOn)
-	DEF_VAR(half, _UseUV)
-	DEF_VAR(half, _UseUVReverseY)
-	DEF_VAR(half, _MainTexArrayId)
-	DEF_VAR(half, _PreMulVertexColor)
-	DEF_VAR(half, _EmissionOn)
-	DEF_VAR(half4, _EmissionColor)
-	DEF_VAR(half, _Metallic)
-	DEF_VAR(half, _Smoothness)
-	DEF_VAR(half, _Occlusion)
-	DEF_VAR(half3, _EnvIntensity)
-	DEF_VAR(half, _FresnelIntensity)
-	DEF_VAR(half4, _IBLCube_HDR)
-	DEF_VAR(half, _NormalScale)
-	DEF_VAR(half, _UV1TransformToLightmapUV)
-	DEF_VAR(half, _PremulAlpha)
-	DEF_VAR(half, _RGBMScale)
-	DEF_VAR(half, _MainLightShadowSoftScale)
-	DEF_VAR(half, _CustomShadowNormalBias)
-	DEF_VAR(half, _CustomShadowDepthBias)
-	DEF_VAR(half4, _GIDiffuseColor)
-	DEF_VAR(half, _BigShadowOff)
-	DEF_VAR(half, _MainLightOn)
+	// DEF_VAR(float4, _MainTex_ST)
+	DEF_VAR(float4, _Color)
+	DEF_VAR(float, _FogOn)
+	DEF_VAR(float, _FogNoiseOn)
+	DEF_VAR(float, _DepthFogOn)
+	DEF_VAR(float, _HeightFogOn)
+	DEF_VAR(float, _Cutoff)
+	DEF_VAR(float, _NormalUnifiedOn)
+	DEF_VAR(float, _UseUV)
+	DEF_VAR(float, _UseUVReverseY)
+	DEF_VAR(float, _MainTexArrayId)
+	DEF_VAR(float, _PreMulVertexColor)
+	DEF_VAR(float, _EmissionOn)
+	DEF_VAR(float4, _EmissionColor)
+	DEF_VAR(float, _Metallic)
+	DEF_VAR(float, _Smoothness)
+	DEF_VAR(float, _Occlusion)
+	DEF_VAR(float3, _EnvIntensity)
+	DEF_VAR(float, _FresnelIntensity)
+	// DEF_VAR(float4, _IBLCube_HDR)
+	DEF_VAR(float, _NormalScale)
+	DEF_VAR(float, _UV1TransformToLightmapUV)
+	DEF_VAR(float, _PremulAlpha)
+	DEF_VAR(float, _RGBMScale)
+	DEF_VAR(float, _MainLightShadowSoftScale)
+	DEF_VAR(float, _CustomShadowNormalBias)
+	DEF_VAR(float, _CustomShadowDepthBias)
+	DEF_VAR(float4, _GIDiffuseColor)
+	DEF_VAR(float, _BigShadowOff)
+	DEF_VAR(float, _MainLightOn)
 DOTS_CBUFFER_END
 
-	#define _MainTex_ST GET_VAR(float4, _MainTex_ST)
-	#define _Color GET_VAR(half4, _Color)
-	#define _FogOn GET_VAR(half, _FogOn)
-	#define _FogNoiseOn GET_VAR(half, _FogNoiseOn)
-	#define _DepthFogOn GET_VAR(half, _DepthFogOn)
-	#define _HeightFogOn GET_VAR(half, _HeightFogOn)
-	#define _Cutoff GET_VAR(half, _Cutoff)
-	#define _NormalUnifiedOn GET_VAR(half, _NormalUnifiedOn)
-	#define _UseUV GET_VAR(half, _UseUV)
-	#define _UseUVReverseY GET_VAR(half, _UseUVReverseY)
-	#define _MainTexArrayId GET_VAR(half, _MainTexArrayId)
-	#define _PreMulVertexColor GET_VAR(half, _PreMulVertexColor)
-	#define _EmissionOn GET_VAR(half, _EmissionOn)
-	#define _EmissionColor GET_VAR(half4, _EmissionColor)
-	#define _Metallic GET_VAR(half, _Metallic)
-	#define _Smoothness GET_VAR(half, _Smoothness)
-	#define _Occlusion GET_VAR(half, _Occlusion)
-	#define _EnvIntensity GET_VAR(half3, _EnvIntensity)
-	#define _FresnelIntensity GET_VAR(half, _FresnelIntensity)
-	#define _IBLCube_HDR GET_VAR(half4, _IBLCube_HDR)
-	#define _NormalScale GET_VAR(half, _NormalScale)
-	#define _UV1TransformToLightmapUV GET_VAR(half, _UV1TransformToLightmapUV)
-	#define _PremulAlpha GET_VAR(half, _PremulAlpha)
-	#define _RGBMScale GET_VAR(half, _RGBMScale)
-	#define _MainLightShadowSoftScale GET_VAR(half, _MainLightShadowSoftScale)
-	#define _CustomShadowNormalBias GET_VAR(half, _CustomShadowNormalBias)
-	#define _CustomShadowDepthBias GET_VAR(half, _CustomShadowDepthBias)
-	#define _GIDiffuseColor GET_VAR(half4, _GIDiffuseColor)
-	#define _BigShadowOff GET_VAR(half, _BigShadowOff)
-	#define _MainLightOn GET_VAR(half, _MainLightOn)
+	// #define _MainTex_ST GET_VAR(float4, _MainTex_ST)
+	#define _Color GET_VAR(float4, _Color)
+	#define _FogOn GET_VAR(float, _FogOn)
+	#define _FogNoiseOn GET_VAR(float, _FogNoiseOn)
+	#define _DepthFogOn GET_VAR(float, _DepthFogOn)
+	#define _HeightFogOn GET_VAR(float, _HeightFogOn)
+	#define _Cutoff GET_VAR(float, _Cutoff)
+	#define _NormalUnifiedOn GET_VAR(float, _NormalUnifiedOn)
+	#define _UseUV GET_VAR(float, _UseUV)
+	#define _UseUVReverseY GET_VAR(float, _UseUVReverseY)
+	#define _MainTexArrayId GET_VAR(float, _MainTexArrayId)
+	#define _PreMulVertexColor GET_VAR(float, _PreMulVertexColor)
+	#define _EmissionOn GET_VAR(float, _EmissionOn)
+	#define _EmissionColor GET_VAR(float4, _EmissionColor)
+	#define _Metallic GET_VAR(float, _Metallic)
+	#define _Smoothness GET_VAR(float, _Smoothness)
+	#define _Occlusion GET_VAR(float, _Occlusion)
+	#define _EnvIntensity GET_VAR(float3, _EnvIntensity)
+	#define _FresnelIntensity GET_VAR(float, _FresnelIntensity)
+	// #define _IBLCube_HDR GET_VAR(float4, _IBLCube_HDR)
+	#define _NormalScale GET_VAR(float, _NormalScale)
+	#define _UV1TransformToLightmapUV GET_VAR(float, _UV1TransformToLightmapUV)
+	#define _PremulAlpha GET_VAR(float, _PremulAlpha)
+	#define _RGBMScale GET_VAR(float, _RGBMScale)
+	#define _MainLightShadowSoftScale GET_VAR(float, _MainLightShadowSoftScale)
+	#define _CustomShadowNormalBias GET_VAR(float, _CustomShadowNormalBias)
+	#define _CustomShadowDepthBias GET_VAR(float, _CustomShadowDepthBias)
+	#define _GIDiffuseColor GET_VAR(float4, _GIDiffuseColor)
+	#define _BigShadowOff GET_VAR(float, _BigShadowOff)
+	#define _MainLightOn GET_VAR(float, _MainLightOn)
 #endif
 
     ENDHLSL
@@ -258,6 +265,7 @@ DOTS_CBUFFER_END
 
         Pass
         {
+            name "BakedPBRlIT"
             blend [_SrcMode][_DstMode]
             zwrite[_ZWriteMode]
             ztest[_ZTestMode]
@@ -282,12 +290,15 @@ DOTS_CBUFFER_END
             #pragma shader_feature _EMISSION
             #pragma shader_feature _IBL_ON
             #pragma shader_feature NORMAL_MAP_ON
-            #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+            #pragma shader_feature _RECEIVE_SHADOWS_OFF
+            #pragma shader_feature CALC_GI_SPEC
+            #pragma shader_feature CALC_GI_DIFF
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma multi_compile _ DOTS_INSTANCING_ON
+            
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ SHADOWS_SHADOWMASK
+
             
             #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
@@ -327,17 +338,17 @@ DOTS_CBUFFER_END
                 return o;
             }
 
-            half4 SampleMainTex(inout float2 uv/**/){
+            float4 SampleMainTex(inout float2 uv/**/){
                 #if defined(MAIN_TEX_ARRAY)
                     float2 newUV = 0;
-                    half texId = 0;
+                    float texId = 0;
                     CalcUDIM(newUV/**/,texId/**/,uv,_MainTexUDIMCountARow);
                     
                     uv = _MainTexUDIMOn? newUV : uv;
                     texId = _MainTexUDIMOn? texId : _MainTexArrayId;
-                    half4 tex = SAMPLE_TEXTURE2D_ARRAY(_MainTexArray,sampler_MainTexArray,uv,texId);
+                    float4 tex = SAMPLE_TEXTURE2D_ARRAY(_MainTexArray,sampler_MainTexArray,uv,texId);
                 #else
-                    half4 tex = tex2D(_MainTex, uv);
+                    float4 tex = tex2D(_MainTex, uv);
                 #endif
                 return tex;
             }
@@ -352,15 +363,17 @@ DOTS_CBUFFER_END
                 float2 lightmapUV = i.uv.zw;
                 
                 // sample the texture
-                half4 vertexColor = _PreMulVertexColor ? i.color : 1;
-                half4 mainTex = SampleMainTex(uv/**/);
-                half4 mainTexCol = mainTex * _Color * vertexColor;
+                float4 vertexColor = _PreMulVertexColor ? i.color : 1;
+                float4 mainTex = SampleMainTex(uv/**/);
+                float4 mainTexCol = mainTex * _Color * vertexColor;
                 float3 albedo = mainTexCol.xyz;
                 float alpha = mainTexCol.w;
 
                 // alpha premultiply and rgbm scale
                 albedo =_PremulAlpha ? albedo * (alpha * _RGBMScale) : albedo;
-
+                #if defined(ALPHA_TEST)
+                    clip(alpha - _Cutoff);
+                #endif
                 //---------- pbrMask
                 float4 pbrMask = tex2D(_PbrMask,uv);
                 float metallic = 0;
@@ -393,8 +406,8 @@ DOTS_CBUFFER_END
                 float nv = saturate(dot(n,v));
                 float nl = saturate(dot(n,mainLight.direction));
 
-                half3 lightColor = _MainLightOn ? mainLight.color : 1;
-                half3 radiance = lightColor * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
+                float3 lightColor = _MainLightOn ? mainLight.color : 1;
+                float3 radiance = lightColor * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
                 float3 diffColor = albedo * (1 - metallic);
                 float3 specColor = lerp(0.04,albedo,metallic);
@@ -404,64 +417,58 @@ DOTS_CBUFFER_END
                 float a2 = 0;
                 CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);      
 
-                //--- custom ibl
-                #if defined(_IBL_ON)
-                    #define IBL_CUBE _IBLCube
-                    #define IBL_CUBE_SAMPLER sampler_IBLCube
-                    #define IBL_HDR _IBLCube_HDR    
+                #if defined(CALC_GI_DIFF)
+                    float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
                 #else
-                    #define IBL_CUBE unity_SpecCube0
-                    #define IBL_CUBE_SAMPLER samplerunity_SpecCube0
-                    #define IBL_HDR unity_SpecCube0_HDR
+                    float3 giDiff = 0;
                 #endif
-                float3 giColor = 0;
-                float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
-               
-                float3 giSpec = CalcGISpec(IBL_CUBE,
-                    IBL_CUBE_SAMPLER,
-                    IBL_HDR,
-                    specColor,
-                    worldPos,
-                    n,
-                    v,
-                    0/*reflectDirOffset*/,
-                    _EnvIntensity.xyz/*reflectIntensity*/,
-                    nv,
-                    roughness,
-                    a2,
-                    smoothness,
-                    metallic,
-                    half2(0,1),
-                    _FresnelIntensity,
-                    0,
-                    0,
-                    0,
-                    0
-                );
-                giColor = (giDiff * _GIDiffuseColor.xyz + giSpec) * occlusion;
-                // giColor = giSpec;
-                
-                half3 directColor = diffColor * radiance;
 
-                half4 col = (half4)0;
+                #if defined(CALC_GI_SPEC)
+                    float3 giSpec = CalcGISpec(IBL_CUBE,
+                        IBL_CUBE_SAMPLER,
+                        IBL_HDR,
+                        specColor,
+                        worldPos,
+                        n,
+                        v,
+                        0/*reflectDirOffset*/,
+                        _EnvIntensity.xyz/*reflectIntensity*/,
+                        nv,
+                        roughness,
+                        a2,
+                        smoothness,
+                        metallic,
+                        float2(0,1),
+                        _FresnelIntensity,
+                        0,
+                        0,
+                        0,
+                        0
+                    );
+                #else
+                    float3 giSpec = 0;
+                #endif
+
+                float3 giColor = (giDiff * _GIDiffuseColor.xyz + giSpec) * occlusion;
+                float3 directColor = diffColor * radiance;
+
+                float4 col = (float4)0;
                 col.xyz = directColor + giColor;
                 col.w = alpha;
 
             //------ emission
-                half3 emissionColor = 0;
+                float3 emissionColor = 0;
                 #if defined(_EMISSION)
                     emissionColor += CalcEmission(tex2D(_EmissionMap,uv),_EmissionColor.xyz,_EmissionColor.w*_EmissionOn);
                 #endif
                 col.xyz += emissionColor;
 
-                #if defined(ALPHA_TEST)
-                    clip(col.w - _Cutoff);
-                #endif
+
 
 
                 //-------- output mrt
                 // output world normal
-                outputNormal = half4(n,0.5);
+                outputNormal = float4(n,0.5);
                 // output motion
                 outputMotionVectors = CALC_MOTION_VECTORS(i);
 

@@ -1,4 +1,7 @@
-Shader "URP/BakedPbrLit"
+/**
+    simple output color, 
+*/
+Shader "URP/BakedPbrLit_Simple"
 {
     Properties
     {
@@ -16,52 +19,13 @@ Shader "URP/BakedPbrLit"
         [GroupToggle(Main,,preMulti alpha)] _PremulAlpha ("_PremulAlpha", float) = 0
         [GroupSlider(Main,rgbm scale,float)] _RGBMScale ("_RGBMScale", range(0,8)) = 2
 
-// ================================================== main texture array
-        [GroupHeader(Main,MainTexArray)]
-        [GroupToggle(Main,MAIN_TEX_ARRAY,mainTex use tex1DARRAY)] _MainTexArrayOn ("_MainTexArrayOn", float) = 0
-        [GroupItem(Main)] _MainTexArray ("_MainTexArray", 2DArray) = "white" {}
-        [GroupSlider(Main,texArr id ,int)] _MainTexArrayId ("_MainTexArrayId", range(0,16)) = 0
-
-        [GroupHeader(Main,MainTexArray_UDIM)]
-        [GroupToggle(Main,,use udim)] _MainTexUDIMOn ("_MainTexUDIMOn", float) = 0
-        [GroupSlider(Main,udim count in row ,int)] _MainTexUDIMCountARow ("_MainTexUDIMCountARow", range(1,16)) = 1
-// ================================================== pbrMask        
-        [Group(PBR Mask)]
-        [GroupItem(PBR Mask)]_PbrMask("_PbrMask",2d)="white"{}
-
-        [GroupItem(PBR Mask)]_Metallic("_Metallic",range(0,1)) = 0.5
-        [GroupItem(PBR Mask)]_Smoothness("_Smoothness",range(0,1)) = 0.5
-        [GroupItem(PBR Mask)]_Occlusion("_Occlusion",range(0,1)) = 0
-
-//================================================= Normal
-        [Group(Normal)]
-        [GroupToggle(Normal, NORMAL_MAP_ON,enable normalMap in tangent space)]_NormalMapOn("_NormalMapOn",int) = 0
-        [GroupItem(Normal)]_NormalMap("_NormalMap",2d)="bump"{}
-        
-        [GroupItem(Normal)]_NormalScale("_NormalScale",range(0,5)) = 1        
-        [GroupToggle(Normal, ,output flat normal force)]_NormalUnifiedOn("_NormalUnifiedOn",int) = 0
 //================================================= emission
         [Group(Emission)]
         [GroupToggle(Emission,_EMISSION)]_EmissionOn("_EmissionOn",int) = 0  //_EMISSION
         [GroupItem(Emission)]_EmissionMap("_EmissionMap(rgb:Color,a:Mask)",2d)=""{}
         [hdr][GroupItem(Emission)]_EmissionColor("_EmissionColor(w:mask)",color) = (0,0,0,0)
         [GroupMaterialGI(Emission)]_EmissionGI("_EmissionGI",int) = 0
-//================================================= Env
-        [Group(Env,set gi diff and gi spec)]
-        [GroupHeader(Env,Calc GI)]
-        [GroupToggle(Env,CALC_GI_DIFF,calc gi diffuse lightmap or sh)]_CalcGIDiff("_CalcGIDiff",float) = 0
-        [GroupToggle(Env,CALC_GI_SPEC,calc gi spec or not)]_CalcGISpec("_CalcGISpec",float) = 0
-        
-        [GroupHeader(Env,Custom IBL)]
-        [GroupToggle(Env,_IBL_ON,use custom ibl _IBLCube or unity_SpecCube0)]_IBLOn("_IBLOn",float) = 0
-        [GroupItem(Env,ibl cubemap)][NoScaleOffset]_IBLCube("_IBLCube",cube) = ""{}
-        
-        [GroupHeader(Env,IBL Params)]
-        [GroupItem(Env,ibl color tint)]_EnvIntensity("_EnvIntensity",color) = (1,1,1,1)
-        [GroupItem(Env)]_FresnelIntensity("_FresnelIntensity",float) = 1
 
-        [GroupHeader(Env,GI Diffuse Params)]
-        [GroupItem(Env,gi diffuse color tint)][hdr]_GIDiffuseColor("_GIDiffuseColor",color) = (0,0,0,1)
 // ================================================== Main Light 
         [Group(Light,set light and shadows)]
         [GroupHeader(Light,Main Light)]
@@ -115,6 +79,121 @@ Shader "URP/BakedPbrLit"
         [GroupEnum(Settings,UnityEngine.Rendering.CullMode)]_CullMode("_CullMode",int) = 2
     }
 
+    HLSLINCLUDE
+    #pragma multi_compile _ DOTS_INSTANCING_ON
+
+        #include "../../PowerShaderLib/Lib/UnityLib.hlsl"
+        #include "../../PowerShaderLib/Lib/MaterialLib.hlsl"
+        #include "../../PowerShaderLib/Lib/GILib.hlsl"
+        #include "../../PowerShaderLib/Lib/UVMapping.hlsl"
+        #include "../../PowerShaderLib/URPLib/URP_Lighting.hlsl"
+        #include "../../PowerShaderLib/URPLib/URP_MotionVectors.hlsl"
+        #include "../../PowerShaderLib/Lib/BigShadows.hlsl"
+        #include "../../PowerShaderLib/Lib/InstancingLib.hlsl"
+        struct appdata
+        {
+            float4 vertex : POSITION;
+            float2 uv : TEXCOORD0;
+            float2 uv1:TEXCOORD1;
+            float2 uv2:TEXCOORD2;
+            float2 uv3:TEXCOORD3;
+            DECLARE_MOTION_VS_INPUT(prevPos);// texcoord4
+            float3 normal:NORMAL;
+            float4 tangent:TANGENT;
+            float4 color:COLOR;
+            UNITY_VERTEX_INPUT_INSTANCE_ID
+        };
+
+        struct v2f
+        {
+            float4 vertex : SV_POSITION;
+            float4 uv : TEXCOORD0;
+            
+            TANGENT_SPACE_DECLARE(1,2,3);
+            float2 fogCoord:TEXCOORD4;
+            // motion vectors
+            DECLARE_MOTION_VS_OUTPUT(5,6);
+            float4 bigShadowCoord:TEXCOORD7;
+            float4 color:COLOR;
+            UNITY_VERTEX_INPUT_INSTANCE_ID
+        };
+
+        TEXTURE2D_ARRAY(_MainTexArray);SAMPLER(sampler_MainTexArray);
+        TEXTURECUBE(_IBLCube); SAMPLER(sampler_IBLCube);
+        sampler2D _MainTex;
+        sampler2D _EmissionMap;
+        sampler2D _PbrMask;
+        sampler2D _NormalMap;
+        
+        CBUFFER_START(UnityPerMaterial)
+        float4 _MainTex_ST;
+        float4 _Color;
+        float _FogOn,_FogNoiseOn,_DepthFogOn,_HeightFogOn;
+        float _Cutoff;
+        float _NormalUnifiedOn;
+        float _UseUV,_UseUVReverseY;
+        float _UV1TransformToLightmapUV;
+        float _PreMulVertexColor;
+
+        float _EmissionOn;
+        float4 _EmissionColor;
+        float _PremulAlpha;
+
+        float _MainLightShadowSoftScale;
+        float _CustomShadowNormalBias,_CustomShadowDepthBias;
+        float _BigShadowOff;
+        float _MainLightOn;
+        CBUFFER_END
+
+        float4 _IBLCube_HDR;;
+
+#if defined(UNITY_DOTS_INSTANCING_ENABLED)
+DOTS_CBUFFER_START(MaterialPropertyMetadata)
+	DEF_VAR(float4, _Color)
+	DEF_VAR(float, _FogOn)
+	DEF_VAR(float, _FogNoiseOn)
+	DEF_VAR(float, _DepthFogOn)
+	DEF_VAR(float, _HeightFogOn)
+	DEF_VAR(float, _Cutoff)
+	DEF_VAR(float, _NormalUnifiedOn)
+	DEF_VAR(float, _UseUV)
+	DEF_VAR(float, _UseUVReverseY)
+	DEF_VAR(float, _UV1TransformToLightmapUV)
+	DEF_VAR(float, _PreMulVertexColor)
+	DEF_VAR(float, _EmissionOn)
+	DEF_VAR(float4, _EmissionColor)
+	DEF_VAR(float, _PremulAlpha)
+	DEF_VAR(float, _MainLightShadowSoftScale)
+	DEF_VAR(float, _CustomShadowNormalBias)
+	DEF_VAR(float, _CustomShadowDepthBias)
+	DEF_VAR(float, _BigShadowOff)
+	DEF_VAR(float, _MainLightOn)
+DOTS_CBUFFER_END
+
+	#define _Color GET_VAR(float4, _Color)
+	#define _FogOn GET_VAR(float, _FogOn)
+	#define _FogNoiseOn GET_VAR(float, _FogNoiseOn)
+	#define _DepthFogOn GET_VAR(float, _DepthFogOn)
+	#define _HeightFogOn GET_VAR(float, _HeightFogOn)
+	#define _Cutoff GET_VAR(float, _Cutoff)
+	#define _NormalUnifiedOn GET_VAR(float, _NormalUnifiedOn)
+	#define _UseUV GET_VAR(float, _UseUV)
+	#define _UseUVReverseY GET_VAR(float, _UseUVReverseY)
+	#define _UV1TransformToLightmapUV GET_VAR(float, _UV1TransformToLightmapUV)
+	#define _PreMulVertexColor GET_VAR(float, _PreMulVertexColor)
+	#define _EmissionOn GET_VAR(float, _EmissionOn)
+	#define _EmissionColor GET_VAR(float4, _EmissionColor)
+	#define _PremulAlpha GET_VAR(float, _PremulAlpha)
+	#define _MainLightShadowSoftScale GET_VAR(float, _MainLightShadowSoftScale)
+	#define _CustomShadowNormalBias GET_VAR(float, _CustomShadowNormalBias)
+	#define _CustomShadowDepthBias GET_VAR(float, _CustomShadowDepthBias)
+	#define _BigShadowOff GET_VAR(float, _BigShadowOff)
+	#define _MainLightOn GET_VAR(float, _MainLightOn)
+#endif
+
+
+    ENDHLSL
+
     SubShader
     {
         Tags { "RenderType"="Opaque" }
@@ -145,18 +224,13 @@ Shader "URP/BakedPbrLit"
             #pragma shader_feature ALPHA_TEST
             #pragma shader_feature MAIN_TEX_ARRAY
             #pragma shader_feature _EMISSION
-            #pragma shader_feature _IBL_ON
-            #pragma shader_feature NORMAL_MAP_ON
             #pragma shader_feature _RECEIVE_SHADOWS_OFF
-            #pragma shader_feature CALC_GI_SPEC
-            #pragma shader_feature CALC_GI_DIFF
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS //_MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             // #pragma multi_compile _ _SHADOWS_SOFT
             
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ SHADOWS_SHADOWMASK
-            #pragma multi_compile _ DOTS_INSTANCING_ON
-            #include "BakedPbrLitInput.hlsl"
+            
             #include "../../PowerShaderLib/Lib/FogLib.hlsl"
 
 
@@ -195,21 +269,6 @@ Shader "URP/BakedPbrLit"
                 return o;
             }
 
-            float4 SampleMainTex(inout float2 uv/**/){
-                #if defined(MAIN_TEX_ARRAY)
-                    float2 newUV = 0;
-                    float texId = 0;
-                    CalcUDIM(newUV/**/,texId/**/,uv,_MainTexUDIMCountARow);
-                    
-                    uv = _MainTexUDIMOn? newUV : uv;
-                    texId = _MainTexUDIMOn? texId : _MainTexArrayId;
-                    float4 tex = SAMPLE_TEXTURE2D_ARRAY(_MainTexArray,sampler_MainTexArray,uv,texId);
-                #else
-                    float4 tex = tex2D(_MainTex, uv);
-                #endif
-                return tex;
-            }
-
             float4 frag (v2f i,out float4 outputNormal:SV_TARGET1,out float4 outputMotionVectors:SV_TARGET2) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
@@ -221,22 +280,16 @@ Shader "URP/BakedPbrLit"
                 
                 // sample the texture
                 float4 vertexColor = _PreMulVertexColor ? i.color : 1;
-                float4 mainTex = SampleMainTex(uv/**/);
+                float4 mainTex = tex2D(_MainTex, uv);
                 float4 mainTexCol = mainTex * _Color * vertexColor;
                 float3 albedo = mainTexCol.xyz;
                 float alpha = mainTexCol.w;
 
                 // alpha premultiply and rgbm scale
-                albedo =_PremulAlpha ? albedo * (alpha * _RGBMScale) : albedo;
+                albedo =_PremulAlpha ? albedo * (alpha) : albedo;
                 #if defined(ALPHA_TEST)
                     clip(alpha - _Cutoff);
                 #endif
-                //---------- pbrMask
-                float4 pbrMask = tex2D(_PbrMask,uv);
-                float metallic = 0;
-                float smoothness =0;
-                float occlusion =0;
-                SplitPbrMaskTexture(metallic/**/,smoothness/**/,occlusion/**/,pbrMask,int3(0,1,2),float3(_Metallic,_Smoothness,_Occlusion),false);
 
                 //---------- main light
                 float4 shadowMask = SampleShadowMask(lightmapUV);
@@ -250,72 +303,13 @@ Shader "URP/BakedPbrLit"
                     mainLight.distanceAttenuation = 1;// keep main light
                 }
                 
-                //---------- normal
-                #if defined(NORMAL_MAP_ON)
-                    float3 tn = UnpackNormalScale(tex2D(_NormalMap,uv),_NormalScale);
-                    float3 n = normalize(TangentToWorld(tn,i.tSpace0,i.tSpace1,i.tSpace2));
-                    n = normalize(n+normal);
-                #else
-                    float3 n = normal;
-                #endif
-
-                float3 v = normalize(GetWorldSpaceViewDir(worldPos));
-                float nv = saturate(dot(n,v));
-                float nl = saturate(dot(n,mainLight.direction));
-
                 float3 lightColor = _MainLightOn ? mainLight.color : 1;
-                float3 radiance = lightColor * (nl * mainLight.shadowAttenuation * mainLight.distanceAttenuation);
+                float3 radiance = lightColor * (mainLight.shadowAttenuation * mainLight.distanceAttenuation);
 
-                float3 diffColor = albedo * (1 - metallic);
-                float3 specColor = lerp(0.04,albedo,metallic);
-                //---------- roughness
-                float roughness = 0;
-                float a = 0;
-                float a2 = 0;
-                CalcRoughness(roughness/**/,a/**/,a2/**/,smoothness);      
-
-                #if defined(CALC_GI_DIFF)
-                    float3 giDiff = CalcGIDiff(normal,diffColor,lightmapUV);
-                #else
-                    float3 giDiff = 0;
-                #endif
-
-                #if defined(CALC_GI_SPEC)
-                    float3 giSpec = CalcGISpec(IBL_CUBE,
-                        IBL_CUBE_SAMPLER,
-                        IBL_HDR,
-                        specColor,
-                        worldPos,
-                        n,
-                        v,
-                        0/*reflectDirOffset*/,
-                        _EnvIntensity.xyz/*reflectIntensity*/,
-                        nv,
-                        roughness,
-                        a2,
-                        smoothness,
-                        metallic,
-                        float2(0,1),
-                        _FresnelIntensity,
-                        0,
-                        0,
-                        0,
-                        0
-                    );
-                #else
-                    float3 giSpec = 0;
-                #endif
-
-                #if defined(CALC_GI_DIFF) || defined(CALC_GI_SPEC)
-                float3 giColor = (giDiff * _GIDiffuseColor.xyz + giSpec) * occlusion;
-                #else
-                float3 giColor = 0;
-                #endif
-
-                float3 directColor = diffColor * radiance;
+                float3 directColor = albedo * radiance;
 
                 float4 col = (float4)0;
-                col.xyz = directColor + giColor;
+                col.xyz = directColor;
                 col.w = alpha;
 
             //------ emission
@@ -324,10 +318,9 @@ Shader "URP/BakedPbrLit"
                     emissionColor += CalcEmission(tex2D(_EmissionMap,uv),_EmissionColor.xyz,_EmissionColor.w*_EmissionOn);
                 #endif
                 col.xyz += emissionColor;
-
                 //-------- output mrt
                 // output world normal
-                outputNormal = float4(n,0.5);
+                outputNormal = float4(normal,0.5);
                 // output motion
                 outputMotionVectors = CALC_MOTION_VECTORS(i);
 
@@ -338,38 +331,36 @@ Shader "URP/BakedPbrLit"
             ENDHLSL
         }
 
-        Pass{
-            Tags{"LightMode" = "DepthOnly"}
+        // Pass{
+        //     Tags{"LightMode" = "DepthOnly"}
 
-            ZWrite On
-            ZTest LEqual
-            Cull[_CullMode]
-            // ColorMask 0
-            Stencil
-            {
-                Ref [_Stencil]
-                Comp [_StencilComp]
-                Pass [_StencilOp]
-                ReadMask [_StencilReadMask]
-                WriteMask [_StencilWriteMask]
-            }
-            HLSLPROGRAM
-            #pragma target 4.5
-            #pragma vertex vert
-            #pragma fragment frag 
-            #pragma shader_feature_fragment ALPHA_TEST
-            #pragma multi_compile _ DOTS_INSTANCING_ON
-            // #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
+        //     ZWrite On
+        //     ZTest LEqual
+        //     Cull[_CullMode]
+        //     // ColorMask 0
+        //     Stencil
+        //     {
+        //         Ref [_Stencil]
+        //         Comp [_StencilComp]
+        //         Pass [_StencilOp]
+        //         ReadMask [_StencilReadMask]
+        //         WriteMask [_StencilWriteMask]
+        //     }
+        //     HLSLPROGRAM
+        //     #pragma target 4.5
+        //     #pragma vertex vert
+        //     #pragma fragment frag 
+        //     #pragma shader_feature_fragment ALPHA_TEST
+        //     // #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
-            #define USE_SAMPLER2D
-            // #include "Lib/PBRInput.hlsl"
+        //     #define USE_SAMPLER2D
+        //     // #include "Lib/PBRInput.hlsl"
 
-            // #define _CURVED_WORLD
-            #include "BakedPbrLitInput.hlsl"
-            #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
+        //     // #define _CURVED_WORLD
+        //     #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
-            ENDHLSL
-        }
+        //     ENDHLSL
+        // }
 
         Pass{
             Tags{"LightMode" = "ShadowCaster"}
@@ -395,7 +386,6 @@ Shader "URP/BakedPbrLit"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #pragma shader_feature_fragment ALPHA_TEST
-            #pragma multi_compile _ DOTS_INSTANCING_ON
             // #define _WIND_ON //#pragma shader_feature_local_vertex _WIND_ON
 
             #define SHADOW_PASS 
@@ -405,7 +395,6 @@ Shader "URP/BakedPbrLit"
             #define _CustomShadowDepthBias _CustomShadowDepthBias
 
             // #define _CURVED_WORLD
-            #include "BakedPbrLitInput.hlsl"
             #include "../../PowerShaderLib/URPLib/ShadowCasterPass.hlsl"
 
             // rotate by Mainlight

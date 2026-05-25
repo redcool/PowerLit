@@ -352,3 +352,7 @@ UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
     #define _CustomShadowNormalBias UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,_CustomShadowNormalBias) 
 
 #endif //POWER_LIT_INPUT_HLSL
+
+//--------- global variables
+
+half _FullScreenOn; // output to full rt

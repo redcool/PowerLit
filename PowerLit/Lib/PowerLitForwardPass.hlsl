@@ -11,6 +11,8 @@ struct Attributes{
     float4 tangent:TANGENT;
     float2 uv:TEXCOORD;
     float2 uv1 :TEXCOORD1;
+    float2 uv2:TEXCOORD2;
+    float2 uv3:TEXCOORD3;
     // float3 prevPos:TEXCOORD4;
     DECLARE_MOTION_VS_INPUT(prevPos);
     UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -77,6 +79,13 @@ Varyings vert(Attributes input){
     worldPos.xy += CalcCurvedPos(_WorldSpaceCameraPos,worldPos,_CurvedSidewayScale,_CurvedBackwardScale);
 
     float4 clipPos = TransformWorldToHClip(worldPos);
+    // render to fullscreen (uv space)
+    // o.vertex = UnityWorldToClipPos(worldPos);
+    float2 lightmapUV = input.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+    float2 uv1 = GetUV1(input.uv1,lightmapUV,_UV1TransformToLightmapUV);
+    float2 uv = GetUV(float4(input.uv,uv1),float4(input.uv2,input.uv3),_FullScreenUVId);
+
+    clipPos = TransformObjectToNdcHClip(input.pos,_FullScreenOn,_FullScreenUVRange,true,uv);
 
     half upFaceAtten = 1;
     // #if defined(_EMISION_HEIGHT_ON)

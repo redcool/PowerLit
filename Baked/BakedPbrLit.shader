@@ -122,7 +122,9 @@ Shader "URP/BakedPbrLit"
 
         Pass
         {
-            name "BakedPBRlIT"
+            Tags{"LightMode" = "UniversalForward"}
+
+            name "BakedPBRLit"
             blend [_SrcMode][_DstMode]
             zwrite[_ZWriteMode]
             ztest[_ZTestMode]

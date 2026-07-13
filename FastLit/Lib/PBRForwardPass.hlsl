@@ -80,7 +80,7 @@ v2f vert (appdata v)
     float2 uv = GetUV(float4(v.uv,uv1),float4(v.uv2,v.uv3),_FullScreenUVId);
 
     // o.vertex = UnityWorldToClipPos(worldPos);
-    o.vertex = TransformObjectToNdcHClip(v.vertex,_FullScreenOn,_FullScreenUVRange,true,uv);
+    o.vertex = _FullScreenOn ? TransformObjectToNdcHClip(v.vertex,_FullScreenOn,_FullScreenUVRange,true,uv) : UnityWorldToClipPos(worldPos);;
 
     o.vertexPos = v.vertex;
     o.uv.xy = v.uv;

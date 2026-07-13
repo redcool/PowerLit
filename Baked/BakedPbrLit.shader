@@ -249,7 +249,7 @@ Shader "URP/BakedPbrLit"
                     // i.bigShadowCoord.z += 0.001;
                     float atten = CalcBigShadowAtten(i.bigShadowCoord.xyz,1);
                     mainLight.shadowAttenuation = min(mainLight.shadowAttenuation,atten);
-                    mainLight.distanceAttenuation = 1;// keep main light
+                    // mainLight.distanceAttenuation = 1;// keep main light
                 }
                 
                 //---------- normal

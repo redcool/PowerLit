@@ -78,14 +78,14 @@ Varyings vert(Attributes input){
     
     worldPos.xy += CalcCurvedPos(_WorldSpaceCameraPos,worldPos,_CurvedSidewayScale,_CurvedBackwardScale);
 
-    float4 clipPos = TransformWorldToHClip(worldPos);
     // render to fullscreen (uv space)
     // o.vertex = UnityWorldToClipPos(worldPos);
     float2 lightmapUV = input.uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
     float2 uv1 = GetUV1(input.uv1,lightmapUV,_UV1TransformToLightmapUV);
     float2 uv = GetUV(float4(input.uv,uv1),float4(input.uv2,input.uv3),_FullScreenUVId);
 
-    clipPos = TransformObjectToNdcHClip(input.pos,_FullScreenOn,_FullScreenUVRange,true,uv);
+    // float4 clipPos = TransformWorldToHClip(worldPos);
+    float4 clipPos = _FullScreenOn ? TransformObjectToNdcHClip(input.pos,_FullScreenOn,_FullScreenUVRange,true,uv) :  TransformWorldToHClip(worldPos);
 
     half upFaceAtten = 1;
     // #if defined(_EMISION_HEIGHT_ON)
